@@ -141,7 +141,7 @@ namespace bubi {
 			}
 			Json::Value real_json;
 			real_json = Proto2Json(tran_env);
-			printf(real_json.toStyledString().c_str());
+			printf("%s",real_json.toStyledString().c_str());
 			std::string content = tran_env.transaction().SerializeAsString();
 
 			// add node signature

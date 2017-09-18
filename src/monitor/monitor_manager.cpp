@@ -256,11 +256,6 @@ namespace bubi {
 	}
 
 	void MonitorManager::OnSlowTimer(int64_t current_time) {
-		utils::MutexGuard guard(conns_list_lock_);
-		Monitor *monitor = (Monitor *)GetClientConnection();
-		if (monitor == NULL || !monitor->IsActive()) {
-			return;
-		}
 
 		system_manager_.OnSlowTimer(current_time);
 
@@ -276,7 +271,9 @@ namespace bubi {
 			bool bret = true;
 			std::error_code ignore_ec;
 
-			if (NULL == monitor || !monitor->SendRequest(monitor::MONITOR_MSGTYPE_ALERT, alert_status.SerializeAsString(), ignore_ec)) {
+			utils::MutexGuard guard(conns_list_lock_);
+			Monitor *monitor = (Monitor *)GetClientConnection();
+			if ( monitor && !monitor->SendRequest(monitor::MONITOR_MSGTYPE_ALERT, alert_status.SerializeAsString(), ignore_ec)) {
 				bret = false;
 				LOG_ERROR("Send alert status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
 					ignore_ec.value(), ignore_ec.message().c_str());

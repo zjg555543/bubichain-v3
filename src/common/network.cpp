@@ -586,6 +586,7 @@ namespace bubi {
 	}
 
 	void Network::OnClientOpen(connection_hdl hdl) {
+		utils::MutexGuard guard_(conns_list_lock_);
 		Connection * conn = GetConnection(hdl);
 		if (conn) {
 			LOG_INFO("Peer connected, ip(%s)", conn->GetPeerAddress().ToIpPort().c_str());
