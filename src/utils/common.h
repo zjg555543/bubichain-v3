@@ -163,8 +163,14 @@ namespace utils {
 #define DISALLOW_COPY_AND_ASSIGN(cls) private:\
 	cls( const cls & );\
 	cls & operator =( const cls & )
-
 }
+
+#ifndef WIN32
+extern "C"
+{
+	void * __wrap_memcpy(void *dest, const void *src, size_t n);
+}
+#endif
 
 //#define DEBUG_NEW_ENABLE
 //#include "debug_new.h"

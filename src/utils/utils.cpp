@@ -153,3 +153,13 @@ time_t utils::GetStartupTime(time_t time_now) {
 
 	return nStartupTime;
 }
+
+#ifndef WIN32
+extern "C"
+{
+	void * __wrap_memcpy(void *dest, const void *src, size_t n) {
+		asm(".symver memcpy, memcpy@GLIBC_2.2.5");
+		return memcpy(dest, src, n);
+	}
+}
+#endif
