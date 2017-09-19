@@ -577,4 +577,10 @@ namespace bubi {
 	time_t GlueManager::GetProcessUptime() {
 		return process_uptime_;
 	}
+
+	size_t GlueManager::GetTransactionCacheSize() {
+		utils::MutexGuard guard(lock_);
+		return topic_caches_.size();
+	}
+
 }
