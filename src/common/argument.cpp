@@ -21,7 +21,6 @@ namespace bubi {
 	Argument::Argument() :
 		help_modle_(false),
 		drop_db_(false),
-		update_(false), 
 		peer_addr_(false),
 		del_peer_addr_(false), 
 		clear_consensus_status_(false),
@@ -33,9 +32,6 @@ namespace bubi {
 			std::string s(argv[1]);
 			if (s == "--dropdb") {
 				drop_db_ = true;
-			}
-			else if (s == "--update") {
-				update_ = true;
 			}
 			else if (s == "--hardware-address") {
 				ShowHardwareAddress();
@@ -168,14 +164,14 @@ namespace bubi {
 			"Usage: bubi [OPTIONS]\n"
 			"OPTIONS:\n"
 			"  --dropdb                        clean up database\n"
-			"  --peer-address                  get local peer address\n"
+			"  --peer-address <node-priv-key>  get peer address from crypted node private key\n"
 			"  --hardware-address              get local hardware address\n"
 			"  --request-cert                  request entity certificate\n"
 			"  --show-request                  show request certificate\n"
 			"  --clear-consensus-status        delete consensus status\n"
-			"  --sm3                           generate sm3 hash \n"
-			"  --sm3-hex                       generate sm3 hash from hex format \n"
-			"  --aes-crypto                    crypto \n"
+			"  --sm3 <arg>                     generate sm3 hash \n"
+			"  --sm3-hex <arg>                 generate sm3 hash from hex format \n"
+			"  --aes-crypto <value>            crypto value\n"
 			"  --version                       display version information\n"
 			"  --create-hardfork               create hard fork ledger\n"
 			"  --help                          display this help\n"

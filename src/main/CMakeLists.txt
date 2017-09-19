@@ -21,7 +21,7 @@ add_executable(${APP_BUBI} ${APP_BUBI_SRC})
 
 #specify dependent libraries for target obj
 target_link_libraries(${APP_BUBI}
-    -Wl,-dn ${INNER_LIBS} -Wl,--start-group ${V8_LIBS} -Wl,--end-group ${BUBI_DEPENDS_LIBS} ${BUBI_LINKER_FLAGS})
+    -Wl,--wrap=memcpy -Wl,-dn ${INNER_LIBS} -Wl,--start-group ${V8_LIBS} -Wl,--end-group ${BUBI_DEPENDS_LIBS} ${BUBI_LINKER_FLAGS})
 
 #specify compile options for target obj
 target_compile_options(${APP_BUBI}
