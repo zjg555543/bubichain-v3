@@ -430,6 +430,7 @@ namespace bubi {
 			}
 			enabled_ = true;
 
+			asio::io_service::work work(io_);
 			// Start the ASIO io_service run loop
 			int64_t last_check_time = 0;
 			while (enabled_) {
@@ -497,21 +498,33 @@ namespace bubi {
 		connection_hdl handle;
 		if (ssl_parameter_.enable_) {
 			tls_con = tls_client_.get_connection(uri, ec);
-			tls_con->set_open_handler(bind(&Network::OnClientOpen, this, _1));
-			tls_con->set_close_handler(bind(&Network::OnClose, this, _1));
-			tls_con->set_message_handler(bind(&Network::OnMessage, this, _1, _2));
-			tls_con->set_fail_handler(bind(&Network::OnFailed, this, _1));
-			tls_con->set_pong_handler(bind(&Network::OnPong, this, _1, _2));
-			handle = tls_con->get_handle();
+			if (tls_con) {
+				tls_con->set_open_handler(bind(&Network::OnClientOpen, this, _1));
+				tls_con->set_close_handler(bind(&Network::OnClose, this, _1));
+				tls_con->set_message_handler(bind(&Network::OnMessage, this, _1, _2));
+				tls_con->set_fail_handler(bind(&Network::OnFailed, this, _1));
+				tls_con->set_pong_handler(bind(&Network::OnPong, this, _1, _2));
+				handle = tls_con->get_handle();
+			}
+			else {
+				LOG_ERROR("Get uri(%s) initialization error(%s)", uri.c_str(), ec.message().c_str());
+				return false;
+			}
 		}
 		else {
 			con = client_.get_connection(uri, ec);
-			con->set_open_handler(bind(&Network::OnClientOpen, this, _1));
-			con->set_close_handler(bind(&Network::OnClose, this, _1));
-			con->set_message_handler(bind(&Network::OnMessage, this, _1, _2));
-			con->set_fail_handler(bind(&Network::OnFailed, this, _1));
-			con->set_pong_handler(bind(&Network::OnPong, this, _1, _2));
-			handle = con->get_handle();
+			if (con) {
+				con->set_open_handler(bind(&Network::OnClientOpen, this, _1));
+				con->set_close_handler(bind(&Network::OnClose, this, _1));
+				con->set_message_handler(bind(&Network::OnMessage, this, _1, _2));
+				con->set_fail_handler(bind(&Network::OnFailed, this, _1));
+				con->set_pong_handler(bind(&Network::OnPong, this, _1, _2));
+				handle = con->get_handle();
+			}
+			else {
+				LOG_ERROR("Get uri(%s) initialization error(%s)", uri.c_str(), ec.message().c_str());
+				return false;
+			}
 		}
 
 		if (ec) {
@@ -573,6 +586,7 @@ namespace bubi {
 	}
 
 	void Network::OnClientOpen(connection_hdl hdl) {
+		utils::MutexGuard guard_(conns_list_lock_);
 		Connection * conn = GetConnection(hdl);
 		if (conn) {
 			LOG_INFO("Peer connected, ip(%s)", conn->GetPeerAddress().ToIpPort().c_str());
