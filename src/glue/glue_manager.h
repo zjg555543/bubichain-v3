@@ -89,6 +89,7 @@ namespace bubi {
 		//should be called by ledger manager
 		bool CheckValueAndProof( const std::string &consensus_value, const std::string &proof);
 		int32_t CheckValueHelper(const protocol::ConsensusValue &consensus_value);
+		size_t GetTransactionCacheSize();
 
 		virtual void OnTimer(int64_t current_time) override;
 		virtual void OnSlowTimer(int64_t current_time) override {};

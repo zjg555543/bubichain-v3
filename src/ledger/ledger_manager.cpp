@@ -562,8 +562,12 @@ namespace bubi {
 		last_closed_ledger_ = closing_ledger_;
 		
 		//avoid dead lock
-		utils::WriteLockGuard guard(lcl_header_mutex_);
-		lcl_header_ = last_closed_ledger_->GetProtoHeader();
+		protocol::LedgerHeader tmp_lcl_header;
+		do 
+		{
+			utils::WriteLockGuard guard(lcl_header_mutex_);
+			tmp_lcl_header = lcl_header_ = last_closed_ledger_->GetProtoHeader();
+		} while (false);
 		
 		Global::Instance().GetIoService().post([new_set, proof]() {
 			GlueManager::Instance().UpdateValidators(new_set, proof);
@@ -594,9 +598,9 @@ namespace bubi {
 
 		// monitor
 		monitor::LedgerStatus ledger_status;
-		ledger_status.mutable_ledger_header()->CopyFrom(lcl_header_);
-		ledger_status.set_transaction_size(0);
-		ledger_status.set_account_count(0);
+		ledger_status.mutable_ledger_header()->CopyFrom(tmp_lcl_header);
+		ledger_status.set_transaction_size(GlueManager::Instance().GetTransactionCacheSize());
+		ledger_status.set_account_count(GetAccountNum());
 		ledger_status.set_timestamp(utils::Timestamp::HighResolution());
 		MonitorManager::Instance().SendMonitor(monitor::MONITOR_MSGTYPE_LEDGER, ledger_status.SerializeAsString());
 		return true;
