@@ -463,6 +463,11 @@ namespace bubi {
 	}
 
 	bool PeerNetwork::CreatePeerIfNotExist(const utils::InetAddress &address) {
+		if (address.IsAny() || address.GetPort() == 0) {
+			LOG_ERROR("Peer address(%s) not valid", address.ToIpPort().c_str());
+			return false;
+		} 
+
 		protocol::Peers peers;
 		int32_t peer_count = QueryItem(address, peers);
 		if (peer_count < 0) {
@@ -629,9 +634,15 @@ namespace bubi {
 			return;
 		}
 
+		size_t con_size = 0;
+		do {
+			utils::MutexGuard guard(conns_list_lock_);
+			con_size = connections_.size();
+		} while (false);
+
 		//start to connect peers
-		if (connections_.size() < p2p_configure.target_peer_connection_) {
-			ConnectToPeers(p2p_configure.target_peer_connection_ - connections_.size());
+		if (con_size < p2p_configure.target_peer_connection_) {
+			ConnectToPeers(p2p_configure.target_peer_connection_ - con_size);
 		}
 
 		broadcast_.OnTimer();

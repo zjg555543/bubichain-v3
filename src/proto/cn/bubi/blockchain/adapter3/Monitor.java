@@ -184,213 +184,40 @@ public final class Monitor {
     // @@protoc_insertion_point(enum_scope:monitor.MONITOR_MESSAGE_TYPE)
   }
 
-  /**
-   * Protobuf enum {@code monitor.MONITOR_ERROR}
-   */
-  public enum MONITOR_ERROR
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <code>MONITOR_INTERNAL_ERROR = 0;</code>
-     */
-    MONITOR_INTERNAL_ERROR(0),
-    /**
-     * <code>MONITOR_MESSAGE_NOT_EXIST = 1;</code>
-     */
-    MONITOR_MESSAGE_NOT_EXIST(1),
-    /**
-     * <code>MONITOR_MISSING_PARAMETER = 2;</code>
-     */
-    MONITOR_MISSING_PARAMETER(2),
-    /**
-     * <code>MONITOR_ID_NOT_EXIST = 3;</code>
-     */
-    MONITOR_ID_NOT_EXIST(3),
-    /**
-     * <code>MONITOR_ID_ALREAD_EXIST = 4;</code>
-     */
-    MONITOR_ID_ALREAD_EXIST(4),
-    /**
-     * <code>MONITOR_CENTER_INVALID = 5;</code>
-     */
-    MONITOR_CENTER_INVALID(5),
-    /**
-     * <code>MONITOR_AGENT_INVALID = 6;</code>
-     */
-    MONITOR_AGENT_INVALID(6),
-    /**
-     * <code>MONITOR_NOT_LOGIN = 7;</code>
-     */
-    MONITOR_NOT_LOGIN(7),
-    /**
-     * <code>MONITOR_BUBI_MESSAGE_ERROR = 8;</code>
-     */
-    MONITOR_BUBI_MESSAGE_ERROR(8),
-    /**
-     * <code>MONITOR_SYSTEM_MESSAGE_ERROR = 9;</code>
-     */
-    MONITOR_SYSTEM_MESSAGE_ERROR(9),
-    /**
-     * <code>MONITOR_LEDGER_MESSAGE_ERROR = 10;</code>
-     */
-    MONITOR_LEDGER_MESSAGE_ERROR(10),
-    UNRECOGNIZED(-1),
-    ;
-
-    /**
-     * <code>MONITOR_INTERNAL_ERROR = 0;</code>
-     */
-    public static final int MONITOR_INTERNAL_ERROR_VALUE = 0;
-    /**
-     * <code>MONITOR_MESSAGE_NOT_EXIST = 1;</code>
-     */
-    public static final int MONITOR_MESSAGE_NOT_EXIST_VALUE = 1;
-    /**
-     * <code>MONITOR_MISSING_PARAMETER = 2;</code>
-     */
-    public static final int MONITOR_MISSING_PARAMETER_VALUE = 2;
-    /**
-     * <code>MONITOR_ID_NOT_EXIST = 3;</code>
-     */
-    public static final int MONITOR_ID_NOT_EXIST_VALUE = 3;
-    /**
-     * <code>MONITOR_ID_ALREAD_EXIST = 4;</code>
-     */
-    public static final int MONITOR_ID_ALREAD_EXIST_VALUE = 4;
-    /**
-     * <code>MONITOR_CENTER_INVALID = 5;</code>
-     */
-    public static final int MONITOR_CENTER_INVALID_VALUE = 5;
-    /**
-     * <code>MONITOR_AGENT_INVALID = 6;</code>
-     */
-    public static final int MONITOR_AGENT_INVALID_VALUE = 6;
-    /**
-     * <code>MONITOR_NOT_LOGIN = 7;</code>
-     */
-    public static final int MONITOR_NOT_LOGIN_VALUE = 7;
-    /**
-     * <code>MONITOR_BUBI_MESSAGE_ERROR = 8;</code>
-     */
-    public static final int MONITOR_BUBI_MESSAGE_ERROR_VALUE = 8;
-    /**
-     * <code>MONITOR_SYSTEM_MESSAGE_ERROR = 9;</code>
-     */
-    public static final int MONITOR_SYSTEM_MESSAGE_ERROR_VALUE = 9;
-    /**
-     * <code>MONITOR_LEDGER_MESSAGE_ERROR = 10;</code>
-     */
-    public static final int MONITOR_LEDGER_MESSAGE_ERROR_VALUE = 10;
-
-
-    public final int getNumber() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
-      }
-      return value;
-    }
-
-    /**
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static MONITOR_ERROR valueOf(int value) {
-      return forNumber(value);
-    }
-
-    public static MONITOR_ERROR forNumber(int value) {
-      switch (value) {
-        case 0: return MONITOR_INTERNAL_ERROR;
-        case 1: return MONITOR_MESSAGE_NOT_EXIST;
-        case 2: return MONITOR_MISSING_PARAMETER;
-        case 3: return MONITOR_ID_NOT_EXIST;
-        case 4: return MONITOR_ID_ALREAD_EXIST;
-        case 5: return MONITOR_CENTER_INVALID;
-        case 6: return MONITOR_AGENT_INVALID;
-        case 7: return MONITOR_NOT_LOGIN;
-        case 8: return MONITOR_BUBI_MESSAGE_ERROR;
-        case 9: return MONITOR_SYSTEM_MESSAGE_ERROR;
-        case 10: return MONITOR_LEDGER_MESSAGE_ERROR;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<MONITOR_ERROR>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        MONITOR_ERROR> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<MONITOR_ERROR>() {
-            public MONITOR_ERROR findValueByNumber(int number) {
-              return MONITOR_ERROR.forNumber(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      return getDescriptor().getValues().get(ordinal());
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return cn.bubi.blockchain.adapter3.Monitor.getDescriptor().getEnumTypes().get(1);
-    }
-
-    private static final MONITOR_ERROR[] VALUES = values();
-
-    public static MONITOR_ERROR valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      if (desc.getIndex() == -1) {
-        return UNRECOGNIZED;
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int value;
-
-    private MONITOR_ERROR(int value) {
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:monitor.MONITOR_ERROR)
-  }
-
-  public interface BubiAttackOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:monitor.BubiAttack)
+  public interface HelloOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:monitor.Hello)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional uint32 bubi_attack_time = 1;</code>
+     * <code>optional int64 service_version = 1;</code>
      */
-    int getBubiAttackTime();
+    long getServiceVersion();
 
     /**
-     * <code>optional uint32 bubi_attack_counts = 2;</code>
+     * <code>optional int64 connection_timeout = 2;</code>
      */
-    int getBubiAttackCounts();
+    long getConnectionTimeout();
+
+    /**
+     * <code>optional int64 timestamp = 3;</code>
+     */
+    long getTimestamp();
   }
   /**
-   * Protobuf type {@code monitor.BubiAttack}
+   * Protobuf type {@code monitor.Hello}
    */
-  public  static final class BubiAttack extends
+  public  static final class Hello extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:monitor.BubiAttack)
-      BubiAttackOrBuilder {
-    // Use BubiAttack.newBuilder() to construct.
-    private BubiAttack(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:monitor.Hello)
+      HelloOrBuilder {
+    // Use Hello.newBuilder() to construct.
+    private Hello(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BubiAttack() {
-      bubiAttackTime_ = 0;
-      bubiAttackCounts_ = 0;
+    private Hello() {
+      serviceVersion_ = 0L;
+      connectionTimeout_ = 0L;
+      timestamp_ = 0L;
     }
 
     @java.lang.Override
@@ -398,7 +225,7 @@ public final class Monitor {
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-    private BubiAttack(
+    private Hello(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -420,12 +247,17 @@ public final class Monitor {
             }
             case 8: {
 
-              bubiAttackTime_ = input.readUInt32();
+              serviceVersion_ = input.readInt64();
               break;
             }
             case 16: {
 
-              bubiAttackCounts_ = input.readUInt32();
+              connectionTimeout_ = input.readInt64();
+              break;
+            }
+            case 24: {
+
+              timestamp_ = input.readInt64();
               break;
             }
           }
@@ -441,32 +273,41 @@ public final class Monitor {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_BubiAttack_descriptor;
+      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_BubiAttack_fieldAccessorTable
+      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.bubi.blockchain.adapter3.Monitor.BubiAttack.class, cn.bubi.blockchain.adapter3.Monitor.BubiAttack.Builder.class);
+              cn.bubi.blockchain.adapter3.Monitor.Hello.class, cn.bubi.blockchain.adapter3.Monitor.Hello.Builder.class);
     }
 
-    public static final int BUBI_ATTACK_TIME_FIELD_NUMBER = 1;
-    private int bubiAttackTime_;
+    public static final int SERVICE_VERSION_FIELD_NUMBER = 1;
+    private long serviceVersion_;
     /**
-     * <code>optional uint32 bubi_attack_time = 1;</code>
+     * <code>optional int64 service_version = 1;</code>
      */
-    public int getBubiAttackTime() {
-      return bubiAttackTime_;
+    public long getServiceVersion() {
+      return serviceVersion_;
     }
 
-    public static final int BUBI_ATTACK_COUNTS_FIELD_NUMBER = 2;
-    private int bubiAttackCounts_;
+    public static final int CONNECTION_TIMEOUT_FIELD_NUMBER = 2;
+    private long connectionTimeout_;
     /**
-     * <code>optional uint32 bubi_attack_counts = 2;</code>
+     * <code>optional int64 connection_timeout = 2;</code>
      */
-    public int getBubiAttackCounts() {
-      return bubiAttackCounts_;
+    public long getConnectionTimeout() {
+      return connectionTimeout_;
+    }
+
+    public static final int TIMESTAMP_FIELD_NUMBER = 3;
+    private long timestamp_;
+    /**
+     * <code>optional int64 timestamp = 3;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -481,11 +322,14 @@ public final class Monitor {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (bubiAttackTime_ != 0) {
-        output.writeUInt32(1, bubiAttackTime_);
+      if (serviceVersion_ != 0L) {
+        output.writeInt64(1, serviceVersion_);
       }
-      if (bubiAttackCounts_ != 0) {
-        output.writeUInt32(2, bubiAttackCounts_);
+      if (connectionTimeout_ != 0L) {
+        output.writeInt64(2, connectionTimeout_);
+      }
+      if (timestamp_ != 0L) {
+        output.writeInt64(3, timestamp_);
       }
     }
 
@@ -494,13 +338,17 @@ public final class Monitor {
       if (size != -1) return size;
 
       size = 0;
-      if (bubiAttackTime_ != 0) {
+      if (serviceVersion_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, bubiAttackTime_);
+          .computeInt64Size(1, serviceVersion_);
       }
-      if (bubiAttackCounts_ != 0) {
+      if (connectionTimeout_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, bubiAttackCounts_);
+          .computeInt64Size(2, connectionTimeout_);
+      }
+      if (timestamp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, timestamp_);
       }
       memoizedSize = size;
       return size;
@@ -512,16 +360,18 @@ public final class Monitor {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.bubi.blockchain.adapter3.Monitor.BubiAttack)) {
+      if (!(obj instanceof cn.bubi.blockchain.adapter3.Monitor.Hello)) {
         return super.equals(obj);
       }
-      cn.bubi.blockchain.adapter3.Monitor.BubiAttack other = (cn.bubi.blockchain.adapter3.Monitor.BubiAttack) obj;
+      cn.bubi.blockchain.adapter3.Monitor.Hello other = (cn.bubi.blockchain.adapter3.Monitor.Hello) obj;
 
       boolean result = true;
-      result = result && (getBubiAttackTime()
-          == other.getBubiAttackTime());
-      result = result && (getBubiAttackCounts()
-          == other.getBubiAttackCounts());
+      result = result && (getServiceVersion()
+          == other.getServiceVersion());
+      result = result && (getConnectionTimeout()
+          == other.getConnectionTimeout());
+      result = result && (getTimestamp()
+          == other.getTimestamp());
       return result;
     }
 
@@ -532,67 +382,72 @@ public final class Monitor {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + BUBI_ATTACK_TIME_FIELD_NUMBER;
-      hash = (53 * hash) + getBubiAttackTime();
-      hash = (37 * hash) + BUBI_ATTACK_COUNTS_FIELD_NUMBER;
-      hash = (53 * hash) + getBubiAttackCounts();
+      hash = (37 * hash) + SERVICE_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getServiceVersion());
+      hash = (37 * hash) + CONNECTION_TIMEOUT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getConnectionTimeout());
+      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTimestamp());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(byte[] data)
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(java.io.InputStream input)
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseDelimitedFrom(java.io.InputStream input)
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseDelimitedFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -604,7 +459,7 @@ public final class Monitor {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Monitor.BubiAttack prototype) {
+    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Monitor.Hello prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -619,25 +474,25 @@ public final class Monitor {
       return builder;
     }
     /**
-     * Protobuf type {@code monitor.BubiAttack}
+     * Protobuf type {@code monitor.Hello}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:monitor.BubiAttack)
-        cn.bubi.blockchain.adapter3.Monitor.BubiAttackOrBuilder {
+        // @@protoc_insertion_point(builder_implements:monitor.Hello)
+        cn.bubi.blockchain.adapter3.Monitor.HelloOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_BubiAttack_descriptor;
+        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_BubiAttack_fieldAccessorTable
+        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.bubi.blockchain.adapter3.Monitor.BubiAttack.class, cn.bubi.blockchain.adapter3.Monitor.BubiAttack.Builder.class);
+                cn.bubi.blockchain.adapter3.Monitor.Hello.class, cn.bubi.blockchain.adapter3.Monitor.Hello.Builder.class);
       }
 
-      // Construct using cn.bubi.blockchain.adapter3.Monitor.BubiAttack.newBuilder()
+      // Construct using cn.bubi.blockchain.adapter3.Monitor.Hello.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -654,34 +509,37 @@ public final class Monitor {
       }
       public Builder clear() {
         super.clear();
-        bubiAttackTime_ = 0;
+        serviceVersion_ = 0L;
 
-        bubiAttackCounts_ = 0;
+        connectionTimeout_ = 0L;
+
+        timestamp_ = 0L;
 
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_BubiAttack_descriptor;
+        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_descriptor;
       }
 
-      public cn.bubi.blockchain.adapter3.Monitor.BubiAttack getDefaultInstanceForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.BubiAttack.getDefaultInstance();
+      public cn.bubi.blockchain.adapter3.Monitor.Hello getDefaultInstanceForType() {
+        return cn.bubi.blockchain.adapter3.Monitor.Hello.getDefaultInstance();
       }
 
-      public cn.bubi.blockchain.adapter3.Monitor.BubiAttack build() {
-        cn.bubi.blockchain.adapter3.Monitor.BubiAttack result = buildPartial();
+      public cn.bubi.blockchain.adapter3.Monitor.Hello build() {
+        cn.bubi.blockchain.adapter3.Monitor.Hello result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public cn.bubi.blockchain.adapter3.Monitor.BubiAttack buildPartial() {
-        cn.bubi.blockchain.adapter3.Monitor.BubiAttack result = new cn.bubi.blockchain.adapter3.Monitor.BubiAttack(this);
-        result.bubiAttackTime_ = bubiAttackTime_;
-        result.bubiAttackCounts_ = bubiAttackCounts_;
+      public cn.bubi.blockchain.adapter3.Monitor.Hello buildPartial() {
+        cn.bubi.blockchain.adapter3.Monitor.Hello result = new cn.bubi.blockchain.adapter3.Monitor.Hello(this);
+        result.serviceVersion_ = serviceVersion_;
+        result.connectionTimeout_ = connectionTimeout_;
+        result.timestamp_ = timestamp_;
         onBuilt();
         return result;
       }
@@ -713,21 +571,24 @@ public final class Monitor {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.bubi.blockchain.adapter3.Monitor.BubiAttack) {
-          return mergeFrom((cn.bubi.blockchain.adapter3.Monitor.BubiAttack)other);
+        if (other instanceof cn.bubi.blockchain.adapter3.Monitor.Hello) {
+          return mergeFrom((cn.bubi.blockchain.adapter3.Monitor.Hello)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Monitor.BubiAttack other) {
-        if (other == cn.bubi.blockchain.adapter3.Monitor.BubiAttack.getDefaultInstance()) return this;
-        if (other.getBubiAttackTime() != 0) {
-          setBubiAttackTime(other.getBubiAttackTime());
+      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Monitor.Hello other) {
+        if (other == cn.bubi.blockchain.adapter3.Monitor.Hello.getDefaultInstance()) return this;
+        if (other.getServiceVersion() != 0L) {
+          setServiceVersion(other.getServiceVersion());
         }
-        if (other.getBubiAttackCounts() != 0) {
-          setBubiAttackCounts(other.getBubiAttackCounts());
+        if (other.getConnectionTimeout() != 0L) {
+          setConnectionTimeout(other.getConnectionTimeout());
+        }
+        if (other.getTimestamp() != 0L) {
+          setTimestamp(other.getTimestamp());
         }
         onChanged();
         return this;
@@ -741,11 +602,11 @@ public final class Monitor {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.bubi.blockchain.adapter3.Monitor.BubiAttack parsedMessage = null;
+        cn.bubi.blockchain.adapter3.Monitor.Hello parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.bubi.blockchain.adapter3.Monitor.BubiAttack) e.getUnfinishedMessage();
+          parsedMessage = (cn.bubi.blockchain.adapter3.Monitor.Hello) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -755,54 +616,80 @@ public final class Monitor {
         return this;
       }
 
-      private int bubiAttackTime_ ;
+      private long serviceVersion_ ;
       /**
-       * <code>optional uint32 bubi_attack_time = 1;</code>
+       * <code>optional int64 service_version = 1;</code>
        */
-      public int getBubiAttackTime() {
-        return bubiAttackTime_;
+      public long getServiceVersion() {
+        return serviceVersion_;
       }
       /**
-       * <code>optional uint32 bubi_attack_time = 1;</code>
+       * <code>optional int64 service_version = 1;</code>
        */
-      public Builder setBubiAttackTime(int value) {
+      public Builder setServiceVersion(long value) {
         
-        bubiAttackTime_ = value;
+        serviceVersion_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint32 bubi_attack_time = 1;</code>
+       * <code>optional int64 service_version = 1;</code>
        */
-      public Builder clearBubiAttackTime() {
+      public Builder clearServiceVersion() {
         
-        bubiAttackTime_ = 0;
+        serviceVersion_ = 0L;
         onChanged();
         return this;
       }
 
-      private int bubiAttackCounts_ ;
+      private long connectionTimeout_ ;
       /**
-       * <code>optional uint32 bubi_attack_counts = 2;</code>
+       * <code>optional int64 connection_timeout = 2;</code>
        */
-      public int getBubiAttackCounts() {
-        return bubiAttackCounts_;
+      public long getConnectionTimeout() {
+        return connectionTimeout_;
       }
       /**
-       * <code>optional uint32 bubi_attack_counts = 2;</code>
+       * <code>optional int64 connection_timeout = 2;</code>
        */
-      public Builder setBubiAttackCounts(int value) {
+      public Builder setConnectionTimeout(long value) {
         
-        bubiAttackCounts_ = value;
+        connectionTimeout_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint32 bubi_attack_counts = 2;</code>
+       * <code>optional int64 connection_timeout = 2;</code>
        */
-      public Builder clearBubiAttackCounts() {
+      public Builder clearConnectionTimeout() {
         
-        bubiAttackCounts_ = 0;
+        connectionTimeout_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long timestamp_ ;
+      /**
+       * <code>optional int64 timestamp = 3;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      /**
+       * <code>optional int64 timestamp = 3;</code>
+       */
+      public Builder setTimestamp(long value) {
+        
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 timestamp = 3;</code>
+       */
+      public Builder clearTimestamp() {
+        
+        timestamp_ = 0L;
         onChanged();
         return this;
       }
@@ -817,46 +704,46 @@ public final class Monitor {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:monitor.BubiAttack)
+      // @@protoc_insertion_point(builder_scope:monitor.Hello)
     }
 
-    // @@protoc_insertion_point(class_scope:monitor.BubiAttack)
-    private static final cn.bubi.blockchain.adapter3.Monitor.BubiAttack DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:monitor.Hello)
+    private static final cn.bubi.blockchain.adapter3.Monitor.Hello DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.bubi.blockchain.adapter3.Monitor.BubiAttack();
+      DEFAULT_INSTANCE = new cn.bubi.blockchain.adapter3.Monitor.Hello();
     }
 
-    public static cn.bubi.blockchain.adapter3.Monitor.BubiAttack getDefaultInstance() {
+    public static cn.bubi.blockchain.adapter3.Monitor.Hello getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<BubiAttack>
-        PARSER = new com.google.protobuf.AbstractParser<BubiAttack>() {
-      public BubiAttack parsePartialFrom(
+    private static final com.google.protobuf.Parser<Hello>
+        PARSER = new com.google.protobuf.AbstractParser<Hello>() {
+      public Hello parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new BubiAttack(input, extensionRegistry);
+          return new Hello(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<BubiAttack> parser() {
+    public static com.google.protobuf.Parser<Hello> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<BubiAttack> getParserForType() {
+    public com.google.protobuf.Parser<Hello> getParserForType() {
       return PARSER;
     }
 
-    public cn.bubi.blockchain.adapter3.Monitor.BubiAttack getDefaultInstanceForType() {
+    public cn.bubi.blockchain.adapter3.Monitor.Hello getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface HelloOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:monitor.Hello)
+  public interface RegisterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:monitor.Register)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -890,17 +777,17 @@ public final class Monitor {
     long getTimestamp();
   }
   /**
-   * Protobuf type {@code monitor.Hello}
+   * Protobuf type {@code monitor.Register}
    */
-  public  static final class Hello extends
+  public  static final class Register extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:monitor.Hello)
-      HelloOrBuilder {
-    // Use Hello.newBuilder() to construct.
-    private Hello(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:monitor.Register)
+      RegisterOrBuilder {
+    // Use Register.newBuilder() to construct.
+    private Register(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Hello() {
+    private Register() {
       id_ = "";
       blockchainVersion_ = "";
       dataVersion_ = 0L;
@@ -912,7 +799,7 @@ public final class Monitor {
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-    private Hello(
+    private Register(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -967,14 +854,14 @@ public final class Monitor {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_descriptor;
+      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_fieldAccessorTable
+      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.bubi.blockchain.adapter3.Monitor.Hello.class, cn.bubi.blockchain.adapter3.Monitor.Hello.Builder.class);
+              cn.bubi.blockchain.adapter3.Monitor.Register.class, cn.bubi.blockchain.adapter3.Monitor.Register.Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
@@ -1118,10 +1005,10 @@ public final class Monitor {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.bubi.blockchain.adapter3.Monitor.Hello)) {
+      if (!(obj instanceof cn.bubi.blockchain.adapter3.Monitor.Register)) {
         return super.equals(obj);
       }
-      cn.bubi.blockchain.adapter3.Monitor.Hello other = (cn.bubi.blockchain.adapter3.Monitor.Hello) obj;
+      cn.bubi.blockchain.adapter3.Monitor.Register other = (cn.bubi.blockchain.adapter3.Monitor.Register) obj;
 
       boolean result = true;
       result = result && getId()
@@ -1157,58 +1044,58 @@ public final class Monitor {
       return hash;
     }
 
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(byte[] data)
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(java.io.InputStream input)
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseDelimitedFrom(java.io.InputStream input)
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseDelimitedFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello parseFrom(
+    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1220,7 +1107,7 @@ public final class Monitor {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Monitor.Hello prototype) {
+    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Monitor.Register prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1235,25 +1122,25 @@ public final class Monitor {
       return builder;
     }
     /**
-     * Protobuf type {@code monitor.Hello}
+     * Protobuf type {@code monitor.Register}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:monitor.Hello)
-        cn.bubi.blockchain.adapter3.Monitor.HelloOrBuilder {
+        // @@protoc_insertion_point(builder_implements:monitor.Register)
+        cn.bubi.blockchain.adapter3.Monitor.RegisterOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_descriptor;
+        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_fieldAccessorTable
+        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.bubi.blockchain.adapter3.Monitor.Hello.class, cn.bubi.blockchain.adapter3.Monitor.Hello.Builder.class);
+                cn.bubi.blockchain.adapter3.Monitor.Register.class, cn.bubi.blockchain.adapter3.Monitor.Register.Builder.class);
       }
 
-      // Construct using cn.bubi.blockchain.adapter3.Monitor.Hello.newBuilder()
+      // Construct using cn.bubi.blockchain.adapter3.Monitor.Register.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1283,23 +1170,23 @@ public final class Monitor {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Hello_descriptor;
+        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_descriptor;
       }
 
-      public cn.bubi.blockchain.adapter3.Monitor.Hello getDefaultInstanceForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.Hello.getDefaultInstance();
+      public cn.bubi.blockchain.adapter3.Monitor.Register getDefaultInstanceForType() {
+        return cn.bubi.blockchain.adapter3.Monitor.Register.getDefaultInstance();
       }
 
-      public cn.bubi.blockchain.adapter3.Monitor.Hello build() {
-        cn.bubi.blockchain.adapter3.Monitor.Hello result = buildPartial();
+      public cn.bubi.blockchain.adapter3.Monitor.Register build() {
+        cn.bubi.blockchain.adapter3.Monitor.Register result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public cn.bubi.blockchain.adapter3.Monitor.Hello buildPartial() {
-        cn.bubi.blockchain.adapter3.Monitor.Hello result = new cn.bubi.blockchain.adapter3.Monitor.Hello(this);
+      public cn.bubi.blockchain.adapter3.Monitor.Register buildPartial() {
+        cn.bubi.blockchain.adapter3.Monitor.Register result = new cn.bubi.blockchain.adapter3.Monitor.Register(this);
         result.id_ = id_;
         result.blockchainVersion_ = blockchainVersion_;
         result.dataVersion_ = dataVersion_;
@@ -1335,16 +1222,16 @@ public final class Monitor {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.bubi.blockchain.adapter3.Monitor.Hello) {
-          return mergeFrom((cn.bubi.blockchain.adapter3.Monitor.Hello)other);
+        if (other instanceof cn.bubi.blockchain.adapter3.Monitor.Register) {
+          return mergeFrom((cn.bubi.blockchain.adapter3.Monitor.Register)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Monitor.Hello other) {
-        if (other == cn.bubi.blockchain.adapter3.Monitor.Hello.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Monitor.Register other) {
+        if (other == cn.bubi.blockchain.adapter3.Monitor.Register.getDefaultInstance()) return this;
         if (!other.getId().isEmpty()) {
           id_ = other.id_;
           onChanged();
@@ -1371,11 +1258,11 @@ public final class Monitor {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.bubi.blockchain.adapter3.Monitor.Hello parsedMessage = null;
+        cn.bubi.blockchain.adapter3.Monitor.Register parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.bubi.blockchain.adapter3.Monitor.Hello) e.getUnfinishedMessage();
+          parsedMessage = (cn.bubi.blockchain.adapter3.Monitor.Register) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1585,847 +1472,6 @@ public final class Monitor {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:monitor.Hello)
-    }
-
-    // @@protoc_insertion_point(class_scope:monitor.Hello)
-    private static final cn.bubi.blockchain.adapter3.Monitor.Hello DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.bubi.blockchain.adapter3.Monitor.Hello();
-    }
-
-    public static cn.bubi.blockchain.adapter3.Monitor.Hello getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<Hello>
-        PARSER = new com.google.protobuf.AbstractParser<Hello>() {
-      public Hello parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Hello(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<Hello> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Hello> getParserForType() {
-      return PARSER;
-    }
-
-    public cn.bubi.blockchain.adapter3.Monitor.Hello getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface RegisterOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:monitor.Register)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional string rand_id = 1;</code>
-     */
-    java.lang.String getRandId();
-    /**
-     * <code>optional string rand_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getRandIdBytes();
-
-    /**
-     * <code>optional string session_id = 2;</code>
-     */
-    java.lang.String getSessionId();
-    /**
-     * <code>optional string session_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getSessionIdBytes();
-
-    /**
-     * <code>optional string version = 3;</code>
-     */
-    java.lang.String getVersion();
-    /**
-     * <code>optional string version = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getVersionBytes();
-
-    /**
-     * <code>optional int64 timestamp = 4;</code>
-     */
-    long getTimestamp();
-  }
-  /**
-   * Protobuf type {@code monitor.Register}
-   */
-  public  static final class Register extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:monitor.Register)
-      RegisterOrBuilder {
-    // Use Register.newBuilder() to construct.
-    private Register(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private Register() {
-      randId_ = "";
-      sessionId_ = "";
-      version_ = "";
-      timestamp_ = 0L;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-    }
-    private Register(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!input.skipField(tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              randId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              sessionId_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              version_ = s;
-              break;
-            }
-            case 32: {
-
-              timestamp_ = input.readInt64();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.bubi.blockchain.adapter3.Monitor.Register.class, cn.bubi.blockchain.adapter3.Monitor.Register.Builder.class);
-    }
-
-    public static final int RAND_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object randId_;
-    /**
-     * <code>optional string rand_id = 1;</code>
-     */
-    public java.lang.String getRandId() {
-      java.lang.Object ref = randId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        randId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string rand_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRandIdBytes() {
-      java.lang.Object ref = randId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        randId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int SESSION_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object sessionId_;
-    /**
-     * <code>optional string session_id = 2;</code>
-     */
-    public java.lang.String getSessionId() {
-      java.lang.Object ref = sessionId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        sessionId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string session_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getSessionIdBytes() {
-      java.lang.Object ref = sessionId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        sessionId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int VERSION_FIELD_NUMBER = 3;
-    private volatile java.lang.Object version_;
-    /**
-     * <code>optional string version = 3;</code>
-     */
-    public java.lang.String getVersion() {
-      java.lang.Object ref = version_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        version_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string version = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getVersionBytes() {
-      java.lang.Object ref = version_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        version_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TIMESTAMP_FIELD_NUMBER = 4;
-    private long timestamp_;
-    /**
-     * <code>optional int64 timestamp = 4;</code>
-     */
-    public long getTimestamp() {
-      return timestamp_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getRandIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, randId_);
-      }
-      if (!getSessionIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, sessionId_);
-      }
-      if (!getVersionBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, version_);
-      }
-      if (timestamp_ != 0L) {
-        output.writeInt64(4, timestamp_);
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getRandIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, randId_);
-      }
-      if (!getSessionIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, sessionId_);
-      }
-      if (!getVersionBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, version_);
-      }
-      if (timestamp_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, timestamp_);
-      }
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.bubi.blockchain.adapter3.Monitor.Register)) {
-        return super.equals(obj);
-      }
-      cn.bubi.blockchain.adapter3.Monitor.Register other = (cn.bubi.blockchain.adapter3.Monitor.Register) obj;
-
-      boolean result = true;
-      result = result && getRandId()
-          .equals(other.getRandId());
-      result = result && getSessionId()
-          .equals(other.getSessionId());
-      result = result && getVersion()
-          .equals(other.getVersion());
-      result = result && (getTimestamp()
-          == other.getTimestamp());
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RAND_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getRandId().hashCode();
-      hash = (37 * hash) + SESSION_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getSessionId().hashCode();
-      hash = (37 * hash) + VERSION_FIELD_NUMBER;
-      hash = (53 * hash) + getVersion().hashCode();
-      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getTimestamp());
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.Register parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Monitor.Register prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code monitor.Register}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:monitor.Register)
-        cn.bubi.blockchain.adapter3.Monitor.RegisterOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.bubi.blockchain.adapter3.Monitor.Register.class, cn.bubi.blockchain.adapter3.Monitor.Register.Builder.class);
-      }
-
-      // Construct using cn.bubi.blockchain.adapter3.Monitor.Register.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        randId_ = "";
-
-        sessionId_ = "";
-
-        version_ = "";
-
-        timestamp_ = 0L;
-
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_Register_descriptor;
-      }
-
-      public cn.bubi.blockchain.adapter3.Monitor.Register getDefaultInstanceForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.Register.getDefaultInstance();
-      }
-
-      public cn.bubi.blockchain.adapter3.Monitor.Register build() {
-        cn.bubi.blockchain.adapter3.Monitor.Register result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public cn.bubi.blockchain.adapter3.Monitor.Register buildPartial() {
-        cn.bubi.blockchain.adapter3.Monitor.Register result = new cn.bubi.blockchain.adapter3.Monitor.Register(this);
-        result.randId_ = randId_;
-        result.sessionId_ = sessionId_;
-        result.version_ = version_;
-        result.timestamp_ = timestamp_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.bubi.blockchain.adapter3.Monitor.Register) {
-          return mergeFrom((cn.bubi.blockchain.adapter3.Monitor.Register)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Monitor.Register other) {
-        if (other == cn.bubi.blockchain.adapter3.Monitor.Register.getDefaultInstance()) return this;
-        if (!other.getRandId().isEmpty()) {
-          randId_ = other.randId_;
-          onChanged();
-        }
-        if (!other.getSessionId().isEmpty()) {
-          sessionId_ = other.sessionId_;
-          onChanged();
-        }
-        if (!other.getVersion().isEmpty()) {
-          version_ = other.version_;
-          onChanged();
-        }
-        if (other.getTimestamp() != 0L) {
-          setTimestamp(other.getTimestamp());
-        }
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.bubi.blockchain.adapter3.Monitor.Register parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.bubi.blockchain.adapter3.Monitor.Register) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object randId_ = "";
-      /**
-       * <code>optional string rand_id = 1;</code>
-       */
-      public java.lang.String getRandId() {
-        java.lang.Object ref = randId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          randId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string rand_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRandIdBytes() {
-        java.lang.Object ref = randId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          randId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string rand_id = 1;</code>
-       */
-      public Builder setRandId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        randId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rand_id = 1;</code>
-       */
-      public Builder clearRandId() {
-        
-        randId_ = getDefaultInstance().getRandId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rand_id = 1;</code>
-       */
-      public Builder setRandIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        randId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object sessionId_ = "";
-      /**
-       * <code>optional string session_id = 2;</code>
-       */
-      public java.lang.String getSessionId() {
-        java.lang.Object ref = sessionId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          sessionId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string session_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getSessionIdBytes() {
-        java.lang.Object ref = sessionId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          sessionId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string session_id = 2;</code>
-       */
-      public Builder setSessionId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        sessionId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string session_id = 2;</code>
-       */
-      public Builder clearSessionId() {
-        
-        sessionId_ = getDefaultInstance().getSessionId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string session_id = 2;</code>
-       */
-      public Builder setSessionIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        sessionId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object version_ = "";
-      /**
-       * <code>optional string version = 3;</code>
-       */
-      public java.lang.String getVersion() {
-        java.lang.Object ref = version_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          version_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string version = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getVersionBytes() {
-        java.lang.Object ref = version_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          version_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string version = 3;</code>
-       */
-      public Builder setVersion(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        version_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string version = 3;</code>
-       */
-      public Builder clearVersion() {
-        
-        version_ = getDefaultInstance().getVersion();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string version = 3;</code>
-       */
-      public Builder setVersionBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        version_ = value;
-        onChanged();
-        return this;
-      }
-
-      private long timestamp_ ;
-      /**
-       * <code>optional int64 timestamp = 4;</code>
-       */
-      public long getTimestamp() {
-        return timestamp_;
-      }
-      /**
-       * <code>optional int64 timestamp = 4;</code>
-       */
-      public Builder setTimestamp(long value) {
-        
-        timestamp_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 timestamp = 4;</code>
-       */
-      public Builder clearTimestamp() {
-        
-        timestamp_ = 0L;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-
       // @@protoc_insertion_point(builder_scope:monitor.Register)
     }
 
@@ -2459,665 +1505,6 @@ public final class Monitor {
     }
 
     public cn.bubi.blockchain.adapter3.Monitor.Register getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface ErrorMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:monitor.ErrorMessage)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-     */
-    int getErrorCodeValue();
-    /**
-     * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-     */
-    cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR getErrorCode();
-
-    /**
-     * <code>optional string desception = 2;</code>
-     */
-    java.lang.String getDesception();
-    /**
-     * <code>optional string desception = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getDesceptionBytes();
-
-    /**
-     * <code>optional int64 timestamp = 3;</code>
-     */
-    long getTimestamp();
-  }
-  /**
-   * Protobuf type {@code monitor.ErrorMessage}
-   */
-  public  static final class ErrorMessage extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:monitor.ErrorMessage)
-      ErrorMessageOrBuilder {
-    // Use ErrorMessage.newBuilder() to construct.
-    private ErrorMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private ErrorMessage() {
-      errorCode_ = 0;
-      desception_ = "";
-      timestamp_ = 0L;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-    }
-    private ErrorMessage(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!input.skipField(tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              int rawValue = input.readEnum();
-
-              errorCode_ = rawValue;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              desception_ = s;
-              break;
-            }
-            case 24: {
-
-              timestamp_ = input.readInt64();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_ErrorMessage_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_ErrorMessage_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.class, cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.Builder.class);
-    }
-
-    public static final int ERROR_CODE_FIELD_NUMBER = 1;
-    private int errorCode_;
-    /**
-     * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-     */
-    public int getErrorCodeValue() {
-      return errorCode_;
-    }
-    /**
-     * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-     */
-    public cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR getErrorCode() {
-      cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR result = cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR.valueOf(errorCode_);
-      return result == null ? cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR.UNRECOGNIZED : result;
-    }
-
-    public static final int DESCEPTION_FIELD_NUMBER = 2;
-    private volatile java.lang.Object desception_;
-    /**
-     * <code>optional string desception = 2;</code>
-     */
-    public java.lang.String getDesception() {
-      java.lang.Object ref = desception_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        desception_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string desception = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getDesceptionBytes() {
-      java.lang.Object ref = desception_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        desception_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TIMESTAMP_FIELD_NUMBER = 3;
-    private long timestamp_;
-    /**
-     * <code>optional int64 timestamp = 3;</code>
-     */
-    public long getTimestamp() {
-      return timestamp_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (errorCode_ != cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR.MONITOR_INTERNAL_ERROR.getNumber()) {
-        output.writeEnum(1, errorCode_);
-      }
-      if (!getDesceptionBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, desception_);
-      }
-      if (timestamp_ != 0L) {
-        output.writeInt64(3, timestamp_);
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (errorCode_ != cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR.MONITOR_INTERNAL_ERROR.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, errorCode_);
-      }
-      if (!getDesceptionBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, desception_);
-      }
-      if (timestamp_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, timestamp_);
-      }
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.bubi.blockchain.adapter3.Monitor.ErrorMessage)) {
-        return super.equals(obj);
-      }
-      cn.bubi.blockchain.adapter3.Monitor.ErrorMessage other = (cn.bubi.blockchain.adapter3.Monitor.ErrorMessage) obj;
-
-      boolean result = true;
-      result = result && errorCode_ == other.errorCode_;
-      result = result && getDesception()
-          .equals(other.getDesception());
-      result = result && (getTimestamp()
-          == other.getTimestamp());
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + ERROR_CODE_FIELD_NUMBER;
-      hash = (53 * hash) + errorCode_;
-      hash = (37 * hash) + DESCEPTION_FIELD_NUMBER;
-      hash = (53 * hash) + getDesception().hashCode();
-      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getTimestamp());
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Monitor.ErrorMessage prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code monitor.ErrorMessage}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:monitor.ErrorMessage)
-        cn.bubi.blockchain.adapter3.Monitor.ErrorMessageOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_ErrorMessage_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_ErrorMessage_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.class, cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.Builder.class);
-      }
-
-      // Construct using cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        errorCode_ = 0;
-
-        desception_ = "";
-
-        timestamp_ = 0L;
-
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.internal_static_monitor_ErrorMessage_descriptor;
-      }
-
-      public cn.bubi.blockchain.adapter3.Monitor.ErrorMessage getDefaultInstanceForType() {
-        return cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.getDefaultInstance();
-      }
-
-      public cn.bubi.blockchain.adapter3.Monitor.ErrorMessage build() {
-        cn.bubi.blockchain.adapter3.Monitor.ErrorMessage result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public cn.bubi.blockchain.adapter3.Monitor.ErrorMessage buildPartial() {
-        cn.bubi.blockchain.adapter3.Monitor.ErrorMessage result = new cn.bubi.blockchain.adapter3.Monitor.ErrorMessage(this);
-        result.errorCode_ = errorCode_;
-        result.desception_ = desception_;
-        result.timestamp_ = timestamp_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.bubi.blockchain.adapter3.Monitor.ErrorMessage) {
-          return mergeFrom((cn.bubi.blockchain.adapter3.Monitor.ErrorMessage)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Monitor.ErrorMessage other) {
-        if (other == cn.bubi.blockchain.adapter3.Monitor.ErrorMessage.getDefaultInstance()) return this;
-        if (other.errorCode_ != 0) {
-          setErrorCodeValue(other.getErrorCodeValue());
-        }
-        if (!other.getDesception().isEmpty()) {
-          desception_ = other.desception_;
-          onChanged();
-        }
-        if (other.getTimestamp() != 0L) {
-          setTimestamp(other.getTimestamp());
-        }
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.bubi.blockchain.adapter3.Monitor.ErrorMessage parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.bubi.blockchain.adapter3.Monitor.ErrorMessage) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private int errorCode_ = 0;
-      /**
-       * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-       */
-      public int getErrorCodeValue() {
-        return errorCode_;
-      }
-      /**
-       * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-       */
-      public Builder setErrorCodeValue(int value) {
-        errorCode_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-       */
-      public cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR getErrorCode() {
-        cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR result = cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR.valueOf(errorCode_);
-        return result == null ? cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-       */
-      public Builder setErrorCode(cn.bubi.blockchain.adapter3.Monitor.MONITOR_ERROR value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        errorCode_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .monitor.MONITOR_ERROR error_code = 1;</code>
-       */
-      public Builder clearErrorCode() {
-        
-        errorCode_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object desception_ = "";
-      /**
-       * <code>optional string desception = 2;</code>
-       */
-      public java.lang.String getDesception() {
-        java.lang.Object ref = desception_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          desception_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string desception = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getDesceptionBytes() {
-        java.lang.Object ref = desception_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          desception_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string desception = 2;</code>
-       */
-      public Builder setDesception(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        desception_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string desception = 2;</code>
-       */
-      public Builder clearDesception() {
-        
-        desception_ = getDefaultInstance().getDesception();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string desception = 2;</code>
-       */
-      public Builder setDesceptionBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        desception_ = value;
-        onChanged();
-        return this;
-      }
-
-      private long timestamp_ ;
-      /**
-       * <code>optional int64 timestamp = 3;</code>
-       */
-      public long getTimestamp() {
-        return timestamp_;
-      }
-      /**
-       * <code>optional int64 timestamp = 3;</code>
-       */
-      public Builder setTimestamp(long value) {
-        
-        timestamp_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 timestamp = 3;</code>
-       */
-      public Builder clearTimestamp() {
-        
-        timestamp_ = 0L;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:monitor.ErrorMessage)
-    }
-
-    // @@protoc_insertion_point(class_scope:monitor.ErrorMessage)
-    private static final cn.bubi.blockchain.adapter3.Monitor.ErrorMessage DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.bubi.blockchain.adapter3.Monitor.ErrorMessage();
-    }
-
-    public static cn.bubi.blockchain.adapter3.Monitor.ErrorMessage getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<ErrorMessage>
-        PARSER = new com.google.protobuf.AbstractParser<ErrorMessage>() {
-      public ErrorMessage parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ErrorMessage(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ErrorMessage> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ErrorMessage> getParserForType() {
-      return PARSER;
-    }
-
-    public cn.bubi.blockchain.adapter3.Monitor.ErrorMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -7905,7 +6292,7 @@ public final class Monitor {
     long getTotal();
 
     /**
-     * <code>optional double usedPercent = 3;</code>
+     * <code>optional double used_percent = 3;</code>
      */
     double getUsedPercent();
 
@@ -8024,10 +6411,10 @@ public final class Monitor {
       return total_;
     }
 
-    public static final int USEDPERCENT_FIELD_NUMBER = 3;
+    public static final int USED_PERCENT_FIELD_NUMBER = 3;
     private double usedPercent_;
     /**
-     * <code>optional double usedPercent = 3;</code>
+     * <code>optional double used_percent = 3;</code>
      */
     public double getUsedPercent() {
       return usedPercent_;
@@ -8155,7 +6542,7 @@ public final class Monitor {
       hash = (37 * hash) + TOTAL_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTotal());
-      hash = (37 * hash) + USEDPERCENT_FIELD_NUMBER;
+      hash = (37 * hash) + USED_PERCENT_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getUsedPercent()));
       hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
@@ -8446,13 +6833,13 @@ public final class Monitor {
 
       private double usedPercent_ ;
       /**
-       * <code>optional double usedPercent = 3;</code>
+       * <code>optional double used_percent = 3;</code>
        */
       public double getUsedPercent() {
         return usedPercent_;
       }
       /**
-       * <code>optional double usedPercent = 3;</code>
+       * <code>optional double used_percent = 3;</code>
        */
       public Builder setUsedPercent(double value) {
         
@@ -8461,7 +6848,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional double usedPercent = 3;</code>
+       * <code>optional double used_percent = 3;</code>
        */
       public Builder clearUsedPercent() {
         
@@ -9394,7 +7781,7 @@ public final class Monitor {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional double usedPercent = 1;</code>
+     * <code>optional double used_percent = 1;</code>
      */
     double getUsedPercent();
   }
@@ -9466,10 +7853,10 @@ public final class Monitor {
               cn.bubi.blockchain.adapter3.Monitor.CPU.class, cn.bubi.blockchain.adapter3.Monitor.CPU.Builder.class);
     }
 
-    public static final int USEDPERCENT_FIELD_NUMBER = 1;
+    public static final int USED_PERCENT_FIELD_NUMBER = 1;
     private double usedPercent_;
     /**
-     * <code>optional double usedPercent = 1;</code>
+     * <code>optional double used_percent = 1;</code>
      */
     public double getUsedPercent() {
       return usedPercent_;
@@ -9531,7 +7918,7 @@ public final class Monitor {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + USEDPERCENT_FIELD_NUMBER;
+      hash = (37 * hash) + USED_PERCENT_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getUsedPercent()));
       hash = (29 * hash) + unknownFields.hashCode();
@@ -9749,13 +8136,13 @@ public final class Monitor {
 
       private double usedPercent_ ;
       /**
-       * <code>optional double usedPercent = 1;</code>
+       * <code>optional double used_percent = 1;</code>
        */
       public double getUsedPercent() {
         return usedPercent_;
       }
       /**
-       * <code>optional double usedPercent = 1;</code>
+       * <code>optional double used_percent = 1;</code>
        */
       public Builder setUsedPercent(double value) {
         
@@ -9764,7 +8151,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional double usedPercent = 1;</code>
+       * <code>optional double used_percent = 1;</code>
        */
       public Builder clearUsedPercent() {
         
@@ -10968,30 +9355,30 @@ public final class Monitor {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int64 ledger_sequence = 2;</code>
+     * <code>optional int64 ledger_sequence = 1;</code>
      */
     long getLedgerSequence();
 
     /**
-     * <code>optional string node_id = 3;</code>
+     * <code>optional string node_id = 2;</code>
      */
     java.lang.String getNodeId();
     /**
-     * <code>optional string node_id = 3;</code>
+     * <code>optional string node_id = 2;</code>
      */
     com.google.protobuf.ByteString
         getNodeIdBytes();
 
     /**
-     * <code>optional .monitor.SystemStatus system = 4;</code>
+     * <code>optional .monitor.SystemStatus system = 3;</code>
      */
     boolean hasSystem();
     /**
-     * <code>optional .monitor.SystemStatus system = 4;</code>
+     * <code>optional .monitor.SystemStatus system = 3;</code>
      */
     cn.bubi.blockchain.adapter3.Monitor.SystemStatus getSystem();
     /**
-     * <code>optional .monitor.SystemStatus system = 4;</code>
+     * <code>optional .monitor.SystemStatus system = 3;</code>
      */
     cn.bubi.blockchain.adapter3.Monitor.SystemStatusOrBuilder getSystemOrBuilder();
   }
@@ -11036,18 +9423,18 @@ public final class Monitor {
               }
               break;
             }
-            case 16: {
+            case 8: {
 
               ledgerSequence_ = input.readInt64();
               break;
             }
-            case 26: {
+            case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
               nodeId_ = s;
               break;
             }
-            case 34: {
+            case 26: {
               cn.bubi.blockchain.adapter3.Monitor.SystemStatus.Builder subBuilder = null;
               if (system_ != null) {
                 subBuilder = system_.toBuilder();
@@ -11083,19 +9470,19 @@ public final class Monitor {
               cn.bubi.blockchain.adapter3.Monitor.AlertStatus.class, cn.bubi.blockchain.adapter3.Monitor.AlertStatus.Builder.class);
     }
 
-    public static final int LEDGER_SEQUENCE_FIELD_NUMBER = 2;
+    public static final int LEDGER_SEQUENCE_FIELD_NUMBER = 1;
     private long ledgerSequence_;
     /**
-     * <code>optional int64 ledger_sequence = 2;</code>
+     * <code>optional int64 ledger_sequence = 1;</code>
      */
     public long getLedgerSequence() {
       return ledgerSequence_;
     }
 
-    public static final int NODE_ID_FIELD_NUMBER = 3;
+    public static final int NODE_ID_FIELD_NUMBER = 2;
     private volatile java.lang.Object nodeId_;
     /**
-     * <code>optional string node_id = 3;</code>
+     * <code>optional string node_id = 2;</code>
      */
     public java.lang.String getNodeId() {
       java.lang.Object ref = nodeId_;
@@ -11110,7 +9497,7 @@ public final class Monitor {
       }
     }
     /**
-     * <code>optional string node_id = 3;</code>
+     * <code>optional string node_id = 2;</code>
      */
     public com.google.protobuf.ByteString
         getNodeIdBytes() {
@@ -11126,22 +9513,22 @@ public final class Monitor {
       }
     }
 
-    public static final int SYSTEM_FIELD_NUMBER = 4;
+    public static final int SYSTEM_FIELD_NUMBER = 3;
     private cn.bubi.blockchain.adapter3.Monitor.SystemStatus system_;
     /**
-     * <code>optional .monitor.SystemStatus system = 4;</code>
+     * <code>optional .monitor.SystemStatus system = 3;</code>
      */
     public boolean hasSystem() {
       return system_ != null;
     }
     /**
-     * <code>optional .monitor.SystemStatus system = 4;</code>
+     * <code>optional .monitor.SystemStatus system = 3;</code>
      */
     public cn.bubi.blockchain.adapter3.Monitor.SystemStatus getSystem() {
       return system_ == null ? cn.bubi.blockchain.adapter3.Monitor.SystemStatus.getDefaultInstance() : system_;
     }
     /**
-     * <code>optional .monitor.SystemStatus system = 4;</code>
+     * <code>optional .monitor.SystemStatus system = 3;</code>
      */
     public cn.bubi.blockchain.adapter3.Monitor.SystemStatusOrBuilder getSystemOrBuilder() {
       return getSystem();
@@ -11160,13 +9547,13 @@ public final class Monitor {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (ledgerSequence_ != 0L) {
-        output.writeInt64(2, ledgerSequence_);
+        output.writeInt64(1, ledgerSequence_);
       }
       if (!getNodeIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, nodeId_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, nodeId_);
       }
       if (system_ != null) {
-        output.writeMessage(4, getSystem());
+        output.writeMessage(3, getSystem());
       }
     }
 
@@ -11177,14 +9564,14 @@ public final class Monitor {
       size = 0;
       if (ledgerSequence_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, ledgerSequence_);
+          .computeInt64Size(1, ledgerSequence_);
       }
       if (!getNodeIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, nodeId_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, nodeId_);
       }
       if (system_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getSystem());
+          .computeMessageSize(3, getSystem());
       }
       memoizedSize = size;
       return size;
@@ -11466,13 +9853,13 @@ public final class Monitor {
 
       private long ledgerSequence_ ;
       /**
-       * <code>optional int64 ledger_sequence = 2;</code>
+       * <code>optional int64 ledger_sequence = 1;</code>
        */
       public long getLedgerSequence() {
         return ledgerSequence_;
       }
       /**
-       * <code>optional int64 ledger_sequence = 2;</code>
+       * <code>optional int64 ledger_sequence = 1;</code>
        */
       public Builder setLedgerSequence(long value) {
         
@@ -11481,7 +9868,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional int64 ledger_sequence = 2;</code>
+       * <code>optional int64 ledger_sequence = 1;</code>
        */
       public Builder clearLedgerSequence() {
         
@@ -11492,7 +9879,7 @@ public final class Monitor {
 
       private java.lang.Object nodeId_ = "";
       /**
-       * <code>optional string node_id = 3;</code>
+       * <code>optional string node_id = 2;</code>
        */
       public java.lang.String getNodeId() {
         java.lang.Object ref = nodeId_;
@@ -11507,7 +9894,7 @@ public final class Monitor {
         }
       }
       /**
-       * <code>optional string node_id = 3;</code>
+       * <code>optional string node_id = 2;</code>
        */
       public com.google.protobuf.ByteString
           getNodeIdBytes() {
@@ -11523,7 +9910,7 @@ public final class Monitor {
         }
       }
       /**
-       * <code>optional string node_id = 3;</code>
+       * <code>optional string node_id = 2;</code>
        */
       public Builder setNodeId(
           java.lang.String value) {
@@ -11536,7 +9923,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional string node_id = 3;</code>
+       * <code>optional string node_id = 2;</code>
        */
       public Builder clearNodeId() {
         
@@ -11545,7 +9932,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional string node_id = 3;</code>
+       * <code>optional string node_id = 2;</code>
        */
       public Builder setNodeIdBytes(
           com.google.protobuf.ByteString value) {
@@ -11563,13 +9950,13 @@ public final class Monitor {
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.bubi.blockchain.adapter3.Monitor.SystemStatus, cn.bubi.blockchain.adapter3.Monitor.SystemStatus.Builder, cn.bubi.blockchain.adapter3.Monitor.SystemStatusOrBuilder> systemBuilder_;
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public boolean hasSystem() {
         return systemBuilder_ != null || system_ != null;
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public cn.bubi.blockchain.adapter3.Monitor.SystemStatus getSystem() {
         if (systemBuilder_ == null) {
@@ -11579,7 +9966,7 @@ public final class Monitor {
         }
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public Builder setSystem(cn.bubi.blockchain.adapter3.Monitor.SystemStatus value) {
         if (systemBuilder_ == null) {
@@ -11595,7 +9982,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public Builder setSystem(
           cn.bubi.blockchain.adapter3.Monitor.SystemStatus.Builder builderForValue) {
@@ -11609,7 +9996,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public Builder mergeSystem(cn.bubi.blockchain.adapter3.Monitor.SystemStatus value) {
         if (systemBuilder_ == null) {
@@ -11627,7 +10014,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public Builder clearSystem() {
         if (systemBuilder_ == null) {
@@ -11641,7 +10028,7 @@ public final class Monitor {
         return this;
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public cn.bubi.blockchain.adapter3.Monitor.SystemStatus.Builder getSystemBuilder() {
         
@@ -11649,7 +10036,7 @@ public final class Monitor {
         return getSystemFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       public cn.bubi.blockchain.adapter3.Monitor.SystemStatusOrBuilder getSystemOrBuilder() {
         if (systemBuilder_ != null) {
@@ -11660,7 +10047,7 @@ public final class Monitor {
         }
       }
       /**
-       * <code>optional .monitor.SystemStatus system = 4;</code>
+       * <code>optional .monitor.SystemStatus system = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.bubi.blockchain.adapter3.Monitor.SystemStatus, cn.bubi.blockchain.adapter3.Monitor.SystemStatus.Builder, cn.bubi.blockchain.adapter3.Monitor.SystemStatusOrBuilder> 
@@ -11725,11 +10112,6 @@ public final class Monitor {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_monitor_BubiAttack_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_monitor_BubiAttack_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_monitor_Hello_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -11739,11 +10121,6 @@ public final class Monitor {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_monitor_Register_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_monitor_ErrorMessage_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_monitor_ErrorMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_monitor_Peer_descriptor;
   private static final 
@@ -11808,59 +10185,46 @@ public final class Monitor {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rmonitor.proto\022\007monitor\032\013chain.proto\"B\n" +
-      "\nBubiAttack\022\030\n\020bubi_attack_time\030\001 \001(\r\022\032\n" +
-      "\022bubi_attack_counts\030\002 \001(\r\"X\n\005Hello\022\n\n\002id" +
-      "\030\001 \001(\t\022\032\n\022blockchain_version\030\002 \001(\t\022\024\n\014da" +
-      "ta_version\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"S\n\010R" +
-      "egister\022\017\n\007rand_id\030\001 \001(\t\022\022\n\nsession_id\030\002" +
-      " \001(\t\022\017\n\007version\030\003 \001(\t\022\021\n\ttimestamp\030\004 \001(\003" +
-      "\"a\n\014ErrorMessage\022*\n\nerror_code\030\001 \001(\0162\026.m" +
-      "onitor.MONITOR_ERROR\022\022\n\ndesception\030\002 \001(\t" +
-      "\022\021\n\ttimestamp\030\003 \001(\003\"E\n\004Peer\022\n\n\002id\030\001 \001(\t\022",
-      "\r\n\005delay\030\002 \001(\003\022\016\n\006active\030\003 \001(\010\022\022\n\nip_add" +
-      "ress\030\004 \001(\t\"Y\n\013GlueManager\022\033\n\023system_curr" +
-      "ent_time\030\001 \001(\t\022\026\n\016process_uptime\030\002 \001(\t\022\025" +
-      "\n\rsystem_uptime\030\003 \001(\t\";\n\013PeerManager\022\017\n\007" +
-      "peer_id\030\001 \001(\t\022\033\n\004peer\030\002 \003(\0132\r.monitor.Pe" +
-      "er\"d\n\nBubiStatus\022*\n\014glue_manager\030\001 \001(\0132\024" +
-      ".monitor.GlueManager\022*\n\014peer_manager\030\002 \001" +
-      "(\0132\024.monitor.PeerManager\"\201\001\n\014LedgerStatu" +
-      "s\022-\n\rledger_header\030\001 \001(\0132\026.protocol.Ledg" +
-      "erHeader\022\030\n\020transaction_size\030\002 \001(\003\022\025\n\rac",
-      "count_count\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"]\n\016" +
-      "SystemProperty\022\021\n\thost_name\030\001 \001(\t\022\022\n\nos_" +
-      "version\030\002 \001(\t\022\024\n\014startup_time\030\003 \001(\003\022\016\n\006o" +
-      "s_bit\030\004 \001(\t\"\\\n\016SystemResource\022\021\n\tavailab" +
-      "le\030\001 \001(\003\022\r\n\005total\030\002 \001(\003\022\023\n\013usedPercent\030\003" +
-      " \001(\001\022\023\n\013description\030\004 \001(\t\"L\n\tPartition\022\023" +
-      "\n\013total_bytes\030\001 \001(\003\022*\n\tpartition\030\002 \003(\0132\027" +
-      ".monitor.SystemResource\"\032\n\003CPU\022\023\n\013usedPe" +
-      "rcent\030\001 \001(\001\"\245\001\n\014SystemStatus\022)\n\010property" +
-      "\030\001 \001(\0132\027.monitor.SystemProperty\022\'\n\006memor",
-      "y\030\002 \001(\0132\027.monitor.SystemResource\022\031\n\003cpu\030" +
-      "\003 \001(\0132\014.monitor.CPU\022&\n\npartitions\030\004 \001(\0132" +
-      "\022.monitor.Partition\"^\n\013AlertStatus\022\027\n\017le" +
-      "dger_sequence\030\002 \001(\003\022\017\n\007node_id\030\003 \001(\t\022%\n\006" +
-      "system\030\004 \001(\0132\025.monitor.SystemStatus*\264\002\n\024" +
-      "MONITOR_MESSAGE_TYPE\022\030\n\024MONITOR_MSGTYPE_" +
-      "NONE\020\000\022\031\n\025MONITOR_MSGTYPE_HELLO\020\036\022\034\n\030MON" +
-      "ITOR_MSGTYPE_REGISTER\020\037\022\030\n\024MONITOR_MSGTY" +
-      "PE_BUBI\020 \022\032\n\026MONITOR_MSGTYPE_LEDGER\020!\022\032\n" +
-      "\026MONITOR_MSGTYPE_SYSTEM\020\"\022\031\n\025MONITOR_MSG",
-      "TYPE_ALERT\020#\022\032\n\026MONITOR_MSGTYPE_NOTICE\020$" +
-      "\022%\n!MONITOR_MSGTYPE_ACCOUNT_EXCEPTION\020%\022" +
-      "\031\n\025MONITOR_MSGTYPE_ERROR\020\'*\322\002\n\rMONITOR_E" +
-      "RROR\022\032\n\026MONITOR_INTERNAL_ERROR\020\000\022\035\n\031MONI" +
-      "TOR_MESSAGE_NOT_EXIST\020\001\022\035\n\031MONITOR_MISSI" +
-      "NG_PARAMETER\020\002\022\030\n\024MONITOR_ID_NOT_EXIST\020\003" +
-      "\022\033\n\027MONITOR_ID_ALREAD_EXIST\020\004\022\032\n\026MONITOR" +
-      "_CENTER_INVALID\020\005\022\031\n\025MONITOR_AGENT_INVAL" +
-      "ID\020\006\022\025\n\021MONITOR_NOT_LOGIN\020\007\022\036\n\032MONITOR_B" +
-      "UBI_MESSAGE_ERROR\020\010\022 \n\034MONITOR_SYSTEM_ME",
-      "SSAGE_ERROR\020\t\022 \n\034MONITOR_LEDGER_MESSAGE_" +
-      "ERROR\020\nB\035\n\033cn.bubi.blockchain.adapter3b\006" +
-      "proto3"
+      "\n\rmonitor.proto\022\007monitor\032\013chain.proto\"O\n" +
+      "\005Hello\022\027\n\017service_version\030\001 \001(\003\022\032\n\022conne" +
+      "ction_timeout\030\002 \001(\003\022\021\n\ttimestamp\030\003 \001(\003\"[" +
+      "\n\010Register\022\n\n\002id\030\001 \001(\t\022\032\n\022blockchain_ver" +
+      "sion\030\002 \001(\t\022\024\n\014data_version\030\003 \001(\003\022\021\n\ttime" +
+      "stamp\030\004 \001(\003\"E\n\004Peer\022\n\n\002id\030\001 \001(\t\022\r\n\005delay" +
+      "\030\002 \001(\003\022\016\n\006active\030\003 \001(\010\022\022\n\nip_address\030\004 \001" +
+      "(\t\"Y\n\013GlueManager\022\033\n\023system_current_time" +
+      "\030\001 \001(\t\022\026\n\016process_uptime\030\002 \001(\t\022\025\n\rsystem" +
+      "_uptime\030\003 \001(\t\";\n\013PeerManager\022\017\n\007peer_id\030",
+      "\001 \001(\t\022\033\n\004peer\030\002 \003(\0132\r.monitor.Peer\"d\n\nBu" +
+      "biStatus\022*\n\014glue_manager\030\001 \001(\0132\024.monitor" +
+      ".GlueManager\022*\n\014peer_manager\030\002 \001(\0132\024.mon" +
+      "itor.PeerManager\"\201\001\n\014LedgerStatus\022-\n\rled" +
+      "ger_header\030\001 \001(\0132\026.protocol.LedgerHeader" +
+      "\022\030\n\020transaction_size\030\002 \001(\003\022\025\n\raccount_co" +
+      "unt\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"]\n\016SystemPr" +
+      "operty\022\021\n\thost_name\030\001 \001(\t\022\022\n\nos_version\030" +
+      "\002 \001(\t\022\024\n\014startup_time\030\003 \001(\003\022\016\n\006os_bit\030\004 " +
+      "\001(\t\"]\n\016SystemResource\022\021\n\tavailable\030\001 \001(\003",
+      "\022\r\n\005total\030\002 \001(\003\022\024\n\014used_percent\030\003 \001(\001\022\023\n" +
+      "\013description\030\004 \001(\t\"L\n\tPartition\022\023\n\013total" +
+      "_bytes\030\001 \001(\003\022*\n\tpartition\030\002 \003(\0132\027.monito" +
+      "r.SystemResource\"\033\n\003CPU\022\024\n\014used_percent\030" +
+      "\001 \001(\001\"\245\001\n\014SystemStatus\022)\n\010property\030\001 \001(\013" +
+      "2\027.monitor.SystemProperty\022\'\n\006memory\030\002 \001(" +
+      "\0132\027.monitor.SystemResource\022\031\n\003cpu\030\003 \001(\0132" +
+      "\014.monitor.CPU\022&\n\npartitions\030\004 \001(\0132\022.moni" +
+      "tor.Partition\"^\n\013AlertStatus\022\027\n\017ledger_s" +
+      "equence\030\001 \001(\003\022\017\n\007node_id\030\002 \001(\t\022%\n\006system",
+      "\030\003 \001(\0132\025.monitor.SystemStatus*\264\002\n\024MONITO" +
+      "R_MESSAGE_TYPE\022\030\n\024MONITOR_MSGTYPE_NONE\020\000" +
+      "\022\031\n\025MONITOR_MSGTYPE_HELLO\020\036\022\034\n\030MONITOR_M" +
+      "SGTYPE_REGISTER\020\037\022\030\n\024MONITOR_MSGTYPE_BUB" +
+      "I\020 \022\032\n\026MONITOR_MSGTYPE_LEDGER\020!\022\032\n\026MONIT" +
+      "OR_MSGTYPE_SYSTEM\020\"\022\031\n\025MONITOR_MSGTYPE_A" +
+      "LERT\020#\022\032\n\026MONITOR_MSGTYPE_NOTICE\020$\022%\n!MO" +
+      "NITOR_MSGTYPE_ACCOUNT_EXCEPTION\020%\022\031\n\025MON" +
+      "ITOR_MSGTYPE_ERROR\020\'B\035\n\033cn.bubi.blockcha" +
+      "in.adapter3b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -11875,92 +10239,80 @@ public final class Monitor {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           cn.bubi.blockchain.adapter3.Chain.getDescriptor(),
         }, assigner);
-    internal_static_monitor_BubiAttack_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_monitor_BubiAttack_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_monitor_BubiAttack_descriptor,
-        new java.lang.String[] { "BubiAttackTime", "BubiAttackCounts", });
     internal_static_monitor_Hello_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_monitor_Hello_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_Hello_descriptor,
-        new java.lang.String[] { "Id", "BlockchainVersion", "DataVersion", "Timestamp", });
+        new java.lang.String[] { "ServiceVersion", "ConnectionTimeout", "Timestamp", });
     internal_static_monitor_Register_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_monitor_Register_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_Register_descriptor,
-        new java.lang.String[] { "RandId", "SessionId", "Version", "Timestamp", });
-    internal_static_monitor_ErrorMessage_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_monitor_ErrorMessage_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_monitor_ErrorMessage_descriptor,
-        new java.lang.String[] { "ErrorCode", "Desception", "Timestamp", });
+        new java.lang.String[] { "Id", "BlockchainVersion", "DataVersion", "Timestamp", });
     internal_static_monitor_Peer_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_monitor_Peer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_Peer_descriptor,
         new java.lang.String[] { "Id", "Delay", "Active", "IpAddress", });
     internal_static_monitor_GlueManager_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_monitor_GlueManager_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_GlueManager_descriptor,
         new java.lang.String[] { "SystemCurrentTime", "ProcessUptime", "SystemUptime", });
     internal_static_monitor_PeerManager_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_monitor_PeerManager_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_PeerManager_descriptor,
         new java.lang.String[] { "PeerId", "Peer", });
     internal_static_monitor_BubiStatus_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_monitor_BubiStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_BubiStatus_descriptor,
         new java.lang.String[] { "GlueManager", "PeerManager", });
     internal_static_monitor_LedgerStatus_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_monitor_LedgerStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_LedgerStatus_descriptor,
         new java.lang.String[] { "LedgerHeader", "TransactionSize", "AccountCount", "Timestamp", });
     internal_static_monitor_SystemProperty_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_monitor_SystemProperty_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_SystemProperty_descriptor,
         new java.lang.String[] { "HostName", "OsVersion", "StartupTime", "OsBit", });
     internal_static_monitor_SystemResource_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_monitor_SystemResource_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_SystemResource_descriptor,
         new java.lang.String[] { "Available", "Total", "UsedPercent", "Description", });
     internal_static_monitor_Partition_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_monitor_Partition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_Partition_descriptor,
         new java.lang.String[] { "TotalBytes", "Partition", });
     internal_static_monitor_CPU_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_monitor_CPU_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_CPU_descriptor,
         new java.lang.String[] { "UsedPercent", });
     internal_static_monitor_SystemStatus_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_monitor_SystemStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_SystemStatus_descriptor,
         new java.lang.String[] { "Property", "Memory", "Cpu", "Partitions", });
     internal_static_monitor_AlertStatus_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_monitor_AlertStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_monitor_AlertStatus_descriptor,

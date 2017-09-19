@@ -28,6 +28,7 @@ namespace bubi {
 		check_alert_interval_ = 5 * utils::MICRO_UNITS_PER_SEC;
 		last_connect_time_ = 0;
 
+		request_methods_[monitor::MONITOR_MSGTYPE_HELLO] = std::bind(&MonitorManager::OnMonitorHello, this, std::placeholders::_1, std::placeholders::_2);
 		request_methods_[monitor::MONITOR_MSGTYPE_REGISTER] = std::bind(&MonitorManager::OnMonitorRegister, this, std::placeholders::_1, std::placeholders::_2);
 		request_methods_[monitor::MONITOR_MSGTYPE_BUBI] = std::bind(&MonitorManager::OnBubiStatus, this, std::placeholders::_1, std::placeholders::_2);
 		request_methods_[monitor::MONITOR_MSGTYPE_LEDGER] = std::bind(&MonitorManager::OnLedgerStatus, this, std::placeholders::_1, std::placeholders::_2);
@@ -64,22 +65,7 @@ namespace bubi {
 	}
 
 	void MonitorManager::Run(utils::Thread *thread) {
-		Start(utils::InetAddress("127.0.0.1:1227"));
-	}
-
-	bool MonitorManager::OnConnectOpen(Connection *conn) {
-		std::error_code ignore_ec;
-		Monitor *monitor = (Monitor*)conn;
-		monitor::Hello hello;
-		hello.set_id(utils::MD5::GenerateMD5((unsigned char*)monitor_id_.c_str(), monitor_id_.length()));
-		hello.set_blockchain_version(bubi::General::BUBI_VERSION);
-		hello.set_data_version(bubi::General::MONITOR_VERSION);
-		hello.set_timestamp(utils::Timestamp::HighResolution());
-		if (!monitor->SendRequest(monitor::MONITOR_MSGTYPE_HELLO, hello.SerializeAsString(), ignore_ec)) {
-			LOG_ERROR("Send hello from monitor ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
-				ignore_ec.value(), ignore_ec.message().c_str());
-		}
-		return true;
+		Start(utils::InetAddress::None());
 	}
 
 	bubi::Connection * MonitorManager::CreateConnectObject(bubi::server *server_h, bubi::client *client_, bubi::tls_server *tls_server_h, 
@@ -95,6 +81,7 @@ namespace bubi {
 	bool MonitorManager::SendMonitor(int64_t type, const std::string &data) {
 		bool bret = false;
 		do {
+			utils::MutexGuard guard(conns_list_lock_);
 			Monitor *monitor = (Monitor *)GetClientConnection();
 			if (NULL == monitor || !monitor->IsActive()) {
 				break;
@@ -102,7 +89,7 @@ namespace bubi {
 
 			std::error_code ignore_ec;
 			if (!monitor->SendRequest(type, data, ignore_ec)) {
-				LOG_ERROR("Send monitor(type: %d) from ip(%s) failed (%d:%s)", type, monitor->GetPeerAddress().ToIpPort().c_str(),
+				LOG_ERROR("Send monitor(type: " FMT_I64 ") from ip(%s) failed (%d:%s)", type, monitor->GetPeerAddress().ToIpPort().c_str(),
 					ignore_ec.value(), ignore_ec.message().c_str());
 				break;
 			}
@@ -112,34 +99,63 @@ namespace bubi {
 		return bret;
 	}
 
-	bool MonitorManager::OnMonitorRegister(protocol::WsMessage &message, int64_t conn_id) {
+	bool MonitorManager::OnMonitorHello(protocol::WsMessage &message, int64_t conn_id) {
 		bool bret = false;
 		do {
-			monitor::Register reg;
-			if (!reg.ParseFromString(message.data())) {
-				break;
-			}
-
-			std::string session_id = reg.session_id();
-			std::string rand_id = reg.rand_id();
-			std::string md_id = monitor_id_ + session_id;
-			if (rand_id.compare(utils::MD5::GenerateMD5((unsigned char*)md_id.c_str(), md_id.length())) != 0) {
-				break;
-			}
-
-			std::string version = reg.version();
-			int64_t reg_time = reg.timestamp();
-
-			std::error_code ignore_ec;
 			Monitor *monitor = (Monitor*)GetConnection(conn_id);
-			if (!monitor->SendResponse(message, "", ignore_ec)) {
-				LOG_ERROR("Send register from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIp().c_str(),
+			std::error_code ignore_ec;
+
+			monitor::Hello hello;
+			if (!hello.ParseFromString(message.data())) {
+				LOG_ERROR("Receive hello from ip(%s) failed (%d:parse hello message failed)", monitor->GetPeerAddress().ToIpPort().c_str(),
+					ignore_ec.value());
+				break;
+			}
+			if (hello.service_version() != 3) {
+				LOG_ERROR("Receive hello from ip(%s) failed (%d: monitor center version is low (3))", monitor->GetPeerAddress().ToIpPort().c_str(),
+					ignore_ec.value());
+				break;
+			}
+
+			connect_time_out_ = hello.connection_timeout();
+
+			LOG_INFO("Receive hello from center (ip: %s, version: %d, timestamp: %lld)", monitor->GetPeerAddress().ToIpPort().c_str(), 
+				hello.service_version(), hello.timestamp());
+
+			monitor::Register reg;
+			reg.set_id(utils::MD5::GenerateMD5((unsigned char*)monitor_id_.c_str(), monitor_id_.length()));
+			reg.set_blockchain_version(bubi::General::BUBI_VERSION);
+			reg.set_data_version(bubi::General::MONITOR_VERSION);
+			reg.set_timestamp(utils::Timestamp::HighResolution());
+
+			if (NULL == monitor || !monitor->SendRequest(monitor::MONITOR_MSGTYPE_REGISTER, reg.SerializeAsString(), ignore_ec)) {
+				LOG_ERROR("Send register from monitor ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
 					ignore_ec.value(), ignore_ec.message().c_str());
 				break;
 			}
-			monitor->SetSessionId(session_id);
+
+			bret = true;
+		} while (false);
+		
+		return bret;
+	}
+
+	bool MonitorManager::OnMonitorRegister(protocol::WsMessage &message, int64_t conn_id) {
+		bool bret = false;
+		do {
+			Monitor *monitor = (Monitor*)GetConnection(conn_id);
+			std::error_code ignore_ec;
+
+			monitor::Register reg;
+			if (!reg.ParseFromString(message.data())) {
+				LOG_ERROR("Receive register from ip(%s) failed (%d:parse register message failed)", monitor->GetPeerAddress().ToIpPort().c_str(),
+					ignore_ec.value());
+				break;
+			}
+
 			monitor->SetActiveTime(utils::Timestamp::HighResolution());
 
+			LOG_INFO("Receive register from center (ip: %s, timestamp: " FMT_I64 ")", monitor->GetPeerAddress().ToIpPort().c_str(), reg.timestamp());
 			bret = true;
 		} while (false);
 
@@ -154,7 +170,7 @@ namespace bubi {
 		bool bret = true;
 		std::error_code ignore_ec;
 		Connection *monitor = GetConnection(conn_id);
-		if (!monitor->SendResponse(message, bubi_status.SerializeAsString(), ignore_ec)) {
+		if (NULL == monitor || !monitor->SendResponse(message, bubi_status.SerializeAsString(), ignore_ec)) {
 			bret = false;
 			LOG_ERROR("Send bubi status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
 				ignore_ec.value(), ignore_ec.message().c_str());
@@ -172,12 +188,10 @@ namespace bubi {
 		bool bret = true;
 		std::error_code ignore_ec;
 		Monitor *monitor = (Monitor *)GetConnection(conn_id);
-		if (monitor != NULL || monitor->IsActive()) {
-			if (!monitor->SendResponse(message, ledger_status.SerializeAsString(), ignore_ec)) {
-				bret = false;
-				LOG_ERROR("Send ledger status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
-					ignore_ec.value(), ignore_ec.message().c_str());
-			}
+		if (NULL == monitor || !monitor->SendResponse(message, ledger_status.SerializeAsString(), ignore_ec)) {
+			bret = false;
+			LOG_ERROR("Send ledger status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
+				ignore_ec.value(), ignore_ec.message().c_str());
 		}
 		return bret;
 	}
@@ -189,8 +203,10 @@ namespace bubi {
 
 		bool bret = true;
 		std::error_code ignore_ec;
+
+		utils::MutexGuard guard(conns_list_lock_);
 		Connection *monitor = GetConnection(conn_id);
-		if (!monitor->SendResponse(message, system_status->SerializeAsString(), ignore_ec)) {
+		if (NULL == monitor || !monitor->SendResponse(message, system_status->SerializeAsString(), ignore_ec)) {
 			bret = false;
 			LOG_ERROR("Send system status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
 				ignore_ec.value(), ignore_ec.message().c_str());
@@ -204,7 +220,6 @@ namespace bubi {
 
 	Connection * MonitorManager::GetClientConnection() {
 		bubi::Connection* monitor = NULL;
-		utils::MutexGuard guard(conns_list_lock_);
 		for (auto item : connections_) {
 			Monitor *peer = (Monitor *)item.second;
 			if (!peer->InBound()) {
@@ -230,6 +245,7 @@ namespace bubi {
 	void MonitorManager::OnTimer(int64_t current_time) {
 		// reconnect if disconnect
 		if (current_time - last_connect_time_ > connect_interval_) {
+			utils::MutexGuard guard(conns_list_lock_);
 			Monitor *monitor = (Monitor *)GetClientConnection();
 			if (NULL == monitor) {
 				std::string url = utils::String::Format("ws://%s", Configure::Instance().monitor_configure_.center_.c_str());
@@ -240,10 +256,6 @@ namespace bubi {
 	}
 
 	void MonitorManager::OnSlowTimer(int64_t current_time) {
-		Monitor *monitor = (Monitor *)GetClientConnection();
-		if (monitor == NULL || !monitor->IsActive()) {
-			return;
-		}
 
 		system_manager_.OnSlowTimer(current_time);
 
@@ -258,7 +270,10 @@ namespace bubi {
 
 			bool bret = true;
 			std::error_code ignore_ec;
-			if (!monitor->SendRequest(monitor::MONITOR_MSGTYPE_ALERT, alert_status.SerializeAsString(), ignore_ec)) {
+
+			utils::MutexGuard guard(conns_list_lock_);
+			Monitor *monitor = (Monitor *)GetClientConnection();
+			if ( monitor && !monitor->SendRequest(monitor::MONITOR_MSGTYPE_ALERT, alert_status.SerializeAsString(), ignore_ec)) {
 				bret = false;
 				LOG_ERROR("Send alert status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
 					ignore_ec.value(), ignore_ec.message().c_str());
@@ -281,16 +296,15 @@ namespace bubi {
 		monitor::PeerManager *peer_manager = bubi_status.mutable_peer_manager();
 		peer_manager->set_peer_id(PeerManager::Instance().GetPeerNodeAddress());
 
-		bubi::ConnectionMap connections = PeerManager::Instance().ConsensusNetwork().GetPeers();
-		for (auto &item : connections) {
+		Json::Value connections;
+		PeerManager::Instance().ConsensusNetwork().GetPeers(connections);
+		for (size_t i = 0; i < connections.size(); i++) {
 			monitor::Peer *peer = peer_manager->add_peer();
-			bubi::Peer *conn = (bubi::Peer *)item.second;
-			if (conn->IsActive()) {
-				peer->set_id(conn->GetPeerNodeAddress());
-				peer->set_delay(conn->GetDelay());
-				peer->set_ip_address(conn->GetPeerAddress().ToIpPort());
-				peer->set_active(conn->IsActive());
-			}
+			const Json::Value &item = connections[i];
+			peer->set_id(item["node_address"].asString());
+			peer->set_delay(item["delay"].asInt64());
+			peer->set_ip_address(item["ip_address"].asString());
+			peer->set_active(item["active"].asBool());
 		}
 		return true;
 	}

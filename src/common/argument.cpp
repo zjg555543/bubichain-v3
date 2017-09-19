@@ -168,7 +168,6 @@ namespace bubi {
 			"Usage: bubi [OPTIONS]\n"
 			"OPTIONS:\n"
 			"  --dropdb                        clean up database\n"
-			"  --update                        sync data from remote peers\n"
 			"  --peer-address                  get local peer address\n"
 			"  --hardware-address              get local hardware address\n"
 			"  --request-cert                  request entity certificate\n"

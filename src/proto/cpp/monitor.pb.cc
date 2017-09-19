@@ -21,18 +21,12 @@ namespace monitor {
 
 namespace {
 
-const ::google::protobuf::Descriptor* BubiAttack_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  BubiAttack_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Hello_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Hello_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Register_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Register_reflection_ = NULL;
-const ::google::protobuf::Descriptor* ErrorMessage_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  ErrorMessage_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Peer_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Peer_reflection_ = NULL;
@@ -67,7 +61,6 @@ const ::google::protobuf::Descriptor* AlertStatus_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AlertStatus_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* MONITOR_MESSAGE_TYPE_descriptor_ = NULL;
-const ::google::protobuf::EnumDescriptor* MONITOR_ERROR_descriptor_ = NULL;
 
 }  // namespace
 
@@ -79,27 +72,10 @@ void protobuf_AssignDesc_monitor_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "monitor.proto");
   GOOGLE_CHECK(file != NULL);
-  BubiAttack_descriptor_ = file->message_type(0);
-  static const int BubiAttack_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiAttack, bubi_attack_time_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiAttack, bubi_attack_counts_),
-  };
-  BubiAttack_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      BubiAttack_descriptor_,
-      BubiAttack::default_instance_,
-      BubiAttack_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(BubiAttack),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiAttack, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiAttack, _is_default_instance_));
-  Hello_descriptor_ = file->message_type(1);
-  static const int Hello_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, blockchain_version_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, data_version_),
+  Hello_descriptor_ = file->message_type(0);
+  static const int Hello_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, service_version_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, connection_timeout_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, timestamp_),
   };
   Hello_reflection_ =
@@ -113,11 +89,11 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(Hello),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Hello, _is_default_instance_));
-  Register_descriptor_ = file->message_type(2);
+  Register_descriptor_ = file->message_type(1);
   static const int Register_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, rand_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, session_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, version_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, blockchain_version_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, data_version_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, timestamp_),
   };
   Register_reflection_ =
@@ -131,24 +107,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(Register),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Register, _is_default_instance_));
-  ErrorMessage_descriptor_ = file->message_type(3);
-  static const int ErrorMessage_offsets_[3] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ErrorMessage, error_code_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ErrorMessage, desception_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ErrorMessage, timestamp_),
-  };
-  ErrorMessage_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      ErrorMessage_descriptor_,
-      ErrorMessage::default_instance_,
-      ErrorMessage_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(ErrorMessage),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ErrorMessage, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ErrorMessage, _is_default_instance_));
-  Peer_descriptor_ = file->message_type(4);
+  Peer_descriptor_ = file->message_type(2);
   static const int Peer_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, delay_),
@@ -166,7 +125,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(Peer),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, _is_default_instance_));
-  GlueManager_descriptor_ = file->message_type(5);
+  GlueManager_descriptor_ = file->message_type(3);
   static const int GlueManager_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GlueManager, system_current_time_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GlueManager, process_uptime_),
@@ -183,7 +142,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(GlueManager),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GlueManager, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GlueManager, _is_default_instance_));
-  PeerManager_descriptor_ = file->message_type(6);
+  PeerManager_descriptor_ = file->message_type(4);
   static const int PeerManager_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PeerManager, peer_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PeerManager, peer_),
@@ -199,7 +158,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(PeerManager),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PeerManager, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PeerManager, _is_default_instance_));
-  BubiStatus_descriptor_ = file->message_type(7);
+  BubiStatus_descriptor_ = file->message_type(5);
   static const int BubiStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiStatus, glue_manager_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiStatus, peer_manager_),
@@ -215,7 +174,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(BubiStatus),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiStatus, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BubiStatus, _is_default_instance_));
-  LedgerStatus_descriptor_ = file->message_type(8);
+  LedgerStatus_descriptor_ = file->message_type(6);
   static const int LedgerStatus_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerStatus, ledger_header_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerStatus, transaction_size_),
@@ -233,7 +192,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(LedgerStatus),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerStatus, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerStatus, _is_default_instance_));
-  SystemProperty_descriptor_ = file->message_type(9);
+  SystemProperty_descriptor_ = file->message_type(7);
   static const int SystemProperty_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemProperty, host_name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemProperty, os_version_),
@@ -251,11 +210,11 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(SystemProperty),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemProperty, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemProperty, _is_default_instance_));
-  SystemResource_descriptor_ = file->message_type(10);
+  SystemResource_descriptor_ = file->message_type(8);
   static const int SystemResource_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, available_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, total_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, usedpercent_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, used_percent_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, description_),
   };
   SystemResource_reflection_ =
@@ -269,7 +228,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(SystemResource),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemResource, _is_default_instance_));
-  Partition_descriptor_ = file->message_type(11);
+  Partition_descriptor_ = file->message_type(9);
   static const int Partition_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Partition, total_bytes_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Partition, partition_),
@@ -285,9 +244,9 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(Partition),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Partition, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Partition, _is_default_instance_));
-  CPU_descriptor_ = file->message_type(12);
+  CPU_descriptor_ = file->message_type(10);
   static const int CPU_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CPU, usedpercent_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CPU, used_percent_),
   };
   CPU_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -300,7 +259,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(CPU),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CPU, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CPU, _is_default_instance_));
-  SystemStatus_descriptor_ = file->message_type(13);
+  SystemStatus_descriptor_ = file->message_type(11);
   static const int SystemStatus_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemStatus, property_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemStatus, memory_),
@@ -318,7 +277,7 @@ void protobuf_AssignDesc_monitor_2eproto() {
       sizeof(SystemStatus),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemStatus, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SystemStatus, _is_default_instance_));
-  AlertStatus_descriptor_ = file->message_type(14);
+  AlertStatus_descriptor_ = file->message_type(12);
   static const int AlertStatus_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AlertStatus, ledger_sequence_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AlertStatus, node_id_),
@@ -336,7 +295,6 @@ void protobuf_AssignDesc_monitor_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AlertStatus, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AlertStatus, _is_default_instance_));
   MONITOR_MESSAGE_TYPE_descriptor_ = file->enum_type(0);
-  MONITOR_ERROR_descriptor_ = file->enum_type(1);
 }
 
 namespace {
@@ -351,13 +309,9 @@ void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      BubiAttack_descriptor_, &BubiAttack::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Hello_descriptor_, &Hello::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Register_descriptor_, &Register::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      ErrorMessage_descriptor_, &ErrorMessage::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Peer_descriptor_, &Peer::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -385,14 +339,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
 }  // namespace
 
 void protobuf_ShutdownFile_monitor_2eproto() {
-  delete BubiAttack::default_instance_;
-  delete BubiAttack_reflection_;
   delete Hello::default_instance_;
   delete Hello_reflection_;
   delete Register::default_instance_;
   delete Register_reflection_;
-  delete ErrorMessage::default_instance_;
-  delete ErrorMessage_reflection_;
   delete Peer::default_instance_;
   delete Peer_reflection_;
   delete GlueManager::default_instance_;
@@ -426,65 +376,50 @@ void protobuf_AddDesc_monitor_2eproto() {
 
   ::protocol::protobuf_AddDesc_chain_2eproto();
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rmonitor.proto\022\007monitor\032\013chain.proto\"B\n"
-    "\nBubiAttack\022\030\n\020bubi_attack_time\030\001 \001(\r\022\032\n"
-    "\022bubi_attack_counts\030\002 \001(\r\"X\n\005Hello\022\n\n\002id"
-    "\030\001 \001(\t\022\032\n\022blockchain_version\030\002 \001(\t\022\024\n\014da"
-    "ta_version\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"S\n\010R"
-    "egister\022\017\n\007rand_id\030\001 \001(\t\022\022\n\nsession_id\030\002"
-    " \001(\t\022\017\n\007version\030\003 \001(\t\022\021\n\ttimestamp\030\004 \001(\003"
-    "\"a\n\014ErrorMessage\022*\n\nerror_code\030\001 \001(\0162\026.m"
-    "onitor.MONITOR_ERROR\022\022\n\ndesception\030\002 \001(\t"
-    "\022\021\n\ttimestamp\030\003 \001(\003\"E\n\004Peer\022\n\n\002id\030\001 \001(\t\022"
-    "\r\n\005delay\030\002 \001(\003\022\016\n\006active\030\003 \001(\010\022\022\n\nip_add"
-    "ress\030\004 \001(\t\"Y\n\013GlueManager\022\033\n\023system_curr"
-    "ent_time\030\001 \001(\t\022\026\n\016process_uptime\030\002 \001(\t\022\025"
-    "\n\rsystem_uptime\030\003 \001(\t\";\n\013PeerManager\022\017\n\007"
-    "peer_id\030\001 \001(\t\022\033\n\004peer\030\002 \003(\0132\r.monitor.Pe"
-    "er\"d\n\nBubiStatus\022*\n\014glue_manager\030\001 \001(\0132\024"
-    ".monitor.GlueManager\022*\n\014peer_manager\030\002 \001"
-    "(\0132\024.monitor.PeerManager\"\201\001\n\014LedgerStatu"
-    "s\022-\n\rledger_header\030\001 \001(\0132\026.protocol.Ledg"
-    "erHeader\022\030\n\020transaction_size\030\002 \001(\003\022\025\n\rac"
-    "count_count\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"]\n\016"
-    "SystemProperty\022\021\n\thost_name\030\001 \001(\t\022\022\n\nos_"
-    "version\030\002 \001(\t\022\024\n\014startup_time\030\003 \001(\003\022\016\n\006o"
-    "s_bit\030\004 \001(\t\"\\\n\016SystemResource\022\021\n\tavailab"
-    "le\030\001 \001(\003\022\r\n\005total\030\002 \001(\003\022\023\n\013usedPercent\030\003"
-    " \001(\001\022\023\n\013description\030\004 \001(\t\"L\n\tPartition\022\023"
-    "\n\013total_bytes\030\001 \001(\003\022*\n\tpartition\030\002 \003(\0132\027"
-    ".monitor.SystemResource\"\032\n\003CPU\022\023\n\013usedPe"
-    "rcent\030\001 \001(\001\"\245\001\n\014SystemStatus\022)\n\010property"
-    "\030\001 \001(\0132\027.monitor.SystemProperty\022\'\n\006memor"
-    "y\030\002 \001(\0132\027.monitor.SystemResource\022\031\n\003cpu\030"
-    "\003 \001(\0132\014.monitor.CPU\022&\n\npartitions\030\004 \001(\0132"
-    "\022.monitor.Partition\"^\n\013AlertStatus\022\027\n\017le"
-    "dger_sequence\030\002 \001(\003\022\017\n\007node_id\030\003 \001(\t\022%\n\006"
-    "system\030\004 \001(\0132\025.monitor.SystemStatus*\264\002\n\024"
-    "MONITOR_MESSAGE_TYPE\022\030\n\024MONITOR_MSGTYPE_"
-    "NONE\020\000\022\031\n\025MONITOR_MSGTYPE_HELLO\020\036\022\034\n\030MON"
-    "ITOR_MSGTYPE_REGISTER\020\037\022\030\n\024MONITOR_MSGTY"
-    "PE_BUBI\020 \022\032\n\026MONITOR_MSGTYPE_LEDGER\020!\022\032\n"
-    "\026MONITOR_MSGTYPE_SYSTEM\020\"\022\031\n\025MONITOR_MSG"
-    "TYPE_ALERT\020#\022\032\n\026MONITOR_MSGTYPE_NOTICE\020$"
-    "\022%\n!MONITOR_MSGTYPE_ACCOUNT_EXCEPTION\020%\022"
-    "\031\n\025MONITOR_MSGTYPE_ERROR\020\'*\322\002\n\rMONITOR_E"
-    "RROR\022\032\n\026MONITOR_INTERNAL_ERROR\020\000\022\035\n\031MONI"
-    "TOR_MESSAGE_NOT_EXIST\020\001\022\035\n\031MONITOR_MISSI"
-    "NG_PARAMETER\020\002\022\030\n\024MONITOR_ID_NOT_EXIST\020\003"
-    "\022\033\n\027MONITOR_ID_ALREAD_EXIST\020\004\022\032\n\026MONITOR"
-    "_CENTER_INVALID\020\005\022\031\n\025MONITOR_AGENT_INVAL"
-    "ID\020\006\022\025\n\021MONITOR_NOT_LOGIN\020\007\022\036\n\032MONITOR_B"
-    "UBI_MESSAGE_ERROR\020\010\022 \n\034MONITOR_SYSTEM_ME"
-    "SSAGE_ERROR\020\t\022 \n\034MONITOR_LEDGER_MESSAGE_"
-    "ERROR\020\nB\035\n\033cn.bubi.blockchain.adapter3b\006"
-    "proto3", 2086);
+    "\n\rmonitor.proto\022\007monitor\032\013chain.proto\"O\n"
+    "\005Hello\022\027\n\017service_version\030\001 \001(\003\022\032\n\022conne"
+    "ction_timeout\030\002 \001(\003\022\021\n\ttimestamp\030\003 \001(\003\"["
+    "\n\010Register\022\n\n\002id\030\001 \001(\t\022\032\n\022blockchain_ver"
+    "sion\030\002 \001(\t\022\024\n\014data_version\030\003 \001(\003\022\021\n\ttime"
+    "stamp\030\004 \001(\003\"E\n\004Peer\022\n\n\002id\030\001 \001(\t\022\r\n\005delay"
+    "\030\002 \001(\003\022\016\n\006active\030\003 \001(\010\022\022\n\nip_address\030\004 \001"
+    "(\t\"Y\n\013GlueManager\022\033\n\023system_current_time"
+    "\030\001 \001(\t\022\026\n\016process_uptime\030\002 \001(\t\022\025\n\rsystem"
+    "_uptime\030\003 \001(\t\";\n\013PeerManager\022\017\n\007peer_id\030"
+    "\001 \001(\t\022\033\n\004peer\030\002 \003(\0132\r.monitor.Peer\"d\n\nBu"
+    "biStatus\022*\n\014glue_manager\030\001 \001(\0132\024.monitor"
+    ".GlueManager\022*\n\014peer_manager\030\002 \001(\0132\024.mon"
+    "itor.PeerManager\"\201\001\n\014LedgerStatus\022-\n\rled"
+    "ger_header\030\001 \001(\0132\026.protocol.LedgerHeader"
+    "\022\030\n\020transaction_size\030\002 \001(\003\022\025\n\raccount_co"
+    "unt\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\"]\n\016SystemPr"
+    "operty\022\021\n\thost_name\030\001 \001(\t\022\022\n\nos_version\030"
+    "\002 \001(\t\022\024\n\014startup_time\030\003 \001(\003\022\016\n\006os_bit\030\004 "
+    "\001(\t\"]\n\016SystemResource\022\021\n\tavailable\030\001 \001(\003"
+    "\022\r\n\005total\030\002 \001(\003\022\024\n\014used_percent\030\003 \001(\001\022\023\n"
+    "\013description\030\004 \001(\t\"L\n\tPartition\022\023\n\013total"
+    "_bytes\030\001 \001(\003\022*\n\tpartition\030\002 \003(\0132\027.monito"
+    "r.SystemResource\"\033\n\003CPU\022\024\n\014used_percent\030"
+    "\001 \001(\001\"\245\001\n\014SystemStatus\022)\n\010property\030\001 \001(\013"
+    "2\027.monitor.SystemProperty\022\'\n\006memory\030\002 \001("
+    "\0132\027.monitor.SystemResource\022\031\n\003cpu\030\003 \001(\0132"
+    "\014.monitor.CPU\022&\n\npartitions\030\004 \001(\0132\022.moni"
+    "tor.Partition\"^\n\013AlertStatus\022\027\n\017ledger_s"
+    "equence\030\001 \001(\003\022\017\n\007node_id\030\002 \001(\t\022%\n\006system"
+    "\030\003 \001(\0132\025.monitor.SystemStatus*\264\002\n\024MONITO"
+    "R_MESSAGE_TYPE\022\030\n\024MONITOR_MSGTYPE_NONE\020\000"
+    "\022\031\n\025MONITOR_MSGTYPE_HELLO\020\036\022\034\n\030MONITOR_M"
+    "SGTYPE_REGISTER\020\037\022\030\n\024MONITOR_MSGTYPE_BUB"
+    "I\020 \022\032\n\026MONITOR_MSGTYPE_LEDGER\020!\022\032\n\026MONIT"
+    "OR_MSGTYPE_SYSTEM\020\"\022\031\n\025MONITOR_MSGTYPE_A"
+    "LERT\020#\022\032\n\026MONITOR_MSGTYPE_NOTICE\020$\022%\n!MO"
+    "NITOR_MSGTYPE_ACCOUNT_EXCEPTION\020%\022\031\n\025MON"
+    "ITOR_MSGTYPE_ERROR\020\'B\035\n\033cn.bubi.blockcha"
+    "in.adapter3b\006proto3", 1579);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "monitor.proto", &protobuf_RegisterTypes);
-  BubiAttack::default_instance_ = new BubiAttack();
   Hello::default_instance_ = new Hello();
   Register::default_instance_ = new Register();
-  ErrorMessage::default_instance_ = new ErrorMessage();
   Peer::default_instance_ = new Peer();
   GlueManager::default_instance_ = new GlueManager();
   PeerManager::default_instance_ = new PeerManager();
@@ -496,10 +431,8 @@ void protobuf_AddDesc_monitor_2eproto() {
   CPU::default_instance_ = new CPU();
   SystemStatus::default_instance_ = new SystemStatus();
   AlertStatus::default_instance_ = new AlertStatus();
-  BubiAttack::default_instance_->InitAsDefaultInstance();
   Hello::default_instance_->InitAsDefaultInstance();
   Register::default_instance_->InitAsDefaultInstance();
-  ErrorMessage::default_instance_->InitAsDefaultInstance();
   Peer::default_instance_->InitAsDefaultInstance();
   GlueManager::default_instance_->InitAsDefaultInstance();
   PeerManager::default_instance_->InitAsDefaultInstance();
@@ -542,346 +475,12 @@ bool MONITOR_MESSAGE_TYPE_IsValid(int value) {
   }
 }
 
-const ::google::protobuf::EnumDescriptor* MONITOR_ERROR_descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return MONITOR_ERROR_descriptor_;
-}
-bool MONITOR_ERROR_IsValid(int value) {
-  switch(value) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-      return true;
-    default:
-      return false;
-  }
-}
-
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int BubiAttack::kBubiAttackTimeFieldNumber;
-const int BubiAttack::kBubiAttackCountsFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-BubiAttack::BubiAttack()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:monitor.BubiAttack)
-}
-
-void BubiAttack::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-BubiAttack::BubiAttack(const BubiAttack& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:monitor.BubiAttack)
-}
-
-void BubiAttack::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-  bubi_attack_time_ = 0u;
-  bubi_attack_counts_ = 0u;
-}
-
-BubiAttack::~BubiAttack() {
-  // @@protoc_insertion_point(destructor:monitor.BubiAttack)
-  SharedDtor();
-}
-
-void BubiAttack::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void BubiAttack::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* BubiAttack::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return BubiAttack_descriptor_;
-}
-
-const BubiAttack& BubiAttack::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_monitor_2eproto();
-  return *default_instance_;
-}
-
-BubiAttack* BubiAttack::default_instance_ = NULL;
-
-BubiAttack* BubiAttack::New(::google::protobuf::Arena* arena) const {
-  BubiAttack* n = new BubiAttack;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void BubiAttack::Clear() {
-// @@protoc_insertion_point(message_clear_start:monitor.BubiAttack)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(BubiAttack, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<BubiAttack*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&first, 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(bubi_attack_time_, bubi_attack_counts_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
-}
-
-bool BubiAttack::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:monitor.BubiAttack)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 bubi_attack_time = 1;
-      case 1: {
-        if (tag == 8) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &bubi_attack_time_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(16)) goto parse_bubi_attack_counts;
-        break;
-      }
-
-      // optional uint32 bubi_attack_counts = 2;
-      case 2: {
-        if (tag == 16) {
-         parse_bubi_attack_counts:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &bubi_attack_counts_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:monitor.BubiAttack)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:monitor.BubiAttack)
-  return false;
-#undef DO_
-}
-
-void BubiAttack::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:monitor.BubiAttack)
-  // optional uint32 bubi_attack_time = 1;
-  if (this->bubi_attack_time() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->bubi_attack_time(), output);
-  }
-
-  // optional uint32 bubi_attack_counts = 2;
-  if (this->bubi_attack_counts() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->bubi_attack_counts(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:monitor.BubiAttack)
-}
-
-::google::protobuf::uint8* BubiAttack::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:monitor.BubiAttack)
-  // optional uint32 bubi_attack_time = 1;
-  if (this->bubi_attack_time() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->bubi_attack_time(), target);
-  }
-
-  // optional uint32 bubi_attack_counts = 2;
-  if (this->bubi_attack_counts() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->bubi_attack_counts(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:monitor.BubiAttack)
-  return target;
-}
-
-int BubiAttack::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:monitor.BubiAttack)
-  int total_size = 0;
-
-  // optional uint32 bubi_attack_time = 1;
-  if (this->bubi_attack_time() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
-        this->bubi_attack_time());
-  }
-
-  // optional uint32 bubi_attack_counts = 2;
-  if (this->bubi_attack_counts() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
-        this->bubi_attack_counts());
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void BubiAttack::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:monitor.BubiAttack)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const BubiAttack* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const BubiAttack>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:monitor.BubiAttack)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:monitor.BubiAttack)
-    MergeFrom(*source);
-  }
-}
-
-void BubiAttack::MergeFrom(const BubiAttack& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:monitor.BubiAttack)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.bubi_attack_time() != 0) {
-    set_bubi_attack_time(from.bubi_attack_time());
-  }
-  if (from.bubi_attack_counts() != 0) {
-    set_bubi_attack_counts(from.bubi_attack_counts());
-  }
-}
-
-void BubiAttack::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:monitor.BubiAttack)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void BubiAttack::CopyFrom(const BubiAttack& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:monitor.BubiAttack)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool BubiAttack::IsInitialized() const {
-
-  return true;
-}
-
-void BubiAttack::Swap(BubiAttack* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void BubiAttack::InternalSwap(BubiAttack* other) {
-  std::swap(bubi_attack_time_, other->bubi_attack_time_);
-  std::swap(bubi_attack_counts_, other->bubi_attack_counts_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata BubiAttack::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = BubiAttack_descriptor_;
-  metadata.reflection = BubiAttack_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// BubiAttack
-
-// optional uint32 bubi_attack_time = 1;
-void BubiAttack::clear_bubi_attack_time() {
-  bubi_attack_time_ = 0u;
-}
- ::google::protobuf::uint32 BubiAttack::bubi_attack_time() const {
-  // @@protoc_insertion_point(field_get:monitor.BubiAttack.bubi_attack_time)
-  return bubi_attack_time_;
-}
- void BubiAttack::set_bubi_attack_time(::google::protobuf::uint32 value) {
-  
-  bubi_attack_time_ = value;
-  // @@protoc_insertion_point(field_set:monitor.BubiAttack.bubi_attack_time)
-}
-
-// optional uint32 bubi_attack_counts = 2;
-void BubiAttack::clear_bubi_attack_counts() {
-  bubi_attack_counts_ = 0u;
-}
- ::google::protobuf::uint32 BubiAttack::bubi_attack_counts() const {
-  // @@protoc_insertion_point(field_get:monitor.BubiAttack.bubi_attack_counts)
-  return bubi_attack_counts_;
-}
- void BubiAttack::set_bubi_attack_counts(::google::protobuf::uint32 value) {
-  
-  bubi_attack_counts_ = value;
-  // @@protoc_insertion_point(field_set:monitor.BubiAttack.bubi_attack_counts)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Hello::kIdFieldNumber;
-const int Hello::kBlockchainVersionFieldNumber;
-const int Hello::kDataVersionFieldNumber;
+const int Hello::kServiceVersionFieldNumber;
+const int Hello::kConnectionTimeoutFieldNumber;
 const int Hello::kTimestampFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -905,11 +504,9 @@ Hello::Hello(const Hello& from)
 
 void Hello::SharedCtor() {
     _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  blockchain_version_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  data_version_ = GOOGLE_LONGLONG(0);
+  service_version_ = GOOGLE_LONGLONG(0);
+  connection_timeout_ = GOOGLE_LONGLONG(0);
   timestamp_ = GOOGLE_LONGLONG(0);
 }
 
@@ -919,8 +516,6 @@ Hello::~Hello() {
 }
 
 void Hello::SharedDtor() {
-  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  blockchain_version_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -968,9 +563,7 @@ void Hello::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  ZR_(data_version_, timestamp_);
-  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  blockchain_version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ZR_(service_version_, timestamp_);
 
 #undef ZR_HELPER_
 #undef ZR_
@@ -987,6 +580,375 @@ bool Hello::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional int64 service_version = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &service_version_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_connection_timeout;
+        break;
+      }
+
+      // optional int64 connection_timeout = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_connection_timeout:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &connection_timeout_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_timestamp;
+        break;
+      }
+
+      // optional int64 timestamp = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_timestamp:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &timestamp_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:monitor.Hello)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:monitor.Hello)
+  return false;
+#undef DO_
+}
+
+void Hello::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:monitor.Hello)
+  // optional int64 service_version = 1;
+  if (this->service_version() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->service_version(), output);
+  }
+
+  // optional int64 connection_timeout = 2;
+  if (this->connection_timeout() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->connection_timeout(), output);
+  }
+
+  // optional int64 timestamp = 3;
+  if (this->timestamp() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->timestamp(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:monitor.Hello)
+}
+
+::google::protobuf::uint8* Hello::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:monitor.Hello)
+  // optional int64 service_version = 1;
+  if (this->service_version() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->service_version(), target);
+  }
+
+  // optional int64 connection_timeout = 2;
+  if (this->connection_timeout() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->connection_timeout(), target);
+  }
+
+  // optional int64 timestamp = 3;
+  if (this->timestamp() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->timestamp(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:monitor.Hello)
+  return target;
+}
+
+int Hello::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:monitor.Hello)
+  int total_size = 0;
+
+  // optional int64 service_version = 1;
+  if (this->service_version() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->service_version());
+  }
+
+  // optional int64 connection_timeout = 2;
+  if (this->connection_timeout() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->connection_timeout());
+  }
+
+  // optional int64 timestamp = 3;
+  if (this->timestamp() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->timestamp());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Hello::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:monitor.Hello)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const Hello* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Hello>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:monitor.Hello)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:monitor.Hello)
+    MergeFrom(*source);
+  }
+}
+
+void Hello::MergeFrom(const Hello& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:monitor.Hello)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.service_version() != 0) {
+    set_service_version(from.service_version());
+  }
+  if (from.connection_timeout() != 0) {
+    set_connection_timeout(from.connection_timeout());
+  }
+  if (from.timestamp() != 0) {
+    set_timestamp(from.timestamp());
+  }
+}
+
+void Hello::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:monitor.Hello)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Hello::CopyFrom(const Hello& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:monitor.Hello)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Hello::IsInitialized() const {
+
+  return true;
+}
+
+void Hello::Swap(Hello* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Hello::InternalSwap(Hello* other) {
+  std::swap(service_version_, other->service_version_);
+  std::swap(connection_timeout_, other->connection_timeout_);
+  std::swap(timestamp_, other->timestamp_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Hello::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Hello_descriptor_;
+  metadata.reflection = Hello_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Hello
+
+// optional int64 service_version = 1;
+void Hello::clear_service_version() {
+  service_version_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 Hello::service_version() const {
+  // @@protoc_insertion_point(field_get:monitor.Hello.service_version)
+  return service_version_;
+}
+ void Hello::set_service_version(::google::protobuf::int64 value) {
+  
+  service_version_ = value;
+  // @@protoc_insertion_point(field_set:monitor.Hello.service_version)
+}
+
+// optional int64 connection_timeout = 2;
+void Hello::clear_connection_timeout() {
+  connection_timeout_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 Hello::connection_timeout() const {
+  // @@protoc_insertion_point(field_get:monitor.Hello.connection_timeout)
+  return connection_timeout_;
+}
+ void Hello::set_connection_timeout(::google::protobuf::int64 value) {
+  
+  connection_timeout_ = value;
+  // @@protoc_insertion_point(field_set:monitor.Hello.connection_timeout)
+}
+
+// optional int64 timestamp = 3;
+void Hello::clear_timestamp() {
+  timestamp_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 Hello::timestamp() const {
+  // @@protoc_insertion_point(field_get:monitor.Hello.timestamp)
+  return timestamp_;
+}
+ void Hello::set_timestamp(::google::protobuf::int64 value) {
+  
+  timestamp_ = value;
+  // @@protoc_insertion_point(field_set:monitor.Hello.timestamp)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int Register::kIdFieldNumber;
+const int Register::kBlockchainVersionFieldNumber;
+const int Register::kDataVersionFieldNumber;
+const int Register::kTimestampFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+Register::Register()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:monitor.Register)
+}
+
+void Register::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+Register::Register(const Register& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:monitor.Register)
+}
+
+void Register::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  blockchain_version_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  data_version_ = GOOGLE_LONGLONG(0);
+  timestamp_ = GOOGLE_LONGLONG(0);
+}
+
+Register::~Register() {
+  // @@protoc_insertion_point(destructor:monitor.Register)
+  SharedDtor();
+}
+
+void Register::SharedDtor() {
+  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  blockchain_version_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void Register::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Register::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Register_descriptor_;
+}
+
+const Register& Register::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_monitor_2eproto();
+  return *default_instance_;
+}
+
+Register* Register::default_instance_ = NULL;
+
+Register* Register::New(::google::protobuf::Arena* arena) const {
+  Register* n = new Register;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Register::Clear() {
+// @@protoc_insertion_point(message_clear_start:monitor.Register)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(Register, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Register*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(data_version_, timestamp_);
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  blockchain_version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+
+#undef ZR_HELPER_
+#undef ZR_
+
+}
+
+bool Register::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:monitor.Register)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional string id = 1;
       case 1: {
         if (tag == 10) {
@@ -995,7 +957,7 @@ bool Hello::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->id().data(), this->id().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "monitor.Hello.id"));
+            "monitor.Register.id"));
         } else {
           goto handle_unusual;
         }
@@ -1012,7 +974,7 @@ bool Hello::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->blockchain_version().data(), this->blockchain_version().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "monitor.Hello.blockchain_version"));
+            "monitor.Register.blockchain_version"));
         } else {
           goto handle_unusual;
         }
@@ -1063,23 +1025,23 @@ bool Hello::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:monitor.Hello)
+  // @@protoc_insertion_point(parse_success:monitor.Register)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:monitor.Hello)
+  // @@protoc_insertion_point(parse_failure:monitor.Register)
   return false;
 #undef DO_
 }
 
-void Hello::SerializeWithCachedSizes(
+void Register::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:monitor.Hello)
+  // @@protoc_insertion_point(serialize_start:monitor.Register)
   // optional string id = 1;
   if (this->id().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->id().data(), this->id().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Hello.id");
+      "monitor.Register.id");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->id(), output);
   }
@@ -1089,7 +1051,7 @@ void Hello::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->blockchain_version().data(), this->blockchain_version().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Hello.blockchain_version");
+      "monitor.Register.blockchain_version");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->blockchain_version(), output);
   }
@@ -1104,18 +1066,18 @@ void Hello::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(4, this->timestamp(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:monitor.Hello)
+  // @@protoc_insertion_point(serialize_end:monitor.Register)
 }
 
-::google::protobuf::uint8* Hello::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* Register::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:monitor.Hello)
+  // @@protoc_insertion_point(serialize_to_array_start:monitor.Register)
   // optional string id = 1;
   if (this->id().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->id().data(), this->id().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Hello.id");
+      "monitor.Register.id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->id(), target);
@@ -1126,7 +1088,7 @@ void Hello::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->blockchain_version().data(), this->blockchain_version().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Hello.blockchain_version");
+      "monitor.Register.blockchain_version");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->blockchain_version(), target);
@@ -1142,12 +1104,12 @@ void Hello::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(4, this->timestamp(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:monitor.Hello)
+  // @@protoc_insertion_point(serialize_to_array_end:monitor.Register)
   return target;
 }
 
-int Hello::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:monitor.Hello)
+int Register::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:monitor.Register)
   int total_size = 0;
 
   // optional string id = 1;
@@ -1169,508 +1131,6 @@ int Hello::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->data_version());
-  }
-
-  // optional int64 timestamp = 4;
-  if (this->timestamp() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int64Size(
-        this->timestamp());
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void Hello::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:monitor.Hello)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const Hello* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const Hello>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:monitor.Hello)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:monitor.Hello)
-    MergeFrom(*source);
-  }
-}
-
-void Hello::MergeFrom(const Hello& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:monitor.Hello)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.id().size() > 0) {
-
-    id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
-  }
-  if (from.blockchain_version().size() > 0) {
-
-    blockchain_version_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.blockchain_version_);
-  }
-  if (from.data_version() != 0) {
-    set_data_version(from.data_version());
-  }
-  if (from.timestamp() != 0) {
-    set_timestamp(from.timestamp());
-  }
-}
-
-void Hello::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:monitor.Hello)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void Hello::CopyFrom(const Hello& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:monitor.Hello)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool Hello::IsInitialized() const {
-
-  return true;
-}
-
-void Hello::Swap(Hello* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void Hello::InternalSwap(Hello* other) {
-  id_.Swap(&other->id_);
-  blockchain_version_.Swap(&other->blockchain_version_);
-  std::swap(data_version_, other->data_version_);
-  std::swap(timestamp_, other->timestamp_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata Hello::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = Hello_descriptor_;
-  metadata.reflection = Hello_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// Hello
-
-// optional string id = 1;
-void Hello::clear_id() {
-  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& Hello::id() const {
-  // @@protoc_insertion_point(field_get:monitor.Hello.id)
-  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void Hello::set_id(const ::std::string& value) {
-  
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:monitor.Hello.id)
-}
- void Hello::set_id(const char* value) {
-  
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:monitor.Hello.id)
-}
- void Hello::set_id(const char* value, size_t size) {
-  
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:monitor.Hello.id)
-}
- ::std::string* Hello::mutable_id() {
-  
-  // @@protoc_insertion_point(field_mutable:monitor.Hello.id)
-  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* Hello::release_id() {
-  // @@protoc_insertion_point(field_release:monitor.Hello.id)
-  
-  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void Hello::set_allocated_id(::std::string* id) {
-  if (id != NULL) {
-    
-  } else {
-    
-  }
-  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
-  // @@protoc_insertion_point(field_set_allocated:monitor.Hello.id)
-}
-
-// optional string blockchain_version = 2;
-void Hello::clear_blockchain_version() {
-  blockchain_version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& Hello::blockchain_version() const {
-  // @@protoc_insertion_point(field_get:monitor.Hello.blockchain_version)
-  return blockchain_version_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void Hello::set_blockchain_version(const ::std::string& value) {
-  
-  blockchain_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:monitor.Hello.blockchain_version)
-}
- void Hello::set_blockchain_version(const char* value) {
-  
-  blockchain_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:monitor.Hello.blockchain_version)
-}
- void Hello::set_blockchain_version(const char* value, size_t size) {
-  
-  blockchain_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:monitor.Hello.blockchain_version)
-}
- ::std::string* Hello::mutable_blockchain_version() {
-  
-  // @@protoc_insertion_point(field_mutable:monitor.Hello.blockchain_version)
-  return blockchain_version_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* Hello::release_blockchain_version() {
-  // @@protoc_insertion_point(field_release:monitor.Hello.blockchain_version)
-  
-  return blockchain_version_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void Hello::set_allocated_blockchain_version(::std::string* blockchain_version) {
-  if (blockchain_version != NULL) {
-    
-  } else {
-    
-  }
-  blockchain_version_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), blockchain_version);
-  // @@protoc_insertion_point(field_set_allocated:monitor.Hello.blockchain_version)
-}
-
-// optional int64 data_version = 3;
-void Hello::clear_data_version() {
-  data_version_ = GOOGLE_LONGLONG(0);
-}
- ::google::protobuf::int64 Hello::data_version() const {
-  // @@protoc_insertion_point(field_get:monitor.Hello.data_version)
-  return data_version_;
-}
- void Hello::set_data_version(::google::protobuf::int64 value) {
-  
-  data_version_ = value;
-  // @@protoc_insertion_point(field_set:monitor.Hello.data_version)
-}
-
-// optional int64 timestamp = 4;
-void Hello::clear_timestamp() {
-  timestamp_ = GOOGLE_LONGLONG(0);
-}
- ::google::protobuf::int64 Hello::timestamp() const {
-  // @@protoc_insertion_point(field_get:monitor.Hello.timestamp)
-  return timestamp_;
-}
- void Hello::set_timestamp(::google::protobuf::int64 value) {
-  
-  timestamp_ = value;
-  // @@protoc_insertion_point(field_set:monitor.Hello.timestamp)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Register::kRandIdFieldNumber;
-const int Register::kSessionIdFieldNumber;
-const int Register::kVersionFieldNumber;
-const int Register::kTimestampFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-Register::Register()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:monitor.Register)
-}
-
-void Register::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-Register::Register(const Register& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:monitor.Register)
-}
-
-void Register::SharedCtor() {
-    _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
-  rand_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  session_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  version_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  timestamp_ = GOOGLE_LONGLONG(0);
-}
-
-Register::~Register() {
-  // @@protoc_insertion_point(destructor:monitor.Register)
-  SharedDtor();
-}
-
-void Register::SharedDtor() {
-  rand_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  session_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  version_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != default_instance_) {
-  }
-}
-
-void Register::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* Register::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return Register_descriptor_;
-}
-
-const Register& Register::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_monitor_2eproto();
-  return *default_instance_;
-}
-
-Register* Register::default_instance_ = NULL;
-
-Register* Register::New(::google::protobuf::Arena* arena) const {
-  Register* n = new Register;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void Register::Clear() {
-// @@protoc_insertion_point(message_clear_start:monitor.Register)
-  rand_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  session_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  timestamp_ = GOOGLE_LONGLONG(0);
-}
-
-bool Register::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:monitor.Register)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string rand_id = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_rand_id()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->rand_id().data(), this->rand_id().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "monitor.Register.rand_id"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(18)) goto parse_session_id;
-        break;
-      }
-
-      // optional string session_id = 2;
-      case 2: {
-        if (tag == 18) {
-         parse_session_id:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_session_id()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->session_id().data(), this->session_id().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "monitor.Register.session_id"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_version;
-        break;
-      }
-
-      // optional string version = 3;
-      case 3: {
-        if (tag == 26) {
-         parse_version:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_version()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->version().data(), this->version().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "monitor.Register.version"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(32)) goto parse_timestamp;
-        break;
-      }
-
-      // optional int64 timestamp = 4;
-      case 4: {
-        if (tag == 32) {
-         parse_timestamp:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 input, &timestamp_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:monitor.Register)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:monitor.Register)
-  return false;
-#undef DO_
-}
-
-void Register::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:monitor.Register)
-  // optional string rand_id = 1;
-  if (this->rand_id().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->rand_id().data(), this->rand_id().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Register.rand_id");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->rand_id(), output);
-  }
-
-  // optional string session_id = 2;
-  if (this->session_id().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->session_id().data(), this->session_id().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Register.session_id");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->session_id(), output);
-  }
-
-  // optional string version = 3;
-  if (this->version().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->version().data(), this->version().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Register.version");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->version(), output);
-  }
-
-  // optional int64 timestamp = 4;
-  if (this->timestamp() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(4, this->timestamp(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:monitor.Register)
-}
-
-::google::protobuf::uint8* Register::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:monitor.Register)
-  // optional string rand_id = 1;
-  if (this->rand_id().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->rand_id().data(), this->rand_id().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Register.rand_id");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->rand_id(), target);
-  }
-
-  // optional string session_id = 2;
-  if (this->session_id().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->session_id().data(), this->session_id().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Register.session_id");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->session_id(), target);
-  }
-
-  // optional string version = 3;
-  if (this->version().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->version().data(), this->version().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.Register.version");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->version(), target);
-  }
-
-  // optional int64 timestamp = 4;
-  if (this->timestamp() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(4, this->timestamp(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:monitor.Register)
-  return target;
-}
-
-int Register::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:monitor.Register)
-  int total_size = 0;
-
-  // optional string rand_id = 1;
-  if (this->rand_id().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->rand_id());
-  }
-
-  // optional string session_id = 2;
-  if (this->session_id().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->session_id());
-  }
-
-  // optional string version = 3;
-  if (this->version().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->version());
   }
 
   // optional int64 timestamp = 4;
@@ -1708,17 +1168,16 @@ void Register::MergeFrom(const Register& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.rand_id().size() > 0) {
+  if (from.id().size() > 0) {
 
-    rand_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.rand_id_);
+    id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
   }
-  if (from.session_id().size() > 0) {
+  if (from.blockchain_version().size() > 0) {
 
-    session_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.session_id_);
+    blockchain_version_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.blockchain_version_);
   }
-  if (from.version().size() > 0) {
-
-    version_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.version_);
+  if (from.data_version() != 0) {
+    set_data_version(from.data_version());
   }
   if (from.timestamp() != 0) {
     set_timestamp(from.timestamp());
@@ -1749,9 +1208,9 @@ void Register::Swap(Register* other) {
   InternalSwap(other);
 }
 void Register::InternalSwap(Register* other) {
-  rand_id_.Swap(&other->rand_id_);
-  session_id_.Swap(&other->session_id_);
-  version_.Swap(&other->version_);
+  id_.Swap(&other->id_);
+  blockchain_version_.Swap(&other->blockchain_version_);
+  std::swap(data_version_, other->data_version_);
   std::swap(timestamp_, other->timestamp_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -1768,136 +1227,106 @@ void Register::InternalSwap(Register* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Register
 
-// optional string rand_id = 1;
-void Register::clear_rand_id() {
-  rand_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional string id = 1;
+void Register::clear_id() {
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& Register::rand_id() const {
-  // @@protoc_insertion_point(field_get:monitor.Register.rand_id)
-  return rand_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ const ::std::string& Register::id() const {
+  // @@protoc_insertion_point(field_get:monitor.Register.id)
+  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Register::set_rand_id(const ::std::string& value) {
+ void Register::set_id(const ::std::string& value) {
   
-  rand_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:monitor.Register.rand_id)
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:monitor.Register.id)
 }
- void Register::set_rand_id(const char* value) {
+ void Register::set_id(const char* value) {
   
-  rand_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:monitor.Register.rand_id)
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:monitor.Register.id)
 }
- void Register::set_rand_id(const char* value, size_t size) {
+ void Register::set_id(const char* value, size_t size) {
   
-  rand_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:monitor.Register.rand_id)
+  // @@protoc_insertion_point(field_set_pointer:monitor.Register.id)
 }
- ::std::string* Register::mutable_rand_id() {
+ ::std::string* Register::mutable_id() {
   
-  // @@protoc_insertion_point(field_mutable:monitor.Register.rand_id)
-  return rand_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:monitor.Register.id)
+  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* Register::release_rand_id() {
-  // @@protoc_insertion_point(field_release:monitor.Register.rand_id)
+ ::std::string* Register::release_id() {
+  // @@protoc_insertion_point(field_release:monitor.Register.id)
   
-  return rand_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Register::set_allocated_rand_id(::std::string* rand_id) {
-  if (rand_id != NULL) {
+ void Register::set_allocated_id(::std::string* id) {
+  if (id != NULL) {
     
   } else {
     
   }
-  rand_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), rand_id);
-  // @@protoc_insertion_point(field_set_allocated:monitor.Register.rand_id)
+  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
+  // @@protoc_insertion_point(field_set_allocated:monitor.Register.id)
 }
 
-// optional string session_id = 2;
-void Register::clear_session_id() {
-  session_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional string blockchain_version = 2;
+void Register::clear_blockchain_version() {
+  blockchain_version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& Register::session_id() const {
-  // @@protoc_insertion_point(field_get:monitor.Register.session_id)
-  return session_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ const ::std::string& Register::blockchain_version() const {
+  // @@protoc_insertion_point(field_get:monitor.Register.blockchain_version)
+  return blockchain_version_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Register::set_session_id(const ::std::string& value) {
+ void Register::set_blockchain_version(const ::std::string& value) {
   
-  session_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:monitor.Register.session_id)
+  blockchain_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:monitor.Register.blockchain_version)
 }
- void Register::set_session_id(const char* value) {
+ void Register::set_blockchain_version(const char* value) {
   
-  session_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:monitor.Register.session_id)
+  blockchain_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:monitor.Register.blockchain_version)
 }
- void Register::set_session_id(const char* value, size_t size) {
+ void Register::set_blockchain_version(const char* value, size_t size) {
   
-  session_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  blockchain_version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:monitor.Register.session_id)
+  // @@protoc_insertion_point(field_set_pointer:monitor.Register.blockchain_version)
 }
- ::std::string* Register::mutable_session_id() {
+ ::std::string* Register::mutable_blockchain_version() {
   
-  // @@protoc_insertion_point(field_mutable:monitor.Register.session_id)
-  return session_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:monitor.Register.blockchain_version)
+  return blockchain_version_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* Register::release_session_id() {
-  // @@protoc_insertion_point(field_release:monitor.Register.session_id)
+ ::std::string* Register::release_blockchain_version() {
+  // @@protoc_insertion_point(field_release:monitor.Register.blockchain_version)
   
-  return session_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return blockchain_version_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Register::set_allocated_session_id(::std::string* session_id) {
-  if (session_id != NULL) {
+ void Register::set_allocated_blockchain_version(::std::string* blockchain_version) {
+  if (blockchain_version != NULL) {
     
   } else {
     
   }
-  session_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), session_id);
-  // @@protoc_insertion_point(field_set_allocated:monitor.Register.session_id)
+  blockchain_version_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), blockchain_version);
+  // @@protoc_insertion_point(field_set_allocated:monitor.Register.blockchain_version)
 }
 
-// optional string version = 3;
-void Register::clear_version() {
-  version_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional int64 data_version = 3;
+void Register::clear_data_version() {
+  data_version_ = GOOGLE_LONGLONG(0);
 }
- const ::std::string& Register::version() const {
-  // @@protoc_insertion_point(field_get:monitor.Register.version)
-  return version_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::google::protobuf::int64 Register::data_version() const {
+  // @@protoc_insertion_point(field_get:monitor.Register.data_version)
+  return data_version_;
 }
- void Register::set_version(const ::std::string& value) {
+ void Register::set_data_version(::google::protobuf::int64 value) {
   
-  version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:monitor.Register.version)
-}
- void Register::set_version(const char* value) {
-  
-  version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:monitor.Register.version)
-}
- void Register::set_version(const char* value, size_t size) {
-  
-  version_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:monitor.Register.version)
-}
- ::std::string* Register::mutable_version() {
-  
-  // @@protoc_insertion_point(field_mutable:monitor.Register.version)
-  return version_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* Register::release_version() {
-  // @@protoc_insertion_point(field_release:monitor.Register.version)
-  
-  return version_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void Register::set_allocated_version(::std::string* version) {
-  if (version != NULL) {
-    
-  } else {
-    
-  }
-  version_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), version);
-  // @@protoc_insertion_point(field_set_allocated:monitor.Register.version)
+  data_version_ = value;
+  // @@protoc_insertion_point(field_set:monitor.Register.data_version)
 }
 
 // optional int64 timestamp = 4;
@@ -1912,417 +1341,6 @@ void Register::clear_timestamp() {
   
   timestamp_ = value;
   // @@protoc_insertion_point(field_set:monitor.Register.timestamp)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ErrorMessage::kErrorCodeFieldNumber;
-const int ErrorMessage::kDesceptionFieldNumber;
-const int ErrorMessage::kTimestampFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ErrorMessage::ErrorMessage()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:monitor.ErrorMessage)
-}
-
-void ErrorMessage::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-ErrorMessage::ErrorMessage(const ErrorMessage& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:monitor.ErrorMessage)
-}
-
-void ErrorMessage::SharedCtor() {
-    _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
-  error_code_ = 0;
-  desception_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  timestamp_ = GOOGLE_LONGLONG(0);
-}
-
-ErrorMessage::~ErrorMessage() {
-  // @@protoc_insertion_point(destructor:monitor.ErrorMessage)
-  SharedDtor();
-}
-
-void ErrorMessage::SharedDtor() {
-  desception_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != default_instance_) {
-  }
-}
-
-void ErrorMessage::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* ErrorMessage::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return ErrorMessage_descriptor_;
-}
-
-const ErrorMessage& ErrorMessage::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_monitor_2eproto();
-  return *default_instance_;
-}
-
-ErrorMessage* ErrorMessage::default_instance_ = NULL;
-
-ErrorMessage* ErrorMessage::New(::google::protobuf::Arena* arena) const {
-  ErrorMessage* n = new ErrorMessage;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void ErrorMessage::Clear() {
-// @@protoc_insertion_point(message_clear_start:monitor.ErrorMessage)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(ErrorMessage, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<ErrorMessage*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&first, 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(timestamp_, error_code_);
-  desception_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-
-#undef ZR_HELPER_
-#undef ZR_
-
-}
-
-bool ErrorMessage::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:monitor.ErrorMessage)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .monitor.MONITOR_ERROR error_code = 1;
-      case 1: {
-        if (tag == 8) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_error_code(static_cast< ::monitor::MONITOR_ERROR >(value));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(18)) goto parse_desception;
-        break;
-      }
-
-      // optional string desception = 2;
-      case 2: {
-        if (tag == 18) {
-         parse_desception:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_desception()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->desception().data(), this->desception().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "monitor.ErrorMessage.desception"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(24)) goto parse_timestamp;
-        break;
-      }
-
-      // optional int64 timestamp = 3;
-      case 3: {
-        if (tag == 24) {
-         parse_timestamp:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 input, &timestamp_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:monitor.ErrorMessage)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:monitor.ErrorMessage)
-  return false;
-#undef DO_
-}
-
-void ErrorMessage::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:monitor.ErrorMessage)
-  // optional .monitor.MONITOR_ERROR error_code = 1;
-  if (this->error_code() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      1, this->error_code(), output);
-  }
-
-  // optional string desception = 2;
-  if (this->desception().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->desception().data(), this->desception().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.ErrorMessage.desception");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->desception(), output);
-  }
-
-  // optional int64 timestamp = 3;
-  if (this->timestamp() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->timestamp(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:monitor.ErrorMessage)
-}
-
-::google::protobuf::uint8* ErrorMessage::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:monitor.ErrorMessage)
-  // optional .monitor.MONITOR_ERROR error_code = 1;
-  if (this->error_code() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      1, this->error_code(), target);
-  }
-
-  // optional string desception = 2;
-  if (this->desception().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->desception().data(), this->desception().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "monitor.ErrorMessage.desception");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->desception(), target);
-  }
-
-  // optional int64 timestamp = 3;
-  if (this->timestamp() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->timestamp(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:monitor.ErrorMessage)
-  return target;
-}
-
-int ErrorMessage::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:monitor.ErrorMessage)
-  int total_size = 0;
-
-  // optional .monitor.MONITOR_ERROR error_code = 1;
-  if (this->error_code() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->error_code());
-  }
-
-  // optional string desception = 2;
-  if (this->desception().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->desception());
-  }
-
-  // optional int64 timestamp = 3;
-  if (this->timestamp() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int64Size(
-        this->timestamp());
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void ErrorMessage::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:monitor.ErrorMessage)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const ErrorMessage* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const ErrorMessage>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:monitor.ErrorMessage)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:monitor.ErrorMessage)
-    MergeFrom(*source);
-  }
-}
-
-void ErrorMessage::MergeFrom(const ErrorMessage& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:monitor.ErrorMessage)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.error_code() != 0) {
-    set_error_code(from.error_code());
-  }
-  if (from.desception().size() > 0) {
-
-    desception_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.desception_);
-  }
-  if (from.timestamp() != 0) {
-    set_timestamp(from.timestamp());
-  }
-}
-
-void ErrorMessage::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:monitor.ErrorMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void ErrorMessage::CopyFrom(const ErrorMessage& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:monitor.ErrorMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ErrorMessage::IsInitialized() const {
-
-  return true;
-}
-
-void ErrorMessage::Swap(ErrorMessage* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void ErrorMessage::InternalSwap(ErrorMessage* other) {
-  std::swap(error_code_, other->error_code_);
-  desception_.Swap(&other->desception_);
-  std::swap(timestamp_, other->timestamp_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata ErrorMessage::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = ErrorMessage_descriptor_;
-  metadata.reflection = ErrorMessage_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// ErrorMessage
-
-// optional .monitor.MONITOR_ERROR error_code = 1;
-void ErrorMessage::clear_error_code() {
-  error_code_ = 0;
-}
- ::monitor::MONITOR_ERROR ErrorMessage::error_code() const {
-  // @@protoc_insertion_point(field_get:monitor.ErrorMessage.error_code)
-  return static_cast< ::monitor::MONITOR_ERROR >(error_code_);
-}
- void ErrorMessage::set_error_code(::monitor::MONITOR_ERROR value) {
-  
-  error_code_ = value;
-  // @@protoc_insertion_point(field_set:monitor.ErrorMessage.error_code)
-}
-
-// optional string desception = 2;
-void ErrorMessage::clear_desception() {
-  desception_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& ErrorMessage::desception() const {
-  // @@protoc_insertion_point(field_get:monitor.ErrorMessage.desception)
-  return desception_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void ErrorMessage::set_desception(const ::std::string& value) {
-  
-  desception_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:monitor.ErrorMessage.desception)
-}
- void ErrorMessage::set_desception(const char* value) {
-  
-  desception_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:monitor.ErrorMessage.desception)
-}
- void ErrorMessage::set_desception(const char* value, size_t size) {
-  
-  desception_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:monitor.ErrorMessage.desception)
-}
- ::std::string* ErrorMessage::mutable_desception() {
-  
-  // @@protoc_insertion_point(field_mutable:monitor.ErrorMessage.desception)
-  return desception_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* ErrorMessage::release_desception() {
-  // @@protoc_insertion_point(field_release:monitor.ErrorMessage.desception)
-  
-  return desception_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void ErrorMessage::set_allocated_desception(::std::string* desception) {
-  if (desception != NULL) {
-    
-  } else {
-    
-  }
-  desception_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), desception);
-  // @@protoc_insertion_point(field_set_allocated:monitor.ErrorMessage.desception)
-}
-
-// optional int64 timestamp = 3;
-void ErrorMessage::clear_timestamp() {
-  timestamp_ = GOOGLE_LONGLONG(0);
-}
- ::google::protobuf::int64 ErrorMessage::timestamp() const {
-  // @@protoc_insertion_point(field_get:monitor.ErrorMessage.timestamp)
-  return timestamp_;
-}
- void ErrorMessage::set_timestamp(::google::protobuf::int64 value) {
-  
-  timestamp_ = value;
-  // @@protoc_insertion_point(field_set:monitor.ErrorMessage.timestamp)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -5005,7 +4023,7 @@ void SystemResource::SharedCtor() {
   _cached_size_ = 0;
   available_ = GOOGLE_LONGLONG(0);
   total_ = GOOGLE_LONGLONG(0);
-  usedpercent_ = 0;
+  used_percent_ = 0;
   description_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -5063,7 +4081,7 @@ void SystemResource::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  ZR_(available_, usedpercent_);
+  ZR_(available_, used_percent_);
   description_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 
 #undef ZR_HELPER_
@@ -5106,17 +4124,17 @@ bool SystemResource::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(25)) goto parse_usedPercent;
+        if (input->ExpectTag(25)) goto parse_used_percent;
         break;
       }
 
-      // optional double usedPercent = 3;
+      // optional double used_percent = 3;
       case 3: {
         if (tag == 25) {
-         parse_usedPercent:
+         parse_used_percent:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, &usedpercent_)));
+                 input, &used_percent_)));
 
         } else {
           goto handle_unusual;
@@ -5176,9 +4194,9 @@ void SystemResource::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->total(), output);
   }
 
-  // optional double usedPercent = 3;
-  if (this->usedpercent() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->usedpercent(), output);
+  // optional double used_percent = 3;
+  if (this->used_percent() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->used_percent(), output);
   }
 
   // optional string description = 4;
@@ -5207,9 +4225,9 @@ void SystemResource::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->total(), target);
   }
 
-  // optional double usedPercent = 3;
-  if (this->usedpercent() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->usedpercent(), target);
+  // optional double used_percent = 3;
+  if (this->used_percent() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->used_percent(), target);
   }
 
   // optional string description = 4;
@@ -5245,8 +4263,8 @@ int SystemResource::ByteSize() const {
         this->total());
   }
 
-  // optional double usedPercent = 3;
-  if (this->usedpercent() != 0) {
+  // optional double used_percent = 3;
+  if (this->used_percent() != 0) {
     total_size += 1 + 8;
   }
 
@@ -5291,8 +4309,8 @@ void SystemResource::MergeFrom(const SystemResource& from) {
   if (from.total() != 0) {
     set_total(from.total());
   }
-  if (from.usedpercent() != 0) {
-    set_usedpercent(from.usedpercent());
+  if (from.used_percent() != 0) {
+    set_used_percent(from.used_percent());
   }
   if (from.description().size() > 0) {
 
@@ -5326,7 +4344,7 @@ void SystemResource::Swap(SystemResource* other) {
 void SystemResource::InternalSwap(SystemResource* other) {
   std::swap(available_, other->available_);
   std::swap(total_, other->total_);
-  std::swap(usedpercent_, other->usedpercent_);
+  std::swap(used_percent_, other->used_percent_);
   description_.Swap(&other->description_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -5371,18 +4389,18 @@ void SystemResource::clear_total() {
   // @@protoc_insertion_point(field_set:monitor.SystemResource.total)
 }
 
-// optional double usedPercent = 3;
-void SystemResource::clear_usedpercent() {
-  usedpercent_ = 0;
+// optional double used_percent = 3;
+void SystemResource::clear_used_percent() {
+  used_percent_ = 0;
 }
- double SystemResource::usedpercent() const {
-  // @@protoc_insertion_point(field_get:monitor.SystemResource.usedPercent)
-  return usedpercent_;
+ double SystemResource::used_percent() const {
+  // @@protoc_insertion_point(field_get:monitor.SystemResource.used_percent)
+  return used_percent_;
 }
- void SystemResource::set_usedpercent(double value) {
+ void SystemResource::set_used_percent(double value) {
   
-  usedpercent_ = value;
-  // @@protoc_insertion_point(field_set:monitor.SystemResource.usedPercent)
+  used_percent_ = value;
+  // @@protoc_insertion_point(field_set:monitor.SystemResource.used_percent)
 }
 
 // optional string description = 4;
@@ -5768,7 +4786,7 @@ CPU::CPU(const CPU& from)
 void CPU::SharedCtor() {
     _is_default_instance_ = false;
   _cached_size_ = 0;
-  usedpercent_ = 0;
+  used_percent_ = 0;
 }
 
 CPU::~CPU() {
@@ -5808,7 +4826,7 @@ CPU* CPU::New(::google::protobuf::Arena* arena) const {
 
 void CPU::Clear() {
 // @@protoc_insertion_point(message_clear_start:monitor.CPU)
-  usedpercent_ = 0;
+  used_percent_ = 0;
 }
 
 bool CPU::MergePartialFromCodedStream(
@@ -5821,12 +4839,12 @@ bool CPU::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional double usedPercent = 1;
+      // optional double used_percent = 1;
       case 1: {
         if (tag == 9) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, &usedpercent_)));
+                 input, &used_percent_)));
 
         } else {
           goto handle_unusual;
@@ -5859,9 +4877,9 @@ failure:
 void CPU::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:monitor.CPU)
-  // optional double usedPercent = 1;
-  if (this->usedpercent() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->usedpercent(), output);
+  // optional double used_percent = 1;
+  if (this->used_percent() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->used_percent(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:monitor.CPU)
@@ -5870,9 +4888,9 @@ void CPU::SerializeWithCachedSizes(
 ::google::protobuf::uint8* CPU::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:monitor.CPU)
-  // optional double usedPercent = 1;
-  if (this->usedpercent() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->usedpercent(), target);
+  // optional double used_percent = 1;
+  if (this->used_percent() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->used_percent(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:monitor.CPU)
@@ -5883,8 +4901,8 @@ int CPU::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:monitor.CPU)
   int total_size = 0;
 
-  // optional double usedPercent = 1;
-  if (this->usedpercent() != 0) {
+  // optional double used_percent = 1;
+  if (this->used_percent() != 0) {
     total_size += 1 + 8;
   }
 
@@ -5916,8 +4934,8 @@ void CPU::MergeFrom(const CPU& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.usedpercent() != 0) {
-    set_usedpercent(from.usedpercent());
+  if (from.used_percent() != 0) {
+    set_used_percent(from.used_percent());
   }
 }
 
@@ -5945,7 +4963,7 @@ void CPU::Swap(CPU* other) {
   InternalSwap(other);
 }
 void CPU::InternalSwap(CPU* other) {
-  std::swap(usedpercent_, other->usedpercent_);
+  std::swap(used_percent_, other->used_percent_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -5961,18 +4979,18 @@ void CPU::InternalSwap(CPU* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // CPU
 
-// optional double usedPercent = 1;
-void CPU::clear_usedpercent() {
-  usedpercent_ = 0;
+// optional double used_percent = 1;
+void CPU::clear_used_percent() {
+  used_percent_ = 0;
 }
- double CPU::usedpercent() const {
-  // @@protoc_insertion_point(field_get:monitor.CPU.usedPercent)
-  return usedpercent_;
+ double CPU::used_percent() const {
+  // @@protoc_insertion_point(field_get:monitor.CPU.used_percent)
+  return used_percent_;
 }
- void CPU::set_usedpercent(double value) {
+ void CPU::set_used_percent(double value) {
   
-  usedpercent_ = value;
-  // @@protoc_insertion_point(field_set:monitor.CPU.usedPercent)
+  used_percent_ = value;
+  // @@protoc_insertion_point(field_set:monitor.CPU.used_percent)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -6577,9 +5595,9 @@ bool AlertStatus::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int64 ledger_sequence = 2;
-      case 2: {
-        if (tag == 16) {
+      // optional int64 ledger_sequence = 1;
+      case 1: {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &ledger_sequence_)));
@@ -6587,13 +5605,13 @@ bool AlertStatus::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_node_id;
+        if (input->ExpectTag(18)) goto parse_node_id;
         break;
       }
 
-      // optional string node_id = 3;
-      case 3: {
-        if (tag == 26) {
+      // optional string node_id = 2;
+      case 2: {
+        if (tag == 18) {
          parse_node_id:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_node_id()));
@@ -6604,13 +5622,13 @@ bool AlertStatus::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_system;
+        if (input->ExpectTag(26)) goto parse_system;
         break;
       }
 
-      // optional .monitor.SystemStatus system = 4;
-      case 4: {
-        if (tag == 34) {
+      // optional .monitor.SystemStatus system = 3;
+      case 3: {
+        if (tag == 26) {
          parse_system:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_system()));
@@ -6645,25 +5663,25 @@ failure:
 void AlertStatus::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:monitor.AlertStatus)
-  // optional int64 ledger_sequence = 2;
+  // optional int64 ledger_sequence = 1;
   if (this->ledger_sequence() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->ledger_sequence(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->ledger_sequence(), output);
   }
 
-  // optional string node_id = 3;
+  // optional string node_id = 2;
   if (this->node_id().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->node_id().data(), this->node_id().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "monitor.AlertStatus.node_id");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->node_id(), output);
+      2, this->node_id(), output);
   }
 
-  // optional .monitor.SystemStatus system = 4;
+  // optional .monitor.SystemStatus system = 3;
   if (this->has_system()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      4, *this->system_, output);
+      3, *this->system_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:monitor.AlertStatus)
@@ -6672,12 +5690,12 @@ void AlertStatus::SerializeWithCachedSizes(
 ::google::protobuf::uint8* AlertStatus::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:monitor.AlertStatus)
-  // optional int64 ledger_sequence = 2;
+  // optional int64 ledger_sequence = 1;
   if (this->ledger_sequence() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->ledger_sequence(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->ledger_sequence(), target);
   }
 
-  // optional string node_id = 3;
+  // optional string node_id = 2;
   if (this->node_id().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->node_id().data(), this->node_id().length(),
@@ -6685,14 +5703,14 @@ void AlertStatus::SerializeWithCachedSizes(
       "monitor.AlertStatus.node_id");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->node_id(), target);
+        2, this->node_id(), target);
   }
 
-  // optional .monitor.SystemStatus system = 4;
+  // optional .monitor.SystemStatus system = 3;
   if (this->has_system()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
-        4, *this->system_, false, target);
+        3, *this->system_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:monitor.AlertStatus)
@@ -6703,21 +5721,21 @@ int AlertStatus::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:monitor.AlertStatus)
   int total_size = 0;
 
-  // optional int64 ledger_sequence = 2;
+  // optional int64 ledger_sequence = 1;
   if (this->ledger_sequence() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->ledger_sequence());
   }
 
-  // optional string node_id = 3;
+  // optional string node_id = 2;
   if (this->node_id().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->node_id());
   }
 
-  // optional .monitor.SystemStatus system = 4;
+  // optional .monitor.SystemStatus system = 3;
   if (this->has_system()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -6806,7 +5824,7 @@ void AlertStatus::InternalSwap(AlertStatus* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // AlertStatus
 
-// optional int64 ledger_sequence = 2;
+// optional int64 ledger_sequence = 1;
 void AlertStatus::clear_ledger_sequence() {
   ledger_sequence_ = GOOGLE_LONGLONG(0);
 }
@@ -6820,7 +5838,7 @@ void AlertStatus::clear_ledger_sequence() {
   // @@protoc_insertion_point(field_set:monitor.AlertStatus.ledger_sequence)
 }
 
-// optional string node_id = 3;
+// optional string node_id = 2;
 void AlertStatus::clear_node_id() {
   node_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -6864,7 +5882,7 @@ void AlertStatus::clear_node_id() {
   // @@protoc_insertion_point(field_set_allocated:monitor.AlertStatus.node_id)
 }
 
-// optional .monitor.SystemStatus system = 4;
+// optional .monitor.SystemStatus system = 3;
 bool AlertStatus::has_system() const {
   return !_is_default_instance_ && system_ != NULL;
 }

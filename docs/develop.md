@@ -359,7 +359,7 @@ jsonpath(account(\"bubiV8i6mtcDN5a1X7PbRPuaZuo63QRrHxHGr98s\"), \".priv.master_w
      "contract" : //optional
      {
        "contract_id" : "something identify this contract",
-       "payload" : "function Main(input) {  var a = callBackGetAccountInfo('a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18');  if (a) callBackLog(a);  var b = callBackGetAccountMetaData('a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18', input['key']);  if (b) callBackLog(b);  var tx = { 'operations' : [{ 'type' : 'ISSUE_ASSET', 'source_address' : 'a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18', 'issue_asset' : {  'code' : 'cny',  'amount' : input.amount }  } ]  };  callBackDoOperation(tx); } "
+       "payload" : "function main(input) {  var a = callBackGetAccountInfo('a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18');  if (a) callBackLog(a);  var b = callBackGetAccountMetaData('a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18', input['key']);  if (b) callBackLog(b);  var tx = { 'operations' : [{ 'type' : 'ISSUE_ASSET', 'source_address' : 'a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18', 'issue_asset' : {  'code' : 'cny',  'amount' : input.amount }  } ]  };  callBackDoOperation(tx); } "
      },
      "metadatas" : [
         {
@@ -802,7 +802,7 @@ consensusValue.previous_ledger_hash; /*上一个区块hash*/
 
 错误列表如下：
 
-error_code | enum | error_desc
+|error_code | enum | error_desc
 |:--- | --- | --- |
 |0  | ERRCODE_SUCCESS | 操作成功
 |1  | ERRCODE_INTERNAL_ERROR | 服务内部错误
@@ -814,21 +814,21 @@ error_code | enum | error_desc
 |21 | ERRCODE_EXPR_CONDITION_SYNTAX_ERROR | 指表达式语法分析错误，代表该 TX 一定会失败
 |90 | ERRCODE_INVALID_PUBKEY | 公钥非法 
 |91 | ERRCODE_INVALID_PRIKEY | 私钥非法
-|92 | ERRCODE_ASSET_INVALID | 资产issue 地址非法，或者 code 长度不在有效范围内
+|92 | ERRCODE_ASSET_INVALID | 资产issue 地址非法|code长度不在有效范围内|数额不在有效范围
 |93 | ERRCODE_INVALID_SIGNATURE | 签名权重不够，达不到操作的门限值
 |94 | ERRCODE_INVALID_ADDRESS | 地址非法
-|97 | ERRCODE_MISSING_OPERATIONS | TX 缺失操作
-|99 | ERRCODE_BAD_SEQUENCE | 序列号错误
+|97 | ERRCODE_MISSING_OPERATIONS | 交易缺失操作
+|99 | ERRCODE_BAD_SEQUENCE | 交易序号错误
 |100| ERRCODE_ACCOUNT_LOW_RESERVE | 余额不足
-|101| ERRCODE_ACCOUNT_SOURCEDEST_EQUAL | 源目的账号相等
+|101| ERRCODE_ACCOUNT_SOURCEDEST_EQUAL | 源和目的账号相等
 |102| ERRCODE_ACCOUNT_DEST_EXIST | 创建账号操作，目标账号已存在
 |103| ERRCODE_ACCOUNT_NOT_EXIST | 账户不存在
 |104| ERRCODE_ACCOUNT_ASSET_LOW_RESERVE | 支付操作，资产余额不足
-|105| ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE |
+|105| ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE |资产数量过大，超出了int64的范围
 |114| ERRCODE_OUT_OF_TXCACHE |  TX 缓存队列已满
 |120| ERRCODE_WEIGHT_NOT_VALID | 权重值不在有效范围内
 |121| ERRCODE_THRESHOLD_NOT_VALID | 门限值不在有效范围内
-|144| ERRCODE_INVALID_DATAVERSION | version 版本号不与账号匹配
+|144| ERRCODE_INVALID_DATAVERSION | metadata的version版本号不与已有的匹配（一个版本化的数据库）
 |151| ERRCODE_CONTRACT_EXECUTE_FAIL | 合约执行失败
 |152| ERRCODE_CONTRACT_SYNTAX_ERROR | 合约语法分析失败
 

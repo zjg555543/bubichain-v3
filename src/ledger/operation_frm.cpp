@@ -149,7 +149,7 @@ namespace bubi {
 				}
 			}
 
-			for (uint32_t i = 0; i < create_account.metadatas_size(); i++){
+			for (int32_t i = 0; i < create_account.metadatas_size(); i++){
 				const auto kp = create_account.metadatas(i);
 				if (kp.key().size() > General::METADATA_KEY_MAXSIZE){
 					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
