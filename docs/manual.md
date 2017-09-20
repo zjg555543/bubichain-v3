@@ -72,10 +72,9 @@ sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubic
 
 ```json
     "db":{
-        "ledger_path":"data/ledger.db",
-        "keyvalue_path":"data/keyvalue.db",
-        "rational_db_type":"pgsql",
-        "tmp_path":"tmp"
+		"account_path": "data/account.db", //用来存储账号数据
+		"ledger_path": "data/ledger.db", //存储区块数据
+		"keyvalue_path": "data/keyvalue.db" //存储共识数据
     }
 ```
 ##### 节点间网络通信
@@ -125,8 +124,8 @@ sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubic
 
 ```json
     "ledger":{
-        "genesis_account":"a0017bb37115637686a4efd6fabe8bfd74d695c3616515",//创世账号，同一条链上的每一个节点都必须唯一
-        "hash_type":1,// 0 : SHA256 1: SM3 //账号的hash类型
+        "genesis_account":"a0017bb37115637686a4efd6fabe8bfd74d695c3616515",//创世账号，同一条链上的每一个节点都必须相同
+        "hash_type":1,// 0 : SHA256 1: SM3 指定系统计算hash用哪种散列算法
         "max_trans_per_ledger":1000,
         "max_ledger_per_message":5,
         "max_trans_in_memory":2000,
@@ -151,12 +150,12 @@ sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubic
 
 ```json
     "validation":{
-        "type":"pbft",//共识类型
+        "type":"pbft", //共识算法类型
         "address":"a0024740b934765287b16113adc6bb285d72c124d9e3c1",//节点私钥对应的地址
         "node_private_key":"44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d",//私钥，每个节点唯一
-        "close_interval":3,//区块关闭时间
-        "validators":[
-            "a0024740b934765287b16113adc6bb285d72c124d9e3c1",//参与共识的节点地址
+        "close_interval":3, //区块关闭周期，单位：秒
+        "validators":[ //参与共识的节点地址集合
+            "a0024740b934765287b16113adc6bb285d72c124d9e3c1",
             "a002c5199f9dd53b009ca8f54e1921b0ebee1cb60de2b9"
         ]
     }
@@ -416,9 +415,9 @@ bubichain/bin/bubi --clear-consensus-status
 当已经加入其他区块链网络的节点想单独运行一条链时，可以执行以上命令创建硬分叉
 执行后，新的区块链网络只有一个验证节点为本节点。
 - 执行硬分叉命令后获取到如下Hash值
-
+```bash
 Create hard fork ledger successful, seq(20), consensus value hash(**7aa332f05748e6ce9ad3d059c959a50675109bcaf0a4ba2c5c6adc6418960197**)
-
+```
 - 把上述 Hash 值配置到本节点或者同步节点的 bubi.json 的hardfork_points
 
 ```json
