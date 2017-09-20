@@ -134,12 +134,12 @@ namespace bubi {
 			auto txproto = request.txset().txs(i);
 			
 			TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(txproto);
-			LedgerManager::Instance().transaction_stack_.push(tx_frm);
 
 			if (!tx_frm->ValidForApply(environment_)){
 				continue;
 			}
 
+			LedgerManager::Instance().transaction_stack_.push(tx_frm);
 			if (!tx_frm->Apply(this, environment_)){
 				LOG_ERROR("transaction(%s) apply failed. %s",
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
