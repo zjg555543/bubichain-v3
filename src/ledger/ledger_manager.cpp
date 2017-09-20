@@ -171,7 +171,7 @@ namespace bubi {
 				int64_t pid = *it;
 				auto iter = sync_.peers_.find(pid);
 				if (iter != sync_.peers_.end()){
-					SyncStat st = iter->second;
+					SyncStat& st = iter->second;
 					if (current_time - st.send_time_ > 30 * utils::MICRO_UNITS_PER_SEC){
 						st.send_time_ = 0;
 					}
