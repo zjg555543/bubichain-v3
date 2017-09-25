@@ -127,7 +127,9 @@ namespace bubi {
 				v["update_time"] = update_time_;
 				Json::Value& peers = v["peers"];
 				for (auto it = peers_.begin(); it != peers_.end(); it++){
-					peers[peers.size()] = it->second.ToJson();
+					Json::Value tmp = it->second.ToJson();
+					tmp["pid"] = it->first;
+					peers[peers.size()] = tmp;
 				}
 				return v;
 			}
