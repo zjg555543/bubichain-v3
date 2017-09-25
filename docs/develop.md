@@ -238,7 +238,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
 |add |逗号分隔的需要添加的验证节点列表
 |del |逗号分隔的需要删除的验证节点列表
 
-注：需要大部分的验证节点都执行添加、删除操作，且共识成功后才能添加、删除成功
+注：1. 本操作必须由本机回环地址提交。 2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
 
 
 ## __获取交易序列化数据__
@@ -257,9 +257,12 @@ POST /getTransactionBlob
 {
   "source_address" : "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",
   "nonce" : 130,
-  "operations" : [{
+  "metadata":"0123456789abcdef",// 要求16进制格式。 若不需要可以空着不填写
+  "operations" : [
+    {
       "ps" : "根据不同的操作类型填写"
-    }, {
+    }, 
+    {
       "ps" : "根据不同的操作类型填写"
     }
   ]
@@ -307,7 +310,10 @@ POST /submitTransaction
 
 ### expr_condtion 表达式规则
 该表达式字段，用于自定义交易有效规则，比如设置交易在某个账户的master_weight 大于 100 有效，则填：
+
+```
 jsonpath(account(\"bubiV8i6mtcDN5a1X7PbRPuaZuo63QRrHxHGr98s\"), \".priv.master_weight\") > 100
+```
 
 #### expr_condtion内部函数
 
@@ -668,7 +674,7 @@ var transaction =
   'operations' :
   [
     {
-      "type" : "ISSUE_ASSET",
+      "type" : 2,
       "issue_asset" :
       {
         "amount" : 1000,
@@ -742,8 +748,7 @@ bar的值是Y合约的账号地址。
 
 ### 2.  调用者的地址
 sender
-
-```sender```的值等于本次调用该合约的账号。
+```sender``` 的值等于本次调用该合约的账号。
 
 例如某账号发起了一笔交易，该交易中有个操作是调用合约Y（该操作的source_address是x），那么合约Y执行过程中，sender的值就是x账号的地址。
 
@@ -754,10 +759,10 @@ var bar = sender;
 */
 ```
 
-### 3.  触发本次合约的交易hash
+### 3.  触发本次合约的交易
 trigger
 
-```trigger```的值等于触发本次合约的交易。
+```trigger``` 的值等于触发本次合约的交易。
 
 例如某账号A发起了一笔交易tx0，tx0中有一个操作是给某个合约账户转移资产(调用合约), 那么```trigger```的值就是交易tx0。
 
@@ -771,7 +776,7 @@ var bar = trigger;
 ### 4.  触发本次合约调用的操作的序号
 triggerIndex
 
-```triggerIndex```的值等于触发本次合约的操作的序号。
+```triggerIndex``` 的值等于触发本次合约的操作的序号。
 
 例如某账号A发起了一笔交易tx0，tx0中第0（从0开始计数）个操作是给某个合约账户转移资产(调用合约), 那么```triggerIndex```的值就是0。
 
@@ -783,14 +788,14 @@ var bar = triggerIndex;
 ### 5.  本次共识数据
 consensusValue
 
-```consensusValue```当前块(正在生成的块)的共识数据。
+```consensusValue``` 当前块(正在生成的块)的共识数据。
 consensusValue的数据结构可以在src/proto/chain.proto中找到ConsensusValue。
 ConsensusValue是一个protobuffer对象，根据protobuffer对象转为json格式的标准方法转换，即是```consensusValue```的值。
 
 ```javascript
 var bar = consensusValue;
 /*consensusValue结构比较复杂，常用的数据有以下几个:*/
-consensusValue.close_time;	/*当前时间*/
+consensusValue.close_time;	/*当前时间,也就是区块生成时间*/
 consensusValue.ledger_seq; 	/*当前区块序号*/
 consensusValue.previous_ledger_hash; /*上一个区块hash*/
 ```

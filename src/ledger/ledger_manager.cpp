@@ -171,7 +171,10 @@ namespace bubi {
 				int64_t pid = *it;
 				auto iter = sync_.peers_.find(pid);
 				if (iter != sync_.peers_.end()){
-					SyncStat st = iter->second;
+					SyncStat& st = iter->second;
+					if (current_time - st.send_time_ > 30 * utils::MICRO_UNITS_PER_SEC){
+						st.send_time_ = 0;
+					}
 					if (st.probation_ > current_time){
 						continue;
 					}
@@ -694,7 +697,7 @@ namespace bubi {
 			if (begin != itm.gl_.begin() || end != itm.gl_.end()){
 				LOG_ERROR("received unexpected ledgers[" FMT_I64 "," FMT_I64 "] while expect[" FMT_I64 "," FMT_I64 "]",
 					begin, end, itm.gl_.begin(), itm.gl_.end());
-				itm.probation_ = utils::Timestamp::HighResolution() + 60000000;
+				itm.probation_ = utils::Timestamp::HighResolution() + 60 * utils::MICRO_UNITS_PER_SEC;
 				itm.gl_.set_begin(0);
 				itm.gl_.set_end(0);
 				break;
@@ -715,7 +718,7 @@ namespace bubi {
 				if (consensus_value.ledger_seq() == last_closed_ledger_->GetProtoHeader().seq() + 1){
 					if (!CloseLedger(consensus_value, proof)){
 						valid = false;
-						itm.probation_ = utils::Timestamp::HighResolution() + 60000000;
+						itm.probation_ = utils::Timestamp::HighResolution() + 60 * utils::MICRO_UNITS_PER_SEC;
 						break;
 					}
 					valid = true;
