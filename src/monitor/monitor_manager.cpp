@@ -181,8 +181,8 @@ namespace bubi {
 	bool MonitorManager::OnLedgerStatus(protocol::WsMessage &message, int64_t conn_id) {
 		monitor::LedgerStatus ledger_status;
 		ledger_status.mutable_ledger_header()->CopyFrom(LedgerManager::Instance().GetLastClosedLedger());
-		ledger_status.set_transaction_size(0);
-		ledger_status.set_account_count(0);
+		ledger_status.set_transaction_size(GlueManager::Instance().GetTransactionCacheSize());
+		ledger_status.set_account_count(LedgerManager::Instance().GetAccountNum());
 		ledger_status.set_timestamp(utils::Timestamp::HighResolution());
 
 		bool bret = true;
