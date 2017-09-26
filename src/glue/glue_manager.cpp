@@ -279,6 +279,10 @@ namespace bubi {
 		consensus_->UpdateValidators(validators, proof);
 	}
 
+	void GlueManager::LedgerHasUpgrade() {
+		ledger_upgrade_.LedgerHasUpgrade();
+	}
+
 	Result GlueManager::ConfValidator(const std::string &add, const std::string &del) {
 		return ledger_upgrade_.ConfValidator(add, del);
 	}
@@ -311,11 +315,6 @@ namespace bubi {
 
 		//delete the cache 
 		size_t ret1 = RemoveTxset(txset_frm);
-
-		//delete the upgrade ledger
-		if (req.has_ledger_upgrade()) {
-			ledger_upgrade_.LedgerHasUpgrade();
-		}
 
 		//start time
 		int64_t next_interval = GetIntervalTime(txset_frm.Size() == 0);

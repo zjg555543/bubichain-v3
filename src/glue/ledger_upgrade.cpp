@@ -76,7 +76,7 @@ namespace bubi {
 			}
 		} while (false);
 
-		if (notify){
+		if (notify && ConsensusManager::Instance().GetConsensus()->IsValidator()){
 			PeerManager::Instance().Broadcast(protocol::OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOTIFY, notify->SerializeAsString());
 			Recv(*notify);
 			delete notify;

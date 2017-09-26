@@ -305,6 +305,14 @@ namespace bubi {
 			return false;
 		}
 
+		//pre filter
+		const protocol::Signature &sig = notify.signature();
+		PublicKey pub_key(sig.public_key());
+		if (ConsensusManager::Instance().GetConsensus()->GetValidatorIndex(pub_key.GetBase16Address()) < 0) {
+			LOG_TRACE("Cann't find the validator(%s) in list", pub_key.GetBase16Address().c_str());
+			return true;
+		}
+
 		LOG_INFO("Receive ledger up notify(%s)", Proto2Json(notify).toFastString().c_str());
 		if (ReceiveBroadcastMsg(protocol::OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOTIFY, message.data(), conn_id)) {
 			BroadcastMsg(protocol::OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOTIFY, message.data());
