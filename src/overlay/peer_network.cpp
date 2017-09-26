@@ -85,7 +85,7 @@ namespace bubi {
 		utils::MutexGuard guard(conns_list_lock_);
 		Peer *peer = (Peer *)GetConnection(conn_id);
 		if (!peer->IsActive()) {
-			return false;
+			return true;
 		}
 
 		const P2pNetwork &p2p_configure = Configure::Instance().p2p_configure_.consensus_network_configure_;
@@ -137,7 +137,7 @@ namespace bubi {
 
 			if (NodeExist(hello.node_address(), peer->GetId())) {
 				res.set_error_code(protocol::ERRCODE_INVALID_PARAMETER);
-				res.set_error_desc(utils::String::Format("disconnect duplicated connection with %s", peer->GetPeerAddress().ToIp().c_str()));
+				res.set_error_desc(utils::String::Format("Disconnect duplicated connection with ip(%s), id(" FMT_I64 ")", peer->GetPeerAddress().ToIp().c_str(), peer->GetId()));
 				LOG_ERROR("%s",res.error_desc().c_str());
 				break;
 			}
@@ -193,9 +193,19 @@ namespace bubi {
 				//create
 				CreatePeerIfNotExist(peer->GetRemoteAddress());
 
-				//send local peer list
-				GetActivePeers(50);
-				peer->SendPeers(db_peer_cache_, ec);
+				//async send peers
+				int64_t peer_id = peer->GetId();
+				Global::GetInstance()->GetIoService().post([peer_id, this] {
+					//send local peer list
+					GetActivePeers(50);
+
+					utils::MutexGuard guard(conns_list_lock_);
+					Peer *peer = (Peer *)GetConnection(peer_id);
+					if (peer && peer->IsActive()) {
+						std::error_code ignore_ec;
+						peer->SendPeers(db_peer_cache_, ignore_ec);
+					}
+				});
 			}
 			else {
 			}
@@ -205,6 +215,7 @@ namespace bubi {
 			values.set_num_failures(0);
 			values.set_active_time(peer->GetActiveTime());
 			values.set_next_attempt_time(-1);
+			values.set_connection_id(conn_id);
 			UpdateItem(peer->GetRemoteAddress(), values);
 
 		} while (false);
@@ -343,13 +354,7 @@ namespace bubi {
 
 	void PeerNetwork::OnDisconnect(Connection *conn) {
 		Peer *peer = (Peer *)conn;
-		protocol::Peer values;
-		values.set_active_time(0);
-		values.set_next_attempt_time(-1);
-		values.set_num_failures(-1);
-
-		UpdateItem(peer->GetRemoteAddress(), values);
-		peer->clean_state_changed();
+		UpdateItemDisconnect(peer->GetRemoteAddress(), conn->GetId());
 	}
 
 	bool PeerNetwork::ConnectToPeers(size_t max) {
@@ -357,7 +362,7 @@ namespace bubi {
 
 		protocol::Peers records;
 		do {
-			int32_t row_count = QueryTopItem(0, max, utils::Timestamp::Now().timestamp(), records);
+			int32_t row_count = QueryTopItem(false, max, utils::Timestamp::Now().timestamp(), records);
 			if (row_count < 0) {
 				LOG_ERROR("Query records from db failed");
 				break;
@@ -374,7 +379,7 @@ namespace bubi {
 				utils::InetAddress address(item.ip(), (uint16_t)item.port());
 				int64_t num_failures = item.num_failures();
 
-				LOG_TRACE("checking address %s %llu", address.ToIpPort().c_str(), utils::Thread::current_thread_id());
+				LOG_TRACE("checking address ip(%s), thread id(" FMT_SIZE ")", address.ToIpPort().c_str(), utils::Thread::current_thread_id());
 
 				bool exist = false;
 				for (ConnectionMap::iterator iter = connections_.begin(); iter != connections_.end(); iter++) {
@@ -386,7 +391,7 @@ namespace bubi {
 				}
 
 				if (exist) {
-					LOG_TRACE("skip to connect exist %s, " FMT_SIZE, address.ToIpPort().c_str(), utils::Thread::current_thread_id());
+					LOG_TRACE("skip to connect exist ip(%s), thread id(" FMT_SIZE ")", address.ToIpPort().c_str(), utils::Thread::current_thread_id());
 					continue;
 				}
 				bool is_local_addr = false;
@@ -400,7 +405,7 @@ namespace bubi {
 				}
 
 				if (is_local_addr) {
-					LOG_TRACE("skip to connect self %s, " FMT_SIZE, address.ToIpPort().c_str(), utils::Thread::current_thread_id());
+					LOG_TRACE("skip to connect self ip(%s), thread id(" FMT_SIZE ")", address.ToIpPort().c_str(), utils::Thread::current_thread_id());
 					continue;
 				}
 
@@ -505,6 +510,7 @@ namespace bubi {
 		values.set_num_failures(-1);
 		values.set_next_attempt_time(-1);
 		values.set_active_time(0);
+		values.set_connection_id(0);
 		return UpdateItem(utils::InetAddress::Any(), values);
 	}
 
@@ -580,6 +586,7 @@ namespace bubi {
 				if (record.num_failures() >= 0) record_temp->set_num_failures(record.num_failures());
 				if (record.next_attempt_time() >= 0) record_temp->set_next_attempt_time(record.next_attempt_time());
 				if (record.active_time() >= 0) record_temp->set_active_time(record.active_time());
+				if (record.connection_id() >= 0) record_temp->set_connection_id(record.connection_id());
 			}
 		}
 
@@ -588,6 +595,41 @@ namespace bubi {
 		} 
 
 		return db->Put(General::PEERS_TABLE, all.SerializeAsString());
+	}
+
+	bool PeerNetwork::UpdateItemDisconnect(const utils::InetAddress &address, int64_t conn_id) {
+		std::string peers;
+		KeyValueDb *db = Storage::Instance().keyvalue_db();
+		int32_t count = db->Get(General::PEERS_TABLE, peers);
+		if (count < 0) {
+			return false;
+		}
+
+		protocol::Peers all;
+		if (!all.ParseFromString(peers)) {
+			LOG_ERROR("Parse peers string failed");
+			return false;
+		}
+
+		int32_t peer_count = 0;
+		std::string ip = address.ToIp();
+		int64_t port = address.GetPort();
+		for (int32_t i = 0; i < all.peers_size(); i++) {
+			protocol::Peer *record_temp = all.mutable_peers(i);
+			if (record_temp->ip() == ip && 
+				record_temp->port() == port && 
+				record_temp->connection_id() == conn_id
+				) {
+				peer_count++;
+				record_temp->set_active_time(0);
+				record_temp->set_connection_id(0);
+			}
+		}
+		
+		if (peer_count > 0 ) {
+			return db->Put(General::PEERS_TABLE, all.SerializeAsString());
+		} 
+		return true;
 	}
 
 	int32_t PeerNetwork::QueryTopItem(bool active, int64_t limit, int64_t next_attempt_time, protocol::Peers &records) {
@@ -616,7 +658,7 @@ namespace bubi {
 			iter != sorted_records.end();
 			iter++) {
 			const protocol::Peer &record = iter->second;
-			if ((active == record.active_time() > 0) &&
+			if ((active == (record.active_time() > 0)) &&
 				(next_attempt_time < 0 || record.next_attempt_time() < next_attempt_time) &&
 				peer_count < limit ) {
 				peer_count++;

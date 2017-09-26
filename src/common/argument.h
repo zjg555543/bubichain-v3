@@ -25,9 +25,8 @@ namespace bubi {
 		bool help_modle_;
 		bool drop_db_;
 
-		bool update_;
 		bool peer_addr_;
-		bool del_peer_addr_;
+		bool clear_peer_addresses_;
 		bool clear_consensus_status_;
 		bool create_hardfork_;
 

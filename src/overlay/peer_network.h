@@ -80,6 +80,7 @@ namespace bubi {
 		int32_t QueryItem(const utils::InetAddress &address, protocol::Peers &records);
 		bool UpdateItem(const utils::InetAddress &address, protocol::Peer &record);
 		int32_t QueryTopItem(bool active, int64_t limit, int64_t next_attempt_time, protocol::Peers &records);
+		bool UpdateItemDisconnect(const utils::InetAddress &address, int64_t conn_id);
 
 		virtual void OnDisconnect(Connection *conn);
 		virtual bool OnConnectOpen(Connection *conn);

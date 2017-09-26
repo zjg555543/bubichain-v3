@@ -34,8 +34,6 @@ namespace bubi {
 
 	class Peer : public Connection {
 	private:
-
-		bool state_changed_;
 		int64_t active_time_;
 		int64_t delay_;
 
@@ -49,12 +47,9 @@ namespace bubi {
 		Peer(server *server_h, client *client_h, tls_server *tls_server_h, tls_client *tls_client_h, connection_hdl con, const std::string &uri, int64_t id);
 		virtual ~Peer();
 
-		
 		utils::InetAddress GetRemoteAddress() const;
 		bool IsActive() const;
 		std::string GetPeerNodeAddress() const;
-		bool state_changed() const;
-		void clean_state_changed();
 		int64_t GetActiveTime() const;
 		int64_t GetDelay() const;
 
@@ -64,6 +59,7 @@ namespace bubi {
 		bool SendHello(int32_t listen_port, const std::string &node_address, const int64_t &network_id, const std::string &node_rand, std::error_code &ec);
 
 		virtual void ToJson(Json::Value &status) const;
+		virtual bool OnNetworkTimer(int64_t current_time);
 	};
 }
 

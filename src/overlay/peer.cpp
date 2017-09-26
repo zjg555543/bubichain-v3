@@ -18,7 +18,6 @@ limitations under the License.
 namespace bubi {
 	Peer::Peer(server *server_h, client *client_h, tls_server *tls_server_h, tls_client *tls_client_h, connection_hdl con, const std::string &uri, int64_t id) :
 		Connection(server_h, client_h, tls_server_h, tls_client_h, con, uri, id) {
-		state_changed_ = false;
 		active_time_ = 0;
 		delay_ = 0;
 	}
@@ -35,14 +34,6 @@ namespace bubi {
 
 	std::string Peer::GetPeerNodeAddress() const {
 		return peer_node_address_;
-	}
-
-	bool Peer::state_changed() const {
-		return state_changed_;
-	}
-
-	void Peer::clean_state_changed() {
-		state_changed_ = false;
 	}
 
 	int64_t Peer::GetActiveTime() const {
@@ -99,10 +90,20 @@ namespace bubi {
 		status["delay"] = delay_;
 		status["active"] = IsActive();
 		status["ip_address"] = GetPeerAddress().ToIpPort();
+		status["active_time"] = active_time_;
 	}
 
 	int64_t Peer::GetDelay() const {
 		return delay_;
+	}
+
+	bool Peer::OnNetworkTimer(int64_t current_time) {
+		if (!IsActive() && current_time - connect_start_time_ > 10 * utils::MICRO_UNITS_PER_SEC) {
+			LOG_ERROR("Peer(%s) active timeout", GetPeerAddress().ToIpPort().c_str());
+			return false;
+		} 
+
+		return true;
 	}
 
 }

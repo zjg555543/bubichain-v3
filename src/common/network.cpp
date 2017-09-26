@@ -261,6 +261,8 @@ namespace bubi {
 		status["last_receive_time"] = last_receive_time_;
 	}
 
+	bool Connection::OnNetworkTimer(int64_t current_time) { return true; }
+
 	SslParameter::SslParameter() :enable_(false) {}
 	SslParameter::~SslParameter() {}
 
@@ -409,10 +411,16 @@ namespace bubi {
 			LOG_ERROR("The method type(" FMT_I64 ") request(%s), return false, delete it",
 				message.type(), message.request() ? "true" : "false");
 			// return false, delete it
-			utils::MutexGuard guard(conns_list_lock_);
-			Connection *conn = GetConnection(hdl);
-			if (conn) break;  //not found
-			OnDisconnect(conn);
+			do {
+				utils::MutexGuard guard(conns_list_lock_);
+				Connection *conn = GetConnection(hdl);
+				if (!conn) {
+					LOG_ERROR("Handle not found");
+					break;  //not found
+				}
+				OnDisconnect(conn);
+			} while (false);
+
 			RemoveConnection(conn_id);
 		} while (false);
 	}
@@ -465,7 +473,14 @@ namespace bubi {
 						if (iter->second->IsDataExpired(connect_time_out_)) {
 							iter->second->Close("expired");
 							delete_list.push_back(iter->second);
+							LOG_ERROR("Peer(%s) data receive timeout", iter->second->GetPeerAddress().ToIpPort().c_str());
 						}
+
+						//check application timer
+						if (!iter->second->OnNetworkTimer(now)) {
+							iter->second->Close("app error");
+							delete_list.push_back(iter->second);
+						} 
 					}
 
 					//move current connection to delete array
