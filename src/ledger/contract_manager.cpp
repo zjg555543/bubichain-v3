@@ -24,6 +24,7 @@ namespace bubi{
 	const std::string ContractManager::sender_name_ = "sender";
 	const std::string ContractManager::this_address_ = "thisAddress";
 	const char* ContractManager::main_name_ = "main";
+	const char* ContractManager::query_name_ = "query";
 	const std::string ContractManager::trigger_tx_name_ = "trigger";
 	const std::string ContractManager::trigger_tx_index_name_ = "triggerIndex";
 	const std::string ContractManager::this_header_name_ = "consensusValue";
@@ -341,12 +342,109 @@ namespace bubi{
 		return false;
 	}
 
+	bool ContractManager::Query(const std::string& code, const std::string &input, Json::Value& jsResult)
+    {
+		v8::Isolate::Scope isolate_scope(isolate_);
+		v8::HandleScope    handle_scope(isolate_);
+		v8::TryCatch       try_catch(isolate_);
 
+		v8::Local<v8::ObjectTemplate> templ = v8::Local<v8::ObjectTemplate>::New(isolate_, global_);
+		v8::Handle<v8::Context>       context = v8::Context::New(isolate_, NULL, templ);
+		v8::Context::Scope            context_scope(context);
+
+		v8::Local<v8::String> v8src = v8::String::NewFromUtf8(isolate_, code.c_str());
+		v8::Local<v8::Script> compiled_script;
+
+		auto back = executing_contract_;
+		do
+		{
+			executing_contract_ = this;
+			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)){
+				jsResult["error_message"] = ReportException(isolate_, &try_catch);
+				break;
+			}
+
+			v8::Local<v8::Value> result;
+			if (!compiled_script->Run(context).ToLocal(&result)){
+				jsResult["error_message"] = ReportException(isolate_, &try_catch);
+				break;
+			}
+
+			v8::Local<v8::String> process_name = v8::String::NewFromUtf8(
+                    isolate_, query_name_, v8::NewStringType::kNormal, strlen(query_name_) ).ToLocalChecked();
+
+			v8::Local<v8::Value> process_val;
+			if (!context->Global()->Get(context, process_name).ToLocal(&process_val) ||
+				!process_val->IsFunction()) {
+				LOG_ERROR("lost of %s function", query_name_);
+				break;
+			}
+
+			v8::Local<v8::Function> process = v8::Local<v8::Function>::Cast(process_val);
+
+			const int argc = 1;
+			v8::Local<v8::Value>  argv[argc];
+			v8::Local<v8::String> arg1 = v8::String::NewFromUtf8(isolate_, input.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+			argv[0] = arg1;
+
+			v8::Local<v8::Value> callRet;
+			if (!process->Call(context, context->Global(), argc, argv).ToLocal(&callRet)){
+				jsResult["error_message"] = ReportException(isolate_, &try_catch);
+				LOG_ERROR("%s function execute failed", query_name_);
+				break;
+			}
+
+			if (!JsValueToCppJson(context, callRet, std::string("contract_result"), jsResult)){
+				LOG_ERROR("the result of function %s in contract parse failed", query_name_);
+				break;
+			}
+
+		    executing_contract_ = back;
+            return true;
+		} while (false);
+
+	    executing_contract_ = back;
+        return false;
+    }
+
+	bool ContractManager::JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, std::string& key, Json::Value& jsonvalue)
+	{
+        bool ret = true;
+
+		if (jsvalue->IsObject()){  //include map arrary
+			v8::Local<v8::String> jsStr = v8::JSON::Stringify(context, jsvalue->ToObject()).ToLocalChecked();
+			std::string str = std::string(ToCString(v8::String::Utf8Value(jsStr)));
+
+			Json::Value jsValue;
+			jsValue.fromString(str);
+			jsonvalue[key] = jsValue;
+		}
+		else if (jsvalue->IsNumber()){
+			double jsRet = jsvalue->NumberValue();
+
+			char buf[16] = { 0 };
+			snprintf(buf, sizeof(buf), "%lf", jsRet);
+			jsonvalue[key] = std::string(buf);
+		}
+		else if (jsvalue->IsBoolean()){
+			std::string jsRet = jsvalue->BooleanValue() ? "true" : "false";
+			jsonvalue[key] = jsRet;
+		}
+		else if (jsvalue->IsString()){
+			jsonvalue[key] = std::string(ToCString(v8::String::Utf8Value(jsvalue)));
+		}
+		else
+		{
+            ret = false;
+			jsonvalue[key] = "<return value convert failed>";
+		}
+
+        return ret;
+	}
 
 	bool ContractManager::Exit(){
 		return true;
 	}
-
 
 	bool ContractManager::LoadJsLibSource() {
 		std::string lib_path = utils::String::Format("%s/jslib", utils::File::GetBinHome().c_str());
@@ -398,7 +496,6 @@ namespace bubi{
 				args.GetReturnValue().Set(false);
 				break;
 			}
-
 
 			v8::TryCatch try_catch(args.GetIsolate());
 			std::string js_file = find_source->second; //load_file(*str);
@@ -452,8 +549,10 @@ namespace bubi{
 
 
 			bubi::AccountFrm::pointer account_frm = nullptr;
-			auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm)){
+			//auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
+			//if (!environment->GetEntry(address, account_frm)){
+
+			if (!Environment::AccountFromDB(address, account_frm)){
 				break;
 			}
 
@@ -499,8 +598,10 @@ namespace bubi{
 			std::string key = ToCString(v8::String::Utf8Value(args[1]));
 
 			bubi::AccountFrm::pointer account_frm = nullptr;
-			auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm)){
+			//auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
+			//if (!environment->GetEntry(address, account_frm)){
+
+			if (!Environment::AccountFromDB(address, account_frm)){
 				break;
 			}
 
@@ -588,8 +689,9 @@ namespace bubi{
 
 			bubi::AccountFrm::pointer account_frm = nullptr;
 
-			auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm))
+			//auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
+			//if (!environment->GetEntry(address, account_frm))
+			if (!Environment::AccountFromDB(address, account_frm))
 				break;
 
 			Json::Value json = bubi::Proto2Json(account_frm->GetProtoAccount());

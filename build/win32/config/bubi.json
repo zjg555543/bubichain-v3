@@ -37,9 +37,9 @@
 	},
 	"ledger": {
 		"genesis_account": "a002d8345b89dc34a57574eb497635ff125a3799fe77b6",
-		"genesis_private_key": "c00244a6ef9c3ba4d0e96c8c85a6d4bf904eafd6873d9c13260319dc69ebb40e12db22",
-		"genesis_public_key": "b00204e1c7dddc36d3153adcaa451b0ab525d3def48a0a10fdb492dc3a7263cfb88e80ee974ca4da0e1f322aa84ff9d11340c764ea756ad148e979c121619e9fe52e9054",
-		"hash_type": 1, //0: SHA2561: SM3"max_trans_per_ledger": 1000,
+		"genesis_private_key": "c00244a6ef9c3ba4d0e96c8c85a6d4bf904eafd6873d9c13260319dc69ebb40e12db22",//创世账号的私钥，为了方便暂时在这里记录。正式情况下是运维人员保管的，不会存在这里。
+		"hash_type": 1, //0: SHA2561: SM3
+		"max_trans_per_ledger": 1000,
 		"max_ledger_per_message": 5,
 		"max_trans_in_memory": 2000,
 		"max_apply_ledger_per_round": 3,
@@ -59,9 +59,7 @@
 		"node_private_key": "44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d",
 		"close_interval": 3,
 		"validators": [
-			"a0024740b934765287b16113adc6bb285d72c124d9e3c1",
-			"a0019b7ef40a5f3b2aca4ed1919f45e96061c3f96c7f59"
-
+			"a0024740b934765287b16113adc6bb285d72c124d9e3c1"
 		]
 	}
 }
