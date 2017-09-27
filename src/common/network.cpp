@@ -639,6 +639,7 @@ namespace bubi {
 			// Mozilla Intermediate suggests 1024 as the minimum size to use
 			// Mozilla Modern suggests 2048 as the minimum size to use.
 			ctx->use_tmp_dh_file(ssl_parameter_.tmp_dh_file_);
+			ctx->set_verify_mode(asio::ssl::verify_peer | asio::ssl::verify_fail_if_no_peer_cert);
 
 			std::string ciphers;
 
