@@ -236,7 +236,7 @@ sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubic
 | email | 联系邮箱 
 | domain | 域名
 | days | 证书有效期
-|private_password | 证书私钥（明文）
+|private_password | 证书口令（明文）
 
 ```bash
 [root@localhost bubichain]# ./bin/bubi --request-cert
@@ -270,9 +270,9 @@ local hardware address (0bc9143ba7ccc951cf257948af2d02ff)
 |common_name |节点名称 
 |organization |  组织机构名称 
 | email | 联系邮箱 
-|private_password | 证书私钥（明文）
-| hardware_address |硬件地址（由上一步获取）
-| node_id | 节点id，可不填
+|private_password | 证书口令（明文）
+| hardware_address | 绑定硬件地址（由上一步获取）
+| node_id | 绑定节点id，可不填
 
 注意: hardware_address需要设置为*的话，需要输入\*，如下：
 ```bash
