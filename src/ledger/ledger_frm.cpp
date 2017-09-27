@@ -19,6 +19,8 @@ limitations under the License.
 #include <glue/glue_manager.h>
 #include "ledger_manager.h"
 #include "ledger_frm.h"
+#include "ledgercontext_manager.h"
+#include <future>
 
 namespace bubi {
 #define COUNT_PER_PARTITION 1000000
@@ -30,7 +32,10 @@ namespace bubi {
 	LedgerFrm::~LedgerFrm() {
 	}
 
-
+	void LedgerFrm::SetContext(const std::shared_ptr<LedgerContext>& context)
+	{
+		context_ = context;
+	}
 	//bool LedgerFrm::LoadFromDb(int64_t ledger_seq, protocol::Ledger &ledger) {
 	//	return true;
 	//}
@@ -124,11 +129,12 @@ namespace bubi {
 		return true;
 	}
 
-	bool LedgerFrm::Apply(const protocol::ConsensusValue& request)
+	bool LedgerFrm::Apply(const protocol::ConsensusValue& request, EXECUTE_MODE execute_mode)
 	{
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
 		environment_ = std::make_shared<Environment>(nullptr);
+		timeout_tx_index_ = -1;
 
 		for (int i = 0; i < request.txset().txs_size(); i++) {
 			auto txproto = request.txset().txs(i);
@@ -139,17 +145,58 @@ namespace bubi {
 				continue;
 			}
 
-			LedgerManager::Instance().transaction_stack_.push(tx_frm);
-			if (!tx_frm->Apply(this, environment_)){
-				LOG_ERROR("transaction(%s) apply failed. %s",
-					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
+			//////////////////////////////////////////////////////////////
+			//LedgerManager::Instance().transaction_stack_.push(tx_frm);
+			if (context_.expired())//fatal error
+			{
+				BUBI_EXIT("context expired");
+			}
+			std::shared_ptr<LedgerContext> context = context_.lock();
+			context->transaction_stack_.push(tx_frm);
+
+			if (execute_mode == EM_TIMEOUT){
+				std::future<bool> fut = std::async(std::launch::async, [=](){
+					return tx_frm->Apply(this, environment_);
+				});
+				std::future_status status;
+				do {
+					status = fut.wait_for(std::chrono::seconds(Configure::Instance().ledger_configure_.preprocess_timeout_));
+					if (status == std::future_status::deferred) {
+						//异步操作还没开始
+					}
+					else if (status == std::future_status::timeout) {
+						//异步操作超时
+						timeout_tx_index_ = i;
+						return false;
+					}
+					else if (status == std::future_status::ready) {
+						//异步操作已经完成
+						if (!fut.get()){
+							LOG_ERROR("transaction(%s) apply failed. %s",
+								utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
+						}
+						else{
+							//缓存账号提交，提交到ledger的environment_
+							tx_frm->environment_->Commit();
+						}
+					}
+				} while (status != std::future_status::ready);
 			}
 			else{
-				tx_frm->environment_->Commit();
+				if (!tx_frm->Apply(this, environment_))
+				{
+					LOG_ERROR("transaction(%s) apply failed. %s",
+						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
+				}
+				else
+				{
+					tx_frm->environment_->Commit();
+				}
 			}
 			apply_tx_frms_.push_back(tx_frm);
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
-			LedgerManager::Instance().transaction_stack_.pop();
+			//LedgerManager::Instance().transaction_stack_.pop();
+			context->transaction_stack_.pop();
 		}
 
 		return true;

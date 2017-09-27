@@ -142,7 +142,8 @@ namespace bubi {
 			if (create_account.contract().payload() != ""){
 				std::string err_msg;
 				std::string src = create_account.contract().payload();
-				ContractManager a;
+
+				ContractManager a("");
 				if (!a.SourceCodeCheck(src, err_msg)){
 					result.set_code(protocol::ERRCODE_CONTRACT_SYNTAX_ERROR);
 					result.set_desc(err_msg);
@@ -532,14 +533,22 @@ namespace bubi {
 			
 			std::string javascript = dest_account->GetProtoAccount().contract().payload();
 			if (!javascript.empty()){
-				ContractManager manager;
+				if (transaction_->ledger_->context_.expired())
+				{
+					result_.set_code(protocol::ERRCODE_CONTEXT_EXPIRED);
+					result_.set_desc("context expired");
+					break;
+				}
+				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
+
+				ContractManager manager(context->hash_);
 	
 				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
 				std::string err_msg;
 				if (!manager.Execute(javascript,
 					payment.input(),
 					payment.dest_address(),
-					source_account_->GetAccountAddress(),
+					source_account_->GetAccountAddress(),					
 					trigger_str,
 					index_,
 					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
@@ -654,13 +663,21 @@ namespace bubi {
 			
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
 			if (!javascript.empty()){
-				ContractManager manager;
+				if (transaction_->ledger_->context_.expired())
+				{
+					result_.set_code(protocol::ERRCODE_CONTEXT_EXPIRED);
+					result_.set_desc("context expired");
+					break;
+				}
+				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
+
+				ContractManager manager(context->hash_);
 				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
 				std::string err_msg;
 				if (!manager.Execute(javascript,
 					ope.input(),
 					ope.dest_address(),
-					source_account_->GetAccountAddress(),
+					source_account_->GetAccountAddress(), 
 					trigger_str,
 					index_,
 					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),

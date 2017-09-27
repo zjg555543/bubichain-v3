@@ -14,6 +14,7 @@ limitations under the License.
 #ifndef CONTRACT_MANAGER_H_
 #define CONTRACT_MANAGER_H_
 #include <map>
+#include <unordered_map>
 #include <string>
 
 #include <utils/headers.h>
@@ -39,6 +40,9 @@ namespace bubi{
 		static const std::string trigger_tx_index_name_;
 		static const std::string this_header_name_;
 
+		static utils::Mutex context_index_mutex_;
+		static std::unordered_map<uint64_t, std::string> context_index_map_;
+
 		static v8::Platform* 	platform_;
 		static v8::Isolate::CreateParams create_params_;
 		
@@ -47,7 +51,7 @@ namespace bubi{
 		int tx_do_count_;
 	public:
 		
-		ContractManager();
+		ContractManager(const std::string context_index);
 		~ContractManager();
 
 		static void Initialize(int argc, char** argv);

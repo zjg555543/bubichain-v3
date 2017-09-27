@@ -22,6 +22,7 @@ namespace bubi {
 	LedgerManager::LedgerManager() : tree_(NULL){
 		check_interval_ = 500 * utils::MICRO_UNITS_PER_MILLI;
 		timer_name_ = "Ledger Mananger";
+		context_manager_ = std::make_shared<LedgerContextManager>();
 	}
 
 	LedgerManager::~LedgerManager() {
@@ -484,9 +485,22 @@ namespace bubi {
 			return false;
 		}
 
-		closing_ledger_ = std::make_shared<LedgerFrm>();
-
-		protocol::Ledger& ledger = closing_ledger_->ProtoLedger();
+		std::string con_str = consensus_value.SerializeAsString();
+		std::string chash = HashWrapper::Crypto(con_str);		
+		std::string box_key = std::to_string(consensus_value.ledger_seq()) + chash;
+		std::shared_ptr<LedgerContext> context = context_manager_->GetContext(box_key,true);
+		if (context == nullptr)
+		{
+			int timeout_tx_index = -1;
+			context_manager_->PreProcessLedger(consensus_value, timeout_tx_index,LedgerFrm::EM_NOBREAK);
+			context = context_manager_->GetContext(box_key);
+			if (context == nullptr){
+				LOG_ERROR("GetContext failed,ledger_seq(" FMT_I64 ")  consensus_value hash(%s)", 
+					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
+				return false;
+			}
+		}
+		protocol::Ledger& ledger = context->closing_ledger_->ProtoLedger();
 		auto header = ledger.mutable_header();
 		header->set_seq(consensus_value.ledger_seq());
 		header->set_close_time(consensus_value.close_time());
@@ -498,11 +512,8 @@ namespace bubi {
 		header->set_version(last_closed_ledger_->GetProtoHeader().version());
 
 		int64_t time0 = utils::Timestamp().HighResolution();
-		tree_->time_ = 0;
-	
-		closing_ledger_->Apply(consensus_value);
 		int64_t new_count = 0, change_count = 0;
-		closing_ledger_->Commit(tree_, new_count, change_count);
+		context->closing_ledger_->Commit(tree_, new_count, change_count);
 		statistics_["account_count"] = statistics_["account_count"].asInt64() + new_count;
 
 		int64_t time1 = utils::Timestamp().HighResolution();
@@ -511,13 +522,12 @@ namespace bubi {
 		int64_t time2 = utils::Timestamp().HighResolution();
 
 		header->set_account_tree_hash(tree_->GetRootHash());
-		header->set_tx_count(last_closed_ledger_->GetProtoHeader().tx_count() + closing_ledger_->ProtoLedger().transaction_envs_size());
+		header->set_tx_count(last_closed_ledger_->GetProtoHeader().tx_count() + context->closing_ledger_->ProtoLedger().transaction_envs_size());
 
 		protocol::ValidatorSet new_set;
 		utils::StringVector new_validator;
 		for (int32_t i = 0; i < validators_.validators_size(); i++) new_validator.push_back(validators_.validators(i));
-		bool has_upgrade = consensus_value.has_ledger_upgrade();
-		if (has_upgrade) {
+		if (consensus_value.has_ledger_upgrade()) {
 			const protocol::LedgerUpgrade &ledger_upgrade = consensus_value.ledger_upgrade();
 
 			//for ledger version
@@ -535,13 +545,15 @@ namespace bubi {
 		for (size_t i = 0; i < new_validator.size(); i++) new_set.add_validators(new_validator[i]);
 		std::string validators_hash = HashWrapper::Crypto(new_set.SerializeAsString());
 		header->set_validators_hash(validators_hash);//TODO
-		header->set_tx_count(last_closed_ledger_->GetProtoHeader().tx_count() + closing_ledger_->ProtoLedger().transaction_envs_size());
+		header->set_tx_count(last_closed_ledger_->GetProtoHeader().tx_count() + context->closing_ledger_->ProtoLedger().transaction_envs_size());
 		header->set_hash("");
-		header->set_hash(HashWrapper::Crypto(closing_ledger_->ProtoLedger().SerializeAsString()));
+		header->set_hash(HashWrapper::Crypto(context->closing_ledger_->ProtoLedger().SerializeAsString()));
 
-		LOG_INFO("%s", Proto2Json(closing_ledger_->GetProtoHeader()).toStyledString().c_str());
+		LOG_INFO("%s", Proto2Json(context->closing_ledger_->GetProtoHeader()).toStyledString().c_str());
 
-		int64_t ledger_seq = closing_ledger_->GetProtoHeader().seq();
+		///////////////////////////////////////////////////////////////////////////////////////////////
+
+		int64_t ledger_seq = context->closing_ledger_->GetProtoHeader().seq();
 		std::shared_ptr<WRITE_BATCH> account_db_batch = tree_->batch_;
 		account_db_batch->Put(bubi::General::KEY_LEDGER_SEQ, utils::String::Format(FMT_I64, ledger_seq));
 		ValidatorsSet(account_db_batch, new_set);
@@ -555,15 +567,16 @@ namespace bubi {
 		WRITE_BATCH ledger_db_batch;
 		ledger_db_batch.Put(ComposePrefix(General::CONSENSUS_VALUE_PREFIX, consensus_value.ledger_seq()), consensus_value.SerializeAsString());
 
-		if (!closing_ledger_->AddToDb(ledger_db_batch)) {
+		if (!context->closing_ledger_->AddToDb(ledger_db_batch)) {
 			BUBI_EXIT("AddToDb failed");
 		}
 
 		if (!Storage::Instance().account_db()->WriteBatch(*account_db_batch)) {
 			BUBI_EXIT("Write batch failed: %s", Storage::Instance().account_db()->error_desc().c_str());
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
 
-		last_closed_ledger_ = closing_ledger_;
+		last_closed_ledger_ = context->closing_ledger_;
 		
 		//avoid dead lock
 		protocol::LedgerHeader tmp_lcl_header;
@@ -573,9 +586,8 @@ namespace bubi {
 			tmp_lcl_header = lcl_header_ = last_closed_ledger_->GetProtoHeader();
 		} while (false);
 		
-		Global::Instance().GetIoService().post([new_set, proof, consensus_value, has_upgrade]() { //avoid deadlock
+		Global::Instance().GetIoService().post([new_set, proof]() {
 			GlueManager::Instance().UpdateValidators(new_set, proof);
-			if (has_upgrade) GlueManager::Instance().LedgerHasUpgrade();
 		});
 
 		////////////////////////////
@@ -585,13 +597,13 @@ namespace bubi {
 		tree_->FreeMemory(4);
 		LOG_INFO("ledger closed (" FMT_I64 ") txcount(" FMT_I64 ")  hash=%s  apply="  FMT_I64_EX(-8) " calc_hash="  FMT_I64_EX(-8) " addtodb = " FMT_I64_EX(-8)
 			" total=" FMT_I64_EX(-8) " LoadValue=" FMT_I64 ,
-			closing_ledger_->GetProtoHeader().seq(),
-			closing_ledger_->GetTxCount(),
-			utils::String::Bin4ToHexString(closing_ledger_->GetProtoHeader().hash()).c_str(),
-			time1 - time0,
+			context->closing_ledger_->GetProtoHeader().seq(),
+			context->closing_ledger_->GetTxCount(),
+			utils::String::Bin4ToHexString(context->closing_ledger_->GetProtoHeader().hash()).c_str(),
+			time1 - time0 +context->apply_time_,
 			time2 - time1,
 			time3 - time2,
-			time3 - time0,
+			time3 - time0 + context->apply_time_,
 			tree_->time_);
 
 		// notice
@@ -868,23 +880,26 @@ namespace bubi {
 		return ret;
 	}
 
-	bool LedgerManager::DoTransaction(protocol::TransactionEnv& env){
-
-		auto back = transaction_stack_.top();
-		
-		std::shared_ptr<AccountFrm> source_account;
-		
-		back->environment_->GetEntry(env.transaction().source_address(), source_account);
-		
+	bool LedgerManager::DoTransaction(protocol::TransactionEnv& env,const std::string& context_index){
+		auto context =context_manager_->GetContext(context_index);
+		if (context==nullptr)
+		{
+			LOG_ERROR("not found context");
+			return false;
+		}
+		auto back = context->transaction_stack_.top();
+		std::shared_ptr<AccountFrm> source_account;		
+		back->environment_->GetEntry(env.transaction().source_address(), source_account);		
 		env.mutable_transaction()->set_nonce(source_account->GetAccountNonce() + 1);
 		
-		auto header = std::make_shared<protocol::LedgerHeader>(LedgerManager::Instance().closing_ledger_->GetProtoHeader());
+		//auto header = std::make_shared<protocol::LedgerHeader>(LedgerManager::Instance().closing_ledger_->GetProtoHeader());
+		auto header = std::make_shared<protocol::LedgerHeader>(context->closing_ledger_->GetProtoHeader());
 
 		auto txfrm = std::make_shared<bubi::TransactionFrm >(env);
 
 		do 
 		{
-			if (transaction_stack_.size() > General::CONTRACT_MAX_RECURSIVE_DEPTH){
+			if (context->transaction_stack_.size() > General::CONTRACT_MAX_RECURSIVE_DEPTH){
 				txfrm->result_.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_RECURSION);
 				break;
 			}
@@ -898,7 +913,7 @@ namespace bubi {
 				}
 			}
 
-			transaction_stack_.push(txfrm);
+			context->transaction_stack_.push(txfrm);
 			if (txfrm->ValidForParameter()){
 				txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
 			}
@@ -917,7 +932,7 @@ namespace bubi {
 			tx_store.set_error_code(txfrm->GetResult().code());
 			tx_store.set_error_desc(txfrm->GetResult().desc());
 			back->instructions_.push_back(tx_store);
-			transaction_stack_.pop();
+			context->transaction_stack_.pop();
 
 			return txfrm->GetResult().code() == protocol::ERRCODE_SUCCESS;
 		} while (false);

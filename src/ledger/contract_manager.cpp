@@ -28,19 +28,25 @@ namespace bubi{
 	const std::string ContractManager::trigger_tx_name_ = "trigger";
 	const std::string ContractManager::trigger_tx_index_name_ = "triggerIndex";
 	const std::string ContractManager::this_header_name_ = "consensusValue";
+	utils::Mutex ContractManager::context_index_mutex_;
+	std::unordered_map<uint64_t, std::string> ContractManager::context_index_map_;
 
 	v8::Platform* ContractManager::platform_ = nullptr;
 	v8::Isolate::CreateParams ContractManager::create_params_;
 	ContractManager* ContractManager::executing_contract_ = nullptr;
 
 
-	ContractManager::ContractManager(){
+	ContractManager::ContractManager(const std::string context_index){
 		LoadJsLibSource();
 		tx_do_count_ = 0;
 		isolate_ = v8::Isolate::New(create_params_);
 		v8::Isolate::Scope isolate_scope(isolate_);
 		v8::HandleScope handle_scope(isolate_);
 
+		{
+			utils::MutexGuard guard(context_index_mutex_);
+			context_index_map_[(uint64_t)isolate_] = context_index;
+		}
 		// Store the request pointer in the JavaScript wrapper.
 
 		//if (global_.IsEmpty()) {
@@ -103,6 +109,10 @@ namespace bubi{
 	}
 
 	ContractManager::~ContractManager(){
+		{
+			utils::MutexGuard guard(context_index_mutex_);
+			context_index_map_.erase((uint64_t)isolate_);
+		}
 		isolate_->Dispose();
 		isolate_ = NULL;
 	}
@@ -549,10 +559,19 @@ namespace bubi{
 
 
 			bubi::AccountFrm::pointer account_frm = nullptr;
-			//auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
-			//if (!environment->GetEntry(address, account_frm)){
-
-			if (!Environment::AccountFromDB(address, account_frm)){
+			std::string context_index;
+			{
+				utils::MutexGuard guard(context_index_mutex_);
+				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
+			}
+			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
+			if (context == nullptr)
+			{
+				LOG_ERROR("not found context");
+				break;
+			}
+			auto environment = context->transaction_stack_.top()->environment_;
+			if (!environment->GetEntry(address, account_frm)){
 				break;
 			}
 
@@ -598,10 +617,19 @@ namespace bubi{
 			std::string key = ToCString(v8::String::Utf8Value(args[1]));
 
 			bubi::AccountFrm::pointer account_frm = nullptr;
-			//auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
-			//if (!environment->GetEntry(address, account_frm)){
-
-			if (!Environment::AccountFromDB(address, account_frm)){
+			std::string context_index;
+			{
+				utils::MutexGuard guard(context_index_mutex_);
+				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
+			}
+			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
+			if (context == nullptr)
+			{
+				LOG_ERROR("not found context");
+				break;
+			}
+			auto environment = context->transaction_stack_.top()->environment_;
+			if (!environment->GetEntry(address, account_frm)){
 				break;
 			}
 
@@ -660,7 +688,12 @@ namespace bubi{
 				break;
 			}
 			ope->mutable_set_metadata()->CopyFrom(proto_setmetadata);
-			LedgerManager::Instance().DoTransaction(txenv);
+			std::string context_index;
+			{
+				utils::MutexGuard guard(context_index_mutex_);
+				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
+			}
+			LedgerManager::Instance().DoTransaction(txenv, context_index);
 			args.GetReturnValue().Set(true);
 			return;
 		} while (false);
@@ -689,9 +722,21 @@ namespace bubi{
 
 			bubi::AccountFrm::pointer account_frm = nullptr;
 
-			//auto environment = LedgerManager::Instance().transaction_stack_.top()->environment_;
-			//if (!environment->GetEntry(address, account_frm))
-			if (!Environment::AccountFromDB(address, account_frm))
+
+			std::string context_index;
+			{
+				utils::MutexGuard guard(context_index_mutex_);
+				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
+			}
+			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
+			if (context == nullptr)
+			{
+				LOG_ERROR("not found context");
+				break;
+			}
+			auto environment = context->transaction_stack_.top()->environment_;
+
+			if (!environment->GetEntry(address, account_frm))
 				break;
 
 			Json::Value json = bubi::Proto2Json(account_frm->GetProtoAccount());
@@ -754,7 +799,12 @@ namespace bubi{
 			protocol::TransactionEnv env;
 			env.mutable_transaction()->CopyFrom(transaction);
 
-			if (!LedgerManager::Instance().DoTransaction(env)){
+			std::string context_index;
+			{
+				utils::MutexGuard guard(context_index_mutex_);
+				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
+			}
+			if (!LedgerManager::Instance().DoTransaction(env, context_index)){
 				break;
 			}
 

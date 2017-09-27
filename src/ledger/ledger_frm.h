@@ -22,12 +22,19 @@ limitations under the License.
 
 namespace bubi {
 	class AccountEntry;
+	class LedgerContext;
 	class LedgerFrm {
 	public:
 		typedef std::shared_ptr <LedgerFrm>	pointer;
+		enum EXECUTE_MODE
+		{
+			EM_TIMEOUT = 0,
+			EM_NOBREAK,
+		};
 
 		LedgerFrm();
 		~LedgerFrm();
+		void SetContext(const std::shared_ptr<LedgerContext>& context);
 
 		protocol::LedgerHeader GetProtoHeader() const {
 			return ledger_.header();
@@ -36,7 +43,7 @@ namespace bubi {
 		protocol::Ledger &ProtoLedger();
 
 
-		bool Apply(const protocol::ConsensusValue& request);
+		bool Apply(const protocol::ConsensusValue& request, EXECUTE_MODE execute_mode);
 
 		// void GetSqlTx(std::string &sqltx, std::string &sql_account_tx);
 
@@ -62,6 +69,8 @@ namespace bubi {
 		std::vector<TransactionFrm::pointer> apply_tx_frms_;
 		std::string sql_;
 		std::shared_ptr<Environment> environment_;
+		int timeout_tx_index_;
+		std::weak_ptr<LedgerContext> context_;
 	};
 }
 #endif //end of ifndef

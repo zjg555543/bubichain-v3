@@ -23,6 +23,7 @@ limitations under the License.
 #include <main/configure.h>
 #include <overlay/peer.h>
 #include "ledger/ledger_frm.h"
+#include "ledgercontext_manager.h"
 #include "environment.h"
 #include "kv_trie.h"
 #include "proto/cpp/consensus.pb.h"
@@ -62,7 +63,7 @@ namespace bubi {
 
 		bool ConsensusValueFromDB(int64_t seq, protocol::ConsensusValue& request);
 
-		bool DoTransaction(protocol::TransactionEnv& env);
+		bool DoTransaction(protocol::TransactionEnv& env, const std::string& context_index);
 
 		virtual void OnTimer(int64_t current_time) override;
 		virtual void OnSlowTimer(int64_t current_time) override;
@@ -77,6 +78,9 @@ namespace bubi {
 		//std::shared_ptr<TransactionFrm> execute_transaction_;
 		std::stack<std::shared_ptr<TransactionFrm>> transaction_stack_;
 		KVTrie* tree_;
+
+		LedgerContextManager::pointer context_manager_;
+
 	private:
 		LedgerManager();
 		~LedgerManager();
