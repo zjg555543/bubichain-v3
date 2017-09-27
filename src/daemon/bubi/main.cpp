@@ -134,7 +134,7 @@
 			InstallSignal();
 			while (g_enable_)//读取共享内存中的数据
 			{
-				sleep(310);
+				sleep(100);
 				pthread_mutex_lock(mptr);
 				LOG("last:%ld now:%ld ", last, *shared);
 				if (last == *shared) {
