@@ -485,6 +485,12 @@ class Peer : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::google::protobuf::int64 active_time() const;
   void set_active_time(::google::protobuf::int64 value);
 
+  // optional int64 connection_id = 6;
+  void clear_connection_id();
+  static const int kConnectionIdFieldNumber = 6;
+  ::google::protobuf::int64 connection_id() const;
+  void set_connection_id(::google::protobuf::int64 value);
+
   // @@protoc_insertion_point(class_scope:protocol.Peer)
  private:
 
@@ -495,6 +501,7 @@ class Peer : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::google::protobuf::int64 num_failures_;
   ::google::protobuf::int64 next_attempt_time_;
   ::google::protobuf::int64 active_time_;
+  ::google::protobuf::int64 connection_id_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -1998,6 +2005,20 @@ inline void Peer::set_active_time(::google::protobuf::int64 value) {
   
   active_time_ = value;
   // @@protoc_insertion_point(field_set:protocol.Peer.active_time)
+}
+
+// optional int64 connection_id = 6;
+inline void Peer::clear_connection_id() {
+  connection_id_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Peer::connection_id() const {
+  // @@protoc_insertion_point(field_get:protocol.Peer.connection_id)
+  return connection_id_;
+}
+inline void Peer::set_connection_id(::google::protobuf::int64 value) {
+  
+  connection_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.Peer.connection_id)
 }
 
 // -------------------------------------------------------------------

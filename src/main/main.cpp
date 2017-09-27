@@ -145,6 +145,13 @@ int main(int argc, char *argv[]){
 			return 1;
 		}
 
+		if (arg.clear_peer_addresses_) {
+			bubi::KeyValueDb *db = bubi::Storage::Instance().keyvalue_db();
+			db->Put(bubi::General::PEERS_TABLE, "");
+			LOG_INFO("Clear peer addresss list successfully");
+			return 1;
+		} 
+
 		if (arg.create_hardfork_) {
 			bubi::LedgerManager::CreateHardforkLedger();
 			return 1;

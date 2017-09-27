@@ -39,6 +39,7 @@ message Peer {
 		int64 num_failures = 3;
 		int64 next_attempt_time = 4;
 		int64 active_time = 5;
+		int64 connection_id = 6;
 }
 
 message Peers {

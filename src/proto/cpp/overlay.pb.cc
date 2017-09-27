@@ -113,12 +113,13 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HelloResponse, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HelloResponse, _is_default_instance_));
   Peer_descriptor_ = file->message_type(2);
-  static const int Peer_offsets_[5] = {
+  static const int Peer_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, ip_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, port_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, num_failures_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, next_attempt_time_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, active_time_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Peer, connection_id_),
   };
   Peer_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -397,50 +398,51 @@ void protobuf_AddDesc_overlay_2eproto() {
     "tening_port\030\005 \001(\003\022\024\n\014node_address\030\006 \001(\t\022"
     "\021\n\tnode_rand\030\007 \001(\t\"L\n\rHelloResponse\022\'\n\ne"
     "rror_code\030\001 \001(\0162\023.protocol.ERRORCODE\022\022\n\n"
-    "error_desc\030\002 \001(\t\"f\n\004Peer\022\n\n\002ip\030\001 \001(\t\022\014\n\004"
+    "error_desc\030\002 \001(\t\"}\n\004Peer\022\n\n\002ip\030\001 \001(\t\022\014\n\004"
     "port\030\002 \001(\003\022\024\n\014num_failures\030\003 \001(\003\022\031\n\021next"
     "_attempt_time\030\004 \001(\003\022\023\n\013active_time\030\005 \001(\003"
-    "\"&\n\005Peers\022\035\n\005peers\030\001 \003(\0132\016.protocol.Peer"
-    "\";\n\nGetLedgers\022\r\n\005begin\030\001 \001(\003\022\013\n\003end\030\002 \001"
-    "(\003\022\021\n\ttimestamp\030\003 \001(\003\"\337\001\n\007Ledgers\022(\n\006val"
-    "ues\030\001 \003(\0132\030.protocol.ConsensusValue\022-\n\ts"
-    "ync_code\030\002 \001(\0162\032.protocol.Ledgers.SyncCo"
-    "de\022\017\n\007max_seq\030\003 \001(\003\022\r\n\005proof\030\004 \001(\014\"[\n\010Sy"
-    "ncCode\022\006\n\002OK\020\000\022\017\n\013OUT_OF_SYNC\020\001\022\022\n\016OUT_O"
-    "F_LEDGERS\020\002\022\010\n\004BUSY\020\003\022\n\n\006REFUSE\020\004\022\014\n\010INT"
-    "ERNAL\020\005\"&\n\010DontHave\022\014\n\004type\030\001 \001(\003\022\014\n\004has"
-    "h\030\002 \001(\014\"v\n\023LedgerUpgradeNotify\022\r\n\005nonce\030"
-    "\001 \001(\003\022(\n\007upgrade\030\002 \001(\0132\027.protocol.Ledger"
-    "Upgrade\022&\n\tsignature\030\003 \001(\0132\023.protocol.Si"
-    "gnature\"\032\n\tEntryList\022\r\n\005entry\030\001 \003(\014\"M\n\nC"
-    "hainHello\022,\n\010api_list\030\001 \003(\0162\032.protocol.C"
-    "hainMessageType\022\021\n\ttimestamp\030\002 \001(\003\"z\n\013Ch"
-    "ainStatus\022\021\n\tself_addr\030\001 \001(\t\022\026\n\016ledger_v"
-    "ersion\030\002 \001(\003\022\027\n\017monitor_version\030\003 \001(\003\022\024\n"
-    "\014bubi_version\030\004 \001(\t\022\021\n\ttimestamp\030\005 \001(\003\"O"
-    "\n\020ChainPeerMessage\022\025\n\rsrc_peer_addr\030\001 \001("
-    "\t\022\026\n\016des_peer_addrs\030\002 \003(\t\022\014\n\004data\030\003 \001(\014\""
-    "\325\002\n\rChainTxStatus\0220\n\006status\030\001 \001(\0162 .prot"
-    "ocol.ChainTxStatus.TxStatus\022\017\n\007tx_hash\030\002"
-    " \001(\t\022\026\n\016source_address\030\003 \001(\t\022\032\n\022source_a"
-    "ccount_seq\030\004 \001(\003\022\022\n\nledger_seq\030\005 \001(\003\022\027\n\017"
-    "new_account_seq\030\006 \001(\003\022\'\n\nerror_code\030\007 \001("
-    "\0162\023.protocol.ERRORCODE\022\022\n\nerror_desc\030\010 \001"
-    "(\t\022\021\n\ttimestamp\030\t \001(\003\"P\n\010TxStatus\022\r\n\tUND"
-    "EFINED\020\000\022\r\n\tCONFIRMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010"
-    "COMPLETE\020\003\022\013\n\007FAILURE\020\004*\203\002\n\024OVERLAY_MESS"
-    "AGE_TYPE\022\030\n\024OVERLAY_MSGTYPE_NONE\020\000\022\030\n\024OV"
-    "ERLAY_MSGTYPE_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_"
-    "HELLO\020\002\022\031\n\025OVERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OV"
-    "ERLAY_MSGTYPE_TRANSACTION\020\004\022\033\n\027OVERLAY_M"
-    "SGTYPE_LEDGERS\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT"
-    "\020\006\022)\n%OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOT"
-    "IFY\020\007*\261\001\n\020ChainMessageType\022\023\n\017CHAIN_TYPE"
-    "_NONE\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN_TX_STA"
-    "TUS\020\013\022\025\n\021CHAIN_PEER_ONLINE\020\014\022\026\n\022CHAIN_PE"
-    "ER_OFFLINE\020\r\022\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027"
-    "CHAIN_SUBMITTRANSACTION\020\017B\035\n\033cn.bubi.blo"
-    "ckchain.adapter3b\006proto3", 2024);
+    "\022\025\n\rconnection_id\030\006 \001(\003\"&\n\005Peers\022\035\n\005peer"
+    "s\030\001 \003(\0132\016.protocol.Peer\";\n\nGetLedgers\022\r\n"
+    "\005begin\030\001 \001(\003\022\013\n\003end\030\002 \001(\003\022\021\n\ttimestamp\030\003"
+    " \001(\003\"\337\001\n\007Ledgers\022(\n\006values\030\001 \003(\0132\030.proto"
+    "col.ConsensusValue\022-\n\tsync_code\030\002 \001(\0162\032."
+    "protocol.Ledgers.SyncCode\022\017\n\007max_seq\030\003 \001"
+    "(\003\022\r\n\005proof\030\004 \001(\014\"[\n\010SyncCode\022\006\n\002OK\020\000\022\017\n"
+    "\013OUT_OF_SYNC\020\001\022\022\n\016OUT_OF_LEDGERS\020\002\022\010\n\004BU"
+    "SY\020\003\022\n\n\006REFUSE\020\004\022\014\n\010INTERNAL\020\005\"&\n\010DontHa"
+    "ve\022\014\n\004type\030\001 \001(\003\022\014\n\004hash\030\002 \001(\014\"v\n\023Ledger"
+    "UpgradeNotify\022\r\n\005nonce\030\001 \001(\003\022(\n\007upgrade\030"
+    "\002 \001(\0132\027.protocol.LedgerUpgrade\022&\n\tsignat"
+    "ure\030\003 \001(\0132\023.protocol.Signature\"\032\n\tEntryL"
+    "ist\022\r\n\005entry\030\001 \003(\014\"M\n\nChainHello\022,\n\010api_"
+    "list\030\001 \003(\0162\032.protocol.ChainMessageType\022\021"
+    "\n\ttimestamp\030\002 \001(\003\"z\n\013ChainStatus\022\021\n\tself"
+    "_addr\030\001 \001(\t\022\026\n\016ledger_version\030\002 \001(\003\022\027\n\017m"
+    "onitor_version\030\003 \001(\003\022\024\n\014bubi_version\030\004 \001"
+    "(\t\022\021\n\ttimestamp\030\005 \001(\003\"O\n\020ChainPeerMessag"
+    "e\022\025\n\rsrc_peer_addr\030\001 \001(\t\022\026\n\016des_peer_add"
+    "rs\030\002 \003(\t\022\014\n\004data\030\003 \001(\014\"\325\002\n\rChainTxStatus"
+    "\0220\n\006status\030\001 \001(\0162 .protocol.ChainTxStatu"
+    "s.TxStatus\022\017\n\007tx_hash\030\002 \001(\t\022\026\n\016source_ad"
+    "dress\030\003 \001(\t\022\032\n\022source_account_seq\030\004 \001(\003\022"
+    "\022\n\nledger_seq\030\005 \001(\003\022\027\n\017new_account_seq\030\006"
+    " \001(\003\022\'\n\nerror_code\030\007 \001(\0162\023.protocol.ERRO"
+    "RCODE\022\022\n\nerror_desc\030\010 \001(\t\022\021\n\ttimestamp\030\t"
+    " \001(\003\"P\n\010TxStatus\022\r\n\tUNDEFINED\020\000\022\r\n\tCONFI"
+    "RMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010COMPLETE\020\003\022\013\n\007FAI"
+    "LURE\020\004*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024OVERL"
+    "AY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_PIN"
+    "G\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OVERLA"
+    "Y_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRA"
+    "NSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022"
+    "\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSG"
+    "TYPE_LEDGER_UPGRADE_NOTIFY\020\007*\261\001\n\020ChainMe"
+    "ssageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_"
+    "HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PE"
+    "ER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022C"
+    "HAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANS"
+    "ACTION\020\017B\035\n\033cn.bubi.blockchain.adapter3b"
+    "\006proto3", 2047);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -1575,6 +1577,7 @@ const int Peer::kPortFieldNumber;
 const int Peer::kNumFailuresFieldNumber;
 const int Peer::kNextAttemptTimeFieldNumber;
 const int Peer::kActiveTimeFieldNumber;
+const int Peer::kConnectionIdFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Peer::Peer()
@@ -1604,6 +1607,7 @@ void Peer::SharedCtor() {
   num_failures_ = GOOGLE_LONGLONG(0);
   next_attempt_time_ = GOOGLE_LONGLONG(0);
   active_time_ = GOOGLE_LONGLONG(0);
+  connection_id_ = GOOGLE_LONGLONG(0);
 }
 
 Peer::~Peer() {
@@ -1660,7 +1664,7 @@ void Peer::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  ZR_(port_, active_time_);
+  ZR_(port_, connection_id_);
   ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 
 #undef ZR_HELPER_
@@ -1750,6 +1754,21 @@ bool Peer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(48)) goto parse_connection_id;
+        break;
+      }
+
+      // optional int64 connection_id = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_connection_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &connection_id_)));
+
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1808,6 +1827,11 @@ void Peer::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(5, this->active_time(), output);
   }
 
+  // optional int64 connection_id = 6;
+  if (this->connection_id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(6, this->connection_id(), output);
+  }
+
   // @@protoc_insertion_point(serialize_end:protocol.Peer)
 }
 
@@ -1843,6 +1867,11 @@ void Peer::SerializeWithCachedSizes(
   // optional int64 active_time = 5;
   if (this->active_time() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(5, this->active_time(), target);
+  }
+
+  // optional int64 connection_id = 6;
+  if (this->connection_id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(6, this->connection_id(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.Peer)
@@ -1886,6 +1915,13 @@ int Peer::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->active_time());
+  }
+
+  // optional int64 connection_id = 6;
+  if (this->connection_id() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->connection_id());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -1932,6 +1968,9 @@ void Peer::MergeFrom(const Peer& from) {
   if (from.active_time() != 0) {
     set_active_time(from.active_time());
   }
+  if (from.connection_id() != 0) {
+    set_connection_id(from.connection_id());
+  }
 }
 
 void Peer::CopyFrom(const ::google::protobuf::Message& from) {
@@ -1963,6 +2002,7 @@ void Peer::InternalSwap(Peer* other) {
   std::swap(num_failures_, other->num_failures_);
   std::swap(next_attempt_time_, other->next_attempt_time_);
   std::swap(active_time_, other->active_time_);
+  std::swap(connection_id_, other->connection_id_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -2076,6 +2116,20 @@ void Peer::clear_active_time() {
   
   active_time_ = value;
   // @@protoc_insertion_point(field_set:protocol.Peer.active_time)
+}
+
+// optional int64 connection_id = 6;
+void Peer::clear_connection_id() {
+  connection_id_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 Peer::connection_id() const {
+  // @@protoc_insertion_point(field_get:protocol.Peer.connection_id)
+  return connection_id_;
+}
+ void Peer::set_connection_id(::google::protobuf::int64 value) {
+  
+  connection_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.Peer.connection_id)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

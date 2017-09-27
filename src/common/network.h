@@ -55,7 +55,6 @@ namespace bubi {
 		connection_hdl handle_;
 
 		//status
-		int64_t connect_start_time_;
 		int64_t connect_end_time_;
 
 		int64_t last_receive_time_;
@@ -66,6 +65,7 @@ namespace bubi {
 		utils::InetAddress peer_address_;
 
 	protected:
+		int64_t connect_start_time_;
 		int64_t sequence_;
 		int64_t last_send_time_;
 
@@ -96,6 +96,7 @@ namespace bubi {
 		bool IsConnectExpired(int64_t time_out) const;
 		bool IsDataExpired(int64_t time_out) const;
 		virtual void ToJson(Json::Value &status) const;
+		virtual bool OnNetworkTimer(int64_t current_time);
 	};
 
 	typedef std::map<int64_t, Connection *> ConnectionMap;
