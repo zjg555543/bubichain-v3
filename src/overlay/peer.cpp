@@ -89,7 +89,6 @@ namespace bubi {
 		status["node_address"] = peer_node_address_;
 		status["delay"] = delay_;
 		status["active"] = IsActive();
-		status["ip_address"] = GetPeerAddress().ToIpPort();
 		status["active_time"] = active_time_;
 	}
 
