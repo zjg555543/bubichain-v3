@@ -16,12 +16,14 @@ limitations under the License.
 #include <common/storage.h>
 #include <main/configure.h>
 #include <ledger/ledger_manager.h>
+#include <ledger/contract_manager.h>
 #include <consensus/consensus_manager.h>
 #include <glue/glue_manager.h>
 #include "web_server.h"
 #include <ledger/kv_trie.h>
 
 namespace bubi {
+
 	void WebServer::GetAccount(const http::server::request &request, std::string &reply) {
 		std::string address = request.GetParamValue("address");
 		std::string storagekey = request.GetParamValue("key");
@@ -656,6 +658,47 @@ namespace bubi {
 		reply_json["error_code"] = error_code;
 		reply = reply_json.toStyledString();
 	}
+
+	void WebServer::ContractQuery(const http::server::request &request, std::string &reply)
+    {
+		std::string address = request.GetParamValue("address");
+		std::string args    = request.GetParamValue("args"); //eg. "arg1,arg2,arg3...",need user code(js) design,split and parse
+
+		int32_t error_code = protocol::ERRCODE_SUCCESS;
+		AccountFrm::pointer acc = NULL;
+
+		Json::Value reply_json = Json::Value(Json::objectValue);
+		Json::Value &result    = reply_json["result"];
+
+        do{
+		    if (!Environment::AccountFromDB(address, acc)) {
+		    	error_code = protocol::ERRCODE_NOT_EXIST;
+		    	LOG_ERROR("GetAccount fail, account(%s) not exist", address.c_str());
+                break;
+		    }
+
+		   	std::string jsCode = acc->GetProtoAccount().contract().payload();
+            if(jsCode.empty())
+            {
+		        error_code = protocol::ERRCODE_CONTRACT_EXECUTE_FAIL;
+		        LOG_ERROR("account(%s) has no contract code", address.c_str());
+                break;
+            }
+
+		    ContractManager manager;
+
+            if(!manager.Query(jsCode, args, result))
+            {
+		    	error_code = protocol::ERRCODE_CONTRACT_EXECUTE_FAIL;
+		    	LOG_ERROR("account(%s) contract executed failed", address.c_str());
+                break;
+            }
+
+		} while (false);
+
+		reply_json["error_code"] = error_code;
+		reply = reply_json.toStyledString();
+    }
 
 #if 0
 	void WebServer::GetSignature(const http::server::request &request, std::string &reply) {

@@ -34,6 +34,7 @@ namespace bubi{
 		static const std::string sender_name_ ;
 		static const std::string this_address_;
 		static const char* main_name_;
+	    static const char* query_name_;
 		static const std::string trigger_tx_name_;
 		static const std::string trigger_tx_index_name_;
 		static const std::string this_header_name_;
@@ -59,6 +60,8 @@ namespace bubi{
 			int32_t index,
 			const std::string& consensus_value,
 			std::string& error_msg);
+
+		bool Query(const std::string& code, const std::string &input, Json::Value& jsResult);
 
 		bool SourceCodeCheck(const std::string& code, std::string& err_msg);
 
@@ -95,6 +98,8 @@ namespace bubi{
 		static void CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 		static ContractManager* UnwrapContract(v8::Local<v8::Object> obj);
+
+		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, std::string& key, Json::Value& jsonvalue);
 
 		//static bool DoTransaction(protocol::TransactionEnv& env);
 	};
