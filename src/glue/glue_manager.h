@@ -78,6 +78,7 @@ namespace bubi {
 
 		//called by ledger manger once ledger closed
 		void UpdateValidators(const protocol::ValidatorSet &validators, const std::string &proof);
+		void LedgerHasUpgrade();
 
 		//called by web server
 		Result ConfValidator(const std::string &add, const std::string &del);

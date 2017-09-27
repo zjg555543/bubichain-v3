@@ -516,7 +516,8 @@ namespace bubi {
 		protocol::ValidatorSet new_set;
 		utils::StringVector new_validator;
 		for (int32_t i = 0; i < validators_.validators_size(); i++) new_validator.push_back(validators_.validators(i));
-		if (consensus_value.has_ledger_upgrade()) {
+		bool has_upgrade = consensus_value.has_ledger_upgrade();
+		if (has_upgrade) {
 			const protocol::LedgerUpgrade &ledger_upgrade = consensus_value.ledger_upgrade();
 
 			//for ledger version
@@ -572,8 +573,9 @@ namespace bubi {
 			tmp_lcl_header = lcl_header_ = last_closed_ledger_->GetProtoHeader();
 		} while (false);
 		
-		Global::Instance().GetIoService().post([new_set, proof]() {
+		Global::Instance().GetIoService().post([new_set, proof, consensus_value, has_upgrade]() { //avoid deadlock
 			GlueManager::Instance().UpdateValidators(new_set, proof);
+			if (has_upgrade) GlueManager::Instance().LedgerHasUpgrade();
 		});
 
 		////////////////////////////

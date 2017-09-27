@@ -261,6 +261,8 @@ namespace bubi {
 		status["last_receive_time"] = last_receive_time_;
 	}
 
+	bool Connection::OnNetworkTimer(int64_t current_time) { return true; }
+
 	SslParameter::SslParameter() :enable_(false) {}
 	SslParameter::~SslParameter() {}
 
@@ -392,19 +394,35 @@ namespace bubi {
 			conn_id = conn->GetId();
 		} while (false);
 
-		if (message.request()) {
-			MessageConnPocMap::iterator iter = request_methods_.find(message.type());
-			if (iter == request_methods_.end()) return;
-			MessageConnPoc proc = iter->second;
-			if (!proc(message, conn_id)) RemoveConnection(conn_id);
-		}
-		else {
-			MessageConnPocMap::iterator iter = response_methods_.find(message.type());
-			if (iter == response_methods_.end()) return;
-			MessageConnPoc proc = iter->second;
-			if (!proc(message, conn_id))  RemoveConnection(conn_id);
-		}
+		do {
+			MessageConnPoc proc;
+			if (message.request()) {
+				MessageConnPocMap::iterator iter = request_methods_.find(message.type());
+				if (iter == request_methods_.end()) break; // methond not found, break;
+				proc = iter->second;
+			} else{
+				MessageConnPocMap::iterator iter = response_methods_.find(message.type());
+				if (iter == response_methods_.end()) break; // methond not found, break;
+				proc = iter->second;
+			}
 
+			if (proc(message, conn_id)) break; //return true, break;
+
+			LOG_ERROR("The method type(" FMT_I64 ") request(%s), return false, delete it",
+				message.type(), message.request() ? "true" : "false");
+			// return false, delete it
+			do {
+				utils::MutexGuard guard(conns_list_lock_);
+				Connection *conn = GetConnection(hdl);
+				if (!conn) {
+					LOG_ERROR("Handle not found");
+					break;  //not found
+				}
+				OnDisconnect(conn);
+			} while (false);
+
+			RemoveConnection(conn_id);
+		} while (false);
 	}
 
 	void Network::Stop() {
@@ -455,7 +473,14 @@ namespace bubi {
 						if (iter->second->IsDataExpired(connect_time_out_)) {
 							iter->second->Close("expired");
 							delete_list.push_back(iter->second);
+							LOG_ERROR("Peer(%s) data receive timeout", iter->second->GetPeerAddress().ToIpPort().c_str());
 						}
+
+						//check application timer
+						if (!iter->second->OnNetworkTimer(now)) {
+							iter->second->Close("app error");
+							delete_list.push_back(iter->second);
+						} 
 					}
 
 					//move current connection to delete array
@@ -548,7 +573,7 @@ namespace bubi {
 			client_.connect(con);
 		}
 
-		LOG_INFO("Connecting uri(%s)", uri.c_str());
+		LOG_INFO("Connecting uri(%s), id(" FMT_I64 ")", uri.c_str(), new_id);
 		return true;
 	}
 
@@ -573,7 +598,7 @@ namespace bubi {
 	void Network::RemoveConnection(int64_t conn_id) {
 		utils::MutexGuard guard(conns_list_lock_);
 		Connection *conn = GetConnection(conn_id);
-		RemoveConnection(conn);
+		if(conn) RemoveConnection(conn);
 	}
 
 	void Network::RemoveConnection(Connection *conn) {
@@ -616,7 +641,7 @@ namespace bubi {
 	}
 
 	context_ptr Network::OnTlsInit(tls_mode mode, connection_hdl hdl) {
-		LOG_INFO("using TLS mode :%s ", (mode == MOZILLA_MODERN ? "Mozilla Modern" : "Mozilla Intermediate"));
+		//LOG_INFO("using TLS mode :%s ", (mode == MOZILLA_MODERN ? "Mozilla Modern" : "Mozilla Intermediate"));
 		context_ptr ctx = websocketpp::lib::make_shared<asio::ssl::context>(asio::ssl::context::tlsv12);
 
 		try {

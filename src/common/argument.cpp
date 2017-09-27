@@ -22,7 +22,7 @@ namespace bubi {
 		help_modle_(false),
 		drop_db_(false),
 		peer_addr_(false),
-		del_peer_addr_(false), 
+		clear_peer_addresses_(false),
 		clear_consensus_status_(false),
 		create_hardfork_(false){}
 	Argument::~Argument() {}
@@ -41,20 +41,38 @@ namespace bubi {
 				RequestCert(argc, argv);
 				return true;
 			}
-			else if (s == "--aes-crypto" && argc > 2) {
-				printf("%s\n", (utils::Aes::CryptoHex(argv[2], bubi::GetDataSecuretKey())).c_str());
+			else if (s == "--clear-peer-addresses") {
+				clear_peer_addresses_ = true;
+			}
+			else if (s == "--aes-crypto") {
+				if (argc > 2) {
+					printf("%s\n", (utils::Aes::CryptoHex(argv[2], bubi::GetDataSecuretKey())).c_str());
+				}
+				else {
+					printf("missing parameter, need crypto value \n");
+				}
 				return true;
 			}
 			//else if (s == "--aes-decrypt"  && argc > 2) {
 			//	printf("%s\n", utils::Aes::HexDecrypto(argv[2], bubi::GetDataSecuretKey()).c_str());
 			//	return true;
 			//}
-			else if (s == "--sm3"  && argc > 2) {
-				printf("%s\n", utils::String::BinToHexString(utils::Sm3::Crypto(argv[2])).c_str());
+			else if (s == "--sm3" ) {
+				if (argc > 2) {
+					printf("%s\n", utils::String::BinToHexString(utils::Sm3::Crypto(argv[2])).c_str());
+				}
+				else {
+					printf("missing parameter, need crypto value \n");
+				}
 				return true;
 			}
-			else if (s == "--sm3-hex"  && argc > 2) {
-				printf("%s\n", utils::String::BinToHexString(utils::Sm3::Crypto(utils::String::HexStringToBin(argv[2]))).c_str());
+			else if (s == "--sm3-hex" ) {
+				if (argc > 2) {
+					printf("%s\n", utils::String::BinToHexString(utils::Sm3::Crypto(utils::String::HexStringToBin(argv[2]))).c_str());
+				}
+				else {
+					printf("missing parameter, need crypto value with hex format \n");
+				}
 				return true;
 			}
 			else if (s == "--show-request") {
@@ -174,6 +192,7 @@ namespace bubi {
 			"  --aes-crypto <value>            crypto value\n"
 			"  --version                       display version information\n"
 			"  --create-hardfork               create hard fork ledger\n"
+			"  --clear-peer-addresses          clear peer list\n"
 			"  --help                          display this help\n"
 			);
 	}
