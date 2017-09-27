@@ -40,14 +40,14 @@ namespace utils{
 #ifdef WIN32
 		return user_time_ + system_time_;
 #else
-		return user_time_+nice_time_+system_time_+idle_time_+io_wait_time_+irq_time_+soft_irq_time_;
+		return user_time_ + nice_time_ + system_time_ + idle_time_ + io_wait_time_ + irq_time_ + soft_irq_time_;
 #endif
 	}
 	uint64_t SystemProcessor::GetUsageTime() {
 #ifdef WIN32
 		return user_time_ + system_time_ - idle_time_;
 #else
-		return user_time_+nice_time_+system_time_;
+		return user_time_ + nice_time_ + system_time_;
 #endif
 	}
 
@@ -157,11 +157,11 @@ namespace utils{
 
 		processor_.user_time_ = String::Stoi64(values[1]);
 		processor_.nice_time_ = String::Stoi64(values[2]);
-		processor_.system_time_ = String::Stoi64(values[2]);
-		processor_.idle_time_ = String::Stoi64(values[2]);
-		processor_.io_wait_time_ = String::Stoi64(values[2]);
-		processor_.irq_time_ = String::Stoi64(values[2]);
-		processor_.soft_irq_time_ = String::Stoi64(values[2]);
+		processor_.system_time_ = String::Stoi64(values[3]);
+		processor_.idle_time_ = String::Stoi64(values[4]);
+		processor_.io_wait_time_ = String::Stoi64(values[5]);
+		processor_.irq_time_ = String::Stoi64(values[6]);
+		processor_.soft_irq_time_ = String::Stoi64(values[7]);
 		processor_.core_count_ = 0;
 
 		while (proce_file.ReadLine(strline, 1024)) {
