@@ -394,7 +394,10 @@ namespace bubi{
 				break;
 			}
 
-			JsValueToCppJson(context, callRet, std::string("contract_result"), jsResult);
+			if (!JsValueToCppJson(context, callRet, std::string("contract_result"), jsResult)){
+				LOG_ERROR("the result of function %s in contract parse failed", query_name_);
+				break;
+			}
 
 		    executing_contract_ = back;
             return true;
