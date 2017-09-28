@@ -70,7 +70,7 @@ namespace bubi {
 		virtual void GetModuleStatus(Json::Value &data);
 
 		static void CreateHardforkLedger();
-
+		bool PreProcessLedger(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode = LedgerFrm::EXECUTE_MODE::EM_TIMEOUT);
 	public:
 		utils::Mutex gmutex_;
 		Json::Value statistics_;

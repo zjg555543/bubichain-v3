@@ -472,6 +472,11 @@ namespace bubi {
 		data["sync"] = sync_.ToJson();
 	}
 
+	bool LedgerManager::PreProcessLedger(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode)
+	{
+		return context_manager_->PreProcessLedger(consensus_value, timeout_tx_index, execute_mode);
+	}
+
 	bool LedgerManager::CloseLedger(const protocol::ConsensusValue& consensus_value, const std::string& proof) {
 		if (!GlueManager::Instance().CheckValueAndProof(consensus_value.SerializeAsString(), proof)){
 
