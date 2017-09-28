@@ -126,6 +126,7 @@ namespace bubi {
 		max_ledger_per_message_ = 5;
 		max_apply_ledger_per_round_ = 3;
 		test_model_ = false;
+		preprocess_timeout_ = 1;
 	}
 
 	LedgerConfigure::~LedgerConfigure() {}
@@ -141,6 +142,7 @@ namespace bubi {
 		Configure::GetValue(value, "test_model", test_model_);
 		Configure::GetValue(value, "genesis_account", genesis_account_);
 		Configure::GetValue(value, "hardfork_points", hardfork_points_);
+		Configure::GetValue(value, "preprocess_timeout", preprocess_timeout_);
 
 		if (max_apply_ledger_per_round_ == 0
 			|| max_trans_in_memory_ / max_apply_ledger_per_round_ == 0) {
