@@ -685,7 +685,7 @@ namespace bubi {
                 break;
             }
 
-		    ContractManager manager;
+		    ContractManager manager("");
 
             if(!manager.Query(jsCode, args, result))
             {

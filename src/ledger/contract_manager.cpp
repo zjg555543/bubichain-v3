@@ -557,7 +557,6 @@ namespace bubi{
 				break;
 			}
 
-
 			bubi::AccountFrm::pointer account_frm = nullptr;
 			std::string context_index;
 			{
@@ -565,14 +564,26 @@ namespace bubi{
 				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
 			}
 			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
-			if (context == nullptr)
-			{
-				LOG_ERROR("not found context");
-				break;
+
+			bool getAccountSucceed = false;
+			if (context != nullptr){
+				if (!context->transaction_stack_.empty()){
+					auto environment = context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)){
+						LOG_ERROR("not found account");
+						break;
+					}
+					else{
+						getAccountSucceed = true;
+					}
+				}
 			}
-			auto environment = context->transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm)){
-				break;
+
+			if (!getAccountSucceed){
+				if (!Environment::AccountFromDB(address, account_frm)){
+					LOG_ERROR("not found account");
+					break;
+				}
 			}
 
 			protocol::Asset asset;
@@ -623,14 +634,26 @@ namespace bubi{
 				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
 			}
 			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
-			if (context == nullptr)
-			{
-				LOG_ERROR("not found context");
-				break;
+
+			bool getAccountSucceed = false;
+			if (context != nullptr){
+				if (!context->transaction_stack_.empty()){
+					auto environment = context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)){
+						LOG_ERROR("not found account");
+						break;
+					}
+					else{
+						getAccountSucceed = true;
+					}
+				}
 			}
-			auto environment = context->transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm)){
-				break;
+
+			if (!getAccountSucceed){
+				if (!Environment::AccountFromDB(address, account_frm)){
+					LOG_ERROR("not found account");
+					break;
+				}
 			}
 
 			protocol::KeyPair kp;
@@ -729,15 +752,27 @@ namespace bubi{
 				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
 			}
 			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
-			if (context == nullptr)
-			{
-				LOG_ERROR("not found context");
-				break;
-			}
-			auto environment = context->transaction_stack_.top()->environment_;
 
-			if (!environment->GetEntry(address, account_frm))
-				break;
+			bool getAccountSucceed = false;
+			if (context != nullptr){
+				if (!context->transaction_stack_.empty()){
+					auto environment = context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)){
+						LOG_ERROR("not found account");
+						break;
+					}
+					else{
+						getAccountSucceed = true;
+					}
+				}
+			}
+
+			if (!getAccountSucceed){
+				if (!Environment::AccountFromDB(address, account_frm)){
+					LOG_ERROR("not found account");
+					break;
+				}
+			}
 
 			Json::Value json = bubi::Proto2Json(account_frm->GetProtoAccount());
 			v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(

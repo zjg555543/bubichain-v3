@@ -510,8 +510,6 @@ namespace bubi {
 		header->set_seq(consensus_value.ledger_seq());
 		header->set_close_time(consensus_value.close_time());
 		header->set_previous_hash(consensus_value.previous_ledger_hash());
-		std::string con_str = consensus_value.SerializeAsString();
-		std::string chash = HashWrapper::Crypto(con_str);
 		header->set_consensus_value_hash(chash);
 		//LOG_INFO("set_consensus_value_hash:%s,%s", utils::String::BinToHexString(con_str).c_str(), utils::String::BinToHexString(chash).c_str());
 		header->set_version(last_closed_ledger_->GetProtoHeader().version());
