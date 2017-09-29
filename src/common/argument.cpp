@@ -104,7 +104,7 @@ namespace bubi {
 			else if (s == "--create-account" && argc > 2) {
 				SignatureType type = GetSignTypeByDesc(argv[2]);
 				if (type == SIGNTYPE_NONE) {
-					printf("parameter \"%s\" error, support sm2/ed25519/rsa \n", argv[2]);
+					printf("parameter \"%s\" error, support ed25519 \n", argv[2]);
 					return true;
 				} 
 
@@ -183,6 +183,7 @@ namespace bubi {
 			"OPTIONS:\n"
 			"  --dropdb                        clean up database\n"
 			"  --peer-address <node-priv-key>  get peer address from crypted node private key\n"
+			"  --create-account <crypto>       create account, support ed25519\n"
 			"  --hardware-address              get local hardware address\n"
 			"  --request-cert                  request entity certificate\n"
 			"  --show-request                  show request certificate\n"
