@@ -42,7 +42,7 @@ namespace bubi{
 		isolate_ = v8::Isolate::New(create_params_);
 		v8::Isolate::Scope isolate_scope(isolate_);
 		v8::HandleScope handle_scope(isolate_);
-
+		if (context_index != "")
 		{
 			utils::MutexGuard guard(context_index_mutex_);
 			context_index_map_[(uint64_t)isolate_] = context_index;
@@ -117,7 +117,18 @@ namespace bubi{
 		isolate_ = NULL;
 	}
 
+	uint64_t ContractManager::IsolateIndex()
+	{
+		if (isolate_)
+			return ((uint64_t)isolate_);
+		return 0;
+	}
 
+	void ContractManager::ClearIsolateIndex(uint64_t index)
+	{
+		utils::MutexGuard guard(context_index_mutex_);
+		context_index_map_.erase(index);
+	}
 
 	void ContractManager::Initialize(int argc, char** argv){
 		platform_ = v8::platform::CreateDefaultPlatform();
@@ -403,8 +414,8 @@ namespace bubi{
 				LOG_ERROR("%s function execute failed", query_name_);
 				break;
 			}
-
-			if (!JsValueToCppJson(context, callRet, std::string("contract_result"), jsResult)){
+			std::string contract_result_str = "contract_result";
+			if (!JsValueToCppJson(context, callRet, contract_result_str, jsResult)){
 				LOG_ERROR("the result of function %s in contract parse failed", query_name_);
 				break;
 			}
@@ -557,7 +568,6 @@ namespace bubi{
 				break;
 			}
 
-
 			bubi::AccountFrm::pointer account_frm = nullptr;
 			std::string context_index;
 			{
@@ -565,14 +575,26 @@ namespace bubi{
 				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
 			}
 			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
-			if (context == nullptr)
-			{
-				LOG_ERROR("not found context");
-				break;
+
+			bool getAccountSucceed = false;
+			if (context != nullptr){
+				if (!context->transaction_stack_.empty()){
+					auto environment = context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)){
+						LOG_ERROR("not found account");
+						break;
+					}
+					else{
+						getAccountSucceed = true;
+					}
+				}
 			}
-			auto environment = context->transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm)){
-				break;
+
+			if (!getAccountSucceed){
+				if (!Environment::AccountFromDB(address, account_frm)){
+					LOG_ERROR("not found account");
+					break;
+				}
 			}
 
 			protocol::Asset asset;
@@ -623,14 +645,26 @@ namespace bubi{
 				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
 			}
 			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
-			if (context == nullptr)
-			{
-				LOG_ERROR("not found context");
-				break;
+
+			bool getAccountSucceed = false;
+			if (context != nullptr){
+				if (!context->transaction_stack_.empty()){
+					auto environment = context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)){
+						LOG_ERROR("not found account");
+						break;
+					}
+					else{
+						getAccountSucceed = true;
+					}
+				}
 			}
-			auto environment = context->transaction_stack_.top()->environment_;
-			if (!environment->GetEntry(address, account_frm)){
-				break;
+
+			if (!getAccountSucceed){
+				if (!Environment::AccountFromDB(address, account_frm)){
+					LOG_ERROR("not found account");
+					break;
+				}
 			}
 
 			protocol::KeyPair kp;
@@ -729,15 +763,27 @@ namespace bubi{
 				context_index = context_index_map_[(uint64_t)args.GetIsolate()];
 			}
 			auto context = LedgerManager::Instance().context_manager_->GetContext(context_index);
-			if (context == nullptr)
-			{
-				LOG_ERROR("not found context");
-				break;
-			}
-			auto environment = context->transaction_stack_.top()->environment_;
 
-			if (!environment->GetEntry(address, account_frm))
-				break;
+			bool getAccountSucceed = false;
+			if (context != nullptr){
+				if (!context->transaction_stack_.empty()){
+					auto environment = context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)){
+						LOG_ERROR("not found account");
+						break;
+					}
+					else{
+						getAccountSucceed = true;
+					}
+				}
+			}
+
+			if (!getAccountSucceed){
+				if (!Environment::AccountFromDB(address, account_frm)){
+					LOG_ERROR("not found account");
+					break;
+				}
+			}
 
 			Json::Value json = bubi::Proto2Json(account_frm->GetProtoAccount());
 			v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(

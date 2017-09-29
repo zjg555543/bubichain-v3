@@ -70,6 +70,10 @@ namespace bubi{
 		bool SourceCodeCheck(const std::string& code, std::string& err_msg);
 
 		bool Exit();
+
+		uint64_t IsolateIndex();
+
+		static void ClearIsolateIndex(uint64_t index);
 	private:
 		bool LoadJsLibSource();
 

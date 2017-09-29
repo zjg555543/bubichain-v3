@@ -32,6 +32,7 @@ namespace bubi {
 		full_data_(),
 		valid_signature_(),
 		ledger_(),
+		isolate_index_(0),
 		incoming_time_(utils::Timestamp::HighResolution())
 		{
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -44,6 +45,7 @@ namespace bubi {
 		transaction_env_(env),
 		valid_signature_(),
 		ledger_(),
+		isolate_index_(0),
 		incoming_time_(utils::Timestamp::HighResolution()){
 		Initialize();
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -471,6 +473,48 @@ namespace bubi {
 			}
 		}
 		return bSucess;
+	}
+	
+	bool TransactionFrm::Wait(uint32_t seconds)
+	{
+		std::unique_lock<std::mutex> lck(mtx_);
+		while (cv_.wait_for(lck, std::chrono::seconds(seconds)) == std::cv_status::timeout)
+			return false;
+		return true;
+	}
+	
+	void TransactionFrm::Notify()
+	{
+		cv_.notify_one();
+	}
+
+	TransactionApplyTask::TransactionApplyTask(TransactionFrm::pointer tx_frm) :
+		tx_frm_(tx_frm), thread_ptr_(nullptr),
+		ledger_frm_(nullptr), env_(nullptr), bool_contract_(false),
+		result_(false)
+	{}
+	TransactionApplyTask::~TransactionApplyTask()
+	{
+		if (thread_ptr_) {
+			delete thread_ptr_;
+		}
+	}
+	bool TransactionApplyTask::Start(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract)
+	{
+		ledger_frm_ = ledger_frm;
+		env_ = env;
+		bool_contract_ = bool_contract;
+		thread_ptr_ = new utils::Thread(this);
+		return thread_ptr_->Start("TransactionTask");
+	}
+	void TransactionApplyTask::Run(utils::Thread *thread)
+	{
+		result_ =tx_frm_->Apply(ledger_frm_, env_, bool_contract_);
+		tx_frm_->Notify();
+	}
+	void TransactionApplyTask::Exit()
+	{
+		thread_ptr_->Terminate();
 	}
 }
 

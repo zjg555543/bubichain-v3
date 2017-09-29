@@ -497,21 +497,26 @@ namespace bubi {
 		if (context == nullptr)
 		{
 			int timeout_tx_index = -1;
-			context_manager_->PreProcessLedger(consensus_value, timeout_tx_index,LedgerFrm::EM_NOBREAK);
-			context = context_manager_->GetContext(box_key);
-			if (context == nullptr){
-				LOG_ERROR("GetContext failed,ledger_seq(" FMT_I64 ")  consensus_value hash(%s)", 
+			//for test timeout , change this param is LedgerFrm::EM_TIMEOUT,should be LedgerFrm::EM_NOBREAK
+			bool result =context_manager_->PreProcessLedger(consensus_value, timeout_tx_index,LedgerFrm::EM_NOBREAK);
+			if (!result){
+				LOG_ERROR("PreProcessLedger failed,ledger_seq(" FMT_I64 ")  consensus_value(%s)",
 					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 				return false;
 			}
+			context = context_manager_->GetContext(box_key);
+			if (context == nullptr){
+				LOG_ERROR("GetContext failed,ledger_seq(" FMT_I64 ")  consensus_value(%s)", 
+					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
+				return false;
+			}
+			
 		}
 		protocol::Ledger& ledger = context->closing_ledger_->ProtoLedger();
 		auto header = ledger.mutable_header();
 		header->set_seq(consensus_value.ledger_seq());
 		header->set_close_time(consensus_value.close_time());
 		header->set_previous_hash(consensus_value.previous_ledger_hash());
-		std::string con_str = consensus_value.SerializeAsString();
-		std::string chash = HashWrapper::Crypto(con_str);
 		header->set_consensus_value_hash(chash);
 		//LOG_INFO("set_consensus_value_hash:%s,%s", utils::String::BinToHexString(con_str).c_str(), utils::String::BinToHexString(chash).c_str());
 		header->set_version(last_closed_ledger_->GetProtoHeader().version());
@@ -554,7 +559,7 @@ namespace bubi {
 		header->set_hash("");
 		header->set_hash(HashWrapper::Crypto(context->closing_ledger_->ProtoLedger().SerializeAsString()));
 
-		LOG_INFO("%s", Proto2Json(context->closing_ledger_->GetProtoHeader()).toStyledString().c_str());
+		//LOG_INFO("%s", Proto2Json(context->closing_ledger_->GetProtoHeader()).toStyledString().c_str());
 
 		///////////////////////////////////////////////////////////////////////////////////////////////
 

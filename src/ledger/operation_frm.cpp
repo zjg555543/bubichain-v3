@@ -542,7 +542,7 @@ namespace bubi {
 				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
 
 				ContractManager manager(context->hash_);
-	
+				transaction_->isolate_index_ = manager.IsolateIndex();
 				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
 				std::string err_msg;
 				if (!manager.Execute(javascript,
@@ -557,8 +557,10 @@ namespace bubi {
 				{
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
+					transaction_->isolate_index_ = 0;
 					break;
 				}
+				transaction_->isolate_index_ = 0;
 			}
 		} while (false);
 	}
@@ -672,6 +674,7 @@ namespace bubi {
 				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
 
 				ContractManager manager(context->hash_);
+				transaction_->isolate_index_ = manager.IsolateIndex();
 				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
 				std::string err_msg;
 				if (!manager.Execute(javascript,
@@ -685,8 +688,10 @@ namespace bubi {
 				{
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
+					transaction_->isolate_index_ = 0;
 					break;
 				}
+				transaction_->isolate_index_ = 0;
 			}
 		} while (false);
 	}

@@ -20,6 +20,7 @@ limitations under the License.
 #include "ledger_manager.h"
 #include "ledger_frm.h"
 #include "ledgercontext_manager.h"
+#include "contract_manager.h"
 #include <future>
 
 namespace bubi {
@@ -145,8 +146,6 @@ namespace bubi {
 				continue;
 			}
 
-			//////////////////////////////////////////////////////////////
-			//LedgerManager::Instance().transaction_stack_.push(tx_frm);
 			if (context_.expired())//fatal error
 			{
 				BUBI_EXIT("context expired");
@@ -154,33 +153,29 @@ namespace bubi {
 			std::shared_ptr<LedgerContext> context = context_.lock();
 			context->transaction_stack_.push(tx_frm);
 
-			if (execute_mode == EM_TIMEOUT){
-				std::future<bool> fut = std::async(std::launch::async, [=](){
-					return tx_frm->Apply(this, environment_);
-				});
-				std::future_status status;
-				do {
-					status = fut.wait_for(std::chrono::seconds(Configure::Instance().ledger_configure_.preprocess_timeout_));
-					if (status == std::future_status::deferred) {
-						//异步操作还没开始
-					}
-					else if (status == std::future_status::timeout) {
-						//异步操作超时
-						timeout_tx_index_ = i;
-						return false;
-					}
-					else if (status == std::future_status::ready) {
-						//异步操作已经完成
-						if (!fut.get()){
-							LOG_ERROR("transaction(%s) apply failed. %s",
-								utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
-						}
-						else{
-							//缓存账号提交，提交到ledger的environment_
-							tx_frm->environment_->Commit();
-						}
-					}
-				} while (status != std::future_status::ready);
+			if (execute_mode == EM_TIMEOUT){				
+				TransactionApplyTask task(tx_frm);
+				if (!task.Start(this, environment_))
+				{
+					LOG_ERROR("transaction(%s) apply failed. TransactionApplyTask Start failed", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str());
+					timeout_tx_index_ = i;
+					return false;
+				}
+				if (!tx_frm->Wait(Configure::Instance().ledger_configure_.preprocess_timeout_)){
+					//timeout
+					task.Exit();
+					timeout_tx_index_ = i;
+					if (tx_frm->isolate_index_ != 0)
+						ContractManager::ClearIsolateIndex(tx_frm->isolate_index_);
+					LOG_ERROR("transaction(%s) apply failed. apply time out in tx index(%d)", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), timeout_tx_index_);
+					return false;
+				}
+				else{
+					if (!task.result_)
+						LOG_ERROR("transaction(%s) apply failed. %s",utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
+					else
+						tx_frm->environment_->Commit();
+				}
 			}
 			else{
 				if (!tx_frm->Apply(this, environment_))
@@ -195,7 +190,6 @@ namespace bubi {
 			}
 			apply_tx_frms_.push_back(tx_frm);
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
-			//LedgerManager::Instance().transaction_stack_.pop();
 			context->transaction_stack_.pop();
 		}
 

@@ -37,16 +37,16 @@ namespace bubi {
 			LOG_ERROR("consensus_value.ledger_seq(" FMT_I64 ") error", consensus_value.ledger_seq());
 			return false;
 		}
-
-		int32_t ret = GlueManager::Instance().CheckValue(consensus_value.SerializeAsString());
-		if (ret!=0){
-			LOG_ERROR("CheckValue error,error code(%d)", ret);
-			return false;
-		}
-
 		std::shared_ptr<LedgerContext> context;
 		std::string con_str = consensus_value.SerializeAsString();
 		std::string chash = HashWrapper::Crypto(con_str);
+
+		int32_t ret = GlueManager::Instance().CheckValue(consensus_value.SerializeAsString());
+		if (ret!=0){
+			LOG_ERROR("consensus_value(%s) CheckValue error,error code(%d)", utils::String::BinToHexString(chash).c_str(), ret);
+			return false;
+		}
+		
 		std::string box_key = std::to_string(consensus_value.ledger_seq()) + chash;
 		auto it = box_.find(box_key);
 		if (it == box_.end())
@@ -55,11 +55,11 @@ namespace bubi {
 			context = std::make_shared<LedgerContext>();
 			context->Init(box_key);
 			box_[box_key] = context;
-			LOG_INFO("create context(" FMT_I64 "-%s) in box", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
+			LOG_INFO("create context in box,ledger_seq(" FMT_I64 ") consensus_value(%s)", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 		}
 		else
 		{
-			LOG_ERROR("has same context(" FMT_I64 "-%s) in box", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
+			LOG_ERROR("has same context in box,indicate this context in excuting,ledger_seq(" FMT_I64 ") consensus_value(%s)", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 			return false;
 		}
 
@@ -83,7 +83,7 @@ namespace bubi {
 				utils::MutexGuard guard(mutex_);
 				box_.erase(box_key);
 			}
-			LOG_ERROR("context(" FMT_I64 "-%s) time out in tx(%d),be deleted", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str(), context->closing_ledger_->timeout_tx_index_);
+			LOG_ERROR("ledger_seq(" FMT_I64 ") consensus_value(%s) time out in tx(%d),context be deleted", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str(), context->closing_ledger_->timeout_tx_index_);
 			return false;
 		}
 		int64_t time1 = utils::Timestamp().HighResolution();
@@ -105,10 +105,6 @@ namespace bubi {
 			if (remove)
 				box_.erase(it);
 		}
-		else
-		{
-			LOG_ERROR("context not found");
-		}
 		return context;
 	}
 
@@ -122,10 +118,6 @@ namespace bubi {
 			context = it->second;
 			if (remove)
 				box_.erase(it);
-		}
-		else
-		{
-			LOG_ERROR("context not found");
 		}
 		return context;
 	}

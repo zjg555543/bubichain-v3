@@ -14,6 +14,9 @@ limitations under the License.
 #ifndef TRANSACTION_FRM_H_
 #define TRANSACTION_FRM_H_
 
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
 #include <unordered_map>
 #include <utils/common.h>
 #include <common/general.h>
@@ -81,11 +84,16 @@ namespace bubi {
 		bool ValidForSourceSignature();
 
 		bool ValidForApply(std::shared_ptr<Environment> environment);
+		//true: normal ,false: timeout
+		bool Wait(uint32_t seconds);
+		void Notify();
 
 		uint64_t apply_time_;
 		Result result_;	
 		int32_t processing_operation_;
 		LedgerFrm* ledger_;
+
+		uint64_t isolate_index_;
 	private:		
 		protocol::TransactionEnv transaction_env_;
 		std::string hash_;
@@ -95,7 +103,30 @@ namespace bubi {
 		std::set<std::string> valid_signature_;
 		
 		int64_t incoming_time_;
+		
+		std::mutex mtx_;
+		std::condition_variable cv_;
 	};
+
+	class TransactionApplyTask :public utils::Runnable
+	{
+	public:
+		TransactionApplyTask(TransactionFrm::pointer tx_frm);
+		~TransactionApplyTask();
+		bool Start(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract = false);
+		virtual void Run(utils::Thread *thread) override;
+		void Exit();
+		bool result_;
+	private:
+		utils::Thread *thread_ptr_;
+		TransactionFrm::pointer tx_frm_;
+		LedgerFrm* ledger_frm_;
+		std::shared_ptr<Environment> env_;
+		bool bool_contract_;
+		
+	};
+
+
 };
 
 #endif
