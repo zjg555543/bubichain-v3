@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\src\ledger\contract_manager.cpp" />
     <ClCompile Include="..\..\src\ledger\environment.cpp" />
     <ClCompile Include="..\..\src\ledger\kv_trie.cpp" />
+    <ClCompile Include="..\..\src\ledger\ledgercontext_manager.cpp" />
     <ClCompile Include="..\..\src\ledger\operation_frm.cpp" />
     <ClCompile Include="..\..\src\ledger\trie.cpp" />
     <ClCompile Include="..\..\src\main\configure.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="..\..\src\ledger\contract_manager.h" />
     <ClInclude Include="..\..\src\ledger\environment.h" />
     <ClInclude Include="..\..\src\ledger\kv_trie.h" />
+    <ClInclude Include="..\..\src\ledger\ledgercontext_manager.h" />
     <ClInclude Include="..\..\src\ledger\operation_frm.h" />
     <ClInclude Include="..\..\src\ledger\trie.h" />
     <ClInclude Include="..\..\src\main\configure.h" />

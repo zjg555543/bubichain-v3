@@ -18,8 +18,7 @@ limitations under the License.
 namespace bubi {
 	class TransactionFrm;
 	class LedgerFrm;
-	class LedgerContext :public std::enable_shared_from_this<LedgerContext>
-	{
+	class LedgerContext :public std::enable_shared_from_this<LedgerContext> {
 	public:
 		typedef std::shared_ptr<bubi::LedgerContext>	pointer;
 		std::string hash_;
@@ -30,10 +29,9 @@ namespace bubi {
 		void Init(const std::string& hash);
 	};
 
-	class LedgerContextManager
-	{
+	class LedgerContextManager {
 	public:
-		
+
 		typedef std::shared_ptr<bubi::LedgerContextManager>	pointer;
 
 		LedgerContextManager();

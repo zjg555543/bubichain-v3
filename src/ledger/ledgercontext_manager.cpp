@@ -16,24 +16,21 @@ limitations under the License.
 #include <glue/glue_manager.h>
 
 namespace bubi {
-	LedgerContext::LedgerContext(){
+	LedgerContext::LedgerContext() {
 		closing_ledger_ = std::make_shared<LedgerFrm>();
 	}
-	void LedgerContext::Init(const std::string& hash){
+	void LedgerContext::Init(const std::string& hash) {
 		closing_ledger_->SetContext(shared_from_this());
 		hash_ = hash;
 	}
 
 
-	LedgerContextManager::LedgerContextManager()
-	{}
-	LedgerContextManager::~LedgerContextManager()
-	{}
+	LedgerContextManager::LedgerContextManager() {}
+	LedgerContextManager::~LedgerContextManager() {}
 
-	bool LedgerContextManager::PreProcessLedger(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode)
-	{
+	bool LedgerContextManager::PreProcessLedger(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode) {
 		protocol::LedgerHeader last_closed_header = LedgerManager::Instance().GetLastClosedLedger();
-		if (last_closed_header.seq() + 1 != consensus_value.ledger_seq()){
+		if (last_closed_header.seq() + 1 != consensus_value.ledger_seq()) {
 			LOG_ERROR("consensus_value.ledger_seq(" FMT_I64 ") error", consensus_value.ledger_seq());
 			return false;
 		}
@@ -42,23 +39,21 @@ namespace bubi {
 		std::string chash = HashWrapper::Crypto(con_str);
 
 		int32_t ret = GlueManager::Instance().CheckValue(consensus_value.SerializeAsString());
-		if (ret!=0){
+		if (ret != 0) {
 			LOG_ERROR("consensus_value(%s) CheckValue error,error code(%d)", utils::String::BinToHexString(chash).c_str(), ret);
 			return false;
 		}
-		
+
 		std::string box_key = std::to_string(consensus_value.ledger_seq()) + chash;
 		auto it = box_.find(box_key);
-		if (it == box_.end())
-		{
+		if (it == box_.end()) {
 			utils::MutexGuard guard(mutex_);
 			context = std::make_shared<LedgerContext>();
 			context->Init(box_key);
 			box_[box_key] = context;
 			LOG_INFO("create context in box,ledger_seq(" FMT_I64 ") consensus_value(%s)", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 		}
-		else
-		{
+		else {
 			LOG_ERROR("has same context in box,indicate this context in excuting,ledger_seq(" FMT_I64 ") consensus_value(%s)", consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 			return false;
 		}
@@ -74,11 +69,10 @@ namespace bubi {
 
 		int64_t time0 = utils::Timestamp().HighResolution();
 		LedgerManager::Instance().tree_->time_ = 0;
-		if (!context->closing_ledger_->Apply(consensus_value, execute_mode) && context->closing_ledger_->timeout_tx_index_ >= 0)
-		{
+		if (!context->closing_ledger_->Apply(consensus_value, execute_mode) && context->closing_ledger_->timeout_tx_index_ >= 0) {
 			int64_t time1 = utils::Timestamp().HighResolution();
 			context->apply_time_ = time1 - time0;
-			timeout_tx_index = context->closing_ledger_->timeout_tx_index_;			
+			timeout_tx_index = context->closing_ledger_->timeout_tx_index_;
 			{
 				utils::MutexGuard guard(mutex_);
 				box_.erase(box_key);
@@ -91,16 +85,14 @@ namespace bubi {
 		return true;
 	}
 
-	std::shared_ptr<LedgerContext> LedgerContextManager::GetContext(const protocol::ConsensusValue& consensus_value,const bool remove)
-	{
+	std::shared_ptr<LedgerContext> LedgerContextManager::GetContext(const protocol::ConsensusValue& consensus_value, const bool remove) {
 		std::shared_ptr<LedgerContext> context = nullptr;
 		std::string con_str = consensus_value.SerializeAsString();
 		std::string chash = HashWrapper::Crypto(con_str);
 		std::string box_key = std::to_string(consensus_value.ledger_seq()) + chash;
 		utils::MutexGuard guard(mutex_);
 		auto it = box_.find(box_key);
-		if (it != box_.end())
-		{
+		if (it != box_.end()) {
 			context = it->second;
 			if (remove)
 				box_.erase(it);
@@ -108,13 +100,11 @@ namespace bubi {
 		return context;
 	}
 
-	std::shared_ptr<LedgerContext> LedgerContextManager::GetContext(const std::string& context_index,const bool remove)
-	{
+	std::shared_ptr<LedgerContext> LedgerContextManager::GetContext(const std::string& context_index, const bool remove) {
 		std::shared_ptr<LedgerContext> context = nullptr;
 		utils::MutexGuard guard(mutex_);
 		auto it = box_.find(context_index);
-		if (it != box_.end())
-		{
+		if (it != box_.end()) {
 			context = it->second;
 			if (remove)
 				box_.erase(it);

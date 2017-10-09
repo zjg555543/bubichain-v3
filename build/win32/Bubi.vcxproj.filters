@@ -123,6 +123,9 @@
     <ClCompile Include="..\..\src\monitor\monitor_manager.cpp">
       <Filter>monitor</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ledger\ledgercontext_manager.cpp">
+      <Filter>ledger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\overlay\peer_manager.h">
@@ -211,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\monitor\monitor_manager.h">
       <Filter>monitor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ledger\ledgercontext_manager.h">
+      <Filter>ledger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
