@@ -52,10 +52,19 @@ namespace bubi {
 		bool LoadFromDb(int64_t seq);
 
 		//static bool LoadFromDb(int64_t seq, protocol::Ledger &ledger);
-		int64_t GetTxCount() {
+		size_t GetTxCount() {
 			return apply_tx_frms_.size();
 		}
-	
+
+		size_t GetTxOpeCount() {
+			size_t ope_count = 0;
+			for (size_t i = 0; i < apply_tx_frms_.size(); i++) {
+				const protocol::Transaction &tx = apply_tx_frms_[i]->GetTransactionEnv().transaction();
+				ope_count += (tx.operations_size() > 0 ? tx.operations_size() : 1);
+			}
+			return ope_count;
+		}
+
 		bool CheckValidation ();
 
 		Json::Value ToJson();

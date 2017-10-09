@@ -537,7 +537,8 @@ namespace bubi {
 		protocol::ValidatorSet new_set;
 		utils::StringVector new_validator;
 		for (int32_t i = 0; i < validators_.validators_size(); i++) new_validator.push_back(validators_.validators(i));
-		if (consensus_value.has_ledger_upgrade()) {
+		bool has_upgrade = consensus_value.has_ledger_upgrade();
+		if (has_upgrade) {
 			const protocol::LedgerUpgrade &ledger_upgrade = consensus_value.ledger_upgrade();
 
 			//for ledger version
@@ -596,8 +597,9 @@ namespace bubi {
 			tmp_lcl_header = lcl_header_ = last_closed_ledger_->GetProtoHeader();
 		} while (false);
 		
-		Global::Instance().GetIoService().post([new_set, proof]() {
+		Global::Instance().GetIoService().post([new_set, proof, consensus_value, has_upgrade]() { //avoid deadlock
 			GlueManager::Instance().UpdateValidators(new_set, proof);
+			if (has_upgrade) GlueManager::Instance().LedgerHasUpgrade();
 		});
 
 		////////////////////////////
@@ -605,16 +607,17 @@ namespace bubi {
 		int64_t time3 = utils::Timestamp().HighResolution();
 		tree_->batch_ = std::make_shared<WRITE_BATCH>();
 		tree_->FreeMemory(4);
-		LOG_INFO("ledger closed (" FMT_I64 ") txcount(" FMT_I64 ")  hash=%s  apply="  FMT_I64_EX(-8) " calc_hash="  FMT_I64_EX(-8) " addtodb = " FMT_I64_EX(-8)
-			" total=" FMT_I64_EX(-8) " LoadValue=" FMT_I64 ,
-			context->closing_ledger_->GetProtoHeader().seq(),
-			context->closing_ledger_->GetTxCount(),
-			utils::String::Bin4ToHexString(context->closing_ledger_->GetProtoHeader().hash()).c_str(),
-			time1 - time0 +context->apply_time_,
+		LOG_INFO("ledger(" FMT_I64 ") closed txcount(" FMT_SIZE ") hash(%s) apply="  FMT_I64_EX(-8) " calc_hash="  FMT_I64_EX(-8) " addtodb=" FMT_I64_EX(-8)
+			" total=" FMT_I64_EX(-8) " LoadValue=" FMT_I64 " tsize=" FMT_SIZE,
+			closing_ledger_->GetProtoHeader().seq(),
+			closing_ledger_->GetTxOpeCount(),
+			utils::String::Bin4ToHexString(closing_ledger_->GetProtoHeader().hash()).c_str(),
+			time1 - time0,
 			time2 - time1,
 			time3 - time2,
-			time3 - time0 + context->apply_time_,
-			tree_->time_);
+			time3 - time0,
+			tree_->time_,
+			closing_ledger_->GetTxCount());
 
 		// notice
 		for (int i = 0; i < ledger.transaction_envs_size(); i++) {

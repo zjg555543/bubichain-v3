@@ -193,7 +193,7 @@ namespace bubi {
 		do {
 			std::string sign_type_s = request.GetParamValue("sign_type");
 			if (sign_type_s == ""){
-				if (HashWrapper::GetLedgerHashType()) {
+				if (HashWrapper::GetLedgerHashType() == HashWrapper::HASH_TYPE_SHA256) {
 					sign_type = SIGNTYPE_ED25519;
 				}
 				else {
