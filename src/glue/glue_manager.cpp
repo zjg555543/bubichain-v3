@@ -21,8 +21,8 @@ limitations under the License.
 
 namespace bubi {
 
-	int64_t const  MAX_LEDGER_TIMESPAN_SECONDS = 40 * utils::MICRO_UNITS_PER_SEC;
-	int64_t const QUEUE_TRANSACTION_TIMEOUT = 60 * utils::MICRO_UNITS_PER_SEC;
+	int64_t const  MAX_LEDGER_TIMESPAN_SECONDS = 60 * utils::MICRO_UNITS_PER_SEC;
+	int64_t const QUEUE_TRANSACTION_TIMEOUT = 90 * utils::MICRO_UNITS_PER_SEC;
 	GlueManager::GlueManager() {
 		time_start_consenus_ = 0;
 		ledgerclose_check_timer_ = 0;

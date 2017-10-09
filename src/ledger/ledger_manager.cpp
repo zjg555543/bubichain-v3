@@ -583,16 +583,17 @@ namespace bubi {
 		int64_t time3 = utils::Timestamp().HighResolution();
 		tree_->batch_ = std::make_shared<WRITE_BATCH>();
 		tree_->FreeMemory(4);
-		LOG_INFO("ledger closed (" FMT_I64 ") txcount(" FMT_I64 ")  hash=%s  apply="  FMT_I64_EX(-8) " calc_hash="  FMT_I64_EX(-8) " addtodb = " FMT_I64_EX(-8)
-			" total=" FMT_I64_EX(-8) " LoadValue=" FMT_I64 ,
+		LOG_INFO("ledger(" FMT_I64 ") closed txcount(" FMT_SIZE ") hash(%s) apply="  FMT_I64_EX(-8) " calc_hash="  FMT_I64_EX(-8) " addtodb=" FMT_I64_EX(-8)
+			" total=" FMT_I64_EX(-8) " LoadValue=" FMT_I64 " tsize=" FMT_SIZE,
 			closing_ledger_->GetProtoHeader().seq(),
-			closing_ledger_->GetTxCount(),
+			closing_ledger_->GetTxOpeCount(),
 			utils::String::Bin4ToHexString(closing_ledger_->GetProtoHeader().hash()).c_str(),
 			time1 - time0,
 			time2 - time1,
 			time3 - time2,
 			time3 - time0,
-			tree_->time_);
+			tree_->time_,
+			closing_ledger_->GetTxCount());
 
 		// notice
 		for (int i = 0; i < ledger.transaction_envs_size(); i++) {
