@@ -224,4 +224,5 @@ message OperationSetMetadata{
 	string	key = 1;  
 	string  value = 2;
 	int64 	version = 3; //可选。metadata的版本号。如果设置了，必须和帐号现有的metadata_version相同。从ledger 1005 开始
+	bool    delete_flag = 4;
 }

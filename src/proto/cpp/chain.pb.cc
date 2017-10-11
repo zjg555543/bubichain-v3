@@ -562,10 +562,11 @@ void protobuf_AssignDesc_chain_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationCreateAccount, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationCreateAccount, _is_default_instance_));
   OperationSetMetadata_descriptor_ = file->message_type(24);
-  static const int OperationSetMetadata_offsets_[3] = {
+  static const int OperationSetMetadata_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSetMetadata, key_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSetMetadata, value_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSetMetadata, version_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSetMetadata, delete_flag_),
   };
   OperationSetMetadata_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -800,10 +801,11 @@ void protobuf_AddDesc_chain_2eproto() {
     "\022.protocol.Contract\022(\n\004priv\030\003 \001(\0132\032.prot"
     "ocol.AccountPrivilege\022$\n\tmetadatas\030\004 \003(\013"
     "2\021.protocol.KeyPair\022\024\n\014init_balance\030\005 \001("
-    "\003\"C\n\024OperationSetMetadata\022\013\n\003key\030\001 \001(\t\022\r"
-    "\n\005value\030\002 \001(\t\022\017\n\007version\030\003 \001(\003*#\n\005Limit\022"
-    "\013\n\007UNKNOWN\020\000\022\r\n\tSIGNATURE\020dB\035\n\033cn.bubi.b"
-    "lockchain.adapter3b\006proto3", 3666);
+    "\003\"X\n\024OperationSetMetadata\022\013\n\003key\030\001 \001(\t\022\r"
+    "\n\005value\030\002 \001(\t\022\017\n\007version\030\003 \001(\003\022\023\n\013delete"
+    "_flag\030\004 \001(\010*#\n\005Limit\022\013\n\007UNKNOWN\020\000\022\r\n\tSIG"
+    "NATURE\020dB\035\n\033cn.bubi.blockchain.adapter3b"
+    "\006proto3", 3687);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "chain.proto", &protobuf_RegisterTypes);
   Account::default_instance_ = new Account();
@@ -12424,6 +12426,7 @@ void OperationCreateAccount::clear_init_balance() {
 const int OperationSetMetadata::kKeyFieldNumber;
 const int OperationSetMetadata::kValueFieldNumber;
 const int OperationSetMetadata::kVersionFieldNumber;
+const int OperationSetMetadata::kDeleteFlagFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 OperationSetMetadata::OperationSetMetadata()
@@ -12451,6 +12454,7 @@ void OperationSetMetadata::SharedCtor() {
   key_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   value_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   version_ = GOOGLE_LONGLONG(0);
+  delete_flag_ = false;
 }
 
 OperationSetMetadata::~OperationSetMetadata() {
@@ -12492,9 +12496,29 @@ OperationSetMetadata* OperationSetMetadata::New(::google::protobuf::Arena* arena
 
 void OperationSetMetadata::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.OperationSetMetadata)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(OperationSetMetadata, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<OperationSetMetadata*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(version_, delete_flag_);
   key_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   value_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  version_ = GOOGLE_LONGLONG(0);
+
+#undef ZR_HELPER_
+#undef ZR_
+
 }
 
 bool OperationSetMetadata::MergePartialFromCodedStream(
@@ -12547,6 +12571,21 @@ bool OperationSetMetadata::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &version_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_delete_flag;
+        break;
+      }
+
+      // optional bool delete_flag = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_delete_flag:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &delete_flag_)));
 
         } else {
           goto handle_unusual;
@@ -12604,6 +12643,11 @@ void OperationSetMetadata::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->version(), output);
   }
 
+  // optional bool delete_flag = 4;
+  if (this->delete_flag() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->delete_flag(), output);
+  }
+
   // @@protoc_insertion_point(serialize_end:protocol.OperationSetMetadata)
 }
 
@@ -12637,6 +12681,11 @@ void OperationSetMetadata::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->version(), target);
   }
 
+  // optional bool delete_flag = 4;
+  if (this->delete_flag() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->delete_flag(), target);
+  }
+
   // @@protoc_insertion_point(serialize_to_array_end:protocol.OperationSetMetadata)
   return target;
 }
@@ -12664,6 +12713,11 @@ int OperationSetMetadata::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->version());
+  }
+
+  // optional bool delete_flag = 4;
+  if (this->delete_flag() != 0) {
+    total_size += 1 + 1;
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -12705,6 +12759,9 @@ void OperationSetMetadata::MergeFrom(const OperationSetMetadata& from) {
   if (from.version() != 0) {
     set_version(from.version());
   }
+  if (from.delete_flag() != 0) {
+    set_delete_flag(from.delete_flag());
+  }
 }
 
 void OperationSetMetadata::CopyFrom(const ::google::protobuf::Message& from) {
@@ -12734,6 +12791,7 @@ void OperationSetMetadata::InternalSwap(OperationSetMetadata* other) {
   key_.Swap(&other->key_);
   value_.Swap(&other->value_);
   std::swap(version_, other->version_);
+  std::swap(delete_flag_, other->delete_flag_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -12849,6 +12907,20 @@ void OperationSetMetadata::clear_version() {
   
   version_ = value;
   // @@protoc_insertion_point(field_set:protocol.OperationSetMetadata.version)
+}
+
+// optional bool delete_flag = 4;
+void OperationSetMetadata::clear_delete_flag() {
+  delete_flag_ = false;
+}
+ bool OperationSetMetadata::delete_flag() const {
+  // @@protoc_insertion_point(field_get:protocol.OperationSetMetadata.delete_flag)
+  return delete_flag_;
+}
+ void OperationSetMetadata::set_delete_flag(bool value) {
+  
+  delete_flag_ = value;
+  // @@protoc_insertion_point(field_set:protocol.OperationSetMetadata.delete_flag)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

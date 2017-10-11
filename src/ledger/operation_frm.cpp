@@ -572,34 +572,53 @@ namespace bubi {
 			std::string key = ope.key();
 			protocol::KeyPair keypair_e ;
 			int64_t version = ope.version();
+			bool delete_flag = ope.delete_flag();
+			if (delete_flag){
+				if (source_account_->GetMetaData(key, keypair_e)){
+					if (version != 0) {
+						if (keypair_e.version() + 1 != version) {
+							result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
+							result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
+							break;
+						}
+					}
+					source_account_->DeleteMetaData(keypair_e);
+				}
+				else{
+					result_.set_code(protocol::ERRCODE_NOT_EXIST);
+					result_.set_desc(utils::String::Format("DeleteMetaData not exist key(%s)", key.c_str()));
+					break;
+				}
+			}
+			else{
+				if (source_account_->GetMetaData(key, keypair_e)) {
 
-			if (source_account_->GetMetaData(key, keypair_e)) {
+					if (version != 0) {
+						if (keypair_e.version() + 1 != version) {
+							result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
+							result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
+							break;
+						}
+					}
 
-				if (version != 0) {
-					if (keypair_e.version() + 1 != version) {
+					keypair_e.set_version(keypair_e.version() + 1);
+					keypair_e.set_value(ope.value());
+					source_account_->SetMetaData(keypair_e);
+
+				}
+				else {
+					if (version != 1 && version != 0) {
 						result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
 						result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
 						break;
 					}
+					protocol::KeyPair keypair;
+					keypair.set_value(ope.value());
+					keypair.set_key(ope.key());
+					keypair.set_version(1);
+					source_account_->SetMetaData(keypair);
 				}
-
-				keypair_e.set_version(keypair_e.version() + 1);
-				keypair_e.set_value(ope.value());
-				source_account_->SetMetaData(keypair_e);
-
-			}
-			else {
-				if (version != 1 && version != 0) {
-					result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
-					result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
-					break;
-				}
-				protocol::KeyPair keypair;
-				keypair.set_value(ope.value());
-				keypair.set_key(ope.key());
-				keypair.set_version(1);
-				source_account_->SetMetaData(keypair);
-			}
+			}			
 		} while (false);
 
 	}

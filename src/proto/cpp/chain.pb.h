@@ -3198,6 +3198,12 @@ class OperationSetMetadata : public ::google::protobuf::Message /* @@protoc_inse
   ::google::protobuf::int64 version() const;
   void set_version(::google::protobuf::int64 value);
 
+  // optional bool delete_flag = 4;
+  void clear_delete_flag();
+  static const int kDeleteFlagFieldNumber = 4;
+  bool delete_flag() const;
+  void set_delete_flag(bool value);
+
   // @@protoc_insertion_point(class_scope:protocol.OperationSetMetadata)
  private:
 
@@ -3206,6 +3212,7 @@ class OperationSetMetadata : public ::google::protobuf::Message /* @@protoc_inse
   ::google::protobuf::internal::ArenaStringPtr key_;
   ::google::protobuf::internal::ArenaStringPtr value_;
   ::google::protobuf::int64 version_;
+  bool delete_flag_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_chain_2eproto();
   friend void protobuf_AssignDesc_chain_2eproto();
@@ -6224,6 +6231,20 @@ inline void OperationSetMetadata::set_version(::google::protobuf::int64 value) {
   
   version_ = value;
   // @@protoc_insertion_point(field_set:protocol.OperationSetMetadata.version)
+}
+
+// optional bool delete_flag = 4;
+inline void OperationSetMetadata::clear_delete_flag() {
+  delete_flag_ = false;
+}
+inline bool OperationSetMetadata::delete_flag() const {
+  // @@protoc_insertion_point(field_get:protocol.OperationSetMetadata.delete_flag)
+  return delete_flag_;
+}
+inline void OperationSetMetadata::set_delete_flag(bool value) {
+  
+  delete_flag_ = value;
+  // @@protoc_insertion_point(field_set:protocol.OperationSetMetadata.delete_flag)
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS

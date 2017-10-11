@@ -276,27 +276,11 @@ namespace bubi {
 		metadata_[dataptr.key()] = Rec;
 	}
 
-	bool AccountFrm::DeleteMetaData(const std::string key){
-		auto it = metadata_.find(key);
-		if (it != metadata_.end()){
-			if (it->second.action_ == utils::DEL){
-				return false;
-			}
-			it->second.action_ = utils::DEL;
-			return true;
-		}
-
-		std::string dbkey = account_info_.address();
-		dbkey += "S";
-		dbkey += key;
-		auto db = Storage::Instance().account_db();
-		std::string buff;
-		if (!db->Get(key, buff)){
-			return false;
-		}
+	bool AccountFrm::DeleteMetaData(const protocol::KeyPair& dataptr){		
 		DataCache<protocol::KeyPair> Rec;
 		Rec.action_ = utils::DEL;
-		metadata_.insert({ key, Rec });
+		Rec.data_.CopyFrom(dataptr);
+		metadata_[dataptr.key()] = Rec;
 		return true;
 	}
 

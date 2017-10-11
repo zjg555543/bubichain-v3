@@ -68,7 +68,7 @@ namespace bubi {
 
 		void SetMetaData(const protocol::KeyPair& result);
 
-		bool DeleteMetaData(const std::string key);
+		bool DeleteMetaData(const protocol::KeyPair& dataptr);
 
 		protocol::Account &GetProtoAccount() {
 			return account_info_;
