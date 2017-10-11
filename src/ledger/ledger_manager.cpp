@@ -502,9 +502,9 @@ namespace bubi {
 					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 				return false;
 			}
-			context = context_manager_->GetContext(box_key);
-			if (context == nullptr) {
-				LOG_ERROR("GetContext failed,ledger_seq(" FMT_I64 ")  consensus_value(%s)",
+			context = context_manager_->GetContext(box_key,true);
+			if (context == nullptr){
+				LOG_ERROR("GetContext failed,ledger_seq(" FMT_I64 ")  consensus_value(%s)", 
 					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 				return false;
 			}
@@ -609,10 +609,10 @@ namespace bubi {
 			context->closing_ledger_->GetProtoHeader().seq(),
 			context->closing_ledger_->GetTxOpeCount(),
 			utils::String::Bin4ToHexString(context->closing_ledger_->GetProtoHeader().hash()).c_str(),
-			time1 - time0,
+			time1 - time0+context->apply_time_,
 			time2 - time1,
 			time3 - time2,
-			time3 - time0,
+			time3 - time0 + context->apply_time_,
 			tree_->time_,
 			context->closing_ledger_->GetTxCount());
 
