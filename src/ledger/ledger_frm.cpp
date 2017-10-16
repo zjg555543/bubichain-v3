@@ -146,41 +146,40 @@ namespace bubi {
 				continue;
 			}
 
-			if (context_.expired())//fatal error
-			{
-				BUBI_EXIT("context expired");
+			if (context_.expired()){
+				BUBI_EXIT("Context expired");
 			}
+
 			std::shared_ptr<LedgerContext> context = context_.lock();
 			context->transaction_stack_.push(tx_frm);
 
 			if (execute_mode == EM_TIMEOUT){				
 				TransactionApplyTask task(tx_frm);
-				if (!task.Start(this, environment_))
+				if (task.Start(this, environment_))
 				{
-					LOG_ERROR("transaction(%s) apply failed. TransactionApplyTask Start failed", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str());
-					timeout_tx_index_ = i;
-					return false;
+					if (!tx_frm->Wait(Configure::Instance().ledger_configure_.preprocess_timeout_)){
+						//timeout
+						task.Exit();
+						timeout_tx_index_ = i;
+						if (tx_frm->isolate_index_ != 0)
+							ContractManager::ClearIsolateIndex(tx_frm->isolate_index_);
+						LOG_ERROR("Transaction(%s) apply failed. apply time out in tx index(%d)", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), timeout_tx_index_);
+						return false;
+					}
+					else{
+						if (!task.result_)
+							LOG_ERROR("Transaction(%s) apply failed. %s", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
+						else
+							tx_frm->environment_->Commit();
+					}					
 				}
-				if (!tx_frm->Wait(Configure::Instance().ledger_configure_.preprocess_timeout_)){
-					//timeout
-					task.Exit();
-					timeout_tx_index_ = i;
-					if (tx_frm->isolate_index_ != 0)
-						ContractManager::ClearIsolateIndex(tx_frm->isolate_index_);
-					LOG_ERROR("transaction(%s) apply failed. apply time out in tx index(%d)", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), timeout_tx_index_);
-					return false;
-				}
-				else{
-					if (!task.result_)
-						LOG_ERROR("transaction(%s) apply failed. %s",utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
-					else
-						tx_frm->environment_->Commit();
-				}
+				else
+					LOG_ERROR("Transaction(%s) apply failed. TransactionApplyTask Start failed", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str());
 			}
 			else{
 				if (!tx_frm->Apply(this, environment_))
 				{
-					LOG_ERROR("transaction(%s) apply failed. %s",
+					LOG_ERROR("Transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 				}
 				else

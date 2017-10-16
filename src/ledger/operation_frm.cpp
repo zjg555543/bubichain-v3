@@ -537,6 +537,7 @@ namespace bubi {
 				{
 					result_.set_code(protocol::ERRCODE_CONTEXT_EXPIRED);
 					result_.set_desc("context expired");
+					BUBI_EXIT("context expired");
 					break;
 				}
 				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
@@ -576,11 +577,16 @@ namespace bubi {
 			if (delete_flag){
 				if (source_account_->GetMetaData(key, keypair_e)){
 					if (version != 0) {
-						if (keypair_e.version() + 1 != version) {
+						if (keypair_e.version() != version) {
 							result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
 							result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
 							break;
 						}
+					}
+					if (!ope.value().empty() || key.empty()){
+						result_.set_code(protocol::ERRCODE_INVALID_PARAMETER);
+						result_.set_desc(utils::String::Format("Delete data value must be empty,key(%s)", key.c_str()));
+						break;
 					}
 					source_account_->DeleteMetaData(keypair_e);
 				}
@@ -688,6 +694,7 @@ namespace bubi {
 				{
 					result_.set_code(protocol::ERRCODE_CONTEXT_EXPIRED);
 					result_.set_desc("context expired");
+					BUBI_EXIT("context expired");
 					break;
 				}
 				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();

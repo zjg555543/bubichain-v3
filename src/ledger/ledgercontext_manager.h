@@ -18,7 +18,8 @@ limitations under the License.
 namespace bubi {
 	class TransactionFrm;
 	class LedgerFrm;
-	class LedgerContext :public std::enable_shared_from_this<LedgerContext> {
+	class LedgerContext :public std::enable_shared_from_this<LedgerContext>
+	{
 	public:
 		typedef std::shared_ptr<bubi::LedgerContext>	pointer;
 		std::string hash_;
@@ -27,11 +28,12 @@ namespace bubi {
 		std::stack<std::shared_ptr<TransactionFrm>> transaction_stack_;
 		LedgerContext();
 		void Init(const std::string& hash);
+		bool Apply(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode);
 	};
 
-	class LedgerContextManager {
-	public:
-
+	class LedgerContextManager
+	{
+	public:		
 		typedef std::shared_ptr<bubi::LedgerContextManager>	pointer;
 
 		LedgerContextManager();

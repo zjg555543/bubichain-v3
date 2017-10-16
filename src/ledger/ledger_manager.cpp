@@ -490,10 +490,9 @@ namespace bubi {
 		}
 
 		std::string con_str = consensus_value.SerializeAsString();
-		std::string chash = HashWrapper::Crypto(con_str);
-		std::string box_key = std::to_string(consensus_value.ledger_seq()) + chash;
-		std::shared_ptr<LedgerContext> context = context_manager_->GetContext(box_key, true);
-		if (context == nullptr) {
+		std::string chash = HashWrapper::Crypto(con_str);		
+		std::shared_ptr<LedgerContext> context = context_manager_->GetContext(chash, true);
+		if (context == nullptr){
 			int timeout_tx_index = -1;
 			//for test timeout , change this param is LedgerFrm::EM_TIMEOUT,should be LedgerFrm::EM_NOBREAK
 			bool result = context_manager_->PreProcessLedger(consensus_value, timeout_tx_index, LedgerFrm::EM_NOBREAK);
@@ -502,7 +501,7 @@ namespace bubi {
 					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
 				return false;
 			}
-			context = context_manager_->GetContext(box_key,true);
+			context = context_manager_->GetContext(chash, true);
 			if (context == nullptr){
 				LOG_ERROR("GetContext failed,ledger_seq(" FMT_I64 ")  consensus_value(%s)", 
 					consensus_value.ledger_seq(), utils::String::BinToHexString(chash).c_str());
@@ -919,8 +918,8 @@ namespace bubi {
 			}
 
 			context->transaction_stack_.push(txfrm);
-			if (txfrm->ValidForParameter()) {
-				txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+			if (txfrm->ValidForParameter()){
+				txfrm->Apply(context->closing_ledger_.get(), back->environment_, true);
 			}
 
 			protocol::TransactionEnvStore tx_store;
