@@ -73,9 +73,8 @@ namespace bubi {
 		std::shared_ptr<LedgerContext> context = nullptr;
 		std::string con_str = consensus_value.SerializeAsString();
 		std::string chash = HashWrapper::Crypto(con_str);
-		std::string box_key = std::to_string(consensus_value.ledger_seq()) + chash;
 		utils::MutexGuard guard(mutex_);
-		auto it = box_.find(box_key);
+		auto it = box_.find(chash);
 		if (it != box_.end()){
 			context = it->second;
 			if (remove)
