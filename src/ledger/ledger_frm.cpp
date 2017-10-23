@@ -27,19 +27,14 @@ namespace bubi {
 #define COUNT_PER_PARTITION 1000000
 	LedgerFrm::LedgerFrm() {
 		id_ = 0;
+		lpledger_context_ = NULL;
+		enabled_ = false;
+		apply_time_ = -1;
 	}
 
 	
 	LedgerFrm::~LedgerFrm() {
 	}
-
-	void LedgerFrm::SetContext(const std::shared_ptr<LedgerContext>& context)
-	{
-		context_ = context;
-	}
-	//bool LedgerFrm::LoadFromDb(int64_t ledger_seq, protocol::Ledger &ledger) {
-	//	return true;
-	//}
 
 	bool LedgerFrm::LoadFromDb(int64_t ledger_seq) {
 
@@ -130,14 +125,24 @@ namespace bubi {
 		return true;
 	}
 
-	bool LedgerFrm::Apply(const protocol::ConsensusValue& request, EXECUTE_MODE execute_mode)
-	{
+	bool LedgerFrm::Cancel() {
+		enabled_ = false;
+		return true;
+	}
+
+	bool LedgerFrm::Apply(const protocol::ConsensusValue& request,
+		LedgerContext *ledger_context,
+		int64_t tx_time_out,
+		int32_t &tx_time_out_index) {
+
+		int64_t start_time = utils::Timestamp::HighResolution();
+		lpledger_context_ = ledger_context;
+		enabled_ = true;
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
 		environment_ = std::make_shared<Environment>(nullptr);
-		timeout_tx_index_ = -1;
 
-		for (int i = 0; i < request.txset().txs_size(); i++) {
+		for (int i = 0; i < request.txset().txs_size() && enabled_; i++) {
 			auto txproto = request.txset().txs(i);
 			
 			TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(txproto);
@@ -146,52 +151,34 @@ namespace bubi {
 				continue;
 			}
 
-			if (context_.expired()){
-				BUBI_EXIT("Context expired");
-			}
+			ledger_context->transaction_stack_.push(tx_frm);
 
-			std::shared_ptr<LedgerContext> context = context_.lock();
-			context->transaction_stack_.push(tx_frm);
+			int64_t time_start = utils::Timestamp::HighResolution();
+			bool ret = tx_frm->Apply(this, environment_);
+			int64_t time_use = utils::Timestamp::HighResolution() - time_start;
 
-			if (execute_mode == EM_TIMEOUT){				
-				TransactionApplyTask task(tx_frm);
-				if (task.Start(this, environment_))
-				{
-					if (!tx_frm->Wait(Configure::Instance().ledger_configure_.preprocess_timeout_)){
-						//timeout
-						task.Exit();
-						timeout_tx_index_ = i;
-						if (tx_frm->isolate_index_ != 0)
-							ContractManager::ClearIsolateIndex(tx_frm->isolate_index_);
-						LOG_ERROR("Transaction(%s) apply failed. apply time out in tx index(%d)", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), timeout_tx_index_);
-						return false;
-					}
-					else{
-						if (!task.result_)
-							LOG_ERROR("Transaction(%s) apply failed. %s", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
-						else
-							tx_frm->environment_->Commit();
-					}					
-				}
-				else
-					LOG_ERROR("Transaction(%s) apply failed. TransactionApplyTask Start failed", utils::String::BinToHexString(tx_frm->GetContentHash()).c_str());
-			}
-			else{
-				if (!tx_frm->Apply(this, environment_))
-				{
-					LOG_ERROR("Transaction(%s) apply failed. %s",
+			if (tx_time_out > 0 && time_use > tx_time_out ) { //special treatment, return false
+				LOG_ERROR("transaction(%s) apply failed. %s, time out(" FMT_I64 "ms > " FMT_I64 "ms)",
+					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str(),
+					time_use / utils::MICRO_UNITS_PER_MILLI, tx_time_out / utils::MICRO_UNITS_PER_MILLI);
+				tx_time_out_index = i;
+				return false;
+			} else{
+				if (!tx_frm->Apply(this, environment_)) {
+					LOG_ERROR("transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
+					tx_time_out_index = i;
 				}
-				else
-				{
+				else {
 					tx_frm->environment_->Commit();
 				}
 			}
+
 			apply_tx_frms_.push_back(tx_frm);
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
-			context->transaction_stack_.pop();
+			ledger_context->transaction_stack_.pop();
 		}
-
+		apply_time_ = utils::Timestamp::HighResolution() - start_time;
 		return true;
 	}
 

@@ -685,9 +685,7 @@ namespace bubi {
                 break;
             }
 
-		    ContractManager manager("");
-
-            if(!manager.Query(jsCode, args, result))
+            if(!ContractManager::Instance().Query(Contract::TYPE_V8, jsCode, args, result))
             {
 		    	error_code = protocol::ERRCODE_CONTRACT_EXECUTE_FAIL;
 		    	LOG_ERROR("account(%s) contract executed failed", address.c_str());

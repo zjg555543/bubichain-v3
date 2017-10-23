@@ -93,7 +93,6 @@ namespace bubi {
 		int32_t processing_operation_;
 		LedgerFrm* ledger_;
 
-		uint64_t isolate_index_;
 	private:		
 		protocol::TransactionEnv transaction_env_;
 		std::string hash_;

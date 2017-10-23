@@ -32,7 +32,6 @@ namespace bubi {
 		full_data_(),
 		valid_signature_(),
 		ledger_(),
-		isolate_index_(0),
 		incoming_time_(utils::Timestamp::HighResolution())
 		{
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -45,7 +44,6 @@ namespace bubi {
 		transaction_env_(env),
 		valid_signature_(),
 		ledger_(),
-		isolate_index_(0),
 		incoming_time_(utils::Timestamp::HighResolution()){
 		Initialize();
 		utils::AtomicInc(&bubi::General::tx_new_count);

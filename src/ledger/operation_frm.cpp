@@ -143,8 +143,7 @@ namespace bubi {
 				std::string err_msg;
 				std::string src = create_account.contract().payload();
 
-				ContractManager a("");
-				if (!a.SourceCodeCheck(src, err_msg)){
+				if (!ContractManager::Instance().SourceCodeCheck(Contract::TYPE_V8, src, err_msg)) {
 					result.set_code(protocol::ERRCODE_CONTRACT_SYNTAX_ERROR);
 					result.set_desc(err_msg);
 				}
@@ -533,35 +532,26 @@ namespace bubi {
 			
 			std::string javascript = dest_account->GetProtoAccount().contract().payload();
 			if (!javascript.empty()){
-				if (transaction_->ledger_->context_.expired())
-				{
-					result_.set_code(protocol::ERRCODE_CONTEXT_EXPIRED);
-					result_.set_desc("context expired");
-					BUBI_EXIT("context expired");
-					break;
-				}
-				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
+				ContractParameter parameter;
+				parameter.code_ = javascript;
+				parameter.input_ = payment.input();
+				parameter.this_address_ = payment.dest_address();
+				parameter.sender_ = source_account_->GetAccountAddress();
+				parameter.trigger_tx_ = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
+				parameter.ope_index_ = index_;
+				parameter.consensus_value_ = Proto2Json(*(transaction_->ledger_->value_)).toFastString();
+				parameter.ledger_context_ = transaction_->ledger_->lpledger_context_;
 
-				ContractManager manager(context->hash_);
-				transaction_->isolate_index_ = manager.IsolateIndex();
-				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
 				std::string err_msg;
-				if (!manager.Execute(javascript,
-					payment.input(),
-					payment.dest_address(),
-					source_account_->GetAccountAddress(),					
-					trigger_str,
-					index_,
-					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
+				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
+					parameter,
 					err_msg
 					))
 				{
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
-					transaction_->isolate_index_ = 0;
 					break;
 				}
-				transaction_->isolate_index_ = 0;
 			}
 		} while (false);
 	}
@@ -690,34 +680,26 @@ namespace bubi {
 			
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
 			if (!javascript.empty()){
-				if (transaction_->ledger_->context_.expired())
-				{
-					result_.set_code(protocol::ERRCODE_CONTEXT_EXPIRED);
-					result_.set_desc("context expired");
-					BUBI_EXIT("context expired");
-					break;
-				}
-				std::shared_ptr<LedgerContext> context = transaction_->ledger_->context_.lock();
 
-				ContractManager manager(context->hash_);
-				transaction_->isolate_index_ = manager.IsolateIndex();
-				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
+				ContractParameter parameter;
+				parameter.code_ = javascript;
+				parameter.input_ = ope.input();
+				parameter.this_address_ = ope.dest_address();
+				parameter.sender_ = source_account_->GetAccountAddress();
+				parameter.trigger_tx_ = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
+				parameter.ope_index_ = index_;
+				parameter.consensus_value_ = Proto2Json(*(transaction_->ledger_->value_)).toFastString();
+
 				std::string err_msg;
-				if (!manager.Execute(javascript,
-					ope.input(),
-					ope.dest_address(),
-					source_account_->GetAccountAddress(), 
-					trigger_str,
-					index_,
-					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
-					err_msg))
+				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
+					parameter,
+					err_msg
+					))
 				{
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
-					transaction_->isolate_index_ = 0;
 					break;
 				}
-				transaction_->isolate_index_ = 0;
 			}
 		} while (false);
 	}

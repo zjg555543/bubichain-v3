@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
 	bubi::WebSocketServer::InitInstance();
 	bubi::WebServer::InitInstance();
 	bubi::MonitorManager::InitInstance();
-	//bubi::ContractManager::InitInstance();
+	bubi::ContractManager::InitInstance();
 
 	bubi::Argument arg;
 	if (arg.Parse(argc, argv)){
@@ -237,14 +237,13 @@ int main(int argc, char *argv[]){
 		bubiAtExit.Push(std::bind(&bubi::MonitorManager::Exit, &monitor_manager));
 		LOG_INFO("Initialize monitor manager successful");
 
-		bubi::ContractManager::Initialize(argc, argv);
-		//bubi::ContractManager &contract_manager = bubi::LedgerManager::Instance().contract_manager_;
-		//if (!contract_manager.Initialize(argc, argv)){
-		//	LOG_ERROR("Initialize contract manager failed");
-		//	break;
-		//}
-		//bubiAtExit.Push(std::bind(&bubi::ContractManager::Exit, &contract_manager));
-		//LOG_INFO("Initialize contract manager successful");
+		bubi::ContractManager &contract_manager = bubi::ContractManager::Instance();
+		if (!contract_manager.Initialize(argc, argv)){
+			LOG_ERROR("Initialize contract manager failed");
+			break;
+		}
+		bubiAtExit.Push(std::bind(&bubi::ContractManager::Exit, &contract_manager));
+		LOG_INFO("Initialize contract manager successful");
 
 		RunLoop();
 
