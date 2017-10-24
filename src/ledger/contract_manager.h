@@ -126,8 +126,10 @@ namespace bubi{
 
 	class QueryContract : public utils::Thread{
 		Contract *contract_;
+		ContractParameter parameter_;
 		Json::Value result_;
 		bool ret_;
+		utils::Mutex mutex_;
 	public:
 		QueryContract();
 		~QueryContract();

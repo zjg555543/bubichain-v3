@@ -308,7 +308,7 @@ namespace bubi{
 		return true;
 	}
 
-	bool V8Contract::Query(Json::Value& jsResult) {
+	bool V8Contract::Query(Json::Value& js_result) {
 		v8::Isolate::Scope isolate_scope(isolate_);
 		v8::HandleScope    handle_scope(isolate_);
 		v8::TryCatch       try_catch(isolate_);
@@ -321,13 +321,13 @@ namespace bubi{
 
 		do {
 			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
-				jsResult["error_message"] = ReportException(isolate_, &try_catch);
+				js_result["error_message"] = ReportException(isolate_, &try_catch);
 				break;
 			}
 
 			v8::Local<v8::Value> result;
 			if (!compiled_script->Run(context).ToLocal(&result)) {
-				jsResult["error_message"] = ReportException(isolate_, &try_catch);
+				js_result["error_message"] = ReportException(isolate_, &try_catch);
 				break;
 			}
 
@@ -337,7 +337,8 @@ namespace bubi{
 			v8::Local<v8::Value> process_val;
 			if (!context->Global()->Get(context, process_name).ToLocal(&process_val) ||
 				!process_val->IsFunction()) {
-				LOG_ERROR("lost of %s function", query_name_);
+				js_result["error_message"] = utils::String::Format("Lost of %s function", query_name_);
+				LOG_ERROR("%s", js_result["error_message"].asCString());
 				break;
 			}
 
@@ -350,12 +351,12 @@ namespace bubi{
 
 			v8::Local<v8::Value> callRet;
 			if (!process->Call(context, context->Global(), argc, argv).ToLocal(&callRet)) {
-				jsResult["error_message"] = ReportException(isolate_, &try_catch);
+				js_result["error_message"] = ReportException(isolate_, &try_catch);
 				LOG_ERROR("%s function execute failed", query_name_);
 				break;
 			}
 			std::string contract_result_str = "contract_result";
-			if (!JsValueToCppJson(context, callRet, contract_result_str, jsResult)) {
+			if (!JsValueToCppJson(context, callRet, contract_result_str, js_result)) {
 				LOG_ERROR("the result of function %s in contract parse failed", query_name_);
 				break;
 			}
@@ -922,13 +923,14 @@ namespace bubi{
 
 	}
 
-	QueryContract::QueryContract() {}
-	QueryContract::~QueryContract() {}
+	QueryContract::QueryContract():contract_(NULL){}
+	QueryContract::~QueryContract() {
+	}
 	bool QueryContract::Init(int32_t type, const std::string &code, const std::string &input) {
-		ContractParameter parameter;
-		parameter.code_ = code;
+		parameter_.code_ = code;
+		parameter_.input_ = input;
 		if (type == Contract::TYPE_V8) {
-			contract_ = new V8Contract(parameter);
+			
 		}
 		else {
 			std::string error_msg = utils::String::Format("Contract type(%d) not support", type);
@@ -939,7 +941,10 @@ namespace bubi{
 	}
 
 	void QueryContract::Cancel() {
-		contract_->Cancel();
+		utils::MutexGuard guard(mutex_);
+		if (contract_) {
+			contract_->Cancel();
+		} 
 	}
 
 	bool QueryContract::GetResult(Json::Value &result) {
@@ -948,7 +953,18 @@ namespace bubi{
 	}
 
 	void QueryContract::Run() {
+		do {
+			utils::MutexGuard guard(mutex_);
+			contract_ = new V8Contract(parameter_);
+		} while (false);
+
 		ret_ = contract_->Query(result_);
+
+		do {
+			utils::MutexGuard guard(mutex_);
+			delete contract_;
+			contract_ = NULL;
+		} while (false);
 	}
 
 	ContractManager::ContractManager() {}
@@ -1014,7 +1030,7 @@ namespace bubi{
 		return false;
 	}
 
-	bool ContractManager::Query(int32_t type, const std::string &code, const std::string &input, Json::Value& jsResult) {
+	bool ContractManager::Query(int32_t type, const std::string &code, const std::string &input, Json::Value& result) {
 		QueryContract query_contract;
 		if (!query_contract.Init(type, code, input)) {
 			return false;
@@ -1028,7 +1044,7 @@ namespace bubi{
 		int64_t time_start = utils::Timestamp::HighResolution();
 		bool is_timeout = false;
 		while (query_contract.IsRunning()) {
-			utils::Sleep(10 * utils::MICRO_UNITS_PER_MILLI);
+			utils::Sleep(10);
 			if (utils::Timestamp::HighResolution() - time_start >  5 * utils::MICRO_UNITS_PER_SEC) {
 				is_timeout = true;
 				break;
@@ -1037,10 +1053,10 @@ namespace bubi{
 
 		if (is_timeout) { //cancel it
 			query_contract.Cancel();
-			return false;
+			query_contract.JoinWithStop();
 		}
 
-		return query_contract.GetResult(jsResult);
+		return query_contract.GetResult(result);
 	}
 
 	bool ContractManager::Cancel(int64_t contract_id) {
