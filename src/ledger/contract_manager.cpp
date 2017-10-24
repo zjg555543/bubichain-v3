@@ -17,7 +17,7 @@ limitations under the License.
 #include "ledger_manager.h"
 #include "contract_manager.h"
 
-
+    
 namespace bubi{
 
 	ContractParameter::ContractParameter() : ope_index_(-1), ledger_context_(NULL){}
@@ -150,7 +150,6 @@ namespace bubi{
 
 	bool V8Contract::Execute() {
 		v8::Isolate::Scope isolate_scope(isolate_);
-
 		v8::HandleScope handle_scope(isolate_);
 		v8::TryCatch try_catch(isolate_);
 
@@ -193,6 +192,10 @@ namespace bubi{
 		v8::Local<v8::Script> compiled_script;
 
 		do {
+			if (!RemoveRandom(isolate_, error_msg_)) {
+				break;
+			}
+		
 			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
 				error_msg_ = ReportException(isolate_, &try_catch);
 				break;
@@ -320,6 +323,12 @@ namespace bubi{
 		v8::Local<v8::Script> compiled_script;
 
 		do {
+			std::string error_msg;
+			if (!RemoveRandom(isolate_, error_msg)) {
+				js_result["error_message"] = error_msg;
+				break;
+			}
+
 			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
 				js_result["error_message"] = ReportException(isolate_, &try_catch);
 				break;
@@ -377,41 +386,61 @@ namespace bubi{
 		return NULL;
 	}
 
+	bool V8Contract::RemoveRandom(v8::Isolate* isolate, std::string &error_msg) {
+		v8::TryCatch try_catch(isolate);
+		std::string js_file = "delete Date; delete Math.random;";
+
+		v8::Local<v8::String> source = v8::String::NewFromUtf8(isolate, js_file.c_str());
+		v8::Local<v8::Script> script;
+		if (!v8::Script::Compile(isolate->GetCurrentContext(), source).ToLocal(&script)) {
+			error_msg = ReportException(isolate, &try_catch);
+			return false;
+		}
+
+		v8::Local<v8::Value> result;
+		if (!script->Run(isolate->GetCurrentContext()).ToLocal(&result)) {
+			error_msg = ReportException(isolate, &try_catch);
+			return false;
+		}
+
+		return true;
+	}
+
 	v8::Local<v8::Context> V8Contract::CreateContext(v8::Isolate* isolate) {
 		// Create a template for the global object.
 		v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
 		// Bind the global 'print' function to the C++ Print callback.
 		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackLog", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, "callBackLog", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackLog, v8::External::New(isolate_, this)));
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackLog));
 		
 		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackGetAccountInfo", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountInfo", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackGetAccountInfo, v8::External::New(isolate_, this)));
-		
-		
-		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackGetAccountAsset", v8::NewStringType::kNormal)
-			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackGetAccountAsset, v8::External::New(isolate_, this)));
-		
-		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
-			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackGetAccountMetaData, v8::External::New(isolate_, this)));
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetAccountInfo));
 		
 		
 		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountAsset", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackSetAccountMetaData, v8::External::New(isolate_, this)));
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetAccountAsset));
 		
 		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackGetLedgerInfo, v8::External::New(isolate_, this)));
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetAccountMetaData));
+		
+		
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackSetAccountMetaData));
+		
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetLedgerInfo));
 		
 		/*		global->Set(
 		v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
@@ -419,14 +448,14 @@ namespace bubi{
 		v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetTransactionInfo, v8::External::New(isolate_, this)));*/
 		
 		global->Set(
-			v8::String::NewFromUtf8(isolate_, "callBackDoOperation", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, "callBackDoOperation", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::CallBackDoOperation, v8::External::New(isolate_, this)));
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackDoOperation));
 		
 		global->Set(
-			v8::String::NewFromUtf8(isolate_, "include", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, "include", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate_, V8Contract::Include, v8::External::New(isolate_, this)));
+			v8::FunctionTemplate::New(isolate, V8Contract::Include));
 
 		return v8::Context::New(isolate, NULL, global);
 	}

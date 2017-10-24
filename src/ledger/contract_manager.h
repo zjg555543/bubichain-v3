@@ -102,7 +102,8 @@ namespace bubi{
 		static v8::Platform* 	platform_;
 		static v8::Isolate::CreateParams create_params_;
 
-		v8::Local<v8::Context> CreateContext(v8::Isolate* isolate);
+		static bool RemoveRandom(v8::Isolate* isolate, std::string &error_msg);
+		static v8::Local<v8::Context> CreateContext(v8::Isolate* isolate);
 		static V8Contract *GetContractFrom(v8::Isolate* isolate);
 		static std::string ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
 		static const char* ToCString(const v8::String::Utf8Value& value);

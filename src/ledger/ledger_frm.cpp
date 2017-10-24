@@ -164,7 +164,7 @@ namespace bubi {
 				tx_time_out_index = i;
 				return false;
 			} else{
-				if (!tx_frm->Apply(this, environment_)) {
+				if (!ret) {
 					LOG_ERROR("transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 					tx_time_out_index = i;

@@ -206,19 +206,20 @@ namespace bubi {
 			return check_complete == 1;
 		} 
 
-		LedgerContext ledger_context(this, chash, consensus_value, utils::MICRO_UNITS_PER_SEC, [](bool) {});
+		LedgerContext *ledger_context = new LedgerContext(this, chash, consensus_value, utils::MICRO_UNITS_PER_SEC, [](bool) {});
 
-		if (!ledger_context.Start("process-value")) {
+		if (!ledger_context->Start("process-value")) {
 			LOG_ERROR_ERRNO("Start process value thread failed, consvalue hash(%s)", utils::String::BinToHexString(chash).c_str(), 
 				STD_ERR_CODE, STD_ERR_DESC);
 
 			timeout_tx_index = -1;
+			delete ledger_context;
 			return false;
 		}
 
 		int64_t time_start = utils::Timestamp::HighResolution();
 		bool is_timeout = false;
-		while (ledger_context.IsRunning()) {
+		while (ledger_context->IsRunning()) {
 			utils::Sleep(10);
 			if (utils::Timestamp::HighResolution() - time_start > total_timeout) {
 				is_timeout = true;
@@ -227,8 +228,8 @@ namespace bubi {
 		}
 
 		if (is_timeout){ //cancel it
-			ledger_context.Cancel();
-			timeout_tx_index = ledger_context.GetTxTimeoutIndex();
+			ledger_context->Cancel();
+			timeout_tx_index = ledger_context->GetTxTimeoutIndex();
 			LOG_ERROR("Pre execute consvalue time(" FMT_I64 "ms) is out, timeout tx index(%d)", total_timeout / utils::MICRO_UNITS_PER_MILLI, timeout_tx_index);
 			return false;
 		}
@@ -286,11 +287,13 @@ namespace bubi {
 			) {
 			if (iter->second == ledger_context) {
 				running_ctxs_.erase(iter++);
-				completed_ctxs_.insert(std::make_pair(ledger_context->GetHash(), ledger_context));
 			}
 			else {
 				iter++;
 			}
 		}
+
+		//LOG_ERROR("Push hash(%s)", utils::String::Bin4ToHexString(ledger_context->GetHash()).c_str());
+		completed_ctxs_.insert(std::make_pair(ledger_context->GetHash(), ledger_context));
 	}
 }
