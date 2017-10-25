@@ -58,24 +58,24 @@ namespace bubi {
 		int64_t active = 1;
 		LoadValue(PbftDesc::VIEW_ACTIVE, active);
 		view_active_ = active > 0;
-		LoadValue(PbftDesc::SEQUENCE_NAME, sequence_);
-		LoadValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
+		//LoadValue(PbftDesc::SEQUENCE_NAME, sequence_);
+		//LoadValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
 
 		LoadValue(PbftDesc::VIEWNUMBER_NAME, view_number_);
 		LoadCheckPoint();
-		LoadValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
-		LoadInstance();
+		//LoadValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
+		//LoadInstance();
 		LoadVcInstance();
-		LoadValidators();
+		//LoadValidators();
 	}
 
 	void Pbft::ClearStatus() {
-		DelValue(PbftDesc::SEQUENCE_NAME);
-		DelValue(PbftDesc::LOW_WATER_MRAK_NAME);
+		//DelValue(PbftDesc::SEQUENCE_NAME);
+		//DelValue(PbftDesc::LOW_WATER_MRAK_NAME);
 		DelValue(PbftDesc::VIEWNUMBER_NAME);
-		DelValue(PbftDesc::LAST_EXE_SEQUENCE_NAME);
+		//DelValue(PbftDesc::LAST_EXE_SEQUENCE_NAME);
 		DelValue(PbftDesc::CHECKPOINT_NAME);
-		DelValue(PbftDesc::INSTANCE_NAME);
+		//DelValue(PbftDesc::INSTANCE_NAME);
 	}
 
 	int32_t Pbft::LoadCheckPoint() {
@@ -620,8 +620,8 @@ namespace bubi {
 		if (seq_find > 0 && seq_find >= last_exe_seq_) {
 			sequence_ = seq_find + 1;
 
-			saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
-			SaveInstance(saver);
+			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+			//SaveInstance(saver);
 		}
 
 		PbftEnvPointer env = NewPrePrepare(value);
@@ -636,7 +636,7 @@ namespace bubi {
 
 		//auto increase the sequence
 		sequence_++;
-		saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+		//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 
 		//insert the instance to map
 		PbftInstance pinstance;
@@ -645,7 +645,7 @@ namespace bubi {
 		pinstance.pre_prepare_ = env->pbft().pre_prepare();
 		pinstance.msg_buf_[env->pbft().type()].push_back(*env);
 		instances_.insert(std::make_pair(index, pinstance));
-		SaveInstance(saver);
+		//SaveInstance(saver);
 
 		saver.Commit();
 		LOG_INFO("Send pre-prepare message, view number(" FMT_I64 "),sequence(" FMT_I64 ") for value(%s)", 
@@ -840,7 +840,7 @@ namespace bubi {
 				low_water_mark_ = sequence_ / ckp_count_ * ckp_count_;
 
 				ValueSaver saver;
-				saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
+			//	saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
 				saver.SaveValue(PbftDesc::VIEW_ACTIVE, view_active_? 1 : 0);
 
 				//clear the view change instance
@@ -868,10 +868,10 @@ namespace bubi {
 					if (index.sequence_ <= sequence_) instances_.erase(iter++);
 					else iter++;
 				}
-				SaveInstance(saver);
+				//SaveInstance(saver);
 
 				last_exe_seq_ = sequence_;
-				saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
+				//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
 
 				//clear the Out pbft instance
 				out_pbft_instances_.clear();
@@ -957,9 +957,9 @@ namespace bubi {
 		PbftInstance &instace = instances_[index];
 		instace.msg_buf_[pbft.type()].push_back(env);
 
-		ValueSaver saver;
-		SaveInstance(saver);
-		saver.Commit();
+		//ValueSaver saver;
+		//SaveInstance(saver);
+		//saver.Commit();
 
 		return &instace;
 	}
@@ -1075,9 +1075,9 @@ namespace bubi {
 		pinstance.pre_prepare_ = pre_prepare;
 		pinstance.check_value_result_ = check_value_ret;
 
-		ValueSaver saver;
-		SaveInstance(saver);
-		saver.Commit();
+		//ValueSaver saver;
+		//SaveInstance(saver);
+		//saver.Commit();
 
 		if (pinstance.check_value_result_ != Consensus::CHECK_VALUE_VALID) {
 			LOG_INFO("Don't send prepare message, view number(" FMT_I64 "),sequence(" FMT_I64 "), round number(1), value(%s) for check value not valid",
@@ -1126,9 +1126,9 @@ namespace bubi {
 				pinstance.phase_item_ = 0;
 			}
 
-			ValueSaver saver;
-			SaveInstance(saver);
-			saver.Commit();
+			//ValueSaver saver;
+			//SaveInstance(saver);
+			//saver.Commit();
 
 			//send commit
 			if (pinstance.check_value_result_ == Consensus::CHECK_VALUE_VALID) {
@@ -1173,11 +1173,11 @@ namespace bubi {
 
 			ValueSaver saver;
 			if (sequence_ < commit.sequence() + 1) {
-				saver.SaveValue(PbftDesc::SEQUENCE_NAME, commit.sequence() + 1);
+				//saver.SaveValue(PbftDesc::SEQUENCE_NAME, commit.sequence() + 1);
 				sequence_ = commit.sequence() + 1;
 			}
 
-			SaveInstance(saver);
+			//SaveInstance(saver);
 			// this consensus has achieve
 			return TryExecuteValue();
 		}
@@ -1305,6 +1305,18 @@ namespace bubi {
 	bool Pbft::OnViewChange(const protocol::PbftEnv &pbft_env) {
 		const protocol::Pbft &pbft = pbft_env.pbft();
 		const protocol::PbftViewChange &view_change = pbft.view_change();
+
+		LOG_INFO("Receive view change message from replica id(" FMT_I64 "), view number(" FMT_I64 "),round number(%u)",
+			view_change.replica_id(), view_change.view_number(), pbft.round_number());
+		if (view_change.view_number() == view_number_) {
+			LOG_INFO("The new view number(" FMT_I64 ") is equal than current view number, do nothing", view_change.view_number());
+			return true;
+		}
+		else if (view_change.view_number() < view_number_) {
+			LOG_INFO("The new view number(" FMT_I64 ") is less than current view number(" FMT_I64 "), do nothing",
+				view_change.view_number(), view_number_);
+			return true;
+		}
 
 		LOG_INFO("Receive view change message from replica id(" FMT_I64 "), view number(" FMT_I64 "),sequence(" FMT_I64 "), round number(%u)",
 			view_change.replica_id(), view_change.view_number(), view_change.sequence(), pbft.round_number());
@@ -1484,7 +1496,7 @@ namespace bubi {
 		//save the sequence
 		if (max_seq > 0) {
 			sequence_ = max_seq + 1;
-			saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 		}
 
 		//try to move new watermark
@@ -1742,7 +1754,7 @@ namespace bubi {
 		}
 
 		ValueSaver saver;
-		SaveInstance(saver);
+		//SaveInstance(saver);
 
 		//get max sequence
 		int64_t max_seq = last_exe_seq_;
@@ -1758,7 +1770,7 @@ namespace bubi {
 		if (max_seq > 0) {
 			//save the sequence
 			sequence_ = max_seq + 1;
-			saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 		}
 		saver.Commit();
 
@@ -1836,12 +1848,12 @@ namespace bubi {
 			}
 		}
 
-		SaveInstance(saver);
+		//SaveInstance(saver);
 
 		LOG_INFO("The prepare message view number(" FMT_I64 ") move " FMT_I64 " to new water mark " FMT_I64, view_number_, low_water_mark_, move_to_seq);
 		low_water_mark_ = move_to_seq;
 
-		saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
+		//saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
 		saver.Commit();
 
 		return true;
@@ -1880,9 +1892,9 @@ namespace bubi {
 				instance.pre_prepare_.value(), 
 				proof.SerializeAsString(),true);
 
-			ValueSaver saver;
-			saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
-			saver.Commit();
+			//ValueSaver saver;
+			//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
+			//saver.Commit();
 
 			//call ledger manager, and return the block hash
 			if (last_exe_seq_ % ckp_count_ == 0) {
@@ -2331,7 +2343,7 @@ namespace bubi {
 			}
 		}
 
-		SaveInstance(saver);
+		//SaveInstance(saver);
 
 		//get max sequence
 		int64_t max_seq = last_exe_seq_;
@@ -2347,7 +2359,7 @@ namespace bubi {
 		if (max_seq > 0) {
 			//save the sequence
 			sequence_ = max_seq + 1;
-			saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 		}
 		saver.Commit();
 	}
@@ -2424,13 +2436,13 @@ namespace bubi {
 				last_exe_seq_ = new_seq;
 				sequence_ = last_exe_seq_ + 1;
 
-				saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
-				saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+				//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
+				//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 
 				//try to move new watermark
 				TryMoveWaterMark();
 				low_water_mark_ = last_exe_seq_ / ckp_count_ * ckp_count_;
-				saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
+				//saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
 			}
 
 

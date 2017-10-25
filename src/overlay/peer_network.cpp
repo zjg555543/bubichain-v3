@@ -294,7 +294,7 @@ namespace bubi {
 
 		std::string hash = utils::String::Bin4ToHexString(HashWrapper::Crypto(message.SerializeAsString()));
 
-		LOG_INFO("On pbft hash(%s), receive consensus from node address(%s) sequence(" FMT_I64 ") pbft type(%s)",
+		LOG_TRACE("On pbft hash(%s), receive consensus from node address(%s) sequence(" FMT_I64 ") pbft type(%s)",
 			hash.c_str(), msg.GetNodeAddress(), msg.GetSeq(),
 			PbftDesc::GetMessageTypeDesc(msg.GetPbft().pbft().type()));
 

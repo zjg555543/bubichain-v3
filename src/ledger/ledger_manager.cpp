@@ -476,6 +476,7 @@ namespace bubi {
 
 
 	bool LedgerManager::CloseLedger(const protocol::ConsensusValue& consensus_value, const std::string& proof) {
+	//	LOG_TRACE("Closing ledger, check value");
 		if (!GlueManager::Instance().CheckValueAndProof(consensus_value.SerializeAsString(), proof)) {
 
 			protocol::PbftProof proof_proto;
@@ -488,9 +489,12 @@ namespace bubi {
 			return false;
 		}
 
+//		LOG_TRACE("Closing ledger, check complete");
 		std::string con_str = consensus_value.SerializeAsString();
 		std::string chash = HashWrapper::Crypto(con_str);
 		LedgerFrm::pointer closing_ledger = context_manager_.SyncProcess(consensus_value);
+
+//		LOG_TRACE("Closing ledger, sync complete");
 
 		protocol::Ledger& ledger = closing_ledger->ProtoLedger();
 		auto header = ledger.mutable_header();

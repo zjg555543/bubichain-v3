@@ -398,11 +398,11 @@ namespace bubi {
 			MessageConnPoc proc;
 			if (message.request()) {
 				MessageConnPocMap::iterator iter = request_methods_.find(message.type());
-				if (iter == request_methods_.end()) break; // methond not found, break;
+				if (iter == request_methods_.end()) { LOG_TRACE("Type(" FMT_I64 ") not found", message.type()); break; } // methond not found, break;
 				proc = iter->second;
 			} else{
 				MessageConnPocMap::iterator iter = response_methods_.find(message.type());
-				if (iter == response_methods_.end()) break; // methond not found, break;
+				if (iter == response_methods_.end()) { LOG_TRACE("Type(" FMT_I64 ") not found", message.type()); break; } // methond not found, break;
 				proc = iter->second;
 			}
 

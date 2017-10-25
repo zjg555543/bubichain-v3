@@ -122,6 +122,14 @@ namespace bubi {
 			NotifyErrTx(err_txs);
 		} 
 
+		if (!consensus_->IsLeader()) {
+			LOG_INFO("Start consensus process, but it not leader, just waiting");
+			return true;
+		} 
+		else {
+			LOG_INFO("Start consensus process, it is leader, just continue");
+		}
+
 		int64_t next_close_time = utils::Timestamp::Now().timestamp();
 		if (next_close_time <= lcl.close_time()) {
 			next_close_time = lcl.close_time() + utils::MICRO_UNITS_PER_SEC;
