@@ -238,13 +238,14 @@ namespace utils {
 	}
 
 	typedef double(*OneArgFunction)  (double arg);
+	typedef const ExprValue(*TwoArgFunction)  (const ExprValue &arg1, const ExprValue &arg2);
 	typedef const ExprValue(*ThreeArgFunction)  (const ExprValue &arg1, const ExprValue &arg2, const ExprValue &arg3);
 
 	// maps of function names to functions
 	static std::map<std::string, OneArgFunction>    OneArgumentFunctions; //for internal use
 	std::map<std::string, OneCommonArgFunction>    OneCommonArgumentFunctions; //for custom user
 	static std::map<std::string, TwoArgFunction>    TwoArgumentFunctions; //for internal use
-	std::map<std::string, TwoArgFunction>    TwoCommonArgumentFunctions; //for custom user
+	std::map<std::string, TwoCommonArgFunction>    TwoCommonArgumentFunctions; //for custom user
 	static std::map<std::string, ThreeArgFunction>  ThreeArgumentFunctions;//for internal use
 
 	// for standard library functions
@@ -1111,7 +1112,7 @@ namespace utils {
 					ExprValue v = Expression(true);   // get argument
 					CheckToken(ExprValue::RHPAREN);
 					GetToken(true);        // get next one (one-token lookahead)
-					return detect_ ? ExprValue(ExprValue::UNSURE) : sic->second(v);  // evaluate function
+					return detect_ ? ExprValue(ExprValue::UNSURE) : sic->second(v,this);  // evaluate function
 				}
 
 				// might be double-argument function (eg. roll (6, 2) )
@@ -1128,7 +1129,7 @@ namespace utils {
 				}
 
 				// might be double-common-argument function (eg. roll (6, 2) )
-				std::map<std::string, TwoArgFunction>::const_iterator dic;
+				std::map<std::string, TwoCommonArgFunction>::const_iterator dic;
 				dic = TwoCommonArgumentFunctions.find(word);
 				if (dic != TwoCommonArgumentFunctions.end())
 				{
@@ -1137,7 +1138,7 @@ namespace utils {
 					ExprValue v2 = Expression(true);   // get argument 2 (not commalist)
 					CheckToken(ExprValue::RHPAREN);
 					GetToken(true);            // get next one (one-token lookahead)
-					return detect_ ? ExprValue(ExprValue::UNSURE) : dic->second(v1, v2); // evaluate function
+					return detect_ ? ExprValue(ExprValue::UNSURE) : dic->second(v1, v2, this); // evaluate function
 				}
 
 				// might be double-argument function (eg. roll (6, 2) )

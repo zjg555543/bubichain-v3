@@ -2428,23 +2428,25 @@ namespace bubi {
 			ClearNotCommitedInstance();
 		} 
 		
+		if (new_seq > 0) {
+			//set the 
+			last_exe_seq_ = new_seq;
+			sequence_ = last_exe_seq_ + 1;
+
+			//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
+			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
+
+			//try to move new watermark
+			TryMoveWaterMark();
+			low_water_mark_ = last_exe_seq_ / ckp_count_ * ckp_count_;
+			//saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
+			LOG_INFO("Set the last exe sequence(" FMT_I64 "), sequence(" FMT_I64 "), low water mark(" FMT_I64 ")",
+				last_exe_seq_, sequence_, low_water_mark_);
+			saver.SaveValue(PbftDesc::VIEWNUMBER_NAME, view_number_);
+		}
+		
 		if ( new_view_number > 0 || new_seq > 0 ){
 			ClearNotCommitedInstance();
-
-			//set the 
-			if (new_seq > 0) {
-				last_exe_seq_ = new_seq;
-				sequence_ = last_exe_seq_ + 1;
-
-				//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
-				//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
-
-				//try to move new watermark
-				TryMoveWaterMark();
-				low_water_mark_ = last_exe_seq_ / ckp_count_ * ckp_count_;
-				//saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
-			}
-
 
 			//enter to new view
 			view_number_ = new_view_number > 0 ? new_view_number : view_number_;

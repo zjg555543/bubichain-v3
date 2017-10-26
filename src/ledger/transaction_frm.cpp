@@ -283,7 +283,8 @@ namespace bubi {
 				break;
 			}
 
-			ExprCondition expr(code);
+			protocol::ConsensusValue cons_null;
+			ExprCondition expr(code, NULL, cons_null);
 			utils::ExprValue value;
 			result_ = expr.Parse(value);
 
@@ -416,7 +417,7 @@ namespace bubi {
 
 	bool TransactionFrm::ApplyExpr(const std::string &code, const std::string &log_prefix) {
 		do {
-			ExprCondition expr(code);
+			ExprCondition expr(code, environment_, ledger_->lpledger_context_->consensus_value_);
 			utils::ExprValue value;
 			result_ = expr.Eval(value);
 

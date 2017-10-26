@@ -139,16 +139,19 @@ namespace bubi {
 	};
 
 	class ExprCondition : public utils::ExprParser {
+		std::shared_ptr<Environment> environment_;
+		const protocol::ConsensusValue &cons_value_;
 	public:
-		ExprCondition(const std::string & program);
+		ExprCondition(const std::string & program, std::shared_ptr<Environment> env, const protocol::ConsensusValue &cons_value);
 		~ExprCondition();
 
 		static void RegisterFunctions();
-		static const utils::ExprValue DoLedger(const utils::ExprValue &arg);
-		static const utils::ExprValue DoAccount(const utils::ExprValue &arg);
-		static const utils::ExprValue DoJsonPath(const utils::ExprValue &arg1, const utils::ExprValue &arg2);
+		static const utils::ExprValue DoLedger(const utils::ExprValue &arg, utils::ExprParser *parser);
+		static const utils::ExprValue DoAccount(const utils::ExprValue &arg, utils::ExprParser *parser);
+		static const utils::ExprValue DoJsonPath(const utils::ExprValue &arg1, const utils::ExprValue &arg2, utils::ExprParser *parser);
 		Result Eval(utils::ExprValue &value);
 		Result Parse(utils::ExprValue &value);
+		std::shared_ptr<Environment> GetEnviroment();
 	};
 
 }

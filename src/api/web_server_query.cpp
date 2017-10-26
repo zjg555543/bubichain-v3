@@ -269,8 +269,8 @@ namespace bubi {
 
 		std::string parse = request.GetParamValue("parse");
 		do {
-
-			ExprCondition parser(request.body);
+			protocol::ConsensusValue cons_null;
+			ExprCondition parser(request.body, NULL, cons_null);
 			utils::ExprValue value;
 			if (parse == "true") {
 				result = parser.Parse(value);
