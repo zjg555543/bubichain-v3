@@ -371,7 +371,7 @@ namespace utils {
 			return s_value_ == value.s_value_;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -396,7 +396,7 @@ namespace utils {
 					//	return false;
 					//}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -430,7 +430,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) < 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -464,7 +464,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) > 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -498,7 +498,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) <= 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -532,7 +532,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) >= 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -566,7 +566,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) != 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -821,6 +821,9 @@ namespace utils {
 		else if (type_ == INTEGER64){
 			std::string s = utils::String::ToString(i_value_);
 			return s;
+		}
+		else if (type_ == BOOL) {
+			return b_value_ ? "true":"false";
 		}
 		else{
 			return s_value_;
@@ -1242,12 +1245,54 @@ namespace utils {
 		{
 			switch (type_)
 			{
-			case ExprValue::LT:  left = left < AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::GT:  left = left > AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::LE:  left = left <= AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::GE:  left = left >= AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::EQ:  left = left == AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::NE:  left = left != AddSubtract(true) ? 1.0 : 0.0; break;
+			case ExprValue::LT:
+			{
+				left = (left < AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::GT:
+			{
+				left = (left > AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::LE:
+			{
+				left = (left <= AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::GE:
+			{
+				left = (left >= AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::EQ:
+			{
+				left = (left == AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::NE:
+			{
+				left = (left != AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
 			default:    return left;
 			} // end of switch on type
 		}   // end of loop
@@ -1263,13 +1308,17 @@ namespace utils {
 			case ExprValue::AND:
 			{
 				ExprValue d = Comparison(true);   // don't want short-circuit evaluation
-				left = (left != 0.0) && (d != 0.0);
+				if (left.type_ != ExprValue::UNSURE) {
+					left = (left != 0.0) && (d != 0.0);
+				} 
 			}
 			break;
 			case ExprValue::OR:
 			{
 				ExprValue d = Comparison(true);   // don't want short-circuit evaluation
-				left = (left != 0.0) || (d != 0.0);
+				if (left.type_ != ExprValue::UNSURE) {
+					left = (left != 0.0) || (d != 0.0);
+				}
 			}
 			break;
 			default:    return left;

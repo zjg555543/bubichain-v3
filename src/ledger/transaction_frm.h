@@ -60,6 +60,7 @@ namespace bubi {
 		const protocol::TransactionEnv &GetTransactionEnv() const;
 
 		bool CheckValid(int64_t last_seq);
+		bool CheckExpr(const std::string &code, const std::string &log_prefix);
 
 		bool SignerHashPriv(utils::StringVector &address, std::shared_ptr<Environment> env, int32_t type) const;
 
@@ -74,6 +75,7 @@ namespace bubi {
 		bool CheckTimeout(int64_t expire_time);
 
 		bool Apply(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract = false);
+		bool ApplyExpr(const std::string &code, const std::string &log_prefix);
 
 		protocol::TransactionEnv &GetProtoTxEnv() {
 			return transaction_env_;
@@ -84,9 +86,6 @@ namespace bubi {
 		bool ValidForSourceSignature();
 
 		bool ValidForApply(std::shared_ptr<Environment> environment);
-		//true: normal ,false: timeout
-		bool Wait(uint32_t seconds);
-		void Notify();
 
 		uint64_t apply_time_;
 		Result result_;	
@@ -102,30 +101,7 @@ namespace bubi {
 		std::set<std::string> valid_signature_;
 		
 		int64_t incoming_time_;
-		
-		std::mutex mtx_;
-		std::condition_variable cv_;
 	};
-
-	class TransactionApplyTask :public utils::Runnable
-	{
-	public:
-		TransactionApplyTask(TransactionFrm::pointer tx_frm);
-		~TransactionApplyTask();
-		bool Start(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract = false);
-		virtual void Run(utils::Thread *thread) override;
-		void Exit();
-		bool result_;
-	private:
-		utils::Thread *thread_ptr_;
-		TransactionFrm::pointer tx_frm_;
-		LedgerFrm* ledger_frm_;
-		std::shared_ptr<Environment> env_;
-		bool bool_contract_;
-		
-	};
-
-
 };
 
 #endif

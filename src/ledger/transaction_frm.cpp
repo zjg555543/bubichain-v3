@@ -225,6 +225,12 @@ namespace bubi {
 			return check_valid;
 		}
 
+		if (tran.expr_condition().size() > 0 &&
+			!CheckExpr(tran.expr_condition(), utils::String::Format("Transaction(%s) ",
+			utils::String::Bin4ToHexString(hash_).c_str()))) {
+			check_valid = false;
+			return check_valid;
+		}
 
 		check_valid = true;
 		//判断operation的参数合法性
@@ -251,36 +257,11 @@ namespace bubi {
 				}
 			}
 
-			if (ope.expr_condition().size() > 0) {
-				if (ope.expr_condition().size() > General::EXPRCONDITION_MAXSIZE || ope.expr_condition().size() == 0) {
-					check_valid = false;
-					result_.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					result_.set_desc("Expression condition is too long or zero");
-					LOG_ERROR("%s", result_.desc().c_str());
-					break;
-				}
-
-				ExprCondition expr(ope.expr_condition());
-				utils::ExprValue value;
-				result_ = expr.Parse(value);
-
-				if (result_.code() != 0) {
-					check_valid = false;
-					result_.set_code(protocol::ERRCODE_EXPR_CONDITION_SYNTAX_ERROR);
-					result_.set_desc("Parse expression failed");
-					LOG_ERROR_ERRNO("Parse expression of the transaction(hash:%s) failed", utils::String::Bin4ToHexString(hash_).c_str(),
-						result_.code(), result_.desc().c_str());
-					break;
-				}
-
-				if (value.type_ != utils::ExprValue::UNSURE && !value.IsSuccess()) {
-					check_valid = false;
-					result_.set_code(protocol::ERRCODE_EXPR_CONDITION_RESULT_FALSE);
-					result_.set_desc(utils::String::Format("Expression result is false(%s)", value.Print().c_str()));
-					LOG_ERROR_ERRNO("Parse expression of the transaction(hash:%s) failed", utils::String::Bin4ToHexString(hash_).c_str(),
-						result_.code(), result_.desc().c_str());
-					break;
-				}
+			if (ope.expr_condition().size() > 0 && 
+				!CheckExpr(ope.expr_condition(), utils::String::Format("Transaction(%s)'s Operation(id:%d) ", 
+				utils::String::Bin4ToHexString(hash_).c_str(), i))) {
+				check_valid = false;
+				break;
 			}
 
 			result_ = OperationFrm::CheckValid(ope, ope_source);
@@ -291,6 +272,39 @@ namespace bubi {
 			}
 		}
 		return check_valid;
+	}
+
+	bool TransactionFrm::CheckExpr(const std::string &code, const std::string &log_prefix) {
+		do {
+			if (code.size() > General::EXPRCONDITION_MAXSIZE || code.size() == 0) {
+				result_.set_code(protocol::ERRCODE_INVALID_PARAMETER);
+				result_.set_desc(utils::String::AppendFormat(code, "expression condition is too long or zero"));
+				LOG_ERROR("%s", result_.desc().c_str());
+				break;
+			}
+
+			ExprCondition expr(code);
+			utils::ExprValue value;
+			result_ = expr.Parse(value);
+
+			if (result_.code() != 0) {
+				result_.set_code(protocol::ERRCODE_EXPR_CONDITION_SYNTAX_ERROR);
+				result_.set_desc(utils::String::AppendFormat(log_prefix, "parse expression failed(%s)", result_.desc().c_str()));
+				LOG_ERROR("%s", result_.desc().c_str());
+				break;
+			}
+
+			if (value.type_ != utils::ExprValue::UNSURE && !value.IsSuccess()) {
+				result_.set_code(protocol::ERRCODE_EXPR_CONDITION_RESULT_FALSE);
+				result_.set_desc(utils::String::AppendFormat(log_prefix, "expression result predict false(%s)", value.Print().c_str()));
+				LOG_ERROR("%s", result_.desc().c_str());
+				break;
+			}
+
+			return true;
+		} while (false);
+
+		return false;
 	}
 
 	bool TransactionFrm::ValidForSourceSignature(){
@@ -400,6 +414,32 @@ namespace bubi {
 		return false;
 	}
 
+	bool TransactionFrm::ApplyExpr(const std::string &code, const std::string &log_prefix) {
+		do {
+			ExprCondition expr(code);
+			utils::ExprValue value;
+			result_ = expr.Eval(value);
+
+			if (result_.code() != 0) {
+				result_.set_code(protocol::ERRCODE_EXPR_CONDITION_SYNTAX_ERROR);
+				result_.set_desc(utils::String::AppendFormat(log_prefix, "parse expression failed(%s)", result_.desc().c_str()));
+				LOG_ERROR("%s", result_.desc().c_str());
+				break;
+			}
+
+			if (!value.IsSuccess()) {
+				result_.set_code(protocol::ERRCODE_EXPR_CONDITION_RESULT_FALSE);
+				result_.set_desc(utils::String::AppendFormat(log_prefix, "expression result false(%s)", value.Print().c_str()));
+				LOG_ERROR("%s", result_.desc().c_str());
+				break;
+			}
+
+			return true;
+		} while (false);
+
+		return false;
+	}
+
 	bool TransactionFrm::Apply(LedgerFrm* ledger_frm, std::shared_ptr<Environment> parent, bool bool_contract) {
 		ledger_ = ledger_frm;
 		AccountFrm::pointer source_account;
@@ -412,9 +452,17 @@ namespace bubi {
 		source_account->NonceIncrease();
 
 		environment_ = std::make_shared<Environment>(parent.get());
-		
+
 		bool bSucess = true;
 		const protocol::Transaction &tran = transaction_env_.transaction();
+		//check the expression
+		if (tran.expr_condition().size() > 0 &&
+			!ApplyExpr(tran.expr_condition(), utils::String::Format("Transaction(%s) ",
+			utils::String::Bin4ToHexString(hash_).c_str()))) {
+			bSucess = false;
+			return bSucess;
+		}
+		
 		for (processing_operation_ = 0; processing_operation_ < tran.operations_size(); processing_operation_++) {
 			const protocol::Operation &ope = tran.operations(processing_operation_);
 			std::shared_ptr<OperationFrm> opt = std::make_shared< OperationFrm>(ope, this, processing_operation_);
@@ -434,29 +482,12 @@ namespace bubi {
 				}
 			}
 
-
 			//check the expression
-			if (ope.expr_condition().size() > 0) {
-				ExprCondition expr(ope.expr_condition());
-				utils::ExprValue value;
-				result_ = expr.Eval(value);
-
-				if (result_.code() != 0) {
-					bSucess = false;
-					result_.set_code(protocol::ERRCODE_EXPR_CONDITION_SYNTAX_ERROR);
-					LOG_ERROR_ERRNO("Parse expression of the transaction(hash:%s) failed", utils::String::Bin4ToHexString(hash_).c_str(),
-						result_.code(), result_.desc().c_str());
-					break;
-				}
-
-				if (!value.IsSuccess()) {
-					bSucess = false;
-					result_.set_code(protocol::ERRCODE_EXPR_CONDITION_RESULT_FALSE);
-					result_.set_desc(utils::String::Format("Result is false(%s)", value.Print().c_str()));
-					LOG_ERROR_ERRNO("Eval expression of the transaction(hash:%s) failed",
-						utils::String::Bin4ToHexString(hash_).c_str(), result_.code(), result_.desc().c_str());
-					break;
-				}
+			if (ope.expr_condition().size() > 0 &&
+				!ApplyExpr(ope.expr_condition(), utils::String::Format("Transaction(%s)'s Operation(id:%d) ",
+				utils::String::Bin4ToHexString(hash_).c_str(), processing_operation_))) {
+				bSucess = false;
+				break;
 			}
 
 			//opt->SourceRelationTx();
@@ -473,47 +504,6 @@ namespace bubi {
 		return bSucess;
 	}
 	
-	bool TransactionFrm::Wait(uint32_t seconds)
-	{
-		std::unique_lock<std::mutex> lck(mtx_);
-		while (cv_.wait_for(lck, std::chrono::seconds(seconds)) == std::cv_status::timeout)
-			return false;
-		return true;
-	}
-	
-	void TransactionFrm::Notify()
-	{
-		cv_.notify_one();
-	}
-
-	TransactionApplyTask::TransactionApplyTask(TransactionFrm::pointer tx_frm) :
-		tx_frm_(tx_frm), thread_ptr_(nullptr),
-		ledger_frm_(nullptr), env_(nullptr), bool_contract_(false),
-		result_(false)
-	{}
-	TransactionApplyTask::~TransactionApplyTask()
-	{
-		if (thread_ptr_) {
-			delete thread_ptr_;
-		}
-	}
-	bool TransactionApplyTask::Start(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract)
-	{
-		ledger_frm_ = ledger_frm;
-		env_ = env;
-		bool_contract_ = bool_contract;
-		thread_ptr_ = new utils::Thread(this);
-		return thread_ptr_->Start("TransactionTask");
-	}
-	void TransactionApplyTask::Run(utils::Thread *thread)
-	{
-		result_ =tx_frm_->Apply(ledger_frm_, env_, bool_contract_);
-		tx_frm_->Notify();
-	}
-	void TransactionApplyTask::Exit()
-	{
-		thread_ptr_->Terminate();
-	}
 }
 
 
