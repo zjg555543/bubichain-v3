@@ -605,7 +605,7 @@ namespace bubi {
 			closing_ledger->GetTxCount());
 
 		//notice ledger closed
-		WebSocketServer::Instance().BroadcastMsg(protocol::CHAIN_TX_STATUS, tmp_lcl_header.SerializeAsString());
+		WebSocketServer::Instance().BroadcastMsg(protocol::CHAIN_LEDGER_HEADER, tmp_lcl_header.SerializeAsString());
 
 		// notice
 		for (int i = 0; i < ledger.transaction_envs_size(); i++) {
