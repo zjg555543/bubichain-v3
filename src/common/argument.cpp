@@ -91,9 +91,9 @@ namespace bubi {
 			}
 			else if (s == "--version") {
 #ifdef SVNVERSION
-				printf("%s; " SVNVERSION "\n", General::BUBI_VERSION);
+				printf("%s,%u; " SVNVERSION "\n", General::BUBI_VERSION, General::LEDGER_VERSION);
 #else
-				printf("%s\n", General::BUBI_VERSION);
+				printf("%s,%u\n", General::BUBI_VERSION, General::LEDGER_VERSION);
 #endif 
 				return true;
 			}

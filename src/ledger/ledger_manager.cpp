@@ -604,6 +604,9 @@ namespace bubi {
 			tree_->time_,
 			closing_ledger->GetTxCount());
 
+		//notice ledger closed
+		WebSocketServer::Instance().BroadcastMsg(protocol::CHAIN_TX_STATUS, tmp_lcl_header.SerializeAsString());
+
 		// notice
 		for (int i = 0; i < ledger.transaction_envs_size(); i++) {
 			TransactionFrm::pointer tx = std::make_shared<TransactionFrm>(ledger.transaction_envs(i));

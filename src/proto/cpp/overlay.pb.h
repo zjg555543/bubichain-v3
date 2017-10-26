@@ -137,12 +137,13 @@ enum ChainMessageType {
   CHAIN_PEER_OFFLINE = 13,
   CHAIN_PEER_MESSAGE = 14,
   CHAIN_SUBMITTRANSACTION = 15,
+  CHAIN_LEDGER = 16,
   ChainMessageType_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   ChainMessageType_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool ChainMessageType_IsValid(int value);
 const ChainMessageType ChainMessageType_MIN = CHAIN_TYPE_NONE;
-const ChainMessageType ChainMessageType_MAX = CHAIN_SUBMITTRANSACTION;
+const ChainMessageType ChainMessageType_MAX = CHAIN_LEDGER;
 const int ChainMessageType_ARRAYSIZE = ChainMessageType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* ChainMessageType_descriptor();

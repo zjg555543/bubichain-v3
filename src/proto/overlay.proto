@@ -101,9 +101,8 @@ enum ChainMessageType {
 	CHAIN_PEER_OFFLINE = 13;
 	CHAIN_PEER_MESSAGE = 14;
 	CHAIN_SUBMITTRANSACTION = 15;
+	CHAIN_LEDGER = 16; //bubi notify the client ledger when closed
 }
-
-
 
 //register notification events
 message ChainHello {
