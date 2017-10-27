@@ -57,6 +57,7 @@ namespace bubi {
 		const protocol::TransactionEnv &GetTransactionEnv() const;
 
 		bool CheckValid(int64_t last_seq);
+		bool CheckExpr(const std::string &code, const std::string &log_prefix);
 
 		bool SignerHashPriv(utils::StringVector &address, std::shared_ptr<Environment> env, int32_t type) const;
 
@@ -71,6 +72,7 @@ namespace bubi {
 		bool CheckTimeout(int64_t expire_time);
 
 		bool Apply(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract = false);
+		bool ApplyExpr(const std::string &code, const std::string &log_prefix);
 
 		protocol::TransactionEnv &GetProtoTxEnv() {
 			return transaction_env_;
@@ -86,6 +88,7 @@ namespace bubi {
 		Result result_;	
 		int32_t processing_operation_;
 		LedgerFrm* ledger_;
+
 	private:		
 		protocol::TransactionEnv transaction_env_;
 		std::string hash_;

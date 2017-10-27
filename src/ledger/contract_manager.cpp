@@ -34,71 +34,8 @@ namespace bubi{
 
 
 	ContractManager::ContractManager(){
-		LoadJsLibSource();
 		tx_do_count_ = 0;
 		isolate_ = v8::Isolate::New(create_params_);
-		v8::Isolate::Scope isolate_scope(isolate_);
-		v8::HandleScope handle_scope(isolate_);
-
-		// Store the request pointer in the JavaScript wrapper.
-
-		//if (global_.IsEmpty()) {
-			//v8::Local<v8::ObjectTemplate>  global = v8::ObjectTemplate::New(isolate_);
-			global_ = v8::ObjectTemplate::New(isolate_);
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackLog", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackLog, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetAccountInfo", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetAccountInfo, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetAccountAsset", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetAccountAsset, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetAccountMetaData, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackSetAccountMetaData, v8::External::New(isolate_, this)));
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetLedgerInfo, v8::External::New(isolate_, this)));
-
-
-			/*		global->Set(
-						v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
-						.ToLocalChecked(),
-						v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetTransactionInfo, v8::External::New(isolate_, this)));*/
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackDoOperation", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackDoOperation, v8::External::New(isolate_, this)));
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "include", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::Include, v8::External::New(isolate_, this)));
-
-		//	global_.Reset(isolate_, global);
-		//}
 	}
 
 	ContractManager::~ContractManager(){
@@ -106,9 +43,8 @@ namespace bubi{
 		isolate_ = NULL;
 	}
 
-
-
 	void ContractManager::Initialize(int argc, char** argv){
+		LoadJsLibSource();
 		platform_ = v8::platform::CreateDefaultPlatform();
 		v8::V8::InitializeExternalStartupData(argv[0]);
 		v8::V8::InitializePlatform(platform_);
@@ -117,6 +53,60 @@ namespace bubi{
 		}
 		create_params_.array_buffer_allocator =
 			v8::ArrayBuffer::Allocator::NewDefaultAllocator();
+	}
+
+	v8::Local<v8::Context> ContractManager::CreateContext(v8::Isolate* isolate) {
+		// Create a template for the global object.
+		v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+		// Bind the global 'print' function to the C++ Print callback.
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackLog", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackLog));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountInfo", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetAccountInfo));
+
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountAsset", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetAccountAsset));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetAccountMetaData));
+
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackSetAccountMetaData));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetLedgerInfo));
+
+		/*		global->Set(
+		v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
+		.ToLocalChecked(),
+		v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetTransactionInfo, v8::External::New(isolate_, this)));*/
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackDoOperation", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackDoOperation));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "include", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::Include));
+
+		return v8::Context::New(isolate, NULL, global);
 	}
 
 	std::string ContractManager::ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
@@ -248,14 +238,10 @@ namespace bubi{
 		std::string& error_msg)
 	{
 		v8::Isolate::Scope isolate_scope(isolate_);
-
 		v8::HandleScope handle_scope(isolate_);
 		v8::TryCatch try_catch(isolate_);
 
-		v8::Local<v8::ObjectTemplate> templ =
-			v8::Local<v8::ObjectTemplate>::New(isolate_, global_);
-
-		v8::Handle<v8::Context> context = v8::Context::New(isolate_, NULL, templ);
+		v8::Local<v8::Context> context = CreateContext(isolate_);
 
 		v8::Context::Scope context_scope(context);
 

@@ -64,8 +64,8 @@ namespace bubi{
 
 		bool Exit();
 	private:
-		bool LoadJsLibSource();
-
+		static bool LoadJsLibSource();
+		static v8::Local<v8::Context> CreateContext(v8::Isolate* isolate);
 		static std::string ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
 
 		static const char* ToCString(const v8::String::Utf8Value& value);

@@ -238,13 +238,14 @@ namespace utils {
 	}
 
 	typedef double(*OneArgFunction)  (double arg);
+	typedef const ExprValue(*TwoArgFunction)  (const ExprValue &arg1, const ExprValue &arg2);
 	typedef const ExprValue(*ThreeArgFunction)  (const ExprValue &arg1, const ExprValue &arg2, const ExprValue &arg3);
 
 	// maps of function names to functions
 	static std::map<std::string, OneArgFunction>    OneArgumentFunctions; //for internal use
 	std::map<std::string, OneCommonArgFunction>    OneCommonArgumentFunctions; //for custom user
 	static std::map<std::string, TwoArgFunction>    TwoArgumentFunctions; //for internal use
-	std::map<std::string, TwoArgFunction>    TwoCommonArgumentFunctions; //for custom user
+	std::map<std::string, TwoCommonArgFunction>    TwoCommonArgumentFunctions; //for custom user
 	static std::map<std::string, ThreeArgFunction>  ThreeArgumentFunctions;//for internal use
 
 	// for standard library functions
@@ -371,7 +372,7 @@ namespace utils {
 			return s_value_ == value.s_value_;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -396,7 +397,7 @@ namespace utils {
 					//	return false;
 					//}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -430,7 +431,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) < 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -464,7 +465,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) > 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -498,7 +499,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) <= 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -532,7 +533,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) >= 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -566,7 +567,7 @@ namespace utils {
 			return s_value_.compare(value.s_value_) != 0;
 		}
 		default:
-			throw std::runtime_error("type is unkonwn");
+			throw std::runtime_error("type is unknown");
 			break;
 		}
 
@@ -821,6 +822,9 @@ namespace utils {
 		else if (type_ == INTEGER64){
 			std::string s = utils::String::ToString(i_value_);
 			return s;
+		}
+		else if (type_ == BOOL) {
+			return b_value_ ? "true":"false";
 		}
 		else{
 			return s_value_;
@@ -1108,7 +1112,7 @@ namespace utils {
 					ExprValue v = Expression(true);   // get argument
 					CheckToken(ExprValue::RHPAREN);
 					GetToken(true);        // get next one (one-token lookahead)
-					return detect_ ? ExprValue(ExprValue::UNSURE) : sic->second(v);  // evaluate function
+					return detect_ ? ExprValue(ExprValue::UNSURE) : sic->second(v,this);  // evaluate function
 				}
 
 				// might be double-argument function (eg. roll (6, 2) )
@@ -1125,7 +1129,7 @@ namespace utils {
 				}
 
 				// might be double-common-argument function (eg. roll (6, 2) )
-				std::map<std::string, TwoArgFunction>::const_iterator dic;
+				std::map<std::string, TwoCommonArgFunction>::const_iterator dic;
 				dic = TwoCommonArgumentFunctions.find(word);
 				if (dic != TwoCommonArgumentFunctions.end())
 				{
@@ -1134,7 +1138,7 @@ namespace utils {
 					ExprValue v2 = Expression(true);   // get argument 2 (not commalist)
 					CheckToken(ExprValue::RHPAREN);
 					GetToken(true);            // get next one (one-token lookahead)
-					return detect_ ? ExprValue(ExprValue::UNSURE) : dic->second(v1, v2); // evaluate function
+					return detect_ ? ExprValue(ExprValue::UNSURE) : dic->second(v1, v2, this); // evaluate function
 				}
 
 				// might be double-argument function (eg. roll (6, 2) )
@@ -1242,12 +1246,54 @@ namespace utils {
 		{
 			switch (type_)
 			{
-			case ExprValue::LT:  left = left < AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::GT:  left = left > AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::LE:  left = left <= AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::GE:  left = left >= AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::EQ:  left = left == AddSubtract(true) ? 1.0 : 0.0; break;
-			case ExprValue::NE:  left = left != AddSubtract(true) ? 1.0 : 0.0; break;
+			case ExprValue::LT:
+			{
+				left = (left < AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::GT:
+			{
+				left = (left > AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::LE:
+			{
+				left = (left <= AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::GE:
+			{
+				left = (left >= AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::EQ:
+			{
+				left = (left == AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
+			case ExprValue::NE:
+			{
+				left = (left != AddSubtract(true));
+				if (left.type_ != ExprValue::UNSURE) {
+					left = left ? 1.0 : 0.0;
+				}
+				break;
+			}
 			default:    return left;
 			} // end of switch on type
 		}   // end of loop
@@ -1263,13 +1309,17 @@ namespace utils {
 			case ExprValue::AND:
 			{
 				ExprValue d = Comparison(true);   // don't want short-circuit evaluation
-				left = (left != 0.0) && (d != 0.0);
+				if (left.type_ != ExprValue::UNSURE) {
+					left = (left != 0.0) && (d != 0.0);
+				} 
 			}
 			break;
 			case ExprValue::OR:
 			{
 				ExprValue d = Comparison(true);   // don't want short-circuit evaluation
-				left = (left != 0.0) || (d != 0.0);
+				if (left.type_ != ExprValue::UNSURE) {
+					left = (left != 0.0) || (d != 0.0);
+				}
 			}
 			break;
 			default:    return left;
