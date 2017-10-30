@@ -23,7 +23,6 @@ limitations under the License.
 namespace bubi {
 #define COUNT_PER_PARTITION 1000000
 	LedgerFrm::LedgerFrm() {
-		id_ = 0;
 	}
 
 	
@@ -136,6 +135,7 @@ namespace bubi {
 			TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(txproto);
 
 			if (!tx_frm->ValidForApply(environment_)){
+				dropped_tx_frms_.push_back(tx_frm);
 				continue;
 			}
 
