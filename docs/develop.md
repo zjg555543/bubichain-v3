@@ -15,7 +15,6 @@
         - [查询区块头](#查询区块头)
         - [提交交易](#提交交易)
         - [序列化交易](#序列化交易)
-        - [查询合约](#查询合约)
         - [配置验证节点](#配置验证节点)
     - [定义交易](#定义交易)
         - [交易的基本结构](#交易的基本结构)
@@ -461,42 +460,6 @@ POST /getTransactionBlob
 }
 ```
 
-### 查询合约
-
-不必一定在共识中执行合约，可以通过合约查询接口直接调用合约执行。当然通过这种方式执行合约时，内置的大部分变量及调用操作会返回失败。
-
-| 参数           | 描述                                                                                                    |
-| :------------- | ------------------------------------------------------------------------------------------------------- |
-| address | 必填，合约账号地址                                                                              |
-| args          | 可选， 查询入口 query 函数的参数|   
-
-比如账号 a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18 的合约内容如下：
-
-```text
-function main(){
-}
-
-function query(arg){
-	return arg+1;
-}
-```
-
-```http
-Get /contractQuery?address=a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18&arg=1
-```
-
-返回内容
-
-```json
-{
-    "error_code": 0,
-    "error_desc": "",
-    "result": {
-        "hash": "474210d69cf0a797a24be65e187eddc7f15de626d38f8b49446b21ddd12247f8",//交易的hash
-        "transaction_blob": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" //交易序列化之后的16进制表示
-    }
-}
-```
 ### 配置验证节点
 ```http
 POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027fb6fd8e8ffbf64cf10efebd9278735d5e39a6325e
