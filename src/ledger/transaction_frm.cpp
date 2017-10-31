@@ -56,6 +56,7 @@ namespace bubi {
 	void TransactionFrm::ToJson(Json::Value &result) {
 		result = Proto2Json(transaction_env_);
 		result["error_code"] = result_.code();
+		result["error_desc"] = result_.desc();
 		result["close_time"] = result_.close_time_;
 		result["ledger_seq"] = result_.ledger_seq_;
 		result["hash"] = utils::String::BinToHexString(hash_);

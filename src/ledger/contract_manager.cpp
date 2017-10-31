@@ -113,12 +113,16 @@ namespace bubi{
 		v8::HandleScope handle_scope(isolate);
 		v8::String::Utf8Value exception(try_catch->Exception());
 		const char* exception_string = ToCString(exception);
+		std::string exec_string(exception_string);
+		exec_string.resize(256);
+		Json::Value json_result;
+
 		v8::Local<v8::Message> message = try_catch->Message();
 		std::string error_msg;
 		if (message.IsEmpty()) {
 			// V8 didn't provide any extra information about this error; just
 			// print the exception.
-			error_msg = utils::String::AppendFormat(error_msg, "%s", exception_string);
+			json_result["exception"] = error_msg;
 		}
 		else {
 			// Print (filename):(line number): (message).
@@ -126,33 +130,21 @@ namespace bubi{
 			v8::Local<v8::Context> context(isolate->GetCurrentContext());
 			const char* filename_string = ToCString(filename);
 			int linenum = message->GetLineNumber(context).FromJust();
-			error_msg = utils::String::AppendFormat(error_msg, "%s:%i: %s", filename_string, linenum, exception_string);
-			// Print line of source code.
-			v8::String::Utf8Value sourceline(
-				message->GetSourceLine(context).ToLocalChecked());
-			const char* sourceline_string = ToCString(sourceline);
-			error_msg = utils::String::AppendFormat(error_msg, "%s", sourceline_string);
-			// Print wavy underline (GetUnderline is deprecated).
-			int start = message->GetStartColumn(context).FromJust();
-			for (int i = 0; i < start; i++) {
-				error_msg = utils::String::AppendFormat(error_msg, " ");
-			}
-			int end = message->GetEndColumn(context).FromJust();
-			for (int i = start; i < end; i++) {
-				error_msg = utils::String::AppendFormat(error_msg, "^");
-			}
+			json_result["filename"] = filename_string;
+			json_result["linenum"] = linenum;
+			json_result["exception"] = exec_string;
 
+			//print error stack
 			v8::Local<v8::Value> stack_trace_string;
 			if (try_catch->StackTrace(context).ToLocal(&stack_trace_string) &&
 				stack_trace_string->IsString() &&
 				v8::Local<v8::String>::Cast(stack_trace_string)->Length() > 0) {
 				v8::String::Utf8Value stack_trace(stack_trace_string);
 				const char* stack_trace_string = ToCString(stack_trace);
-				error_msg = utils::String::AppendFormat(error_msg, "%s", stack_trace_string);
+				json_result["stack"] = stack_trace_string;
 			}
 		}
-		//LOG_ERROR("V8ErrorTrace:%s", error_msg.c_str());
-		return error_msg;
+		return json_result.toFastString();
 	}
 
 	bool ContractManager::SourceCodeCheck(const std::string& code, std::string& err_msg){
