@@ -366,14 +366,12 @@ namespace bubi{
 	void ContractManager::Include(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		do {
 			if (args.Length() != 1) {
-				LOG_ERROR("Include parameter error, args length(%d) not equal 1", args.Length());
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 				break;
 			}
 
 			if (!args[0]->IsString()) {
 				LOG_ERROR("Include parameter error, parameter should be a String");
-				args.GetReturnValue().Set(false);
 				break;
 			}
 			v8::String::Utf8Value str(args[0]);
@@ -381,7 +379,6 @@ namespace bubi{
 			std::map<std::string, std::string>::iterator find_source = jslib_sources.find(*str);
 			if (find_source == jslib_sources.end()) {
 				LOG_ERROR("Can't find the include file(%s) in jslib directory", *str);
-				args.GetReturnValue().Set(false);
 				break;
 			}
 
@@ -399,28 +396,33 @@ namespace bubi{
 			v8::Local<v8::Value> result;
 			if (!script->Run(args.GetIsolate()->GetCurrentContext()).ToLocal(&result)) {
 				ReportException(args.GetIsolate(), &try_catch);
+				break;
 			}
+
+			args.GetReturnValue().Set(true);
+			return;
 		} while (false);
+		args.GetReturnValue().Set(false);
 		//return v8::Undefined(args.GetIsolate());
 	}
 
 
 	void ContractManager::CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 2) {
-			LOG_ERROR("parameter error");
+			LOG_ERROR("Parameter error, args length(%d) not equal with 2", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
 
 		do{
 			v8::HandleScope handle_scope(args.GetIsolate());
-			if (!args[0]->IsString()){
+			if (!args[0]->IsString()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountAsset, parameter 1 should be a String");
 				break;
 			}
 			auto address = std::string(ToCString(v8::String::Utf8Value(args[0])));
 
-			if (!args[1]->IsObject()){
+			if (!args[1]->IsObject()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountAsset parameter 2 should be a object");
 				break;
 			}
@@ -454,8 +456,9 @@ namespace bubi{
 			v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(
 				args.GetIsolate(), strvalue.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
 			args.GetReturnValue().Set(v8::JSON::Parse(returnvalue));
-
+			return;
 		} while (false);
+		args.GetReturnValue().Set(false);
 	}
 
 
@@ -464,13 +467,12 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 2) {
-				LOG_ERROR("parameter error");
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal with 2", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
 
-			if (!args[0]->IsString()){
+			if (!args[0]->IsString()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountStorage, parameter 0 should be a String");
 				break;
 			}
@@ -478,7 +480,7 @@ namespace bubi{
 			v8::String::Utf8Value str(args[0]);
 			std::string address(ToCString(str));
 
-			if (!args[1]->IsString()){
+			if (!args[1]->IsString()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountStorage, parameter 1 should be a String");
 				break;
 			}
@@ -511,8 +513,7 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 1) {
-				LOG_ERROR("parameter error");
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -520,7 +521,7 @@ namespace bubi{
 			v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
 			std::string contractor(ToCString(token));
 
-			if (!args[0]->IsObject()){
+			if (!args[0]->IsObject()) {
 				LOG_ERROR("contract execute error,CallBackSetAccountStorage, parameter 0 should be a object");
 				break;
 			}
@@ -558,13 +559,12 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 1) {
-				LOG_ERROR("parameter error");
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 				break;
 			}
 
 			v8::HandleScope handle_scope(args.GetIsolate());
-			if (!args[0]->IsString()){
+			if (!args[0]->IsString()) {
 				LOG_ERROR("CallBackGetAccountInfo, parameter 0 should be a String");
 				break;
 			}
@@ -593,8 +593,7 @@ namespace bubi{
 
 		do {
 			if (args.Length() != 1) {
-				args.GetReturnValue().SetNull();
-				LOG_ERROR("parameter error");
+				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -602,12 +601,12 @@ namespace bubi{
 			v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
 			std::string contractor(ToCString(token));
 
-			v8::Local<v8::Object> obj = args[0]->ToObject();
-			if (obj->IsNull()){
+			if (!args[0]->IsObject()) {
 				LOG_ERROR("CallBackDoOperation, parameter 0 should not be null");
 				break;
 			}
 
+			v8::Local<v8::Object> obj = args[0]->ToObject();
 			auto str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), obj).ToLocalChecked();
 
 			//v8::Local<v8::String> str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext()/*context*/, obj).ToLocalChecked();
@@ -652,9 +651,9 @@ namespace bubi{
 	}
 
 	void ContractManager::CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args) {
-		LOG_INFO("CallBackLog");
 
-		if (args.Length() < 1){
+		if (args.Length() != 1) {
+			LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
@@ -662,8 +661,13 @@ namespace bubi{
 
 		v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
 
+		auto context = args.GetIsolate()->GetCurrentContext();
+		auto sender = args.GetIsolate()->GetCurrentContext()->Global()->Get(context,
+			v8::String::NewFromUtf8(args.GetIsolate(), sender_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
+		v8::String::Utf8Value utf8_sender(sender->ToString());
+
 		v8::Local<v8::String> str;
-		if (args[0]->IsObject()){
+		if (args[0]->IsObject()) {
 			v8::Local<v8::Object> obj = args[0]->ToObject(args.GetIsolate());
 			str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), obj).ToLocalChecked();
 		}
@@ -672,30 +676,33 @@ namespace bubi{
 		}
 
 		auto type = args[0]->TypeOf(args.GetIsolate());
-		if (v8::String::NewFromUtf8(args.GetIsolate(), "undefined", v8::NewStringType::kNormal).ToLocalChecked()->Equals(type)){
-			LOG_INFO("undefined type");
+		if (v8::String::NewFromUtf8(args.GetIsolate(), "undefined", v8::NewStringType::kNormal).ToLocalChecked()->Equals(type)) {
+			LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), ToCString(utf8_sender), "undefined");
+			args.GetReturnValue().Set(true);
 			return;
 		}
 
 		//
-		auto context = args.GetIsolate()->GetCurrentContext();
-		auto sender = args.GetIsolate()->GetCurrentContext()->Global()->Get(context,
-			v8::String::NewFromUtf8(args.GetIsolate(), sender_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
-		v8::String::Utf8Value utf8_sender(sender->ToString());
-		//
 		v8::String::Utf8Value utf8value(str);
 		LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), ToCString(utf8_sender), ToCString(utf8value));
+		args.GetReturnValue().Set(true);
 	}
 
 	//
 	void ContractManager::CallBackGetTransactionInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 1) {
-			LOG_ERROR("parameter error");
+			LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
 
 		v8::HandleScope handle_scope(args.GetIsolate());
+		if (!args[0]->IsString()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("CallBackGetTransactionInfo, parameter 0 should not be null");
+			return;
+		}
+
 		v8::String::Utf8Value str(args[0]);
 		std::string hash(ToCString(str));
 		bubi::TransactionFrm txfrm;
@@ -715,12 +722,18 @@ namespace bubi{
 	//
 	void ContractManager::CallBackGetLedgerInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 1) {
-			LOG_ERROR("parameter error");
+			LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
 
 		v8::HandleScope handle_scope(args.GetIsolate());
+		if (!args[0]->IsString() && !args[0]->IsNumber()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("CallBackGetLedgerInfo, parameter 0 should not be null");
+			return;
+		}
+
 		v8::String::Utf8Value str(args[0]);
 		std::string key(ToCString(str));
 
