@@ -730,6 +730,12 @@ namespace bubi{
 		std::string key(ToCString(str));
 
 		int64_t seq = utils::String::Stoi64(key);
+		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
+		if (seq <= lcl.seq() - 1024 || seq > lcl.seq()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("The parameter seq(" FMT_I64 ") <= " FMT_I64 " or > " FMT_I64, seq, lcl.seq() - 1024, lcl.seq());
+			return;
+		}
 
 		LedgerFrm lfrm;
 		if (lfrm.LoadFromDb(seq)){
