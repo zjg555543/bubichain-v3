@@ -26,6 +26,7 @@ namespace bubi {
 	MonitorManager::MonitorManager() : Network(SslParameter()) {
 		connect_interval_ = 120 * utils::MICRO_UNITS_PER_SEC;
 		check_alert_interval_ = 5 * utils::MICRO_UNITS_PER_SEC;
+		last_alert_time_ = utils::Timestamp::HighResolution();
 		last_connect_time_ = 0;
 
 		request_methods_[monitor::MONITOR_MSGTYPE_HELLO] = std::bind(&MonitorManager::OnMonitorHello, this, std::placeholders::_1, std::placeholders::_2);
@@ -260,7 +261,7 @@ namespace bubi {
 		system_manager_.OnSlowTimer(current_time);
 
 		// send alert
-		if (current_time - check_alert_interval_ > last_alert_time_) {
+		if (current_time - last_alert_time_ > check_alert_interval_) {
 			monitor::AlertStatus alert_status;
 			alert_status.set_ledger_sequence(LedgerManager::Instance().GetLastClosedLedger().seq());
 			alert_status.set_node_id(PeerManager::Instance().GetPeerNodeAddress());
@@ -275,7 +276,7 @@ namespace bubi {
 			Monitor *monitor = (Monitor *)GetClientConnection();
 			if ( monitor && !monitor->SendRequest(monitor::MONITOR_MSGTYPE_ALERT, alert_status.SerializeAsString(), ignore_ec)) {
 				bret = false;
-				LOG_ERROR("Send alert status from ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
+				LOG_ERROR("Send alert status to ip(%s) failed (%d:%s)", monitor->GetPeerAddress().ToIpPort().c_str(),
 					ignore_ec.value(), ignore_ec.message().c_str());
 			}
 
