@@ -77,7 +77,7 @@ namespace bubi {
 
 				if (signer.address() == create_account.dest_address()) {
 					result.set_code(protocol::ERRCODE_INVALID_ADDRESS);
-					result.set_desc(utils::String::Format("Signer address(%s) can't be equal the source address", signer.address().c_str()));
+					result.set_desc(utils::String::Format("Signer address(%s) can't be equal to the source address", signer.address().c_str()));
 					shouldBreak = true;
 					break;
 				}
@@ -191,7 +191,7 @@ namespace bubi {
 
 			if (source_address == payment.dest_address()) {
 				result.set_code(protocol::ERRCODE_ACCOUNT_SOURCEDEST_EQUAL);
-				result.set_desc(utils::String::Format("Source address(%s) equal with dest address", source_address.c_str()));
+				result.set_desc(utils::String::Format("Source address(%s) equal to dest address", source_address.c_str()));
 				break;
 			} 
 
@@ -262,7 +262,7 @@ namespace bubi {
 
 				if (signer.address() == source_address) {
 					result.set_code(protocol::ERRCODE_INVALID_ADDRESS);
-					result.set_desc(utils::String::Format("Signer address(%s) can't be equal the source address", signer.address().c_str()));
+					result.set_desc(utils::String::Format("Signer address(%s) can't be equal to the source address", signer.address().c_str()));
 					break;
 				}
 
@@ -311,7 +311,7 @@ namespace bubi {
 
 			if (source_address == payment.dest_address()) {
 				result.set_code(protocol::ERRCODE_ACCOUNT_SOURCEDEST_EQUAL);
-				result.set_desc(utils::String::Format("Source address(%s) equal with dest address", source_address.c_str()));
+				result.set_desc(utils::String::Format("Source address(%s) equal to dest address", source_address.c_str()));
 				break;
 			}
 

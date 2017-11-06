@@ -358,7 +358,7 @@ namespace bubi{
 	void ContractManager::Include(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		do {
 			if (args.Length() != 1) {
-				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 
@@ -401,7 +401,7 @@ namespace bubi{
 
 	void ContractManager::CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 2) {
-			LOG_ERROR("Parameter error, args length(%d) not equal with 2", args.Length());
+			LOG_ERROR("Parameter error, args length(%d) not equal to 2", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
@@ -459,7 +459,7 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 2) {
-				LOG_ERROR("Parameter error, args length(%d) not equal with 2", args.Length());
+				LOG_ERROR("Parameter error, args length(%d) not equal to 2", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -505,7 +505,7 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 1) {
-				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -551,7 +551,7 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 1) {
-				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 
@@ -585,7 +585,7 @@ namespace bubi{
 
 		do {
 			if (args.Length() != 1) {
-				LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -645,7 +645,7 @@ namespace bubi{
 	void ContractManager::CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 		if (args.Length() != 1) {
-			LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+			LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
@@ -683,7 +683,7 @@ namespace bubi{
 	//
 	void ContractManager::CallBackGetTransactionInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 1) {
-			LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+			LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
@@ -714,7 +714,7 @@ namespace bubi{
 	//
 	void ContractManager::CallBackGetLedgerInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 1) {
-			LOG_ERROR("Parameter error, args length(%d) not equal with 1", args.Length());
+			LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}

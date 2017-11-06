@@ -759,7 +759,7 @@ namespace bubi {
 		}
 		//check should replica_id equal be the object id
 		if (replica_id != should_replica_id) {
-			LOG_ERROR("Check received message(type:%s) failed, message replica id(" FMT_I64 ") not equal the signature id(" FMT_I64")",
+			LOG_ERROR("Check received message(type:%s) failed, message replica id(" FMT_I64 ") not equal to the signature id(" FMT_I64")",
 				PbftDesc::GetPbft(pbft).c_str(), replica_id, should_replica_id);
 			return false;
 		}
@@ -813,7 +813,7 @@ namespace bubi {
 
 		PbftInstance &instance_exist = out_pbft_instances_[index];
 		if (0 != CompareValue(instance_exist.pre_prepare_.value_digest(), commit.value_digest())) {
-			LOG_ERROR("The commit message view number(" FMT_I64 ") seq(" FMT_I64 ") is not equal with pre commit message",
+			LOG_ERROR("The commit message view number(" FMT_I64 ") seq(" FMT_I64 ") is not equal to pre commit message",
 				commit.view_number(), commit.sequence());
 			return false;
 		}
@@ -1350,7 +1350,7 @@ namespace bubi {
 		LOG_INFO("Receive new view message from replica id(" FMT_I64 "), view number(" FMT_I64 "),round number(%u)",
 			new_view.replica_id(), new_view.view_number(), pbft.round_number());
 		if (new_view.view_number() == view_number_) {
-			LOG_INFO("The new view number(" FMT_I64 ") is equal than current view number, do nothing", new_view.view_number());
+			LOG_INFO("The new view number(" FMT_I64 ") is equal to current view number, do nothing", new_view.view_number());
 			return true;
 		}
 		else if (new_view.view_number() < view_number_) {
@@ -1392,7 +1392,7 @@ namespace bubi {
 			vc_instance_tmp.viewchanges_.insert(std::make_pair(view_change.replica_id(), view_change));
 
 			if (new_view.view_number() != view_change.view_number()) {
-				LOG_ERROR("The new view message's view-number(" FMT_I64 ") is not equal with it's view-change number(" FMT_I64 ")",
+				LOG_ERROR("The new view message's view-number(" FMT_I64 ") is not equal to it's view-change number(" FMT_I64 ")",
 					new_view.view_number(), view_change.view_number());
 				check_ret = false;
 				break;
@@ -2500,7 +2500,7 @@ namespace bubi {
 
 			const protocol::PbftCommit &commit = pbft.commit();
 			if (commit.value_digest() != previous_value_hash) {
-				LOG_ERROR("Check proof message item failed, message value hash(%s) not equal previous value hash(%s)",
+				LOG_ERROR("Check proof message item failed, message value hash(%s) not equal to previous value hash(%s)",
 					utils::String::BinToHexString(commit.value_digest()).c_str(), utils::String::BinToHexString(previous_value_hash).c_str());
 				return false;
 			}
