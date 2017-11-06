@@ -274,8 +274,8 @@ GET /getLedger?seq=xxxx&with_validator=true&with_consvalue=true
 | 参数           | 描述                                      |
 | :------------- | ----------------------------------------- |
 | seq            | ledger的序号， 如果不填写，返回当前ledger |
-| with_validator | true or false，是否显示验证节点列表       |
-| with_consvalue | true or fasse，是否显示共识值             |
+| with_validator | 默认false，不显示验证节点列表       |
+| with_consvalue | 默认false，不显示共识值             |
 
 - 如果查询到ledger则返回内容:
 
@@ -857,7 +857,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
     }
     ```
     - master_weight:本账号地址拥有的权力值
-    - 各个签名者的权力值, Singer的定义如下
+    - 各个签名者的权力值, Signer的定义如下
     ```text
     message Signer
     {
@@ -949,7 +949,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
                 "type": 2,
                 "threshold": 21
             },
-            {//转移资产需要权力值 33
+            {//转移资产需要权力值 31
                 "type": 3,
                 "threshold": 31
             },
@@ -972,7 +972,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
 
 ### 版本化控制
 
-每一个账号的metadata都是一个版本化的小型数据库。版本化的特点是可以避免修改冲突问题。
+每一个账号的metadata都是一个版本化的小型数据库。版本化的特点是可以避免修改冲突的问题。
 
 ### 表达式
 
@@ -995,7 +995,7 @@ jsonpath(account("bubiV8i6mtcDN5a1X7PbRPuaZuo63QRrHxHGr98s"), ".priv.master_weig
 | `+` `-`                         | 加法、减法                           |
 | `<` `<=`  `>`  `>=`  `==`  `!=` | 比较运算                             |
 | `&&`                            | 与 运算                              |
-| \|                              | 或运算                               |
+| \|\|                              | 或运算                               |
 | ,                               | 逗号运算                             |
 
 >例: Alice发起了一笔交易，她想要使这笔交易在5秒内有效。她发现当前时间戳(微秒)是 `1506393720000000`，5秒之后也就是 `1506393725000000`。那么她就可以在交易中的`expr_condition`字段写上下面这句`LEDGER_TIME >= 1506393720000000 && LEDGER_TIME <= 1506393725000000`这句话的意思是，该交易只在时间范围`[1506393720000000, 1506393725000000]`内有效。过段时间之后，Alice发现当前时间已经超过1506393725000000，那么Alice就可以断定这笔交易要么已经被处理，要么已经彻底失效。
