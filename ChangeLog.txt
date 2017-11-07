@@ -3,8 +3,5 @@
 [+] 禁止v8引擎执行随机函数：Date, Math.random
 [+] 增加合约查询功能，合约实现query函数。用户可通过contractQuery api 查询
 [+] bubi编译的可执行文件能在GLIBC_2.12的操作系统运行
-[+] 增加区块关闭，发送区块头到 websocket 的功能(protocol::LedgerHeader)
 
 [*] 去除共识过程存储的中间状态，加速共识效率
-[*] 修复表达式判断错误
-[*] 修复调用sm2证书库进行验证失败问题

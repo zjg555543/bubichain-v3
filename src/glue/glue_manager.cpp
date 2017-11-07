@@ -465,7 +465,7 @@ namespace bubi {
 		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
 		//check previous hash
 		if (consensus_value.previous_ledger_hash() != lcl.hash()) {
-			LOG_ERROR("Check value failed, previous ledger(seq:" FMT_I64 ") hash(%s) not equal consensus message ledger hash(%s)",
+			LOG_ERROR("Check value failed, previous ledger(seq:" FMT_I64 ") hash(%s) not equal to consensus message ledger hash(%s)",
 				lcl.seq(),
 				utils::String::Bin4ToHexString(lcl.hash()).c_str(),
 				utils::String::Bin4ToHexString(consensus_value.previous_ledger_hash()).c_str());
@@ -474,7 +474,7 @@ namespace bubi {
 
 		//check previous ledger sequence
 		if (consensus_value.ledger_seq() != lcl.seq() + 1) {
-			LOG_ERROR("Check value failed, previous ledger seq(" FMT_I64 ") not equal consensus message ledger seq( " FMT_I64 ")",
+			LOG_ERROR("Check value failed, previous ledger seq(" FMT_I64 ") not equal to consensus message ledger seq( " FMT_I64 ")",
 				lcl.seq(),
 				consensus_value.ledger_seq());
 			return Consensus::CHECK_VALUE_MAYVALID;

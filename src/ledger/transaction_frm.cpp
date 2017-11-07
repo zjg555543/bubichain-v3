@@ -56,6 +56,7 @@ namespace bubi {
 	void TransactionFrm::ToJson(Json::Value &result) {
 		result = Proto2Json(transaction_env_);
 		result["error_code"] = result_.code();
+		result["error_desc"] = result_.desc();
 		result["close_time"] = result_.close_time_;
 		result["ledger_seq"] = result_.ledger_seq_;
 		result["hash"] = utils::String::BinToHexString(hash_);
@@ -497,8 +498,8 @@ namespace bubi {
 			if (result.code() != 0) {
 				result_ = opt->GetResult();
 				bSucess = false;
-				LOG_ERROR("Transaction(%s) operation(%d) apply failed",
-					utils::String::BinToHexString(hash_).c_str(), processing_operation_);
+				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) apply failed",
+					utils::String::BinToHexString(hash_).c_str(), processing_operation_, result_.code(), result_.desc().c_str());
 				break;
 			}
 		}

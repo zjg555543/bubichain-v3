@@ -105,6 +105,7 @@ namespace bubi {
 			int64_t probation_; //
 			SyncStat(){
 				send_time_ = 0;
+				probation_ = 0;
 			}
 			Json::Value ToJson(){
 				Json::Value v;

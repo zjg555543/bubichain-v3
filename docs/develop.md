@@ -15,6 +15,7 @@
         - [查询区块头](#查询区块头)
         - [提交交易](#提交交易)
         - [序列化交易](#序列化交易)
+        - [配置验证节点](#配置验证节点)
     - [定义交易](#定义交易)
         - [交易的基本结构](#交易的基本结构)
         - [操作](#操作)
@@ -273,8 +274,8 @@ GET /getLedger?seq=xxxx&with_validator=true&with_consvalue=true
 | 参数           | 描述                                      |
 | :------------- | ----------------------------------------- |
 | seq            | ledger的序号， 如果不填写，返回当前ledger |
-| with_validator | true or false，是否显示验证节点列表       |
-| with_consvalue | true or fasse，是否显示共识值             |
+| with_validator | 默认false，不显示验证节点列表       |
+| with_consvalue | 默认false，不显示共识值             |
 
 - 如果查询到ledger则返回内容:
 
@@ -459,10 +460,14 @@ POST /getTransactionBlob
 }
 ```
 
+## __配置验证节点__
 ## 定义交易
 
 ### 交易的基本结构
 
+- json格式
+## 定义交易
+### 交易的基本结构
 - json格式
   ```json
   {
@@ -562,6 +567,14 @@ POST /getTransactionBlob
   - 各项参数合法
   - 要创建的账号不存在
 - json格式
+
+- 功能
+  在区块链上创建一个新的账号
+- 成功条件
+  - 各项参数合法
+  - 要创建的账号不存在
+- json格式
+
 
 ```json
     {
@@ -666,6 +679,67 @@ POST /getTransactionBlob
     这是一个版本化的键值对数据库，如果您不需要，可以不填写这部分。
   - init_balance:暂时未启用
 
+#### 2. 发行资产
+  ```text
+  message OperationCreateAccount
+  {
+      string dest_address = 1;
+      Contract contract = 2;
+      AccountPrivilege priv = 3;
+      repeated KeyPair metadatas = 4;
+      int64    init_balance = 5;
+  }
+  ```
+
+  - dest_address:要创建的账号的地址
+  - contract:合约。若你想要创建一个不具有合约功能的账号，可以不填写这部分。若您想创建具有合约功能的账号，请参照[合约](#合约)
+  - priv: 账号的初始权力分配。相关的数据结构定义:
+      ```text
+        message OperationTypeThreshold
+        {
+            Operation.Type type = 1;
+            int64 threshold = 2;
+        }
+
+        message AccountPrivilege
+        {
+            int64 master_weight = 1;
+            repeated Signer signers = 2;
+            AccountThreshold thresholds = 3;
+        }
+        message Signer
+        {
+            enum Limit
+            {
+                SIGNER_NONE = 0;
+                SIGNER = 100;
+            };
+            string address = 1;
+            int64 weight = 2;
+        }
+        message AccountThreshold
+        {
+            int64 tx_threshold = 1; //required, [-1,MAX(INT64)] -1: 表示不设置
+            repeated OperationTypeThreshold type_thresholds = 2; //如果这个设置，则操作门限以这个为准
+        }
+        ```
+
+    若你想创建一个不受其他账号控制的账号。将priv.master_weight设置为1，将`priv.thresholds.tx_threshold`设为1即可。若您想创建一个受其他账号控制的账号，参见[控制权的分配](#控制权的分配)
+
+  - metadatas:metadata列表。您可以为新建的账号设置一批初始的metadata。其数据类型为KeyPair,结构如下
+
+    ```text
+    message KeyPair
+    {
+        string key = 1;
+        string value = 2;
+        int64 version = 3;
+    }
+    ```
+
+    这是一个版本化的键值对数据库，如果您不需要，可以不填写这部分。
+  - init_balance:暂时未启用
+
 #### 发行资产
 
 - 功能
@@ -699,11 +773,20 @@ POST /getTransactionBlob
 #### 转移资产
 
 - 功能
+若目标账号没有合约代码，则只进行转移资产操作。
+- 成功条件
+  - 各项参数合法
+  - 源账号该类型的资产数量足够
+- json格式
+
+- 功能
   操作源账号将一笔资产转给目标账号
 - 成功条件
   - 各项参数合法
   - 源账号该类型的资产数量足够
 - json格式
+
+
   ```JSON
     {
       "type": 3,
@@ -726,6 +809,29 @@ POST /getTransactionBlob
     message OperationPayment
     {
         string dest_address = 1;
+- protocol buffer 结构
+        Asset asset = 2;
+#### 4. 设置metadata
+        string input = 3;
+    }
+    ```
+    - dest_address: 资产接收方账号地址
+    - asset: 要转移的资产
+    ```text
+    message Asset
+    {
+         AssetProperty property = 1; //资产属性
+         int64 amount = 2; //数量
+    }
+设置账号的metadata属性，metadata 是一个key-value 结构，可存储多个键值对。
+    message AssetProperty
+    {
+         string issuer = 1; //资产发行方
+         string code = 2; //资产代码
+    }
+    ```
+    - input: 本次转移触发接收方的合约，合约的执行入参就是input
+    {
 
         Asset asset = 2;
 
@@ -752,11 +858,13 @@ POST /getTransactionBlob
 #### 设置metadata
 
 - 功能
+- 功能
   操作源账号修改或添加一个metadata到自己的metadata表中
 - 成功条件
   - 各项参数合法
 - json格式
-    ```json
+
+```json
     {
       "type": 4,
       "set_metadata": {
@@ -766,6 +874,7 @@ POST /getTransactionBlob
       }
     }
     ```
+    
 - protocol buffer 结构
     ```text
     message OperationSetMetadata
@@ -778,9 +887,22 @@ POST /getTransactionBlob
     - key: 主键，账号内唯一。长度范围[1,1024]
     - value: 值。长度范围[0,1M]
     - version: 版本号，可以不填写。若您想使用这个高级功能，参见[版本化控制](#版本化控制)
+---
 
+#### 5. 设置Signer Weight
+        int64 version = 3;
+    ```
+    - key: 主键，账号内唯一。长度范围[1,1024]
+    - value: 值。长度范围[0,1M]
+    - version: 版本号，可以不填写。若您想使用这个高级功能，参见[版本化控制](#版本化控制)
+设置账号的签名属性
 #### 设置权重
-
+|参数|描述
+|:--- | --- 
+- master_weight optional，default 0， -1 ： 不设置该值，0：设置master权重值为0， >0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
+- address 需要操作的 signer 地址，符合地址校验规则。
+- weight  optional，default 0, 0 ：删除该signer，>0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
+- json格式
 - 功能
   设置签名者拥有的权重
 - 成功条件
@@ -821,9 +943,29 @@ POST /getTransactionBlob
          int64 weight = 2;
     }
     ```
+#### 6. 设置Threshold
+    message OperationSetSignerWeight
+         int64 master_weight = 1; //required, [-1,MAX(UINT32)] -1: 表示不设置
+         repeated Signer signers = 2; //address:weight, 如果weight 为0 表示删除这个signer
+    }
+    ```
+    - master_weight:本账号地址拥有的权力值
+    - 各个签名者的权力值, Signer的定义如下
+    ```text
+    message Signer
+    {
+    enum Limit{
+            SIGNER_NONE = 0;
+            SIGNER = 100;
+    };
+         string address = 1;
+         int64 weight = 2;
+    }
+    ```
+设置账号操作的权限
 
-#### 设置门限
-
+  - 各项参数合法
+- json格式
 - 功能
   设置各个操作所需要的门限
 - 成功条件
@@ -896,7 +1038,6 @@ POST /getTransactionBlob
                 "type": 2,
                 "threshold": 21
             },
-            {//转移资产需要权力值 33
                 "type": 3,
                 "threshold": 31
             },
@@ -919,7 +1060,6 @@ POST /getTransactionBlob
 
 ### 版本化控制
 
-每一个账号的metadata都是一个版本化的小型数据库。版本化的特点是可以避免修改冲突问题。
 
 ### 表达式
 
@@ -942,7 +1082,7 @@ jsonpath(account("bubiV8i6mtcDN5a1X7PbRPuaZuo63QRrHxHGr98s"), ".priv.master_weig
 | `+` `-`                         | 加法、减法                           |
 | `<` `<=`  `>`  `>=`  `==`  `!=` | 比较运算                             |
 | `&&`                            | 与 运算                              |
-| \|                              | 或运算                               |
+| \|\|                              | 或运算                               |
 | ,                               | 逗号运算                             |
 
 >例: Alice发起了一笔交易，她想要使这笔交易在5秒内有效。她发现当前时间戳(微秒)是 `1506393720000000`，5秒之后也就是 `1506393725000000`。那么她就可以在交易中的`expr_condition`字段写上下面这句`LEDGER_TIME >= 1506393720000000 && LEDGER_TIME <= 1506393725000000`这句话的意思是，该交易只在时间范围`[1506393720000000, 1506393725000000]`内有效。过段时间之后，Alice发现当前时间已经超过1506393725000000，那么Alice就可以断定这笔交易要么已经被处理，要么已经彻底失效。
@@ -972,7 +1112,7 @@ function main(input)
 ```
 
 系统提供了几个全局函数, 这些函数可以获取区块链的一些信息，也可驱动账号发起交易
-**注意，自定义的函数和变量不要与内置变量和全局函数重名，否则会造成不可控的数据错误。**
+**注意，自定义的函数和变量不要与内置变量和全局函数重名，否则会造成不可控的数据错误。同时禁止使用可能引发数据不一致的 Date 对象及 Math.random()函数，后续版本会从技术上限制**
 
 #### 内置函数
 

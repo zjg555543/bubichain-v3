@@ -21,7 +21,6 @@ limitations under the License.
 #include "ledger_frm.h"
 #include "ledgercontext_manager.h"
 #include "contract_manager.h"
-#include <future>
 
 namespace bubi {
 #define COUNT_PER_PARTITION 1000000

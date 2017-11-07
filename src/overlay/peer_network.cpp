@@ -144,7 +144,7 @@ namespace bubi {
 			
 			if (network_id_ != hello.network_id()) {
 				res.set_error_code(protocol::ERRCODE_INVALID_PARAMETER);
-				res.set_error_desc(utils::String::Format("Peer connect break as peer network id(" FMT_I64 ") not equal local id(" FMT_I64 ")",
+				res.set_error_desc(utils::String::Format("Peer connect break as peer network id(" FMT_I64 ") not equal to local id(" FMT_I64 ")",
 					hello.network_id(), network_id_));
 				LOG_ERROR("%s", res.error_desc().c_str());
 				break;
