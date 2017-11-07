@@ -600,22 +600,22 @@ namespace bubi {
 			time1 - time0 + closing_ledger->apply_time_,
 			time2 - time1,
 			time3 - time2,
-			time3 - time0,
+			time3 - time0 + closing_ledger->apply_time_,
 			tree_->time_,
-			closing_ledger_->GetTxCount());
+			closing_ledger->GetTxCount());
 
 		//notice ledger closed
 		WebSocketServer::Instance().BroadcastMsg(protocol::CHAIN_LEDGER_HEADER, tmp_lcl_header.SerializeAsString());
 
 		// notice applied
-		for (int i = 0; i < closing_ledger_->apply_tx_frms_.size(); i++) {
-			TransactionFrm::pointer tx = closing_ledger_->apply_tx_frms_[i];
+		for (size_t i = 0; i < closing_ledger->apply_tx_frms_.size(); i++) {
+			TransactionFrm::pointer tx = closing_ledger->apply_tx_frms_[i];
 			WebSocketServer::Instance().BroadcastChainTxMsg(tx->GetContentHash(), tx->GetSourceAddress(),
 				tx->GetResult(), tx->GetResult().code() == protocol::ERRCODE_SUCCESS ? protocol::ChainTxStatus_TxStatus_COMPLETE : protocol::ChainTxStatus_TxStatus_FAILURE);
 		}
 		// notice dropped
-		for (int i = 0; i < closing_ledger_->dropped_tx_frms_.size(); i++) {
-			TransactionFrm::pointer tx = closing_ledger_->dropped_tx_frms_[i];
+		for (size_t i = 0; i < closing_ledger->dropped_tx_frms_.size(); i++) {
+			TransactionFrm::pointer tx = closing_ledger->dropped_tx_frms_[i];
 			WebSocketServer::Instance().BroadcastChainTxMsg(tx->GetContentHash(), tx->GetSourceAddress(),
 				tx->GetResult(), tx->GetResult().code() == protocol::ERRCODE_SUCCESS ? protocol::ChainTxStatus_TxStatus_COMPLETE : protocol::ChainTxStatus_TxStatus_FAILURE);
 		}
@@ -895,10 +895,6 @@ namespace bubi {
 		}
 
 		return ret;
-	}
-
-	std::shared_ptr<Environment> ExprCondition::GetEnviroment() {
-		return environment_;
 	}
 
 	std::shared_ptr<Environment> ExprCondition::GetEnviroment() {

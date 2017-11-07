@@ -3,5 +3,6 @@
 [+] 禁止v8引擎执行随机函数：Date, Math.random
 [+] 增加合约查询功能，合约实现query函数。用户可通过contractQuery api 查询
 [+] bubi编译的可执行文件能在GLIBC_2.12的操作系统运行
+[+] 增加删除账号 metadata 的功能
 
 [*] 去除共识过程存储的中间状态，加速共识效率

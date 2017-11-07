@@ -18,6 +18,7 @@ limitations under the License.
 namespace bubi {
 
 	LedgerContext::LedgerContext(const std::string &chash, const protocol::ConsensusValue &consvalue, int64_t timeout) :
+		type_(-1),
 		lpmanager_(NULL),
 		hash_(chash),
 		consensus_value_(consvalue),
@@ -25,11 +26,12 @@ namespace bubi {
 		exe_result_(false),
 		sync_(true),
 		tx_timeout_(timeout),
-		timeout_tx_index_(-1){
+		timeout_tx_index_(-1) {
 		closing_ledger_ = std::make_shared<LedgerFrm>();
 	}
 
 	LedgerContext::LedgerContext(LedgerContextManager *lpmanager, const std::string &chash, const protocol::ConsensusValue &consvalue, int64_t timeout, PreProcessCallback callback) :
+		type_(-1),
 		lpmanager_(lpmanager),
 		hash_(chash),
 		consensus_value_(consvalue),
@@ -39,14 +41,27 @@ namespace bubi {
 		callback_(callback),
 		tx_timeout_(timeout),
 		timeout_tx_index_(-1) {
-			closing_ledger_ = std::make_shared<LedgerFrm>();
-		}
+		closing_ledger_ = std::make_shared<LedgerFrm>();
+	}
+	LedgerContext::LedgerContext(
+		int32_t type,
+		const ContractTestParameter &parameter) :
+		type_(type), 
+		parameter_(parameter),
+		lpmanager_(NULL) {
+		closing_ledger_ = std::make_shared<LedgerFrm>();
+	}
 	LedgerContext::~LedgerContext() {}
 
 	void LedgerContext::Run() {
 		LOG_INFO("Thread preprocessing the consensus value, ledger seq(" FMT_I64 ")", consensus_value_.ledger_seq());
 		start_time_ = utils::Timestamp::HighResolution();
-		Do();
+		if (type_ >= 0) {
+			Test();
+		}
+		else {
+			Do();
+		}
 	}
 
 	void LedgerContext::Do() {
@@ -70,6 +85,69 @@ namespace bubi {
 		}
 	}
 
+	bool LedgerContext::Test() {
+		//if address not exist, then create temporary account
+		std::shared_ptr<Environment> environment = std::make_shared<Environment>(nullptr);
+		if (parameter_.contract_address_.empty()) {
+			//create a temporary account
+			PrivateKey priv_key(SIGNTYPE_ED25519);
+			Json::Value account_json = Json::Value(Json::objectValue);
+			protocol::Account account;
+			account.set_address(priv_key.GetBase16Address());
+			account.mutable_contract()->set_payload(parameter_.code_);
+			account.mutable_contract()->set_type((protocol::Contract_ContractType)type_);
+			parameter_.contract_address_ = account.address();
+			std::shared_ptr<AccountFrm> dest_account = std::make_shared<AccountFrm>(account);
+			if (!environment->AddEntry(dest_account->GetAccountAddress(), dest_account)) {
+				LOG_ERROR("Add account(%s) entry failed", account.address().c_str());
+				exe_result_ = false;
+				return false;
+			}
+		}
+
+		AccountFrm::pointer null_acc;
+		if (!Environment::AccountFromDB(parameter_.source_address_, null_acc)) {
+			if (!PublicKey::IsAddressValid(parameter_.source_address_)) {
+				PrivateKey priv_key(SIGNTYPE_ED25519);
+				parameter_.source_address_ = priv_key.GetBase16Address();
+			}
+			//create a tempory source address
+			protocol::Account account;
+			account.set_address(parameter_.source_address_);
+			std::shared_ptr<AccountFrm> dest_account = std::make_shared<AccountFrm>(account);
+			if (!environment->AddEntry(dest_account->GetAccountAddress(), dest_account)) {
+				LOG_ERROR("Add account(%s) entry failed", account.address().c_str());
+				exe_result_ = false;
+				return false;
+			}
+		}
+
+		//construct consensus value
+		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
+		consensus_value_.set_ledger_seq(lcl.seq() + 1);
+		consensus_value_.set_close_time(lcl.close_time() + 1);
+
+		//construct trigger tx
+		protocol::TransactionEnv env;
+		protocol::Transaction *tx = env.mutable_transaction();
+		tx->set_source_address(parameter_.source_address_);
+		protocol::Operation *ope = tx->add_operations();
+		ope->set_type(protocol::Operation_Type_PAYMENT);
+		protocol::OperationPayment *payment = ope->mutable_payment();
+		payment->set_dest_address(parameter_.contract_address_);
+		payment->set_input(parameter_.input_);
+
+		TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(env);
+		tx_frm->environment_ = environment;
+		transaction_stack_.push(tx_frm);
+		closing_ledger_->apply_tx_frms_.push_back(tx_frm);
+
+		closing_ledger_->value_ = std::make_shared<protocol::ConsensusValue>(consensus_value_);
+		closing_ledger_->lpledger_context_ = this;
+
+		return LedgerManager::Instance().DoTransaction(env, this);
+	}
+
 	void LedgerContext::Cancel() {
 		std::stack<int64_t> copy_stack;
 		do {
@@ -88,6 +166,17 @@ namespace bubi {
 
 	bool LedgerContext::CheckExpire(int64_t total_timeout) {
 		return utils::Timestamp::HighResolution() - start_time_ >= total_timeout;
+	}
+
+	void LedgerContext::PushLog(const std::string &address, const utils::StringList &logs) {
+		Json::Value &item = logs_[utils::String::Format(FMT_SIZE "-%s", logs_.size(), address.c_str())];
+		for (utils::StringList::const_iterator iter = logs.begin(); iter != logs.end(); iter++) {
+			item[item.size()] = *iter;
+		}
+	}
+
+	void LedgerContext::GetLogs(Json::Value &logs) {
+		logs = logs_;
 	}
 
 	void LedgerContext::PushContractId(int64_t id) {
@@ -194,6 +283,72 @@ namespace bubi {
 		}
 
 		return -1;
+	}
+
+	bool LedgerContextManager::SyncTestProcess(int32_t type, 
+		const ContractTestParameter &parameter, 
+		int64_t total_timeout, 
+		Result &result, 
+		Json::Value &logs,
+		Json::Value &txs) {
+		LedgerContext *ledger_context = new LedgerContext(type, parameter);
+
+		if (!ledger_context->Start("test-contract")) {
+			LOG_ERROR_ERRNO("Start test contract thread failed",
+				STD_ERR_CODE, STD_ERR_DESC);
+			result.set_code(protocol::ERRCODE_INTERNAL_ERROR);
+			result.set_desc("Start thread failed");
+			delete ledger_context;
+			return false;
+		}
+
+		int64_t time_start = utils::Timestamp::HighResolution();
+		bool is_timeout = false;
+		while (ledger_context->IsRunning()) {
+			utils::Sleep(10);
+			if (utils::Timestamp::HighResolution() - time_start > total_timeout) {
+				is_timeout = true;
+				break;
+			}
+		}
+
+		if (is_timeout) { //cancel it
+			ledger_context->Cancel();
+			result.set_code(protocol::ERRCODE_TX_TIMEOUT);
+			result.set_desc("Execute contract timeout");
+			LOG_ERROR("Test consvalue time(" FMT_I64 "ms) is out", total_timeout / utils::MICRO_UNITS_PER_MILLI);
+			return false;
+		}
+
+		//add tx
+		LedgerFrm::pointer ledger = ledger_context->closing_ledger_;
+		const std::vector<TransactionFrm::pointer> &apply_tx_frms = ledger->apply_tx_frms_;
+		for (size_t i = 0; i < apply_tx_frms.size(); i++) {
+			const TransactionFrm::pointer ptr = apply_tx_frms[i];
+
+			protocol::TransactionEnvStore env_store;
+			*env_store.mutable_transaction_env() = apply_tx_frms[i]->GetTransactionEnv();
+			env_store.set_ledger_seq(ledger->GetProtoHeader().seq());
+			env_store.set_close_time(ledger->GetProtoHeader().close_time());
+			env_store.set_error_code(ptr->GetResult().code());
+			env_store.set_error_desc(ptr->GetResult().desc());
+
+			//txs[txs.size()] = Proto2Json(env_store);
+			//batch.Put(ComposePrefix(General::TRANSACTION_PREFIX, ptr->GetContentHash()), env_store.SerializeAsString());
+
+			for (size_t j = 0; j < ptr->instructions_.size(); j++) {
+				protocol::TransactionEnvStore env_sto = ptr->instructions_.at(j);
+				env_sto.set_ledger_seq(ledger->GetProtoHeader().seq());
+				env_sto.set_close_time(ledger->GetProtoHeader().close_time());
+				txs[txs.size()] = Proto2Json(env_sto);
+				//std::string hash = HashWrapper::Crypto(env_sto.transaction_env().transaction().SerializeAsString());
+				//batch.Put(ComposePrefix(General::TRANSACTION_PREFIX, hash), env_sto.SerializeAsString());
+			}
+		}
+
+		ledger_context->GetLogs(logs);
+		
+		return true;
 	}
 
 	bool LedgerContextManager::SyncPreProcess(const protocol::ConsensusValue &consensus_value,

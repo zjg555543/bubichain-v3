@@ -24,6 +24,10 @@ namespace bubi{
 
 	ContractParameter::~ContractParameter() {}
 
+	ContractTestParameter::ContractTestParameter() : exe_or_query_(true) {}
+
+	ContractTestParameter::~ContractTestParameter() {}
+
 	utils::Mutex Contract::contract_id_seed_lock_;
 	int64_t Contract::contract_id_seed_ = 0; 
 	Contract::Contract() {
@@ -70,8 +74,17 @@ namespace bubi{
 		tx_do_count_++;
 	}
 
-	ContractParameter &Contract::GetParameter() {
+	const ContractParameter &Contract::GetParameter() {
 		return parameter_;
+	}
+
+	const utils::StringList &Contract::GetLogs() {
+		return logs_;
+	}
+
+	void Contract::AddLog(const std::string &log) {
+		logs_.push_back(log);
+		if (logs_.size() > 100) logs_.pop_front();
 	}
 
 	std::string Contract::GetErrorMsg() {
@@ -192,18 +205,20 @@ namespace bubi{
 		v8::Local<v8::Script> compiled_script;
 
 		do {
-			if (!RemoveRandom(isolate_, error_msg_)) {
+			Json::Value error_random;
+			if (!RemoveRandom(isolate_, error_random)) {
+				error_msg_ = error_random.toFastString();
 				break;
 			}
 		
 			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
-				error_msg_ = ReportException(isolate_, &try_catch);
+				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
 				break;
 			}
 
 			v8::Local<v8::Value> result;
 			if (!compiled_script->Run(context).ToLocal(&result)) {
-				error_msg_ = ReportException(isolate_, &try_catch);
+				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
 				break;
 			}
 
@@ -228,7 +243,7 @@ namespace bubi{
 
 			v8::Local<v8::Value> callresult;
 			if (!process->Call(context, context->Global(), argc, argv).ToLocal(&callresult)) {
-				error_msg_ = ReportException(isolate_, &try_catch);
+				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
 				break;
 			}
 
@@ -280,7 +295,7 @@ namespace bubi{
 		v8::Local<v8::Script> compiled_script;
 
 		if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
-			error_msg_ = ReportException(isolate_, &try_catch);
+			error_msg_ = ReportException(isolate_, &try_catch).toFastString();
 			LOG_ERROR("%s", error_msg_.c_str());
 			return false;
 		}
@@ -322,21 +337,21 @@ namespace bubi{
 		v8::Local<v8::String> v8src = v8::String::NewFromUtf8(isolate_, parameter_.code_.c_str());
 		v8::Local<v8::Script> compiled_script;
 
+		Json::Value error_desc_f;
+		Json::Value temp_result;
 		do {
-			std::string error_msg;
-			if (!RemoveRandom(isolate_, error_msg)) {
-				js_result["error_message"] = error_msg;
+			if (!RemoveRandom(isolate_, error_desc_f)) {
 				break;
 			}
 
 			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
-				js_result["error_message"] = ReportException(isolate_, &try_catch);
+				error_desc_f = ReportException(isolate_, &try_catch);
 				break;
 			}
 
 			v8::Local<v8::Value> result;
 			if (!compiled_script->Run(context).ToLocal(&result)) {
-				js_result["error_message"] = ReportException(isolate_, &try_catch);
+				error_desc_f = ReportException(isolate_, &try_catch);
 				break;
 			}
 
@@ -346,8 +361,9 @@ namespace bubi{
 			v8::Local<v8::Value> process_val;
 			if (!context->Global()->Get(context, process_name).ToLocal(&process_val) ||
 				!process_val->IsFunction()) {
-				js_result["error_message"] = utils::String::Format("Lost of %s function", query_name_);
-				LOG_ERROR("%s", js_result["error_message"].asCString());
+				Json::Value &exception = error_desc_f["exception"];
+				exception = utils::String::Format("Lost of %s function", query_name_);
+				LOG_ERROR("%s", exception.asCString());
 				break;
 			}
 
@@ -360,18 +376,22 @@ namespace bubi{
 
 			v8::Local<v8::Value> callRet;
 			if (!process->Call(context, context->Global(), argc, argv).ToLocal(&callRet)) {
-				js_result["error_message"] = ReportException(isolate_, &try_catch);
+				error_desc_f = ReportException(isolate_, &try_catch);
 				LOG_ERROR("%s function execute failed", query_name_);
 				break;
 			}
-			std::string contract_result_str = "contract_result";
-			if (!JsValueToCppJson(context, callRet, contract_result_str, js_result)) {
+
+			if (!JsValueToCppJson(context, callRet, "result", temp_result)) {
+				Json::Value &exception = temp_result["result"];
 				LOG_ERROR("the result of function %s in contract parse failed", query_name_);
 				break;
 			}
+
+			js_result["result"] = temp_result["result"];
 			return true;
 		} while (false);
 
+		js_result["error_desc_f"] = error_desc_f;
 		return false;
 	}
 
@@ -386,7 +406,7 @@ namespace bubi{
 		return NULL;
 	}
 
-	bool V8Contract::RemoveRandom(v8::Isolate* isolate, std::string &error_msg) {
+	bool V8Contract::RemoveRandom(v8::Isolate* isolate, Json::Value &error_msg) {
 		v8::TryCatch try_catch(isolate);
 		std::string js_file = "delete Date; delete Math.random;";
 
@@ -460,16 +480,20 @@ namespace bubi{
 		return v8::Context::New(isolate, NULL, global);
 	}
 
-	std::string V8Contract::ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
+	Json::Value V8Contract::ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
 		v8::HandleScope handle_scope(isolate);
 		v8::String::Utf8Value exception(try_catch->Exception());
 		const char* exception_string = ToCString(exception);
+		std::string exec_string(exception_string);
+		exec_string.resize(256);
+		Json::Value json_result;
+
 		v8::Local<v8::Message> message = try_catch->Message();
 		std::string error_msg;
 		if (message.IsEmpty()) {
 			// V8 didn't provide any extra information about this error; just
 			// print the exception.
-			error_msg = utils::String::AppendFormat(error_msg, "%s", exception_string);
+			json_result["exception"] = exec_string;
 		}
 		else {
 			// Print (filename):(line number): (message).
@@ -477,36 +501,24 @@ namespace bubi{
 			v8::Local<v8::Context> context(isolate->GetCurrentContext());
 			const char* filename_string = ToCString(filename);
 			int linenum = message->GetLineNumber(context).FromJust();
-			error_msg = utils::String::AppendFormat(error_msg, "%s:%i: %s", filename_string, linenum, exception_string);
-			// Print line of source code.
-			v8::String::Utf8Value sourceline(
-				message->GetSourceLine(context).ToLocalChecked());
-			const char* sourceline_string = ToCString(sourceline);
-			error_msg = utils::String::AppendFormat(error_msg, "%s", sourceline_string);
-			// Print wavy underline (GetUnderline is deprecated).
-			int start = message->GetStartColumn(context).FromJust();
-			for (int i = 0; i < start; i++) {
-				error_msg = utils::String::AppendFormat(error_msg, " ");
-			}
-			int end = message->GetEndColumn(context).FromJust();
-			for (int i = start; i < end; i++) {
-				error_msg = utils::String::AppendFormat(error_msg, "^");
-			}
+			json_result["filename"] = filename_string;
+			json_result["linenum"] = linenum;
+			json_result["exception"] = exec_string;
 
+			//print error stack
 			v8::Local<v8::Value> stack_trace_string;
 			if (try_catch->StackTrace(context).ToLocal(&stack_trace_string) &&
 				stack_trace_string->IsString() &&
 				v8::Local<v8::String>::Cast(stack_trace_string)->Length() > 0) {
 				v8::String::Utf8Value stack_trace(stack_trace_string);
 				const char* stack_trace_string = ToCString(stack_trace);
-				error_msg = utils::String::AppendFormat(error_msg, "%s", stack_trace_string);
+				json_result["stack"] = stack_trace_string;
 			}
 		}
-		//LOG_ERROR("V8ErrorTrace:%s", error_msg.c_str());
-		return error_msg;
+		return json_result;
 	}
 
-	bool V8Contract::JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, std::string& key, Json::Value& jsonvalue) {
+	bool V8Contract::JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, const std::string& key, Json::Value& jsonvalue) {
 		bool ret = true;
 
 		if (jsvalue->IsObject()) {  //include map arrary
@@ -520,13 +532,13 @@ namespace bubi{
 		else if (jsvalue->IsNumber()) {
 			double jsRet = jsvalue->NumberValue();
 
-			char buf[16] = { 0 };
-			snprintf(buf, sizeof(buf), "%lf", jsRet);
-			jsonvalue[key] = std::string(buf);
+			//char buf[16] = { 0 };
+			//snprintf(buf, sizeof(buf), "%lf", jsRet);
+			jsonvalue[key] = jsRet;
 		}
 		else if (jsvalue->IsBoolean()) {
-			std::string jsRet = jsvalue->BooleanValue() ? "true" : "false";
-			jsonvalue[key] = jsRet;
+			//std::string jsRet = jsvalue->BooleanValue() ? "true" : "false";
+			jsonvalue[key] = jsvalue->BooleanValue();
 		}
 		else if (jsvalue->IsString()) {
 			jsonvalue[key] = std::string(ToCString(v8::String::Utf8Value(jsvalue)));
@@ -623,6 +635,11 @@ namespace bubi{
 		//
 		v8::String::Utf8Value utf8value(str);
 		LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), ToCString(utf8_sender), ToCString(utf8value));
+
+		V8Contract *v8_contract = GetContractFrom(args.GetIsolate());
+		if (v8_contract) {
+			v8_contract->AddLog(ToCString(utf8value));
+		} 
 	}
 
 	void V8Contract::CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -874,6 +891,12 @@ namespace bubi{
 		std::string key(ToCString(str));
 
 		int64_t seq = utils::String::Stoi64(key);
+		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
+		if (seq <= lcl.seq() - 1024 || seq > lcl.seq()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("The parameter seq(" FMT_I64 ") <= " FMT_I64 " or > " FMT_I64, seq, lcl.seq() - 1024, lcl.seq());
+			return;
+		}
 
 		LedgerFrm lfrm;
 		if (lfrm.LoadFromDb(seq)) {
@@ -955,9 +978,8 @@ namespace bubi{
 	QueryContract::QueryContract():contract_(NULL){}
 	QueryContract::~QueryContract() {
 	}
-	bool QueryContract::Init(int32_t type, const std::string &code, const std::string &input) {
-		parameter_.code_ = code;
-		parameter_.input_ = input;
+	bool QueryContract::Init(int32_t type, const ContractParameter &paramter) {
+		parameter_ = paramter;
 		if (type == Contract::TYPE_V8) {
 			
 		}
@@ -995,6 +1017,34 @@ namespace bubi{
 			contract_ = NULL;
 		} while (false);
 	}
+
+// 	TestContract::TestContract(){}
+// 	TestContract::~TestContract() {}
+// 	bool TestContract::Init(int32_t type, const ContractTestParameter &parameter) {
+// 		if (type == Contract::TYPE_V8) {
+// 			parameter_ = parameter;
+// 			type_ = type;
+// 		}
+// 		else {
+// 			std::string error_msg = utils::String::Format("Contract type(%d) not support", type);
+// 			LOG_ERROR("%s", error_msg.c_str());
+// 			return false;
+// 		}
+// 		return true;
+// 	}
+// 
+// 	void TestContract::Cancel() {
+// 		ledger_context.Cancel();
+// 	}
+// 
+// 	bool TestContract::GetResult(Json::Value &result) {
+// 		result = result_;
+// 		return ret_;
+// 	}
+// 
+// 	void TestContract::Run() {
+// 		ledger_context.Test(type_, parameter_);
+// 	}
 
 	ContractManager::ContractManager() {}
 	ContractManager::~ContractManager() {}
@@ -1047,6 +1097,7 @@ namespace bubi{
 			ledger_context->PushContractId(contract->GetId());
 			bool ret = contract->Execute();
 			ledger_context->PopContractId();
+			ledger_context->PushLog(contract->GetParameter().this_address_, contract->GetLogs());
 			error_msg = contract->GetErrorMsg();
 			do {
 				//delete the contract from map
@@ -1059,34 +1110,34 @@ namespace bubi{
 		return false;
 	}
 
-	bool ContractManager::Query(int32_t type, const std::string &code, const std::string &input, Json::Value& result) {
-		QueryContract query_contract;
-		if (!query_contract.Init(type, code, input)) {
-			return false;
-		} 
-
-		if (!query_contract.Start("query-contract")) {
-			LOG_ERROR_ERRNO("Start query contract thread failed", STD_ERR_CODE, STD_ERR_DESC);
-			return false;
-		} 
-
-		int64_t time_start = utils::Timestamp::HighResolution();
-		bool is_timeout = false;
-		while (query_contract.IsRunning()) {
-			utils::Sleep(10);
-			if (utils::Timestamp::HighResolution() - time_start >  5 * utils::MICRO_UNITS_PER_SEC) {
-				is_timeout = true;
-				break;
-			}
-		}
-
-		if (is_timeout) { //cancel it
-			query_contract.Cancel();
-			query_contract.JoinWithStop();
-		}
-
-		return query_contract.GetResult(result);
-	}
+// 	bool ContractManager::Test(int32_t type, const ContractTestParameter &paramter, Json::Value& result) {
+// 		TestContract test_contract;
+// 		if (!test_contract.Init(type, paramter)) {
+// 			return false;
+// 		} 
+// 
+// 		if (!test_contract.Start("query-contract")) {
+// 			LOG_ERROR_ERRNO("Start query contract thread failed", STD_ERR_CODE, STD_ERR_DESC);
+// 			return false;
+// 		} 
+// 
+// 		int64_t time_start = utils::Timestamp::HighResolution();
+// 		bool is_timeout = false;
+// 		while (test_contract.IsRunning()) {
+// 			utils::Sleep(10);
+// 			if (utils::Timestamp::HighResolution() - time_start >  5 * utils::MICRO_UNITS_PER_SEC) {
+// 				is_timeout = true;
+// 				break;
+// 			}
+// 		}
+// 
+// 		if (is_timeout) { //cancel it
+// 			test_contract.Cancel();
+// 			test_contract.JoinWithStop();
+// 		}
+// 
+// 		return test_contract.GetResult(result);
+// 	}
 
 	bool ContractManager::Cancel(int64_t contract_id) {
 		//another thread cancel the vm

@@ -656,9 +656,9 @@ namespace bubi {
 		reply = reply_json.toStyledString();
 	}
 
-		void WebServer::ContractQuery(const http::server::request &request, std::string &reply) {
+	void WebServer::ContractQuery(const http::server::request &request, std::string &reply) {
 		std::string address = request.GetParamValue("address");
-		std::string args = request.GetParamValue("args"); //eg. "arg1,arg2,arg3...",need user code(js) design,split and parse
+		std::string args = request.GetParamValue("input"); //eg. "arg1,arg2,arg3...",need user code(js) design,split and parse
 
 		int32_t error_code = protocol::ERRCODE_SUCCESS;
 		std::string error_desc;
@@ -675,20 +675,23 @@ namespace bubi {
 				break;
 			}
 
-			std::string jsCode = acc->GetProtoAccount().contract().payload();
-			if (jsCode.empty()) {
-				error_code = protocol::ERRCODE_CONTRACT_EXECUTE_FAIL;
+			std::string code = acc->GetProtoAccount().contract().payload();
+			if (code.empty()) {
+				error_code = protocol::ERRCODE_NOT_EXIST;
 				error_desc = utils::String::Format("Account(%s) has no contract code", address.c_str());
 				LOG_ERROR("%s", error_desc.c_str());
 				break;
 			}
 
-			if (!ContractManager::Instance().Query(Contract::TYPE_V8, jsCode, args, result)) {
-				error_code = protocol::ERRCODE_CONTRACT_EXECUTE_FAIL;
-				error_desc = utils::String::Format("Account(%s) contract executed failed", address.c_str());
-				LOG_ERROR("%s", error_desc.c_str());
-				break;
-			}
+			ContractParameter parameter;
+			parameter.code_ = code;
+			parameter.input_ = args;
+// 			if (!ContractManager::Instance().Query(Contract::TYPE_V8, parameter, result)) {
+// 				error_code = protocol::ERRCODE_CONTRACT_EXECUTE_FAIL;
+// 				error_desc = utils::String::Format("Account(%s) contract executed failed", address.c_str());
+// 				LOG_ERROR("%s", error_desc.c_str());
+// 				break;
+// 			}
 
 		} while (false);
 

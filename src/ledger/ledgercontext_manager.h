@@ -17,6 +17,7 @@ limitations under the License.
 #include <common/general.h>
 #include <proto/cpp/chain.pb.h>
 #include "ledger_frm.h"
+#include "contract_manager.h"
 
 namespace bubi {
 
@@ -26,10 +27,14 @@ namespace bubi {
 	class LedgerContext : public utils::Thread {
 		std::stack<int64_t> contract_ids_; //may be called by check thread or execute thread.so need lock
 		//parameter
+		int32_t type_; // -1 : normal, 0 : test v8 , 1: test evm
+		ContractTestParameter parameter_; // when type_ >= 0
+
 		std::string hash_;
 		LedgerContextManager *lpmanager_;
 		int64_t start_time_;
 
+		Json::Value logs_;
 	public:
 		LedgerContext(
 			LedgerContextManager *lpmanager,
@@ -37,10 +42,16 @@ namespace bubi {
 			const protocol::ConsensusValue &consvalue, 
 			int64_t tx_timeout,
 			PreProcessCallback callback);
+
 		LedgerContext(
 			const std::string &chash, 
 			const protocol::ConsensusValue &consvalue, 
 			int64_t tx_timeout);
+
+		//for test
+		LedgerContext(
+			int32_t type,
+			const ContractTestParameter &parameter);
 		~LedgerContext();
 
 		protocol::ConsensusValue consensus_value_;
@@ -59,13 +70,21 @@ namespace bubi {
 
 		virtual void Run();
 		void Do();
+		bool Test();
 		void Cancel();
 		bool CheckExpire(int64_t total_timeout);
+		
 		void PushContractId(int64_t id);
 		void PopContractId();
 		int64_t GetTopContractId();
+
+		void PushLog(const std::string &address, const utils::StringList &logs);
+		void GetLogs(Json::Value &logs);
+		
 		std::string GetHash();
 		int32_t GetTxTimeoutIndex();
+
+		void PushLog();
 	};
 
 	typedef std::multimap<std::string, LedgerContext *> LedgerContextMultiMap;
@@ -85,6 +104,13 @@ namespace bubi {
 		void MoveRunningToComplete(LedgerContext *ledger_context);
 		void RemoveCompleted(int64_t ledger_seq);
 		void GetModuleStatus(Json::Value &data);
+
+		bool SyncTestProcess(int32_t type, 
+			const ContractTestParameter &parameter, 
+			int64_t total_timeout, 
+			Result &result, 
+			Json::Value &logs,
+			Json::Value &txs);
 
 		//<0 : notfound 1: found and success 0: found and failed
 		int32_t CheckComplete(const std::string &chash);

@@ -41,13 +41,27 @@ namespace bubi{
 		LedgerContext *ledger_context_;
 	};
 
+	class ContractTestParameter {
+	public:
+		ContractTestParameter();
+		~ContractTestParameter();
+
+		bool exe_or_query_; //true: exe, false:query
+		std::string contract_address_;
+		std::string code_;
+		std::string input_;
+		std::string source_address_;
+	};
+
 	class Contract {
 	protected:
 		int32_t type_;
 		int64_t id_;
 		ContractParameter parameter_;
+
 		std::string error_msg_;
 		int32_t tx_do_count_;  //transactions trigger by one contract
+		utils::StringList logs_;
 	public:
 		Contract();
 		Contract(const ContractParameter &parameter);
@@ -62,7 +76,9 @@ namespace bubi{
 		int32_t GetTxDoCount();
 		void IncTxDoCount();
 		int64_t GetId();
-		ContractParameter &GetParameter();
+		const ContractParameter &GetParameter();
+		const utils::StringList &GetLogs();
+		void AddLog(const std::string &log);
 		std::string GetErrorMsg();
 		static utils::Mutex contract_id_seed_lock_;
 		static int64_t contract_id_seed_;
@@ -102,10 +118,10 @@ namespace bubi{
 		static v8::Platform* 	platform_;
 		static v8::Isolate::CreateParams create_params_;
 
-		static bool RemoveRandom(v8::Isolate* isolate, std::string &error_msg);
+		static bool RemoveRandom(v8::Isolate* isolate, Json::Value &error_msg);
 		static v8::Local<v8::Context> CreateContext(v8::Isolate* isolate);
 		static V8Contract *GetContractFrom(v8::Isolate* isolate);
-		static std::string ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
+		static Json::Value ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
 		static const char* ToCString(const v8::String::Utf8Value& value);
 		static void CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static void CallBackGetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args);
@@ -122,7 +138,7 @@ namespace bubi{
 		//make a transaction
 		static void CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static V8Contract *UnwrapContract(v8::Local<v8::Object> obj);
-		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, std::string& key, Json::Value& jsonvalue);
+		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, const std::string& key, Json::Value& jsonvalue);
 	};
 
 	class QueryContract : public utils::Thread{
@@ -135,11 +151,28 @@ namespace bubi{
 		QueryContract();
 		~QueryContract();
 
-		bool Init(int32_t type, const std::string &code, const std::string &input);
+		bool Init(int32_t type, const ContractParameter &paramter);
 		virtual void Run();
 		void Cancel();
 		bool GetResult(Json::Value &result);
 	};
+
+// 	class TestContract : public utils::Thread {
+// 		int32_t type_;
+// 		ContractTestParameter parameter_;
+// 
+// 		Json::Value result_;
+// 		bool ret_;
+// 		LedgerContext ledger_context;
+// 	public:
+// 		TestContract();
+// 		~TestContract();
+// 
+// 		bool Init(int32_t type, const ContractTestParameter &parameter);
+// 		virtual void Run();
+// 		void Cancel();
+// 		bool GetResult(Json::Value &result);
+// 	};
 
 	typedef std::map<int64_t, Contract *> ContractMap;
 	class ContractManager :
@@ -158,7 +191,7 @@ namespace bubi{
 		bool Execute(int32_t type, const ContractParameter &paramter, std::string &error_msg);
 		bool Cancel(int64_t contract_id);
 		bool SourceCodeCheck(int32_t type, const std::string &code, std::string &error_msg);
-		bool Query(int32_t type, const std::string &code, const std::string &input, Json::Value& jsResult);
+		//bool Test(int32_t type, const ContractTestParameter &paramter, Json::Value& jsResult);
 		Contract *GetContract(int64_t contract_id);
 	};
 }
