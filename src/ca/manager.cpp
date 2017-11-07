@@ -11,8 +11,8 @@ namespace bubi_ca {
 		X509 *x509 = NULL;
 		BIO *bcert = NULL, *bkey = NULL;
 		do {
-			if (days <= 30) {
-				sprintf(out_msg, "days must bigger than 30");
+			if (days < 0) {
+				sprintf(out_msg, "days cannot be less than 0");
 				break;
 			}
 
@@ -125,8 +125,8 @@ namespace bubi_ca {
 	bool Manager::MakeEntity(char *root_ca_file, char *root_private_file, char *root_private_password, char *request_file, int days, int ca_enabled, char *out_msg) {
 		bool bret = false;
 		do {
-			if (days <= 30) {
-				sprintf(out_msg, "days must bigger than 30");
+			if (days < 0) {
+				sprintf(out_msg, "days cannot be less than 0");
 				break;
 			}
 

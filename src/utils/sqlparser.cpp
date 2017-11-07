@@ -152,7 +152,7 @@ namespace utils{
 			} while (false);
 
 			if (vec.size() == 0 || vec.size() != vec1.size()){
-				error_desc_ = utils::String::Format("Field's size(" FMT_SIZE ") is not equal with value's size(" FMT_SIZE ") or size is zero", 
+				error_desc_ = utils::String::Format("Field's size(" FMT_SIZE ") is not equal to value's size(" FMT_SIZE ") or size is zero", 
 					vec.size(), vec1.size());
 				return false;
 			}

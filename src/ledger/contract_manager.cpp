@@ -34,71 +34,8 @@ namespace bubi{
 
 
 	ContractManager::ContractManager(){
-		LoadJsLibSource();
 		tx_do_count_ = 0;
 		isolate_ = v8::Isolate::New(create_params_);
-		v8::Isolate::Scope isolate_scope(isolate_);
-		v8::HandleScope handle_scope(isolate_);
-
-		// Store the request pointer in the JavaScript wrapper.
-
-		//if (global_.IsEmpty()) {
-			//v8::Local<v8::ObjectTemplate>  global = v8::ObjectTemplate::New(isolate_);
-			global_ = v8::ObjectTemplate::New(isolate_);
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackLog", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackLog, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetAccountInfo", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetAccountInfo, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetAccountAsset", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetAccountAsset, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetAccountMetaData, v8::External::New(isolate_, this)));
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackSetAccountMetaData, v8::External::New(isolate_, this)));
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetLedgerInfo, v8::External::New(isolate_, this)));
-
-
-			/*		global->Set(
-						v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
-						.ToLocalChecked(),
-						v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetTransactionInfo, v8::External::New(isolate_, this)));*/
-
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "callBackDoOperation", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::CallBackDoOperation, v8::External::New(isolate_, this)));
-
-			global_->Set(
-				v8::String::NewFromUtf8(isolate_, "include", v8::NewStringType::kNormal)
-				.ToLocalChecked(),
-				v8::FunctionTemplate::New(isolate_, ContractManager::Include, v8::External::New(isolate_, this)));
-
-		//	global_.Reset(isolate_, global);
-		//}
 	}
 
 	ContractManager::~ContractManager(){
@@ -106,9 +43,8 @@ namespace bubi{
 		isolate_ = NULL;
 	}
 
-
-
 	void ContractManager::Initialize(int argc, char** argv){
+		LoadJsLibSource();
 		platform_ = v8::platform::CreateDefaultPlatform();
 		v8::V8::InitializeExternalStartupData(argv[0]);
 		v8::V8::InitializePlatform(platform_);
@@ -119,16 +55,74 @@ namespace bubi{
 			v8::ArrayBuffer::Allocator::NewDefaultAllocator();
 	}
 
+	v8::Local<v8::Context> ContractManager::CreateContext(v8::Isolate* isolate) {
+		// Create a template for the global object.
+		v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+		// Bind the global 'print' function to the C++ Print callback.
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackLog", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackLog));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountInfo", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetAccountInfo));
+
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountAsset", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetAccountAsset));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetAccountMetaData));
+
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackSetAccountMetaData));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackGetLedgerInfo));
+
+		/*		global->Set(
+		v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
+		.ToLocalChecked(),
+		v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetTransactionInfo, v8::External::New(isolate_, this)));*/
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackDoOperation", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::CallBackDoOperation));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "include", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, ContractManager::Include));
+
+		return v8::Context::New(isolate, NULL, global);
+	}
+
 	std::string ContractManager::ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
 		v8::HandleScope handle_scope(isolate);
 		v8::String::Utf8Value exception(try_catch->Exception());
 		const char* exception_string = ToCString(exception);
+		std::string exec_string(exception_string);
+		exec_string.resize(256);
+		Json::Value json_result;
+
 		v8::Local<v8::Message> message = try_catch->Message();
 		std::string error_msg;
 		if (message.IsEmpty()) {
 			// V8 didn't provide any extra information about this error; just
 			// print the exception.
-			error_msg = utils::String::AppendFormat(error_msg, "%s", exception_string);
+			json_result["exception"] = error_msg;
 		}
 		else {
 			// Print (filename):(line number): (message).
@@ -136,33 +130,21 @@ namespace bubi{
 			v8::Local<v8::Context> context(isolate->GetCurrentContext());
 			const char* filename_string = ToCString(filename);
 			int linenum = message->GetLineNumber(context).FromJust();
-			error_msg = utils::String::AppendFormat(error_msg, "%s:%i: %s", filename_string, linenum, exception_string);
-			// Print line of source code.
-			v8::String::Utf8Value sourceline(
-				message->GetSourceLine(context).ToLocalChecked());
-			const char* sourceline_string = ToCString(sourceline);
-			error_msg = utils::String::AppendFormat(error_msg, "%s", sourceline_string);
-			// Print wavy underline (GetUnderline is deprecated).
-			int start = message->GetStartColumn(context).FromJust();
-			for (int i = 0; i < start; i++) {
-				error_msg = utils::String::AppendFormat(error_msg, " ");
-			}
-			int end = message->GetEndColumn(context).FromJust();
-			for (int i = start; i < end; i++) {
-				error_msg = utils::String::AppendFormat(error_msg, "^");
-			}
+			json_result["filename"] = filename_string;
+			json_result["linenum"] = linenum;
+			json_result["exception"] = exec_string;
 
+			//print error stack
 			v8::Local<v8::Value> stack_trace_string;
 			if (try_catch->StackTrace(context).ToLocal(&stack_trace_string) &&
 				stack_trace_string->IsString() &&
 				v8::Local<v8::String>::Cast(stack_trace_string)->Length() > 0) {
 				v8::String::Utf8Value stack_trace(stack_trace_string);
 				const char* stack_trace_string = ToCString(stack_trace);
-				error_msg = utils::String::AppendFormat(error_msg, "%s", stack_trace_string);
+				json_result["stack"] = stack_trace_string;
 			}
 		}
-		//LOG_ERROR("V8ErrorTrace:%s", error_msg.c_str());
-		return error_msg;
+		return json_result.toFastString();
 	}
 
 	bool ContractManager::SourceCodeCheck(const std::string& code, std::string& err_msg){
@@ -248,14 +230,10 @@ namespace bubi{
 		std::string& error_msg)
 	{
 		v8::Isolate::Scope isolate_scope(isolate_);
-
 		v8::HandleScope handle_scope(isolate_);
 		v8::TryCatch try_catch(isolate_);
 
-		v8::Local<v8::ObjectTemplate> templ =
-			v8::Local<v8::ObjectTemplate>::New(isolate_, global_);
-
-		v8::Handle<v8::Context> context = v8::Context::New(isolate_, NULL, templ);
+		v8::Local<v8::Context> context = CreateContext(isolate_);
 
 		v8::Context::Scope context_scope(context);
 
@@ -380,14 +358,12 @@ namespace bubi{
 	void ContractManager::Include(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		do {
 			if (args.Length() != 1) {
-				LOG_ERROR("Include parameter error, args length(%d) not equal 1", args.Length());
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 
 			if (!args[0]->IsString()) {
 				LOG_ERROR("Include parameter error, parameter should be a String");
-				args.GetReturnValue().Set(false);
 				break;
 			}
 			v8::String::Utf8Value str(args[0]);
@@ -395,7 +371,6 @@ namespace bubi{
 			std::map<std::string, std::string>::iterator find_source = jslib_sources.find(*str);
 			if (find_source == jslib_sources.end()) {
 				LOG_ERROR("Can't find the include file(%s) in jslib directory", *str);
-				args.GetReturnValue().Set(false);
 				break;
 			}
 
@@ -413,28 +388,33 @@ namespace bubi{
 			v8::Local<v8::Value> result;
 			if (!script->Run(args.GetIsolate()->GetCurrentContext()).ToLocal(&result)) {
 				ReportException(args.GetIsolate(), &try_catch);
+				break;
 			}
+
+			args.GetReturnValue().Set(true);
+			return;
 		} while (false);
+		args.GetReturnValue().Set(false);
 		//return v8::Undefined(args.GetIsolate());
 	}
 
 
 	void ContractManager::CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 2) {
-			LOG_ERROR("parameter error");
+			LOG_ERROR("Parameter error, args length(%d) not equal to 2", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
 
 		do{
 			v8::HandleScope handle_scope(args.GetIsolate());
-			if (!args[0]->IsString()){
+			if (!args[0]->IsString()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountAsset, parameter 1 should be a String");
 				break;
 			}
 			auto address = std::string(ToCString(v8::String::Utf8Value(args[0])));
 
-			if (!args[1]->IsObject()){
+			if (!args[1]->IsObject()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountAsset parameter 2 should be a object");
 				break;
 			}
@@ -468,8 +448,9 @@ namespace bubi{
 			v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(
 				args.GetIsolate(), strvalue.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
 			args.GetReturnValue().Set(v8::JSON::Parse(returnvalue));
-
+			return;
 		} while (false);
+		args.GetReturnValue().Set(false);
 	}
 
 
@@ -478,13 +459,12 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 2) {
-				LOG_ERROR("parameter error");
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal to 2", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
 
-			if (!args[0]->IsString()){
+			if (!args[0]->IsString()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountStorage, parameter 0 should be a String");
 				break;
 			}
@@ -492,7 +472,7 @@ namespace bubi{
 			v8::String::Utf8Value str(args[0]);
 			std::string address(ToCString(str));
 
-			if (!args[1]->IsString()){
+			if (!args[1]->IsString()) {
 				LOG_ERROR("contract execute error,CallBackGetAccountStorage, parameter 1 should be a String");
 				break;
 			}
@@ -525,8 +505,7 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 1) {
-				LOG_ERROR("parameter error");
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -534,7 +513,7 @@ namespace bubi{
 			v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
 			std::string contractor(ToCString(token));
 
-			if (!args[0]->IsObject()){
+			if (!args[0]->IsObject()) {
 				LOG_ERROR("contract execute error,CallBackSetAccountStorage, parameter 0 should be a object");
 				break;
 			}
@@ -572,13 +551,12 @@ namespace bubi{
 		do
 		{
 			if (args.Length() != 1) {
-				LOG_ERROR("parameter error");
-				args.GetReturnValue().Set(false);
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 
 			v8::HandleScope handle_scope(args.GetIsolate());
-			if (!args[0]->IsString()){
+			if (!args[0]->IsString()) {
 				LOG_ERROR("CallBackGetAccountInfo, parameter 0 should be a String");
 				break;
 			}
@@ -607,8 +585,7 @@ namespace bubi{
 
 		do {
 			if (args.Length() != 1) {
-				args.GetReturnValue().SetNull();
-				LOG_ERROR("parameter error");
+				LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 				break;
 			}
 			v8::HandleScope handle_scope(args.GetIsolate());
@@ -616,12 +593,12 @@ namespace bubi{
 			v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
 			std::string contractor(ToCString(token));
 
-			v8::Local<v8::Object> obj = args[0]->ToObject();
-			if (obj->IsNull()){
+			if (!args[0]->IsObject()) {
 				LOG_ERROR("CallBackDoOperation, parameter 0 should not be null");
 				break;
 			}
 
+			v8::Local<v8::Object> obj = args[0]->ToObject();
 			auto str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), obj).ToLocalChecked();
 
 			//v8::Local<v8::String> str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext()/*context*/, obj).ToLocalChecked();
@@ -666,9 +643,9 @@ namespace bubi{
 	}
 
 	void ContractManager::CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args) {
-		LOG_INFO("CallBackLog");
 
-		if (args.Length() < 1){
+		if (args.Length() != 1) {
+			LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
@@ -676,8 +653,13 @@ namespace bubi{
 
 		v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
 
+		auto context = args.GetIsolate()->GetCurrentContext();
+		auto sender = args.GetIsolate()->GetCurrentContext()->Global()->Get(context,
+			v8::String::NewFromUtf8(args.GetIsolate(), sender_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
+		v8::String::Utf8Value utf8_sender(sender->ToString());
+
 		v8::Local<v8::String> str;
-		if (args[0]->IsObject()){
+		if (args[0]->IsObject()) {
 			v8::Local<v8::Object> obj = args[0]->ToObject(args.GetIsolate());
 			str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), obj).ToLocalChecked();
 		}
@@ -686,30 +668,33 @@ namespace bubi{
 		}
 
 		auto type = args[0]->TypeOf(args.GetIsolate());
-		if (v8::String::NewFromUtf8(args.GetIsolate(), "undefined", v8::NewStringType::kNormal).ToLocalChecked()->Equals(type)){
-			LOG_INFO("undefined type");
+		if (v8::String::NewFromUtf8(args.GetIsolate(), "undefined", v8::NewStringType::kNormal).ToLocalChecked()->Equals(type)) {
+			LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), ToCString(utf8_sender), "undefined");
+			args.GetReturnValue().Set(true);
 			return;
 		}
 
 		//
-		auto context = args.GetIsolate()->GetCurrentContext();
-		auto sender = args.GetIsolate()->GetCurrentContext()->Global()->Get(context,
-			v8::String::NewFromUtf8(args.GetIsolate(), sender_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
-		v8::String::Utf8Value utf8_sender(sender->ToString());
-		//
 		v8::String::Utf8Value utf8value(str);
 		LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), ToCString(utf8_sender), ToCString(utf8value));
+		args.GetReturnValue().Set(true);
 	}
 
 	//
 	void ContractManager::CallBackGetTransactionInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 1) {
-			LOG_ERROR("parameter error");
+			LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
 
 		v8::HandleScope handle_scope(args.GetIsolate());
+		if (!args[0]->IsString()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("CallBackGetTransactionInfo, parameter 0 should not be null");
+			return;
+		}
+
 		v8::String::Utf8Value str(args[0]);
 		std::string hash(ToCString(str));
 		bubi::TransactionFrm txfrm;
@@ -729,16 +714,28 @@ namespace bubi{
 	//
 	void ContractManager::CallBackGetLedgerInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		if (args.Length() != 1) {
-			LOG_ERROR("parameter error");
+			LOG_ERROR("Parameter error, args length(%d) not equal to 1", args.Length());
 			args.GetReturnValue().Set(false);
 			return;
 		}
 
 		v8::HandleScope handle_scope(args.GetIsolate());
+		if (!args[0]->IsString() && !args[0]->IsNumber()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("CallBackGetLedgerInfo, parameter 0 should not be null");
+			return;
+		}
+
 		v8::String::Utf8Value str(args[0]);
 		std::string key(ToCString(str));
 
 		int64_t seq = utils::String::Stoi64(key);
+		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
+		if (seq <= lcl.seq() - 1024 || seq > lcl.seq()) {
+			args.GetReturnValue().Set(false);
+			LOG_ERROR("The parameter seq(" FMT_I64 ") <= " FMT_I64 " or > " FMT_I64, seq, lcl.seq() - 1024, lcl.seq());
+			return;
+		}
 
 		LedgerFrm lfrm;
 		if (lfrm.LoadFromDb(seq)){

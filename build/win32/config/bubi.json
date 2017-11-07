@@ -36,10 +36,9 @@
 		"listen_address": "0.0.0.0:7053"
 	},
 	"ledger": {
-		"genesis_account": "a002d8345b89dc34a57574eb497635ff125a3799fe77b6",
-		"genesis_private_key": "c00244a6ef9c3ba4d0e96c8c85a6d4bf904eafd6873d9c13260319dc69ebb40e12db22",
-		"genesis_public_key": "b00204e1c7dddc36d3153adcaa451b0ab525d3def48a0a10fdb492dc3a7263cfb88e80ee974ca4da0e1f322aa84ff9d11340c764ea756ad148e979c121619e9fe52e9054",
-		"hash_type": 1, //0: SHA2561: SM3"max_trans_per_ledger": 1000,
+		"genesis_account": "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",//privatekey:c00205ce8de2892b26c3b95caf3404831d6e913c655d85b517f076380ebfcbef47ff8f
+		"hash_type": 0, //0: SHA2561: SM3"
+		"max_trans_per_ledger": 1000,
 		"max_ledger_per_message": 5,
 		"max_trans_in_memory": 2000,
 		"max_apply_ledger_per_round": 3,

@@ -138,6 +138,7 @@ namespace bubi {
 		reply_json["overlay_version"] = utils::String::ToString(General::OVERLAY_VERSION);
 		reply_json["current_time"] = utils::Timestamp::Now().ToFormatString(true);
 		reply_json["websocket_address"] =  Configure::Instance().wsserver_configure_.listen_address_.ToIpPort();
+		reply_json["hash_type"] = Configure::Instance().ledger_configure_.hash_type_;
 		reply = reply_json.toFastString();
 	}
 

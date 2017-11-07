@@ -23,7 +23,7 @@ limitations under the License.
 #include "strings.h"
 
 namespace utils {
-	//CRC高位字节值表
+	//CRC high bit table
 	const uint8_t auchCRCHi[] = {
 		0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
 		0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
@@ -48,7 +48,7 @@ namespace utils {
 		0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
 		0x00, 0xC1, 0x81, 0x40
 	};
-	//CRC 低位字节值表
+	//CRC low bit table
 	const uint8_t auchCRCLo[] = {
 		0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7,
 		0x05, 0xC5, 0xC4, 0x04, 0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E,
@@ -74,17 +74,17 @@ namespace utils {
 		0x41, 0x81, 0x80, 0x40
 	};
 
-	//获得CRC16值
-	//puchMsg:要校验的数组
-	//usDataLen:数组长度
-	//初始值0XFFFF，异或值0x0000，LSB First，多项式8005
+	//Get crc16 value
+	//puchMsg: array to be check
+	//usDataLen: array length
+	//initialize value 0XFFFF,XOR 0x0000,LSB First,polynomial 8005
 	uint16_t Get_Crc16(uint8_t *puchMsg, uint16_t usDataLen) {
-		uint8_t uchCRCHi = 0xFF; 	//高CRC 字节初始化
-		uint8_t uchCRCLo = 0xFF; 	//低CRC 字节初始化 
-		uint32_t uIndex; 		//CRC 循环中的索引
-		while (usDataLen--) 	//传输消息缓冲区
+		uint8_t uchCRCHi = 0xFF; 	//high CRC
+		uint8_t uchCRCLo = 0xFF; 	//low CRC
+		uint32_t uIndex; 		//CRC index
+		while (usDataLen--) 	
 		{
-			uIndex = uchCRCHi^*puchMsg++; //计算CRC 
+			uIndex = uchCRCHi^*puchMsg++; //caculate CRC 
 			uchCRCHi = uchCRCLo^auchCRCHi[uIndex];
 			uchCRCLo = auchCRCLo[uIndex];
 			//		uchCRCLo=uchCRCHi^auchCRCHi[uIndex];
@@ -92,11 +92,11 @@ namespace utils {
 		}
 		return (uchCRCHi << 8 | uchCRCLo);
 	}
-	//CRC8校验
-	//ptr:要校验的数组
-	//len:数组长度
-	//返回值:CRC8码
-	//多项式0X31,LSB First，初始值0X00  x8+x5+x4+1 CRC-8/MAXIM
+	//CRC8 check
+	//ptr:array to be check
+	//len:array length
+	//return:CRC8 
+	//polynomial 0X31,LSB First,initialize 0X00  x8+x5+x4+1 CRC-8/MAXIM
 	uint8_t Crc8(uint8_t *ptr, uint16_t len) {
 		uint8_t crc;
 		uint8_t i;
@@ -114,10 +114,10 @@ namespace utils {
 	uint8_t Crc8(const std::string &data) {
 		return Crc8((uint8_t *)data.c_str(), data.length());
 	}
-	//获得CRC16值
-	//puchMsg:要校验的数组
-	//usDataLen:数组长度
-	//初始值0XFFFF，异或值0x0000，LSB First，多项式A001
+	//get CRC16
+	//puchMsg:array to be check
+	//usDataLen:array length
+	//initialize 0XFFFF, XOR 0x0000,LSB First,polynomial A001
 	uint16_t Crc16(uint8_t* pdata, uint16_t datalen) {
 		uint8_t CRC16Lo, CRC16Hi, CL, CH, SaveHi, SaveLo;
 		uint16_t i, Flag;

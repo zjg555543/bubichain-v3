@@ -95,7 +95,7 @@ namespace bubi {
 		}
 
 		//load proof
-		Storage::Instance().ledger_db()->Get(General::LAST_PROOF, proof_);
+		Storage::Instance().account_db()->Get(General::LAST_PROOF, proof_);
 
 		//update consensus configure
 		Global::Instance().GetIoService().post([this]() {
@@ -595,9 +595,18 @@ namespace bubi {
 			tree_->time_,
 			closing_ledger_->GetTxCount());
 
-		// notice
-		for (int i = 0; i < ledger.transaction_envs_size(); i++) {
-			TransactionFrm::pointer tx = std::make_shared<TransactionFrm>(ledger.transaction_envs(i));
+		//notice ledger closed
+		WebSocketServer::Instance().BroadcastMsg(protocol::CHAIN_LEDGER_HEADER, tmp_lcl_header.SerializeAsString());
+
+		// notice applied
+		for (int i = 0; i < closing_ledger_->apply_tx_frms_.size(); i++) {
+			TransactionFrm::pointer tx = closing_ledger_->apply_tx_frms_[i];
+			WebSocketServer::Instance().BroadcastChainTxMsg(tx->GetContentHash(), tx->GetSourceAddress(),
+				tx->GetResult(), tx->GetResult().code() == protocol::ERRCODE_SUCCESS ? protocol::ChainTxStatus_TxStatus_COMPLETE : protocol::ChainTxStatus_TxStatus_FAILURE);
+		}
+		// notice dropped
+		for (int i = 0; i < closing_ledger_->dropped_tx_frms_.size(); i++) {
+			TransactionFrm::pointer tx = closing_ledger_->dropped_tx_frms_[i];
 			WebSocketServer::Instance().BroadcastChainTxMsg(tx->GetContentHash(), tx->GetSourceAddress(),
 				tx->GetResult(), tx->GetResult().code() == protocol::ERRCODE_SUCCESS ? protocol::ChainTxStatus_TxStatus_COMPLETE : protocol::ChainTxStatus_TxStatus_FAILURE);
 		}
@@ -757,7 +766,10 @@ namespace bubi {
 		PeerManager::Instance().ConsensusNetwork().SendRequest(pid, protocol::OVERLAY_MSGTYPE_LEDGERS, gl.SerializeAsString());
 	}
 
-	ExprCondition::ExprCondition(const std::string & program) : utils::ExprParser(program) {}
+	ExprCondition::ExprCondition(const std::string & program, std::shared_ptr<Environment> env , const protocol::ConsensusValue &cons_value) :
+		utils::ExprParser(program),
+		environment_(env),
+		cons_value_(cons_value){}
 	ExprCondition::~ExprCondition() {}
 
 	void ExprCondition::RegisterFunctions() {
@@ -766,24 +778,28 @@ namespace bubi {
 		utils::TwoCommonArgumentFunctions["jsonpath"] = DoJsonPath;
 	}
 
-	const utils::ExprValue ExprCondition::DoAccount(const utils::ExprValue &arg) {
+	const utils::ExprValue ExprCondition::DoAccount(const utils::ExprValue &arg, utils::ExprParser *parser) {
 		if (!arg.IsString()) {
 			throw std::runtime_error("account's parameter is not a string");
 		}
 
+		std::shared_ptr<Environment> env = ((ExprCondition *)parser)->GetEnviroment();
 		AccountFrm::pointer acc = NULL;
 		Json::Value result;
-		if (!Environment::AccountFromDB(arg.String(), acc)) {
-			throw std::runtime_error(utils::String::Format("Account(%s) not exist", arg.String().c_str()));
-		}
-		else {
+		if (env && env->GetEntry(arg.String(), acc)) {
 			acc->ToJson(result);
+		}
+		else if (Environment::AccountFromDB(arg.String(), acc)) {
+			acc->ToJson(result);
+		}
+		else{
+			throw std::runtime_error(utils::String::Format("Account(%s) not exist", arg.String().c_str()));
 		}
 
 		return result.toFastString();
 	}
 
-	const utils::ExprValue ExprCondition::DoLedger(const utils::ExprValue &arg) {
+	const utils::ExprValue ExprCondition::DoLedger(const utils::ExprValue &arg, utils::ExprParser *parser) {
 		int64_t ledger_seq;
 		if (arg.IsNumber()) {
 			ledger_seq = (int64_t)arg.Number();
@@ -803,14 +819,14 @@ namespace bubi {
 		if (!frm.LoadFromDb(ledger_seq)) {
 			throw std::runtime_error(utils::String::Format("Ledger(seq:" FMT_I64 ") not exist", ledger_seq));
 		}
-		else{
+		else {
 			result = frm.ToJson();
 		}
 
 		return result.toFastString();
 	}
 
-	const utils::ExprValue ExprCondition::DoJsonPath(const utils::ExprValue &arg1, const utils::ExprValue &arg2) {
+	const utils::ExprValue ExprCondition::DoJsonPath(const utils::ExprValue &arg1, const utils::ExprValue &arg2, utils::ExprParser *parser) {
 		if (!arg1.IsString() || !arg2.IsString()) {
 			throw std::runtime_error("Json's parameter is not a string");
 		}
@@ -842,8 +858,14 @@ namespace bubi {
 	Result ExprCondition::Eval(utils::ExprValue &value) {
 		Result ret;
 		try {
-			symbols_["LEDGER_SEQ"] = LedgerManager::Instance().GetLastClosedLedger().seq();
-			symbols_["LEDGER_TIME"] = (int64_t)LedgerManager::Instance().GetLastClosedLedger().close_time();
+			if (cons_value_.ledger_seq() == 0) {
+				symbols_["LEDGER_SEQ"] = LedgerManager::Instance().GetLastClosedLedger().seq();
+				symbols_["LEDGER_TIME"] = (int64_t)LedgerManager::Instance().GetLastClosedLedger().close_time();
+			}
+			else {
+				symbols_["LEDGER_SEQ"] = cons_value_.ledger_seq();
+				symbols_["LEDGER_TIME"] = cons_value_.close_time();
+			}
 			value = Evaluate();
 		}
 		catch (std::exception & e) {
@@ -869,7 +891,11 @@ namespace bubi {
 		return ret;
 	}
 
-	bool LedgerManager::DoTransaction(protocol::TransactionEnv& env){
+	std::shared_ptr<Environment> ExprCondition::GetEnviroment() {
+		return environment_;
+	}
+
+	bool LedgerManager::DoTransaction(protocol::TransactionEnv& env) {
 
 		auto back = transaction_stack_.top();
 		
