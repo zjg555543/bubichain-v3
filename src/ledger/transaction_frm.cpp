@@ -498,8 +498,8 @@ namespace bubi {
 			if (result.code() != 0) {
 				result_ = opt->GetResult();
 				bSucess = false;
-				LOG_ERROR("Transaction(%s) operation(%d) apply failed",
-					utils::String::BinToHexString(hash_).c_str(), processing_operation_);
+				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) apply failed",
+					utils::String::BinToHexString(hash_).c_str(), processing_operation_, result_.code(), result_.desc().c_str());
 				break;
 			}
 		}
