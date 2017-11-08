@@ -1,6 +1,6 @@
 ![](docs/image/logo.png)
 
-[![Build Status]https://travis-ci.org/bubicn/bubichain-v3.svg?branch=master)](https://travis-ci.org/bubicn/bubichain-v3) [![CircleCI](https://circleci.com/gh/bubichain/blockchain.svg?style=shield)](https://circleci.com/gh/bubichain/blockchain) [![Build status](https://ci.appveyor.com/api/projects/status/3eg8rjtr16k023qq?svg=true)](https://ci.appveyor.com/project/bubichain/blockchain)
+[![Build Status](https://travis-ci.org/bubicn/bubichain-v3.svg?branch=master)](https://travis-ci.org/bubicn/bubichain-v3)[![Build status](https://ci.appveyor.com/api/projects/status/3eg8rjtr16k023qq?svg=true)](https://ci.appveyor.com/project/bubichain/blockchain)
  
 ## __简介__
 
