@@ -1,6 +1,6 @@
 ![](docs/image/logo.png)
 
-[![Build Status](https://travis-ci.org/bubicn/bubichain-v3.svg?branch=master)](https://travis-ci.org/bubicn/bubichain-v3)[![Build status](https://ci.appveyor.com/api/projects/status/3eg8rjtr16k023qq?svg=true)](https://ci.appveyor.com/project/bubichain/blockchain)
+[![Build Status](https://travis-ci.org/bubicn/bubichain-v3.svg?branch=master)](https://travis-ci.org/bubicn/bubichain-v3)[![Build status](https://ci.appveyor.com/api/projects/status/120hwj7689qr3duh?svg=true)](https://ci.appveyor.com/project/bubicn/bubichain-v3)
  
 ## __简介__
 
