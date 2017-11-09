@@ -314,11 +314,30 @@ namespace utils{
 				nProcFile.Close();
 				break;
 			}
+
 			StringVector nValues = String::Strtok(strLine, ' ');
 			if (nValues.size() < 8) {
 				break;
 			}
-			core_count = nValues.size();
+
+			size_t temp_size = 0;
+			while (nProcFile.ReadLine(strLine, 1024)) {
+
+				StringVector nValues = String::Strtok(strLine, ' ');
+				if (nValues.size() < 8) {
+					break;
+				}
+
+				String::Trim(nValues[0]);
+				nValues[0] = String::ToLower(nValues[0]);
+				if (nValues[0].substr(0, 3) != "cpu") {
+					break;
+				}
+
+				temp_size++;
+			}
+
+			core_count = temp_size > 0 ? temp_size : core_count;
 		} while (false);
 #endif
 		return core_count;
