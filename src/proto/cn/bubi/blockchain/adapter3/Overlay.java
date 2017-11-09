@@ -215,6 +215,14 @@ public final class Overlay {
      * <code>CHAIN_SUBMITTRANSACTION = 15;</code>
      */
     CHAIN_SUBMITTRANSACTION(15),
+    /**
+     * <pre>
+     *bubi notify the client ledger(protocol::LedgerHeader) when closed
+     * </pre>
+     *
+     * <code>CHAIN_LEDGER_HEADER = 16;</code>
+     */
+    CHAIN_LEDGER_HEADER(16),
     UNRECOGNIZED(-1),
     ;
 
@@ -250,6 +258,14 @@ public final class Overlay {
      * <code>CHAIN_SUBMITTRANSACTION = 15;</code>
      */
     public static final int CHAIN_SUBMITTRANSACTION_VALUE = 15;
+    /**
+     * <pre>
+     *bubi notify the client ledger(protocol::LedgerHeader) when closed
+     * </pre>
+     *
+     * <code>CHAIN_LEDGER_HEADER = 16;</code>
+     */
+    public static final int CHAIN_LEDGER_HEADER_VALUE = 16;
 
 
     public final int getNumber() {
@@ -277,6 +293,7 @@ public final class Overlay {
         case 13: return CHAIN_PEER_OFFLINE;
         case 14: return CHAIN_PEER_MESSAGE;
         case 15: return CHAIN_SUBMITTRANSACTION;
+        case 16: return CHAIN_LEDGER_HEADER;
         default: return null;
       }
     }
@@ -1990,6 +2007,11 @@ public final class Overlay {
      * <code>optional int64 active_time = 5;</code>
      */
     long getActiveTime();
+
+    /**
+     * <code>optional int64 connection_id = 6;</code>
+     */
+    long getConnectionId();
   }
   /**
    * <pre>
@@ -2012,6 +2034,7 @@ public final class Overlay {
       numFailures_ = 0L;
       nextAttemptTime_ = 0L;
       activeTime_ = 0L;
+      connectionId_ = 0L;
     }
 
     @java.lang.Override
@@ -2063,6 +2086,11 @@ public final class Overlay {
             case 40: {
 
               activeTime_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              connectionId_ = input.readInt64();
               break;
             }
           }
@@ -2158,6 +2186,15 @@ public final class Overlay {
       return activeTime_;
     }
 
+    public static final int CONNECTION_ID_FIELD_NUMBER = 6;
+    private long connectionId_;
+    /**
+     * <code>optional int64 connection_id = 6;</code>
+     */
+    public long getConnectionId() {
+      return connectionId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2185,6 +2222,9 @@ public final class Overlay {
       if (activeTime_ != 0L) {
         output.writeInt64(5, activeTime_);
       }
+      if (connectionId_ != 0L) {
+        output.writeInt64(6, connectionId_);
+      }
     }
 
     public int getSerializedSize() {
@@ -2210,6 +2250,10 @@ public final class Overlay {
       if (activeTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(5, activeTime_);
+      }
+      if (connectionId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, connectionId_);
       }
       memoizedSize = size;
       return size;
@@ -2237,6 +2281,8 @@ public final class Overlay {
           == other.getNextAttemptTime());
       result = result && (getActiveTime()
           == other.getActiveTime());
+      result = result && (getConnectionId()
+          == other.getConnectionId());
       return result;
     }
 
@@ -2261,6 +2307,9 @@ public final class Overlay {
       hash = (37 * hash) + ACTIVE_TIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getActiveTime());
+      hash = (37 * hash) + CONNECTION_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getConnectionId());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2393,6 +2442,8 @@ public final class Overlay {
 
         activeTime_ = 0L;
 
+        connectionId_ = 0L;
+
         return this;
       }
 
@@ -2420,6 +2471,7 @@ public final class Overlay {
         result.numFailures_ = numFailures_;
         result.nextAttemptTime_ = nextAttemptTime_;
         result.activeTime_ = activeTime_;
+        result.connectionId_ = connectionId_;
         onBuilt();
         return result;
       }
@@ -2476,6 +2528,9 @@ public final class Overlay {
         }
         if (other.getActiveTime() != 0L) {
           setActiveTime(other.getActiveTime());
+        }
+        if (other.getConnectionId() != 0L) {
+          setConnectionId(other.getConnectionId());
         }
         onChanged();
         return this;
@@ -2672,6 +2727,32 @@ public final class Overlay {
       public Builder clearActiveTime() {
         
         activeTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long connectionId_ ;
+      /**
+       * <code>optional int64 connection_id = 6;</code>
+       */
+      public long getConnectionId() {
+        return connectionId_;
+      }
+      /**
+       * <code>optional int64 connection_id = 6;</code>
+       */
+      public Builder setConnectionId(long value) {
+        
+        connectionId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 connection_id = 6;</code>
+       */
+      public Builder clearConnectionId() {
+        
+        connectionId_ = 0L;
         onChanged();
         return this;
       }
@@ -11072,50 +11153,51 @@ public final class Overlay {
       "tening_port\030\005 \001(\003\022\024\n\014node_address\030\006 \001(\t\022" +
       "\021\n\tnode_rand\030\007 \001(\t\"L\n\rHelloResponse\022\'\n\ne" +
       "rror_code\030\001 \001(\0162\023.protocol.ERRORCODE\022\022\n\n" +
-      "error_desc\030\002 \001(\t\"f\n\004Peer\022\n\n\002ip\030\001 \001(\t\022\014\n\004" +
+      "error_desc\030\002 \001(\t\"}\n\004Peer\022\n\n\002ip\030\001 \001(\t\022\014\n\004" +
       "port\030\002 \001(\003\022\024\n\014num_failures\030\003 \001(\003\022\031\n\021next" +
       "_attempt_time\030\004 \001(\003\022\023\n\013active_time\030\005 \001(\003",
-      "\"&\n\005Peers\022\035\n\005peers\030\001 \003(\0132\016.protocol.Peer" +
-      "\";\n\nGetLedgers\022\r\n\005begin\030\001 \001(\003\022\013\n\003end\030\002 \001" +
-      "(\003\022\021\n\ttimestamp\030\003 \001(\003\"\337\001\n\007Ledgers\022(\n\006val" +
-      "ues\030\001 \003(\0132\030.protocol.ConsensusValue\022-\n\ts" +
-      "ync_code\030\002 \001(\0162\032.protocol.Ledgers.SyncCo" +
-      "de\022\017\n\007max_seq\030\003 \001(\003\022\r\n\005proof\030\004 \001(\014\"[\n\010Sy" +
-      "ncCode\022\006\n\002OK\020\000\022\017\n\013OUT_OF_SYNC\020\001\022\022\n\016OUT_O" +
-      "F_LEDGERS\020\002\022\010\n\004BUSY\020\003\022\n\n\006REFUSE\020\004\022\014\n\010INT" +
-      "ERNAL\020\005\"&\n\010DontHave\022\014\n\004type\030\001 \001(\003\022\014\n\004has" +
-      "h\030\002 \001(\014\"v\n\023LedgerUpgradeNotify\022\r\n\005nonce\030",
-      "\001 \001(\003\022(\n\007upgrade\030\002 \001(\0132\027.protocol.Ledger" +
-      "Upgrade\022&\n\tsignature\030\003 \001(\0132\023.protocol.Si" +
-      "gnature\"\032\n\tEntryList\022\r\n\005entry\030\001 \003(\014\"M\n\nC" +
-      "hainHello\022,\n\010api_list\030\001 \003(\0162\032.protocol.C" +
-      "hainMessageType\022\021\n\ttimestamp\030\002 \001(\003\"z\n\013Ch" +
-      "ainStatus\022\021\n\tself_addr\030\001 \001(\t\022\026\n\016ledger_v" +
-      "ersion\030\002 \001(\003\022\027\n\017monitor_version\030\003 \001(\003\022\024\n" +
-      "\014bubi_version\030\004 \001(\t\022\021\n\ttimestamp\030\005 \001(\003\"O" +
-      "\n\020ChainPeerMessage\022\025\n\rsrc_peer_addr\030\001 \001(" +
-      "\t\022\026\n\016des_peer_addrs\030\002 \003(\t\022\014\n\004data\030\003 \001(\014\"",
-      "\325\002\n\rChainTxStatus\0220\n\006status\030\001 \001(\0162 .prot" +
-      "ocol.ChainTxStatus.TxStatus\022\017\n\007tx_hash\030\002" +
-      " \001(\t\022\026\n\016source_address\030\003 \001(\t\022\032\n\022source_a" +
-      "ccount_seq\030\004 \001(\003\022\022\n\nledger_seq\030\005 \001(\003\022\027\n\017" +
-      "new_account_seq\030\006 \001(\003\022\'\n\nerror_code\030\007 \001(" +
-      "\0162\023.protocol.ERRORCODE\022\022\n\nerror_desc\030\010 \001" +
-      "(\t\022\021\n\ttimestamp\030\t \001(\003\"P\n\010TxStatus\022\r\n\tUND" +
-      "EFINED\020\000\022\r\n\tCONFIRMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010" +
-      "COMPLETE\020\003\022\013\n\007FAILURE\020\004*\203\002\n\024OVERLAY_MESS" +
-      "AGE_TYPE\022\030\n\024OVERLAY_MSGTYPE_NONE\020\000\022\030\n\024OV",
-      "ERLAY_MSGTYPE_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_" +
-      "HELLO\020\002\022\031\n\025OVERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OV" +
-      "ERLAY_MSGTYPE_TRANSACTION\020\004\022\033\n\027OVERLAY_M" +
-      "SGTYPE_LEDGERS\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT" +
-      "\020\006\022)\n%OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOT" +
-      "IFY\020\007*\261\001\n\020ChainMessageType\022\023\n\017CHAIN_TYPE" +
-      "_NONE\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN_TX_STA" +
-      "TUS\020\013\022\025\n\021CHAIN_PEER_ONLINE\020\014\022\026\n\022CHAIN_PE" +
-      "ER_OFFLINE\020\r\022\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027" +
-      "CHAIN_SUBMITTRANSACTION\020\017B\035\n\033cn.bubi.blo",
-      "ckchain.adapter3b\006proto3"
+      "\022\025\n\rconnection_id\030\006 \001(\003\"&\n\005Peers\022\035\n\005peer" +
+      "s\030\001 \003(\0132\016.protocol.Peer\";\n\nGetLedgers\022\r\n" +
+      "\005begin\030\001 \001(\003\022\013\n\003end\030\002 \001(\003\022\021\n\ttimestamp\030\003" +
+      " \001(\003\"\337\001\n\007Ledgers\022(\n\006values\030\001 \003(\0132\030.proto" +
+      "col.ConsensusValue\022-\n\tsync_code\030\002 \001(\0162\032." +
+      "protocol.Ledgers.SyncCode\022\017\n\007max_seq\030\003 \001" +
+      "(\003\022\r\n\005proof\030\004 \001(\014\"[\n\010SyncCode\022\006\n\002OK\020\000\022\017\n" +
+      "\013OUT_OF_SYNC\020\001\022\022\n\016OUT_OF_LEDGERS\020\002\022\010\n\004BU" +
+      "SY\020\003\022\n\n\006REFUSE\020\004\022\014\n\010INTERNAL\020\005\"&\n\010DontHa" +
+      "ve\022\014\n\004type\030\001 \001(\003\022\014\n\004hash\030\002 \001(\014\"v\n\023Ledger",
+      "UpgradeNotify\022\r\n\005nonce\030\001 \001(\003\022(\n\007upgrade\030" +
+      "\002 \001(\0132\027.protocol.LedgerUpgrade\022&\n\tsignat" +
+      "ure\030\003 \001(\0132\023.protocol.Signature\"\032\n\tEntryL" +
+      "ist\022\r\n\005entry\030\001 \003(\014\"M\n\nChainHello\022,\n\010api_" +
+      "list\030\001 \003(\0162\032.protocol.ChainMessageType\022\021" +
+      "\n\ttimestamp\030\002 \001(\003\"z\n\013ChainStatus\022\021\n\tself" +
+      "_addr\030\001 \001(\t\022\026\n\016ledger_version\030\002 \001(\003\022\027\n\017m" +
+      "onitor_version\030\003 \001(\003\022\024\n\014bubi_version\030\004 \001" +
+      "(\t\022\021\n\ttimestamp\030\005 \001(\003\"O\n\020ChainPeerMessag" +
+      "e\022\025\n\rsrc_peer_addr\030\001 \001(\t\022\026\n\016des_peer_add",
+      "rs\030\002 \003(\t\022\014\n\004data\030\003 \001(\014\"\325\002\n\rChainTxStatus" +
+      "\0220\n\006status\030\001 \001(\0162 .protocol.ChainTxStatu" +
+      "s.TxStatus\022\017\n\007tx_hash\030\002 \001(\t\022\026\n\016source_ad" +
+      "dress\030\003 \001(\t\022\032\n\022source_account_seq\030\004 \001(\003\022" +
+      "\022\n\nledger_seq\030\005 \001(\003\022\027\n\017new_account_seq\030\006" +
+      " \001(\003\022\'\n\nerror_code\030\007 \001(\0162\023.protocol.ERRO" +
+      "RCODE\022\022\n\nerror_desc\030\010 \001(\t\022\021\n\ttimestamp\030\t" +
+      " \001(\003\"P\n\010TxStatus\022\r\n\tUNDEFINED\020\000\022\r\n\tCONFI" +
+      "RMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010COMPLETE\020\003\022\013\n\007FAI" +
+      "LURE\020\004*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024OVERL",
+      "AY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_PIN" +
+      "G\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OVERLA" +
+      "Y_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRA" +
+      "NSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022" +
+      "\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSG" +
+      "TYPE_LEDGER_UPGRADE_NOTIFY\020\007*\312\001\n\020ChainMe" +
+      "ssageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_" +
+      "HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PE" +
+      "ER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022C" +
+      "HAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANS",
+      "ACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020B\035\n\033cn." +
+      "bubi.blockchain.adapter3b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -11148,7 +11230,7 @@ public final class Overlay {
     internal_static_protocol_Peer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_Peer_descriptor,
-        new java.lang.String[] { "Ip", "Port", "NumFailures", "NextAttemptTime", "ActiveTime", });
+        new java.lang.String[] { "Ip", "Port", "NumFailures", "NextAttemptTime", "ActiveTime", "ConnectionId", });
     internal_static_protocol_Peers_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_protocol_Peers_fieldAccessorTable = new

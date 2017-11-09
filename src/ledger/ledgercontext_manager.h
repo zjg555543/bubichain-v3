@@ -13,37 +13,112 @@ limitations under the License.
 #ifndef LEDGER_CONTEXT_MANAGER_H_
 #define LEDGER_CONTEXT_MANAGER_H_
 
-#include <memory>
+#include <utils/headers.h>
+#include <common/general.h>
+#include <proto/cpp/chain.pb.h>
+#include "ledger_frm.h"
+#include "contract_manager.h"
 
 namespace bubi {
-	class TransactionFrm;
-	class LedgerFrm;
-	class LedgerContext :public std::enable_shared_from_this<LedgerContext>
-	{
-	public:
-		typedef std::shared_ptr<bubi::LedgerContext>	pointer;
+
+	class LedgerContextManager;
+	class LedgerContext;
+	typedef std::function< void(bool check_result)> PreProcessCallback;
+	class LedgerContext : public utils::Thread {
+		std::stack<int64_t> contract_ids_; //may be called by check thread or execute thread.so need lock
+		//parameter
+		int32_t type_; // -1 : normal, 0 : test v8 , 1: test evm
+		ContractTestParameter parameter_; // when type_ >= 0
+
 		std::string hash_;
-		int64_t apply_time_;
+		LedgerContextManager *lpmanager_;
+		int64_t start_time_;
+
+		Json::Value logs_;
+	public:
+		LedgerContext(
+			LedgerContextManager *lpmanager,
+			const std::string &chash, 
+			const protocol::ConsensusValue &consvalue, 
+			int64_t tx_timeout,
+			PreProcessCallback callback);
+
+		LedgerContext(
+			const std::string &chash, 
+			const protocol::ConsensusValue &consvalue, 
+			int64_t tx_timeout);
+
+		//for test
+		LedgerContext(
+			int32_t type,
+			const ContractTestParameter &parameter);
+		~LedgerContext();
+
+		protocol::ConsensusValue consensus_value_;
+		bool sync_;
+		PreProcessCallback callback_;
+		int64_t tx_timeout_;
+
 		LedgerFrm::pointer closing_ledger_;
 		std::stack<std::shared_ptr<TransactionFrm>> transaction_stack_;
-		LedgerContext();
-		void Init(const std::string& hash);
-		bool Apply(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode);
+		
+		//result
+		bool exe_result_;
+		int32_t timeout_tx_index_;
+
+		utils::Mutex lock_;
+
+		virtual void Run();
+		void Do();
+		bool Test();
+		void Cancel();
+		bool CheckExpire(int64_t total_timeout);
+		
+		void PushContractId(int64_t id);
+		void PopContractId();
+		int64_t GetTopContractId();
+
+		void PushLog(const std::string &address, const utils::StringList &logs);
+		void GetLogs(Json::Value &logs);
+		
+		std::string GetHash();
+		int32_t GetTxTimeoutIndex();
+
+		void PushLog();
 	};
 
-	class LedgerContextManager
-	{
-	public:		
-		typedef std::shared_ptr<bubi::LedgerContextManager>	pointer;
-
+	typedef std::multimap<std::string, LedgerContext *> LedgerContextMultiMap;
+	typedef std::map<std::string, LedgerContext *> LedgerContextMap;
+	class LedgerContextManager :
+		public bubi::TimerNotify {
+		utils::Mutex ctxs_lock_;
+		LedgerContextMultiMap running_ctxs_;
+		LedgerContextMap completed_ctxs_;
+	public:
 		LedgerContextManager();
 		~LedgerContextManager();
-		bool PreProcessLedger(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode = LedgerFrm::EXECUTE_MODE::EM_TIMEOUT);
-		std::shared_ptr<LedgerContext> GetContext(const protocol::ConsensusValue& consensus_value, const bool remove = false);
-		std::shared_ptr<LedgerContext> GetContext(const std::string& context_index, const bool remove = false);
-	private:
-		utils::Mutex mutex_;
-		std::unordered_map<std::string, std::shared_ptr<LedgerContext>> box_;
+
+		void Initialize();
+		virtual void OnTimer(int64_t current_time);
+		virtual void OnSlowTimer(int64_t current_time);
+		void MoveRunningToComplete(LedgerContext *ledger_context);
+		void RemoveCompleted(int64_t ledger_seq);
+		void GetModuleStatus(Json::Value &data);
+
+		bool SyncTestProcess(int32_t type, 
+			const ContractTestParameter &parameter, 
+			int64_t total_timeout, 
+			Result &result, 
+			Json::Value &logs,
+			Json::Value &txs);
+
+		//<0 : notfound 1: found and success 0: found and failed
+		int32_t CheckComplete(const std::string &chash);
+		bool SyncPreProcess(const protocol::ConsensusValue& consensus_value, int64_t timeout, int32_t &timeout_tx_index);
+
+		//<0 : processing 1: found and success 0: found and failed
+		int32_t AsyncPreProcess(const protocol::ConsensusValue& consensus_value, int64_t timeout, PreProcessCallback callback, int32_t &timeout_tx_index);
+		LedgerFrm::pointer SyncProcess(const protocol::ConsensusValue& consensus_value); //for ledger closing
 	};
 
 }

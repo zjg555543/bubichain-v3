@@ -63,23 +63,19 @@ namespace bubi {
 
 		bool ConsensusValueFromDB(int64_t seq, protocol::ConsensusValue& request);
 
-		bool DoTransaction(protocol::TransactionEnv& env, const std::string& context_index);
+		bool DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context);
 
 		virtual void OnTimer(int64_t current_time) override;
 		virtual void OnSlowTimer(int64_t current_time) override;
 		virtual void GetModuleStatus(Json::Value &data);
 
 		static void CreateHardforkLedger();
-		bool PreProcessLedger(const protocol::ConsensusValue& consensus_value, int& timeout_tx_index, LedgerFrm::EXECUTE_MODE execute_mode = LedgerFrm::EXECUTE_MODE::EM_TIMEOUT);
 	public:
 		utils::Mutex gmutex_;
 		Json::Value statistics_;
-		LedgerFrm::pointer closing_ledger_;
-		//std::shared_ptr<TransactionFrm> execute_transaction_;
-		std::stack<std::shared_ptr<TransactionFrm>> transaction_stack_;
 		KVTrie* tree_;
 
-		LedgerContextManager::pointer context_manager_;
+		LedgerContextManager context_manager_;
 
 	private:
 		LedgerManager();
@@ -109,6 +105,7 @@ namespace bubi {
 			int64_t probation_; //
 			SyncStat(){
 				send_time_ = 0;
+				probation_ = 0;
 			}
 			Json::Value ToJson(){
 				Json::Value v;
@@ -143,16 +140,19 @@ namespace bubi {
 	};
 
 	class ExprCondition : public utils::ExprParser {
+		std::shared_ptr<Environment> environment_;
+		const protocol::ConsensusValue &cons_value_;
 	public:
-		ExprCondition(const std::string & program);
+		ExprCondition(const std::string & program, std::shared_ptr<Environment> env, const protocol::ConsensusValue &cons_value);
 		~ExprCondition();
 
 		static void RegisterFunctions();
-		static const utils::ExprValue DoLedger(const utils::ExprValue &arg);
-		static const utils::ExprValue DoAccount(const utils::ExprValue &arg);
-		static const utils::ExprValue DoJsonPath(const utils::ExprValue &arg1, const utils::ExprValue &arg2);
+		static const utils::ExprValue DoLedger(const utils::ExprValue &arg, utils::ExprParser *parser);
+		static const utils::ExprValue DoAccount(const utils::ExprValue &arg, utils::ExprParser *parser);
+		static const utils::ExprValue DoJsonPath(const utils::ExprValue &arg1, const utils::ExprValue &arg2, utils::ExprParser *parser);
 		Result Eval(utils::ExprValue &value);
 		Result Parse(utils::ExprValue &value);
+		std::shared_ptr<Environment> GetEnviroment();
 	};
 
 }

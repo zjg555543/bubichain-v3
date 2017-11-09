@@ -20,10 +20,10 @@ limitations under the License.
 namespace bubi {
 	const uint32_t General::OVERLAY_VERSION = 2000;
 	const uint32_t General::OVERLAY_MIN_VERSION = 2000;
-	const uint32_t General::LEDGER_VERSION = 3000;
+	const uint32_t General::LEDGER_VERSION = 3001;
 	const uint32_t General::LEDGER_MIN_VERSION = 3000;
 	const uint32_t General::MONITOR_VERSION = 3000;
-	const char *General::BUBI_VERSION = "3.0.0.4";
+	const char *General::BUBI_VERSION = "3.1.0.0";
 
 #ifdef WIN32
 	const char *General::DEFAULT_KEYVALUE_DB_PATH = "data/keyvalue.db";

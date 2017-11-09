@@ -129,6 +129,11 @@ namespace bubi {
 		notify_->OnViewChanged();
 	}
 
+	int32_t Consensus::AsyncCheckValue(const std::string &value, CheckValueFunction check_func) {
+		//return notify_->AsyncCheckValue(value, check_func);
+		return false;
+	}
+
 	int32_t Consensus::CheckValue(const std::string &value) {
 		return notify_->CheckValue(value);
 	}

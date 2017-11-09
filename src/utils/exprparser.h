@@ -110,10 +110,11 @@ namespace utils {
 		static std::string GetTypeDesc(enum TokenType type);
 	};
 
-	typedef const ExprValue(*OneCommonArgFunction)  (const ExprValue &arg);
-	typedef const ExprValue(*TwoArgFunction)  (const ExprValue &arg1, const ExprValue &arg2);
+	class ExprParser;
+	typedef const ExprValue(*OneCommonArgFunction)  (const ExprValue &arg, ExprParser *parser);
+	typedef const ExprValue(*TwoCommonArgFunction)  (const ExprValue &arg1, const ExprValue &arg2, ExprParser *parser);
 	extern std::map<std::string, OneCommonArgFunction>    OneCommonArgumentFunctions;
-	extern std::map<std::string, TwoArgFunction>    TwoCommonArgumentFunctions;
+	extern std::map<std::string, TwoCommonArgFunction>    TwoCommonArgumentFunctions;
 
 	class ExprParser {
 	private:

@@ -97,7 +97,8 @@ namespace bubi {
 		server_ptr_->addRoute("multiQuery", std::bind(&WebServer::MultiQuery, this, std::placeholders::_1, std::placeholders::_2));
 		server_ptr_->addRoute("submitTransaction", std::bind(&WebServer::SubmitTransaction, this, std::placeholders::_1, std::placeholders::_2));
 		server_ptr_->addRoute("confValidator", std::bind(&WebServer::ConfValidator, this, std::placeholders::_1, std::placeholders::_2));
-		server_ptr_->addRoute("contractquery", std::bind(&WebServer::ContractQuery, this, std::placeholders::_1, std::placeholders::_2));
+		server_ptr_->addRoute("contractQuery", std::bind(&WebServer::ContractQuery, this, std::placeholders::_1, std::placeholders::_2));
+		server_ptr_->addRoute("testContract", std::bind(&WebServer::TestContract, this, std::placeholders::_1, std::placeholders::_2));
 
 		server_ptr_->Run();
 		running = true;
@@ -139,6 +140,7 @@ namespace bubi {
 		reply_json["overlay_version"] = utils::String::ToString(General::OVERLAY_VERSION);
 		reply_json["current_time"] = utils::Timestamp::Now().ToFormatString(true);
 		reply_json["websocket_address"] =  Configure::Instance().wsserver_configure_.listen_address_.ToIpPort();
+		reply_json["hash_type"] = Configure::Instance().ledger_configure_.hash_type_;
 		reply = reply_json.toFastString();
 	}
 

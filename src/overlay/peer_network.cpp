@@ -144,7 +144,7 @@ namespace bubi {
 			
 			if (network_id_ != hello.network_id()) {
 				res.set_error_code(protocol::ERRCODE_INVALID_PARAMETER);
-				res.set_error_desc(utils::String::Format("Peer connect break as peer network id(" FMT_I64 ") not equal local id(" FMT_I64 ")",
+				res.set_error_desc(utils::String::Format("Peer connect break as peer network id(" FMT_I64 ") not equal to local id(" FMT_I64 ")",
 					hello.network_id(), network_id_));
 				LOG_ERROR("%s", res.error_desc().c_str());
 				break;
@@ -294,7 +294,7 @@ namespace bubi {
 
 		std::string hash = utils::String::Bin4ToHexString(HashWrapper::Crypto(message.SerializeAsString()));
 
-		LOG_INFO("On pbft hash(%s), receive consensus from node address(%s) sequence(" FMT_I64 ") pbft type(%s)",
+		LOG_TRACE("On pbft hash(%s), receive consensus from node address(%s) sequence(" FMT_I64 ") pbft type(%s)",
 			hash.c_str(), msg.GetNodeAddress(), msg.GetSeq(),
 			PbftDesc::GetMessageTypeDesc(msg.GetPbft().pbft().type()));
 

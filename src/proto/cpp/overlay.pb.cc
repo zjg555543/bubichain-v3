@@ -436,13 +436,13 @@ void protobuf_AddDesc_overlay_2eproto() {
     "Y_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRA"
     "NSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022"
     "\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSG"
-    "TYPE_LEDGER_UPGRADE_NOTIFY\020\007*\261\001\n\020ChainMe"
+    "TYPE_LEDGER_UPGRADE_NOTIFY\020\007*\312\001\n\020ChainMe"
     "ssageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_"
     "HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PE"
     "ER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022C"
     "HAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANS"
-    "ACTION\020\017B\035\n\033cn.bubi.blockchain.adapter3b"
-    "\006proto3", 2047);
+    "ACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020B\035\n\033cn."
+    "bubi.blockchain.adapter3b\006proto3", 2072);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -513,6 +513,7 @@ bool ChainMessageType_IsValid(int value) {
     case 13:
     case 14:
     case 15:
+    case 16:
       return true;
     default:
       return false;

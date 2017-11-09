@@ -26,32 +26,29 @@ namespace bubi {
 	class LedgerFrm {
 	public:
 		typedef std::shared_ptr <LedgerFrm>	pointer;
-		enum EXECUTE_MODE
-		{
-			EM_TIMEOUT = 0,
-			EM_NOBREAK,
-		};
 
 		LedgerFrm();
 		~LedgerFrm();
-		void SetContext(const std::shared_ptr<LedgerContext>& context);
 
 		protocol::LedgerHeader GetProtoHeader() const {
-			return ledger_.header();
+		  	return ledger_.header();
 		}
 
 		protocol::Ledger &ProtoLedger();
 
 
-		bool Apply(const protocol::ConsensusValue& request, EXECUTE_MODE execute_mode);
+		bool Apply(const protocol::ConsensusValue& request, 
+			LedgerContext *ledger_context, 
+			int64_t tx_time_out, 
+			int32_t &tx_time_out_index);
+		bool Cancel();
 
 		// void GetSqlTx(std::string &sqltx, std::string &sql_account_tx);
 
-        bool AddToDb(WRITE_BATCH& batch);
+		bool AddToDb(WRITE_BATCH& batch);
 
 		bool LoadFromDb(int64_t seq);
 
-		//static bool LoadFromDb(int64_t seq, protocol::Ledger &ledger);
 		size_t GetTxCount() {
 			return apply_tx_frms_.size();
 		}
@@ -71,15 +68,16 @@ namespace bubi {
 
 		bool Commit(KVTrie* trie, int64_t& new_count, int64_t& change_count);
 	private:
-		int64_t id_;
 		protocol::Ledger ledger_;
 	public:
 		std::shared_ptr<protocol::ConsensusValue> value_;
 		std::vector<TransactionFrm::pointer> apply_tx_frms_;
+		std::vector<TransactionFrm::pointer> dropped_tx_frms_;
 		std::string sql_;
 		std::shared_ptr<Environment> environment_;
-		int timeout_tx_index_;
-		std::weak_ptr<LedgerContext> context_;
+		LedgerContext *lpledger_context_;
+		int64_t apply_time_;
+		bool enabled_;
 	};
 }
 #endif //end of ifndef

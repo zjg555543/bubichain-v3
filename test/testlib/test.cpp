@@ -21,6 +21,7 @@
 #include <proto/cpp/consensus.pb.h>
 #include "channel.h"
 #include "test.h"
+#include "test_v8_terminate.h"
 
 class Manager : public utils::Singleton<Manager>
 {

@@ -22,94 +22,177 @@ limitations under the License.
 #include <libplatform/libplatform.h>
 #include <libplatform/libplatform-export.h>
 #include <proto/cpp/chain.pb.h>
+#include "ledgercontext_manager.h"
 
 namespace bubi{
 
-	class ContractManager 
-	{
+	class ContractParameter {
+	public:
+		ContractParameter();
+		~ContractParameter();
+
+		std::string code_;
+		std::string input_;
+		std::string this_address_;
+		std::string sender_;
+		std::string trigger_tx_;
+		int32_t ope_index_;
+		std::string consensus_value_;
+		LedgerContext *ledger_context_;
+	};
+
+	class ContractTestParameter {
+	public:
+		ContractTestParameter();
+		~ContractTestParameter();
+
+		bool exe_or_query_; //true: exe, false:query
+		std::string contract_address_;
+		std::string code_;
+		std::string input_;
+		std::string source_address_;
+	};
+
+	class Contract {
+	protected:
+		int32_t type_;
+		int64_t id_;
+		ContractParameter parameter_;
+
+		std::string error_msg_;
+		int32_t tx_do_count_;  //transactions trigger by one contract
+		utils::StringList logs_;
+	public:
+		Contract();
+		Contract(const ContractParameter &parameter);
+		virtual ~Contract();
+
+	public:
+		virtual bool Execute();
+		virtual bool Cancel();
+		virtual bool SourceCodeCheck();
+		virtual bool Query(Json::Value& jsResult);
+
+		int32_t GetTxDoCount();
+		void IncTxDoCount();
+		int64_t GetId();
+		const ContractParameter &GetParameter();
+		const utils::StringList &GetLogs();
+		void AddLog(const std::string &log);
+		std::string GetErrorMsg();
+		static utils::Mutex contract_id_seed_lock_;
+		static int64_t contract_id_seed_;
+
+		enum TYPE {
+			TYPE_V8 = 0,
+			TYPE_ETH = 1
+		};
+	};
+
+	class V8Contract : public Contract {
 		v8::Isolate* isolate_;
 		v8::Global<v8::Context> g_context_;
-		v8::Local<v8::ObjectTemplate> global_;
+	public:
+		V8Contract(const ContractParameter &parameter);
+		virtual ~V8Contract();
+	public:
+		virtual bool Execute();
+		virtual bool Cancel();
+		virtual bool Query(Json::Value& jsResult);
+		virtual bool SourceCodeCheck();
 
-	    static std::map<std::string, std::string> jslib_sources;
-		static const std::string sender_name_ ;
+		static bool Initialize(int argc, char** argv);
+		static bool LoadJsLibSource();
+		static std::map<std::string, std::string> jslib_sources;
+		static const std::string sender_name_;
 		static const std::string this_address_;
 		static const char* main_name_;
-	    static const char* query_name_;
+		static const char* query_name_;
 		static const std::string trigger_tx_name_;
 		static const std::string trigger_tx_index_name_;
 		static const std::string this_header_name_;
 
-		static utils::Mutex context_index_mutex_;
-		static std::unordered_map<uint64_t, std::string> context_index_map_;
+		static utils::Mutex isolate_to_contract_mutex_;
+		static std::unordered_map<v8::Isolate*, V8Contract *> isolate_to_contract_;
 
 		static v8::Platform* 	platform_;
 		static v8::Isolate::CreateParams create_params_;
-		
-	public:
-		static ContractManager* executing_contract_;
-		int tx_do_count_;
-	public:
-		
-		ContractManager(const std::string context_index);
-		~ContractManager();
 
-		static void Initialize(int argc, char** argv);
-
-		bool Execute(const std::string& code, 
-			const std::string &input, 
-			const std::string& thisAddress, 
-			const std::string& sender,
-			const std::string& trigger_tx,
-			int32_t index,
-			const std::string& consensus_value,
-			std::string& error_msg);
-
-		bool Query(const std::string& code, const std::string &input, Json::Value& jsResult);
-
-		bool SourceCodeCheck(const std::string& code, std::string& err_msg);
-
-		bool Exit();
-
-		uint64_t IsolateIndex();
-
-		static void ClearIsolateIndex(uint64_t index);
-	private:
-		bool LoadJsLibSource();
-
-		static std::string ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
-
+		static bool RemoveRandom(v8::Isolate* isolate, Json::Value &error_msg);
+		static v8::Local<v8::Context> CreateContext(v8::Isolate* isolate);
+		static V8Contract *GetContractFrom(v8::Isolate* isolate);
+		static Json::Value ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
 		static const char* ToCString(const v8::String::Utf8Value& value);
-
 		static void CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		static void CallBackGetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		static void CallBackSetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		static void CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		static void Include(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		//get account info from an account
 		static void CallBackGetAccountInfo(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		//get a ledger info from a ledger
 		static void CallBackGetLedgerInfo(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		//get transaction info from a transaction
 		static void CallBackGetTransactionInfo(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		//static void CallBackGetThisAddress(const v8::FunctionCallbackInfo<v8::Value>& args);
-
 		//make a transaction
 		static void CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static V8Contract *UnwrapContract(v8::Local<v8::Object> obj);
+		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, const std::string& key, Json::Value& jsonvalue);
+	};
 
-		static ContractManager* UnwrapContract(v8::Local<v8::Object> obj);
+	class QueryContract : public utils::Thread{
+		Contract *contract_;
+		ContractParameter parameter_;
+		Json::Value result_;
+		bool ret_;
+		utils::Mutex mutex_;
+	public:
+		QueryContract();
+		~QueryContract();
 
-		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, std::string& key, Json::Value& jsonvalue);
+		bool Init(int32_t type, const ContractParameter &paramter);
+		virtual void Run();
+		void Cancel();
+		bool GetResult(Json::Value &result);
+	};
 
-		//static bool DoTransaction(protocol::TransactionEnv& env);
+// 	class TestContract : public utils::Thread {
+// 		int32_t type_;
+// 		ContractTestParameter parameter_;
+// 
+// 		Json::Value result_;
+// 		bool ret_;
+// 		LedgerContext ledger_context;
+// 	public:
+// 		TestContract();
+// 		~TestContract();
+// 
+// 		bool Init(int32_t type, const ContractTestParameter &parameter);
+// 		virtual void Run();
+// 		void Cancel();
+// 		bool GetResult(Json::Value &result);
+// 	};
+
+	typedef std::map<int64_t, Contract *> ContractMap;
+	class ContractManager :
+		public utils::Singleton<ContractManager>{
+		friend class utils::Singleton<ContractManager>;
+
+		utils::Mutex contracts_lock_;
+		ContractMap contracts_;
+	public:
+		ContractManager();
+		~ContractManager();
+
+		bool Initialize(int argc, char** argv);
+		bool Exit();
+
+		bool Execute(int32_t type, const ContractParameter &paramter, std::string &error_msg);
+		bool Cancel(int64_t contract_id);
+		bool SourceCodeCheck(int32_t type, const std::string &code, std::string &error_msg);
+		//bool Test(int32_t type, const ContractTestParameter &paramter, Json::Value& jsResult);
+		Contract *GetContract(int64_t contract_id);
 	};
 }
 #endif
