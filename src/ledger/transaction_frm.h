@@ -85,6 +85,7 @@ namespace bubi {
 		bool ValidForApply(std::shared_ptr<Environment> environment);
 
 		uint64_t apply_time_;
+		int64_t ledger_seq_;
 		Result result_;	
 		int32_t processing_operation_;
 		LedgerFrm* ledger_;

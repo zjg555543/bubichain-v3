@@ -105,10 +105,8 @@ namespace bubi {
 		std::string desc_;
 
 	public:
-		int64_t ledger_seq_;
-		int64_t close_time_;
-
 		Result();
+		Result(const Result &result);
 		~Result();
 
 		int32_t code() const;
@@ -134,7 +132,11 @@ namespace bubi {
 		static std::list<TimerNotify *> notifys_;
 		static bool RegisterModule(TimerNotify *module) { notifys_.push_back(module); return true; };
 
-		TimerNotify() :last_check_time_(0), last_slow_check_time_(0), check_interval_(0) {};
+		TimerNotify() :last_check_time_(0), 
+			last_slow_check_time_(0), 
+			check_interval_(0),
+			last_execute_complete_time_(0),
+			last_slow_execute_complete_time_(0) {};
 		~TimerNotify() {};
 
 		void TimerWrapper(int64_t current_time) {

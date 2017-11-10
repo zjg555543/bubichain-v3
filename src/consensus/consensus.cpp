@@ -19,6 +19,7 @@ limitations under the License.
 
 namespace bubi {
 	Consensus::Consensus() : name_("consensus"),
+		notify_(NULL),
 		is_validator_(false),
 		replica_id_(-1),
 		private_key_(Configure::Instance().validation_configure_.node_privatekey_) {}
