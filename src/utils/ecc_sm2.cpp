@@ -379,9 +379,9 @@ namespace utils {
 			}
 			
 			//国标第一版要求，公钥的x，y坐标第一字节不能为0
-			//if (BN_num_bytes(order) > BN_num_bytes(x) || BN_num_bytes(order) > BN_num_bytes(y)) {
-			//	continue;
-			//}
+			if (BN_num_bytes(order) != BN_num_bytes(x) || BN_num_bytes(order) != BN_num_bytes(y)) {
+				continue;
+			}
 			break;
 		} while (true);
 		BN_CTX_end(ctx);
