@@ -920,8 +920,10 @@ namespace bubi {
 				auto executing = ContractManager::executing_contract_;
 				executing->tx_do_count_++;
 				if (executing->tx_do_count_ > General::CONTRACT_TRANSACTION_LIMIT){
-					txfrm->result_.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS);
-					break;
+					//txfrm->result_.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS);
+					//break;
+					LOG_ERROR("Too many transaction triggered");
+					return false;
 				}
 			}
 
@@ -952,6 +954,8 @@ namespace bubi {
 
 		//
 		protocol::TransactionEnvStore tx_store;
+		tx_store.set_error_code(txfrm->GetResult().code());
+		tx_store.set_error_desc(txfrm->GetResult().desc());
 		tx_store.mutable_transaction_env()->CopyFrom(txfrm->GetProtoTxEnv());
 		auto trigger = tx_store.mutable_transaction_env()->mutable_trigger();
 		trigger->mutable_transaction()->set_hash(back->GetContentHash());
