@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -73,12 +73,12 @@ namespace utils {
 		BIGNUM* yG = BN_CTX_get(ctx);
 		BIGNUM* n = BN_CTX_get(ctx);
 		do {
-			BN_hex2bn(&p, "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF");
-			BN_hex2bn(&a, "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC");
-			BN_hex2bn(&b, "28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93");
+			BN_hex2bn(&p,  "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF");
+			BN_hex2bn(&a,  "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC");
+			BN_hex2bn(&b,  "28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93");
 			BN_hex2bn(&xG, "32C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7");
 			BN_hex2bn(&yG, "BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0");
-			BN_hex2bn(&n, "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123");
+			BN_hex2bn(&n,  "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123");
 			cfca_group_ = EC_GROUP_new(EC_GFp_mont_method());
 			if (!EC_GROUP_set_curve_GFp(cfca_group_, p, a, b, ctx)) {
 				break;
@@ -91,6 +91,23 @@ namespace utils {
 		} while (false);
 		free_ec_point(G);
 		return cfca_group_;
+	}
+
+	std::string EccSm2::Bn2FixedString(BIGNUM* bn, int len){
+		std::string result("");
+		
+		unsigned char tmp[1024];
+
+		int l = BN_bn2bin(bn, tmp);
+		if (l <= len){
+			result.append(len - l, (char)0);
+			result.append((char*)tmp, l);
+		}
+		else{
+			result.append((char*)(tmp + l - len), len);
+		}
+
+		return result;
 	}
 
 	EC_GROUP* EccSm2::NewGroup(GROUP_TYPE type, std::string phex, std::string ahex, std::string bhex, std::string xGhex, std::string yGhex, std::string nhex) {
@@ -260,25 +277,30 @@ namespace utils {
 		za.push_back(c2);
 		//拼接用户ID
 		za += id;
+
 		//拼接a
-		len = BN_bn2bin(a, bin);
-		za.append((char*)bin, len);
+		za += Bn2FixedString(a, 32);
+
 		//拼接b
-		len = BN_bn2bin(b, bin);
-		za.append((char*)bin, len);
+		za += Bn2FixedString(b, 32);
+
 		//拼接xG
-		len = BN_bn2bin(xG, bin);
-		za.append((char*)bin, len);
+		za += Bn2FixedString(xG, 32);
+
 		//拼接yG
-		len = BN_bn2bin(yG, bin);
-		za.append((char*)bin, len);
-		len = BN_bn2bin(xA, bin);
-		za.append((const char*)bin, len); //拼接xA
-		len = BN_bn2bin(yA, bin);
-		za.append((const char*)bin, len);//拼接yA
+		za += Bn2FixedString(yG, 32);
+
+		//拼接xA
+		za += Bn2FixedString(xA, 32);
+
+		//拼接xA
+		za += Bn2FixedString(yA, 32);
+		
 		std::string ZA = utils::Sm3::Crypto(za);
 		BN_CTX_end(ctx);
 		BN_CTX_free(ctx);
+		//printf("za=%s\n", String::BinToHexString(za).c_str());
+		//printf("ZA=%s\n", String::BinToHexString(ZA).c_str());
 		return ZA;
 	}
 
@@ -357,9 +379,9 @@ namespace utils {
 			}
 			
 			//国标第一版要求，公钥的x，y坐标第一字节不能为0
-			//if (BN_num_bytes(order) > BN_num_bytes(x) || BN_num_bytes(order) > BN_num_bytes(y)) {
-			//	continue;
-			//}
+			if (BN_num_bytes(order) != BN_num_bytes(x) || BN_num_bytes(order) != BN_num_bytes(y)) {
+				continue;
+			}
 			break;
 		} while (true);
 		BN_CTX_end(ctx);
@@ -377,11 +399,7 @@ namespace utils {
 	}
 
 	std::string EccSm2::getSkeyBin() {
-		unsigned char buff[32] = { 0 };
-		BN_bn2bin(dA_, (unsigned char*)&buff);
-		std::string str = "";
-		str.append((char*)buff, 32);
-		return str;
+		return Bn2FixedString(dA_, 32);
 	}
 
 	std::string EccSm2::Sign(const std::string& id, const std::string& msg) {
@@ -513,17 +531,9 @@ namespace utils {
 		int olen = BN_num_bytes(p);
 
 		sigr.resize(0);
-		unsigned char rr[MAX_BITS];
-		int rn = BN_bn2bin(r, rr);
-		sigr.append(olen - rn, 0);
-		sigr.append((char*)rr, rn);
-
 		sigs.resize(0);
-		unsigned char ss[MAX_BITS];
-		int sn = BN_bn2bin(s, ss);
-		sigs.append(olen - sn, 0);
-		sigs.append((char*)ss, sn);
-
+		sigr = Bn2FixedString(r, 32);
+		sigs = Bn2FixedString(s, 32);
 		free_ec_point(pt1);
 		BN_CTX_free(ctx);
 		return sigr + sigs;
@@ -650,6 +660,9 @@ namespace utils {
 			ret = 1;
 		}
 		else {
+			//printf("%s:%s\n", BN_bn2hex(R), BN_bn2hex(sig->r));
+			//printf("ZA=%s\n", utils::String::BinToHexString(ZA).c_str());
+			//printf("e=%s\n", utils::String::BinToHexString(stre).c_str());
 			ret = 0;
 		}
 
@@ -669,8 +682,8 @@ namespace utils {
 
 
 	std::string EccSm2::GetPublicKey() {
-		std::string xPA;
-		std::string yPA;
+		std::string xPA("");
+		std::string yPA("");
 		if (!valid_) {
 			return "";
 		}
@@ -684,7 +697,6 @@ namespace utils {
 		else
 			EC_POINT_get_affine_coordinates_GF2m(group_, pkey_, bn_x, bn_y, NULL);
 
-		xPA.resize(0);
 		unsigned char xx[MAX_BITS];
 		BIGNUM* order = BN_CTX_get(ctx);
 		EC_GROUP_get_order(group_, order, ctx);
@@ -693,14 +705,9 @@ namespace utils {
 		EC_GROUP_get_curve_GFp(group_, p, NULL, NULL, ctx);
 		int olen = BN_num_bytes(p);
 
-		int xlen = BN_bn2bin(bn_x, xx);
-		xPA.append(olen - xlen, 0);
-		xPA.append((char*)xx, xlen);
-		yPA.resize(0);
-		unsigned char yy[MAX_BITS];
-		int ylen = BN_bn2bin(bn_y, yy);
-		yPA.append(olen - ylen, 0);
-		yPA.append((char*)yy, ylen);
+		xPA = Bn2FixedString(bn_x, 32);
+		yPA = Bn2FixedString(bn_y, 32);
+
 		BN_CTX_end(ctx);
 		BN_CTX_free(ctx);
 		std::string out;
