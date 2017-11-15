@@ -32,7 +32,8 @@ namespace utils {
 	class Thread {
 	public:
 		explicit Thread() :
-			enabled_(false)
+			target_(NULL)
+			, enabled_(false)
 			, running_(false)
 			, handle_(Thread::INVALID_HANDLE)
 			, thread_id_(0) {}

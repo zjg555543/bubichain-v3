@@ -22,9 +22,9 @@ namespace bubi {
 		~LedgerUpgradeFrm();
 		LedgerUpgradeFrm();
 
-		int64_t recv_time;
-		std::string address;
-		protocol::LedgerUpgradeNotify msg;
+		int64_t recv_time_;
+		std::string address_;
+		protocol::LedgerUpgradeNotify msg_;
 		bool operator < (const LedgerUpgradeFrm &frm) const;
 		void ToJson(Json::Value &value) const;
 	};

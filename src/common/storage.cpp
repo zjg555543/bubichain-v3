@@ -125,10 +125,6 @@ namespace bubi {
 	bool RocksDbDriver::Open(const std::string &db_path) {
 		rocksdb::Options options;
 		options.create_if_missing = true;
-		// Optimize RocksDB. This is the easiest way to get RocksDB to perform well
-		//long cpus = sysconf(_SC_NPROCESSORS_ONLN);
-		//options.IncreaseParallelism(cpus);
-		//options.OptimizeLevelStyleCompaction();
 		rocksdb::Status status = rocksdb::DB::Open(options, db_path, &db_);
 		if (!status.ok()) {
 			utils::MutexGuard guard(mutex_);

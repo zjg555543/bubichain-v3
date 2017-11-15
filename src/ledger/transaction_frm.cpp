@@ -24,6 +24,7 @@ namespace bubi {
 
 	TransactionFrm::TransactionFrm() :
 		apply_time_(0),
+		ledger_seq_(0),
 		result_(),
 		transaction_env_(),
 		hash_(),
@@ -32,6 +33,7 @@ namespace bubi {
 		full_data_(),
 		valid_signature_(),
 		ledger_(),
+		processing_operation_(0),
 		incoming_time_(utils::Timestamp::HighResolution())
 		{
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -40,10 +42,12 @@ namespace bubi {
 
 	TransactionFrm::TransactionFrm(const protocol::TransactionEnv &env) :
 		apply_time_(0),
+		ledger_seq_(0),
 		result_(),
 		transaction_env_(env),
 		valid_signature_(),
 		ledger_(),
+		processing_operation_(0),
 		incoming_time_(utils::Timestamp::HighResolution()){
 		Initialize();
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -57,8 +61,8 @@ namespace bubi {
 		result = Proto2Json(transaction_env_);
 		result["error_code"] = result_.code();
 		result["error_desc"] = result_.desc();
-		result["close_time"] = result_.close_time_;
-		result["ledger_seq"] = result_.ledger_seq_;
+		result["close_time"] = apply_time_;
+		result["ledger_seq"] = ledger_seq_;
 		result["hash"] = utils::String::BinToHexString(hash_);
 	}
 
@@ -401,8 +405,7 @@ namespace bubi {
 		apply_time_ = envstor.close_time();
 		transaction_env_ = envstor.transaction_env();
 
-		result_.ledger_seq_ = envstor.ledger_seq();
-		result_.close_time_ = envstor.close_time();
+		ledger_seq_ = envstor.ledger_seq();
 		Initialize();
 		result_.set_code(envstor.error_code());
 		result_.set_desc(envstor.error_desc());

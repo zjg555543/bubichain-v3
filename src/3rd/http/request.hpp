@@ -44,21 +44,18 @@ struct request
 		  headers[i].name = ToLower(headers[i].name);
 	  }
 
-	  std::string request_path;
-	  if (!url_decode(uri, request_path))
-	  {
-		  return false;
-	  }
+	  std::string request_path = uri;
 	  if (request_path.size() && request_path[0] == '/')
 		  request_path = request_path.substr(1);
 
 	  std::string params;
 	  auto pos = request_path.find('?');
-	  if (pos == std::string::npos)
-		  command = request_path;
+	  if (pos == std::string::npos) {
+		  if (!url_decode(request_path, command)) return false;
+	  }
 	  else
 	  {
-		  command = request_path.substr(0, pos);
+		  if (!url_decode(request_path.substr(0, pos), command)) return false;
 		  params = request_path.substr(pos + 1);
 	  }
 
@@ -69,7 +66,10 @@ struct request
 		  std::vector<std::string> params2;
 		  Strtok(params1[i], '=', params2);
 		  if (params2.size() > 1){
-			  parameter[params2[0]] = params2[1];
+			  std::string key, value;
+			  if (!url_decode(params2[0], key)) return false;
+			  if (!url_decode(params2[1], value)) return false;
+			  parameter[key] = value;
 		  }
 	  }
 

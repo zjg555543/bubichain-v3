@@ -17,18 +17,18 @@ limitations under the License.
 #include "ledger_upgrade.h"
 
 namespace bubi {
-	LedgerUpgradeFrm::LedgerUpgradeFrm() {}
+	LedgerUpgradeFrm::LedgerUpgradeFrm() : recv_time_(0) {}
 	LedgerUpgradeFrm::~LedgerUpgradeFrm() {}
 	bool LedgerUpgradeFrm::operator < (const LedgerUpgradeFrm &frm) const {
-		std::string str1 = msg.upgrade().SerializeAsString();
-		std::string str2 = frm.msg.upgrade().SerializeAsString();
+		std::string str1 = msg_.upgrade().SerializeAsString();
+		std::string str2 = frm.msg_.upgrade().SerializeAsString();
 		return str1.compare(str2) < 0;
 	}
 
 	void LedgerUpgradeFrm::ToJson(Json::Value &value) const {
-		value["recv_time"] = recv_time;
-		value["address"] = address;
-		value["msg"] = Proto2Json(msg);
+		value["recv_time"] = recv_time_;
+		value["address"] = address_;
+		value["msg"] = Proto2Json(msg_);
 	}
 
 	LedgerUpgrade::LedgerUpgrade() :
@@ -45,7 +45,7 @@ namespace bubi {
 				iter != current_states_.end();
 				) {
 				const LedgerUpgradeFrm &frm = iter->second;
-				if (frm.recv_time + 300 * utils::MICRO_UNITS_PER_SEC < current_time) {
+				if (frm.recv_time_ + 300 * utils::MICRO_UNITS_PER_SEC < current_time) {
 					current_states_.erase(iter++);
 				}
 				else {
@@ -96,12 +96,12 @@ namespace bubi {
 
 		PublicKey pub(sig.public_key());
 		LedgerUpgradeFrm frm;
-		frm.address = pub.GetBase16Address();
-		frm.recv_time = utils::Timestamp::HighResolution();
-		frm.msg = msg;
+		frm.address_ = pub.GetBase16Address();
+		frm.recv_time_ = utils::Timestamp::HighResolution();
+		frm.msg_ = msg;
 
 		utils::MutexGuard guard(lock_);
-		current_states_[frm.address] = frm;
+		current_states_[frm.address_] = frm;
 	}
 
 	bool LedgerUpgrade::GetValid(const protocol::ValidatorSet &validators, size_t quorum_size, protocol::LedgerUpgrade &proto_upgrade) {
@@ -126,7 +126,7 @@ namespace bubi {
 				counter_upgrade[frm] = 0;
 			}
 
-			if (validator_set.find(frm.address) != validator_set.end()) {
+			if (validator_set.find(frm.address_) != validator_set.end()) {
 				counter_upgrade[frm] = counter_upgrade[frm] + 1;
 			}
 		}
@@ -136,7 +136,7 @@ namespace bubi {
 			iter++) {
 			if (iter->second >= quorum_size){
 				const LedgerUpgradeFrm &frm = iter->first;
-				proto_upgrade = frm.msg.upgrade();
+				proto_upgrade = frm.msg_.upgrade();
 				return true;
 			} 
 		}

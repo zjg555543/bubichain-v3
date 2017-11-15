@@ -20,6 +20,10 @@ namespace bubi {
 		Connection(server_h, client_h, tls_server_h, tls_client_h, con, uri, id) {
 		active_time_ = 0;
 		delay_ = 0;
+
+		peer_ledger_version_ = 0;
+		peer_overlay_version_ = 0;
+		peer_listen_port_ = 0;
 	}
 
 	Peer::~Peer() {}
