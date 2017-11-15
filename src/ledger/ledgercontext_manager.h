@@ -35,6 +35,7 @@ namespace bubi {
 		int64_t start_time_;
 
 		Json::Value logs_;
+		Json::Value rets_;
 	public:
 		LedgerContext(
 			LedgerContextManager *lpmanager,
@@ -80,6 +81,9 @@ namespace bubi {
 
 		void PushLog(const std::string &address, const utils::StringList &logs);
 		void GetLogs(Json::Value &logs);
+
+		void PushRet(const std::string &address, const Json::Value &ret);
+		void GetRets(Json::Value &rets);
 		
 		std::string GetHash();
 		int32_t GetTxTimeoutIndex();
@@ -110,7 +114,8 @@ namespace bubi {
 			int64_t total_timeout, 
 			Result &result, 
 			Json::Value &logs,
-			Json::Value &txs);
+			Json::Value &txs,
+			Json::Value &rets);
 
 		//<0 : notfound 1: found and success 0: found and failed
 		int32_t CheckComplete(const std::string &chash);

@@ -35,10 +35,11 @@ namespace bubi{
 		id_ = contract_id_seed_;
 		contract_id_seed_++;
 		tx_do_count_ = 0;
+		readonly_ = false;
 	}
 
-	Contract::Contract(const ContractParameter &parameter) :
-		parameter_(parameter) {
+	Contract::Contract(bool readonly, const ContractParameter &parameter) :
+		readonly_(readonly), parameter_(parameter) {
 		utils::MutexGuard guard(contract_id_seed_lock_);
 		id_ = contract_id_seed_;
 		contract_id_seed_++;
@@ -78,6 +79,10 @@ namespace bubi{
 		return parameter_;
 	}
 
+	bool Contract::IsReadonly() {
+		return readonly_;
+	}
+
 	const utils::StringList &Contract::GetLogs() {
 		return logs_;
 	}
@@ -105,7 +110,7 @@ namespace bubi{
 	v8::Platform* V8Contract::platform_ = nullptr;
 	v8::Isolate::CreateParams V8Contract::create_params_;
 
-	V8Contract::V8Contract(const ContractParameter &parameter) : Contract(parameter) {
+	V8Contract::V8Contract(bool readonly, const ContractParameter &parameter) : Contract(readonly,parameter) {
 		type_ = TYPE_V8;
 		isolate_ = v8::Isolate::New(create_params_);
 
@@ -450,7 +455,11 @@ namespace bubi{
 			v8::String::NewFromUtf8(isolate, "callBackGetAccountMetaData", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
 			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetAccountMetaData));
-		
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackContractQuery", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackContractQuery));
 		
 		global->Set(
 			v8::String::NewFromUtf8(isolate, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
@@ -519,8 +528,6 @@ namespace bubi{
 	}
 
 	bool V8Contract::JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, const std::string& key, Json::Value& jsonvalue) {
-		bool ret = true;
-
 		if (jsvalue->IsObject()) {  //include map arrary
 			v8::Local<v8::String> jsStr = v8::JSON::Stringify(context, jsvalue->ToObject()).ToLocalChecked();
 			std::string str = std::string(ToCString(v8::String::Utf8Value(jsStr)));
@@ -543,12 +550,11 @@ namespace bubi{
 		else if (jsvalue->IsString()) {
 			jsonvalue[key] = std::string(ToCString(v8::String::Utf8Value(jsvalue)));
 		}
-		else {
-			ret = false;
-			jsonvalue[key] = "<return value convert failed>";
+		else{
+			jsonvalue[key] = false;
 		}
 
-		return ret;
+		return true;
 	}
 
 	V8Contract* V8Contract::UnwrapContract(v8::Local<v8::Object> obj) {
@@ -620,8 +626,9 @@ namespace bubi{
 		else {
 			str = args[0]->ToString();
 		}
-
+		
 		auto type = args[0]->TypeOf(args.GetIsolate());
+		LOG_INFO("type is %s", ToCString(v8::String::Utf8Value(type)));
 		if (v8::String::NewFromUtf8(args.GetIsolate(), "undefined", v8::NewStringType::kNormal).ToLocalChecked()->Equals(type)) {
 			LOG_INFO("undefined type");
 			return;
@@ -817,9 +824,21 @@ namespace bubi{
 			ope->mutable_set_metadata()->CopyFrom(proto_setmetadata);
 
 			V8Contract *v8_contract = GetContractFrom(args.GetIsolate());
-			if (v8_contract && v8_contract->parameter_.ledger_context_) {
-				LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
+			if (!v8_contract || !v8_contract->parameter_.ledger_context_) {
+				LOG_ERROR("Can't find contract object by isolate id");
+				break;
 			}
+
+			if (!v8_contract->IsReadonly()) {
+				LOG_ERROR("The contract is readonly");
+				break;
+			}
+
+			if (!LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_)) {
+				LOG_ERROR("Do transaction failed");
+				break;
+			}
+		
 			args.GetReturnValue().Set(true);
 			return;
 		} while (false);
@@ -912,6 +931,96 @@ namespace bubi{
 		}
 	}
 
+	void V8Contract::CallBackContractQuery(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		Json::Value json;
+		json["success"] = false;
+		do {
+			if (args.Length() != 2) {
+				LOG_ERROR("parameter error");
+				args.GetReturnValue().Set(false);
+				break;
+			}
+
+			v8::HandleScope handle_scope(args.GetIsolate());
+
+			if (!args[0]->IsString()) { //the called contract address
+				LOG_ERROR("contract execute error,CallBackContractQuery, parameter 0 should be a String");
+				break;
+			}
+
+			if (!args[1]->IsString()) {
+				LOG_ERROR("contract execute error,CallBackContractQuery, parameter 1 should be a String");
+				break;
+			}
+
+			std::string address = ToCString((v8::String::Utf8Value)args[0]);
+			std::string input = ToCString((v8::String::Utf8Value)args[1]);
+
+			bubi::AccountFrm::pointer account_frm = nullptr;
+			V8Contract *v8_contract = GetContractFrom(args.GetIsolate());
+
+			bool getAccountSucceed = false;
+			if (v8_contract && v8_contract->GetParameter().ledger_context_) {
+				LedgerContext *ledger_context = v8_contract->GetParameter().ledger_context_;
+				if (!ledger_context->transaction_stack_.empty()) {
+					auto environment = ledger_context->transaction_stack_.top()->environment_;
+					if (!environment->GetEntry(address, account_frm)) {
+						LOG_ERROR("not found account");
+						break;
+					}
+					else {
+						getAccountSucceed = true;
+					}
+				}
+			}
+			else {
+				LOG_ERROR("Server internal error");
+				break;
+			}
+
+			if (!getAccountSucceed) {
+				if (!Environment::AccountFromDB(address, account_frm)) {
+					LOG_ERROR("not found account");
+					break;
+				}
+			}
+
+			if (!account_frm->GetProtoAccount().has_contract()) {
+				LOG_ERROR("the called address not contract");
+				break;
+			}
+
+			protocol::Contract contract = account_frm->GetProtoAccount().contract();
+			if (contract.payload().size() == 0) {
+				LOG_ERROR("the called address not contract");
+				break;
+			}
+
+			ContractParameter parameter;
+			parameter.code_ = contract.payload();
+			parameter.sender_ = v8_contract->GetParameter().this_address_;
+			parameter.this_address_ = address;
+			parameter.input_ = input;
+			parameter.ope_index_ = 0;
+			parameter.trigger_tx_ = "";
+			parameter.consensus_value_ = v8_contract->GetParameter().consensus_value_;
+			parameter.ledger_context_ = v8_contract->GetParameter().ledger_context_;
+			//do query
+
+			Json::Value query_result;
+			json["success"] = ContractManager::Instance().Query(contract.type(), parameter, query_result);
+			if (json["success"].asBool()) {
+				json["result"] = query_result["result"];
+			} 
+
+		} while (false);
+
+		std::string strvalue = json.toFastString();
+		v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(
+			args.GetIsolate(), strvalue.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		args.GetReturnValue().Set(v8::JSON::Parse(returnvalue));
+	}
+
 	void V8Contract::CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 		do {
@@ -962,12 +1071,22 @@ namespace bubi{
 			env.mutable_transaction()->CopyFrom(transaction);
 
 			V8Contract *v8_contract = GetContractFrom(args.GetIsolate());
-			if (v8_contract && v8_contract->parameter_.ledger_context_) {
-				if (!LedgerManager::Instance().DoTransaction(env, v8_contract->parameter_.ledger_context_)) break;
+			if (!v8_contract || !v8_contract->parameter_.ledger_context_) {
+				LOG_ERROR("Can't find contract object by isolate id");
+				break;
+			}
+
+			if (!v8_contract->IsReadonly()) {
+				LOG_ERROR("The contract is readonly");
+				break;
+			}
+
+			if (!LedgerManager::Instance().DoTransaction(env, v8_contract->parameter_.ledger_context_)) {
+				LOG_ERROR("Do transaction failed");
+				break;
 			}
 
 			args.GetReturnValue().Set(true);
-
 			return;
 		} while (false);
 
@@ -1006,7 +1125,7 @@ namespace bubi{
 	void QueryContract::Run() {
 		do {
 			utils::MutexGuard guard(mutex_);
-			contract_ = new V8Contract(parameter_);
+			contract_ = new V8Contract(true, parameter_);
 		} while (false);
 
 		ret_ = contract_->Query(result_);
@@ -1063,7 +1182,7 @@ namespace bubi{
 		parameter.code_ = code;
 		Contract *contract = NULL;
 		if (type == Contract::TYPE_V8) {
-			contract = new V8Contract(parameter);
+			contract = new V8Contract(false, parameter);
 		}
 		else {
 			error_msg = utils::String::Format("Contract type(%d) not support", type);
@@ -1082,7 +1201,7 @@ namespace bubi{
 			Contract *contract;
 			if (type == Contract::TYPE_V8) {
 				utils::MutexGuard guard(contracts_lock_);
-				contract = new V8Contract(paramter);
+				contract = new V8Contract(false, paramter);
 				//paramter->ledger_context_ 
 				//add the contract id for cancel
 
@@ -1099,6 +1218,42 @@ namespace bubi{
 			ledger_context->PopContractId();
 			ledger_context->PushLog(contract->GetParameter().this_address_, contract->GetLogs());
 			error_msg = contract->GetErrorMsg();
+			do {
+				//delete the contract from map
+				contracts_.erase(contract->GetId());
+				delete contract;
+			} while (false);
+
+			return ret;
+		} while (false);
+		return false;
+	}
+
+	bool ContractManager::Query(int32_t type, const ContractParameter &paramter, Json::Value &result) {
+		do {
+			Contract *contract;
+			if (type == Contract::TYPE_V8) {
+				utils::MutexGuard guard(contracts_lock_);
+				contract = new V8Contract(true, paramter);
+				//paramter->ledger_context_ 
+				//add the contract id for cancel
+
+				contracts_[contract->GetId()] = contract;
+			}
+			else {
+				LOG_ERROR("Contract type(%d) not support", type);
+				break;
+			}
+
+			LedgerContext *ledger_context = contract->GetParameter().ledger_context_;
+			ledger_context->PushContractId(contract->GetId());
+			bool ret = contract->Query(result);
+			ledger_context->PopContractId();
+			ledger_context->PushLog(contract->GetParameter().this_address_, contract->GetLogs());
+			Json::Value ret_obj = Json::Value(Json::objectValue);
+			ret_obj = result;
+			ret_obj["success"] = ret;
+			ledger_context->PushRet(contract->GetParameter().this_address_, ret_obj);
 			do {
 				//delete the contract from map
 				contracts_.erase(contract->GetId());

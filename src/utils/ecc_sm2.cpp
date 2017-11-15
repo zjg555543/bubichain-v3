@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ namespace utils {
 		free_ec_point(G);
 		return cfca_group_;
 	}
-
+	 
 	std::string EccSm2::Bn2FixedString(BIGNUM* bn, int len){
 		std::string result("");
 		

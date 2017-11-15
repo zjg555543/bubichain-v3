@@ -304,7 +304,7 @@ namespace bubi {
 			if (!LedgerManager::Instance().context_manager_.SyncTestProcess(Contract::TYPE_V8, 
 				test_parameter, 
 				utils::MICRO_UNITS_PER_SEC, 
-				exe_result, result["logs"], result["txs"])) {
+				exe_result, result["logs"], result["txs"], result["rets"])) {
 				error_code = exe_result.code();
 				error_desc = exe_result.desc();
 				LOG_ERROR("%s", error_desc.c_str());

@@ -667,7 +667,7 @@ namespace bubi {
 
 			if (proto_source_account.balance() < ope.amount()){
 				result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-				result_.set_desc(utils::String::Format("Account(%s) ballance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
+				result_.set_desc(utils::String::Format("Account(%s) balance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
 					address.c_str(), 
 					proto_source_account.balance(),
 					ope.amount()

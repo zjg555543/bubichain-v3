@@ -1038,6 +1038,7 @@ POST /getTransactionBlob
                 "type": 2,
                 "threshold": 21
             },
+            {//转移资产需要权力值 33
                 "type": 3,
                 "threshold": 31
             },
@@ -1060,6 +1061,7 @@ POST /getTransactionBlob
 
 ### 版本化控制
 
+每一个账号的metadata都是一个版本化的小型数据库。版本化的特点是可以避免修改冲突问题。
 
 ### 表达式
 

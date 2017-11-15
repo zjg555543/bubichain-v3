@@ -56,6 +56,7 @@ namespace bubi{
 	class Contract {
 	protected:
 		int32_t type_;
+		bool readonly_;
 		int64_t id_;
 		ContractParameter parameter_;
 
@@ -64,7 +65,7 @@ namespace bubi{
 		utils::StringList logs_;
 	public:
 		Contract();
-		Contract(const ContractParameter &parameter);
+		Contract(bool readonly, const ContractParameter &parameter);
 		virtual ~Contract();
 
 	public:
@@ -77,6 +78,7 @@ namespace bubi{
 		void IncTxDoCount();
 		int64_t GetId();
 		const ContractParameter &GetParameter();
+		bool IsReadonly();
 		const utils::StringList &GetLogs();
 		void AddLog(const std::string &log);
 		std::string GetErrorMsg();
@@ -93,7 +95,7 @@ namespace bubi{
 		v8::Isolate* isolate_;
 		v8::Global<v8::Context> g_context_;
 	public:
-		V8Contract(const ContractParameter &parameter);
+		V8Contract(bool readonly, const ContractParameter &parameter);
 		virtual ~V8Contract();
 	public:
 		virtual bool Execute();
@@ -134,6 +136,7 @@ namespace bubi{
 		static void CallBackGetLedgerInfo(const v8::FunctionCallbackInfo<v8::Value>& args);
 		//get transaction info from a transaction
 		static void CallBackGetTransactionInfo(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static void CallBackContractQuery(const v8::FunctionCallbackInfo<v8::Value>& args);
 		//static void CallBackGetThisAddress(const v8::FunctionCallbackInfo<v8::Value>& args);
 		//make a transaction
 		static void CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args);
@@ -189,6 +192,7 @@ namespace bubi{
 		bool Exit();
 
 		bool Execute(int32_t type, const ContractParameter &paramter, std::string &error_msg);
+		bool Query(int32_t type, const ContractParameter &paramter, Json::Value &result);
 		bool Cancel(int64_t contract_id);
 		bool SourceCodeCheck(int32_t type, const std::string &code, std::string &error_msg);
 		//bool Test(int32_t type, const ContractTestParameter &paramter, Json::Value& jsResult);

@@ -122,30 +122,73 @@ namespace bubi {
 			}
 		}
 
-		//construct consensus value
 		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
 		consensus_value_.set_ledger_seq(lcl.seq() + 1);
 		consensus_value_.set_close_time(lcl.close_time() + 1);
 
-		//construct trigger tx
-		protocol::TransactionEnv env;
-		protocol::Transaction *tx = env.mutable_transaction();
-		tx->set_source_address(parameter_.source_address_);
-		protocol::Operation *ope = tx->add_operations();
-		ope->set_type(protocol::Operation_Type_PAYMENT);
-		protocol::OperationPayment *payment = ope->mutable_payment();
-		payment->set_dest_address(parameter_.contract_address_);
-		payment->set_input(parameter_.input_);
+		if (parameter_.exe_or_query_) {
+			//construct consensus value
 
-		TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(env);
-		tx_frm->environment_ = environment;
-		transaction_stack_.push(tx_frm);
-		closing_ledger_->apply_tx_frms_.push_back(tx_frm);
+			//construct trigger tx
+			protocol::TransactionEnv env;
+			protocol::Transaction *tx = env.mutable_transaction();
+			tx->set_source_address(parameter_.source_address_);
+			protocol::Operation *ope = tx->add_operations();
+			ope->set_type(protocol::Operation_Type_PAYMENT);
+			protocol::OperationPayment *payment = ope->mutable_payment();
+			payment->set_dest_address(parameter_.contract_address_);
+			payment->set_input(parameter_.input_);
 
-		closing_ledger_->value_ = std::make_shared<protocol::ConsensusValue>(consensus_value_);
-		closing_ledger_->lpledger_context_ = this;
+			TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(env);
+			tx_frm->environment_ = environment;
+			transaction_stack_.push(tx_frm);
+			closing_ledger_->apply_tx_frms_.push_back(tx_frm);
 
-		return LedgerManager::Instance().DoTransaction(env, this);
+			closing_ledger_->value_ = std::make_shared<protocol::ConsensusValue>(consensus_value_);
+			closing_ledger_->lpledger_context_ = this;
+
+			return LedgerManager::Instance().DoTransaction(env, this);
+		} else{
+			do {
+				if (parameter_.code_.empty()) {
+					break;
+				}
+				bubi::AccountFrm::pointer account_frm = nullptr;
+				if (!Environment::AccountFromDB(parameter_.contract_address_, account_frm)) {
+					LOG_ERROR("not found account");
+					break;
+				}
+				if (!account_frm->GetProtoAccount().has_contract()) {
+					LOG_ERROR("the called address not contract");
+					break;
+				}
+
+				protocol::Contract contract = account_frm->GetProtoAccount().contract();
+				if (contract.payload().size() == 0) {
+					LOG_ERROR("the called address not contract");
+					break;
+				}
+				parameter_.code_ = contract.payload();
+			} while (false);
+
+			if (parameter_.code_.empty() ){
+				return false;
+			} 
+
+			ContractParameter parameter;
+			parameter.code_ = parameter_.code_;
+			parameter.sender_ = parameter_.source_address_;
+			parameter.this_address_ = parameter_.contract_address_;
+			parameter.input_ = parameter_.input_;
+			parameter.ope_index_ = 0;
+			parameter.trigger_tx_ = "";
+			parameter.consensus_value_ = Proto2Json(consensus_value_).toFastString();
+			parameter.ledger_context_ = this;
+			//do query
+
+			Json::Value query_result;
+			return ContractManager::Instance().Query(type_, parameter, query_result);
+		}
 	}
 
 	void LedgerContext::Cancel() {
@@ -177,6 +220,14 @@ namespace bubi {
 
 	void LedgerContext::GetLogs(Json::Value &logs) {
 		logs = logs_;
+	}
+
+	void LedgerContext::PushRet(const std::string &address, const Json::Value &ret) {
+		rets_[rets_.size()] = ret;
+	}
+
+	void LedgerContext::GetRets(Json::Value &rets) {
+		rets = rets_;
 	}
 
 	void LedgerContext::PushContractId(int64_t id) {
@@ -290,7 +341,8 @@ namespace bubi {
 		int64_t total_timeout, 
 		Result &result, 
 		Json::Value &logs,
-		Json::Value &txs) {
+		Json::Value &txs,
+		Json::Value &rets) {
 		LedgerContext *ledger_context = new LedgerContext(type, parameter);
 
 		if (!ledger_context->Start("test-contract")) {
@@ -347,6 +399,7 @@ namespace bubi {
 		}
 
 		ledger_context->GetLogs(logs);
+		ledger_context->GetRets(rets);
 		
 		return true;
 	}
