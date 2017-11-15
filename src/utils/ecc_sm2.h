@@ -88,7 +88,7 @@ namespace utils{
 		//失败返回NULL 
 		//成功返回新的group, 需要手动释放
 		static EC_GROUP* NewGroup(GROUP_TYPE type,std::string phex, std::string ahex, std::string bhex, std::string xGhex, std::string yGhex, std::string nhex);
-
+		static std::string Bn2FixedString(BIGNUM* bn, int len);
     private:
         EC_GROUP* group_;
 

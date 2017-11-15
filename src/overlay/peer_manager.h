@@ -65,7 +65,6 @@ namespace bubi {
 		std::string peer_node_address_;
 
 		bool cert_enabled_;
-		uint64_t ca_last_time_;
 		std::string serial_num_;
 		utils::Mutex ca_list_mutex_;
 	};

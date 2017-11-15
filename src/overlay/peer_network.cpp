@@ -594,7 +594,12 @@ namespace bubi {
 			*all.add_peers() = record;
 		} 
 
-		return db->Put(General::PEERS_TABLE, all.SerializeAsString());
+		bool ret = db->Put(General::PEERS_TABLE, all.SerializeAsString());
+		if (!ret) {
+			LOG_ERROR("Write peer table failed, error desc(%s)", db->error_desc().c_str());
+		} 
+
+		return ret;
 	}
 
 	bool PeerNetwork::UpdateItemDisconnect(const utils::InetAddress &address, int64_t conn_id) {
@@ -626,8 +631,9 @@ namespace bubi {
 			}
 		}
 		
-		if (peer_count > 0 ) {
-			return db->Put(General::PEERS_TABLE, all.SerializeAsString());
+		if (peer_count > 0 && !db->Put(General::PEERS_TABLE, all.SerializeAsString())) {
+			LOG_ERROR("Write peer table failed, error desc(%s)", db->error_desc().c_str());
+			return false;
 		} 
 		return true;
 	}

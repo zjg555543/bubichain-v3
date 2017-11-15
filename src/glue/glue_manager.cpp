@@ -28,6 +28,8 @@ namespace bubi {
 		ledgerclose_check_timer_ = 0;
 		empty_transaction_times_ = 0;
 		check_interval_ = 2 * utils::MICRO_UNITS_PER_SEC;
+		start_consensus_timer_ = 0;
+		process_uptime_ = 0;
 	}
 	GlueManager::~GlueManager() {}
 

@@ -304,22 +304,7 @@ namespace utils{
 		GetSystemInfo(&nSystemInfo);
 		core_count = nSystemInfo.dwNumberOfProcessors;
 #else
-		do {
-			File nProcFile;
-			if (!nProcFile.Open("/proc/stat", File::FILE_M_READ)) {
-				break;
-			}
-			std::string strLine;
-			if (!nProcFile.ReadLine(strLine, 1024)) {
-				nProcFile.Close();
-				break;
-			}
-			StringVector nValues = String::Strtok(strLine, ' ');
-			if (nValues.size() < 8) {
-				break;
-			}
-			core_count = nValues.size();
-		} while (false);
+		core_count = get_nprocs();
 #endif
 		return core_count;
 	}
