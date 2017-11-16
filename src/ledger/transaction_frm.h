@@ -70,7 +70,7 @@ namespace bubi {
 		uint32_t LoadFromDb(const std::string &hash);
 
 		bool CheckTimeout(int64_t expire_time);
-
+		void NonceIncrease(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env);
 		bool Apply(LedgerFrm* ledger_frm, std::shared_ptr<Environment> env, bool bool_contract = false);
 		bool ApplyExpr(const std::string &code, const std::string &log_prefix);
 

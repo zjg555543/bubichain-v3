@@ -140,6 +140,7 @@ namespace bubi {
 			}
 
 			LedgerManager::Instance().transaction_stack_.push(tx_frm);
+			tx_frm->NonceIncrease(this, environment_);
 			if (!tx_frm->Apply(this, environment_)){
 				LOG_ERROR("transaction(%s) apply failed. %s",
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
