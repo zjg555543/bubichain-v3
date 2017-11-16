@@ -461,7 +461,19 @@ POST /getTransactionBlob
 }
 ```
 
-## __配置验证节点__
+### 配置验证节点
+```http
+POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027fb6fd8e8ffbf64cf10efebd9278735d5e39a6325e
+```
+
+|参数|描述
+|:--- | --- 
+|add |逗号分隔的需要添加的验证节点列表
+|del |逗号分隔的需要删除的验证节点列表
+
+注：1. 本操作必须由本机回环地址提交。 2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
+
+
 ## 定义交易
 
 ### 交易的基本结构
@@ -558,6 +570,12 @@ POST /getTransactionBlob
 | 6      | SET_THRESHOLD     | 设置门限     |
 
 #### 创建账号
+
+|参数|描述
+|:--- | --- 
+|dest_address |  账号的地址
+|contract|  如果不填写，那么这是一个普通的账号。如果填写，那么这是一个合约账号
+| priv|  该账号的权限信息
 
 - 功能
   在区块链上创建一个新的账号
@@ -671,6 +689,11 @@ POST /getTransactionBlob
 
 #### 发行资产
 
+|参数|描述
+|:--- | --- 
+|amount |  发行的数量
+|code|  资产代码
+
 - 功能
   操作源账号发行一笔数字资产，执行成功后操作源账号的资产余额中会出现这一笔资产
 - 成功条件
@@ -700,6 +723,14 @@ POST /getTransactionBlob
     - 执行成功后，操作源的资产表中会出现这部分新发行的资产
 
 #### 转移资产
+
+|参数|描述
+|:--- | --- 
+|payment.dest_address |  目标账户
+|payment.asset.property.issuer|  资产发行方
+|payment.asset.property.code|  资产代码
+|payment.asset.amount|  要转移的数量
+|payment.input|  触发合约调用的入参
 
 - 功能
   操作源账号将一笔资产转给目标账号。若目标账号没有合约代码，则只进行转移资产操作。
@@ -756,13 +787,19 @@ POST /getTransactionBlob
 
 #### 设置metadata
 
+|参数|描述
+|:--- | --- 
+| set_metadata.key  |required，length:(0, 256]
+| set_metadata.value  |optional，length:(0, 1048576]
+| set_metadata.version |optional，default 0, 0：不限制版本，>0 : 当前 value 的版本必须为该值， <0 : 非法
+
 - 功能
   操作源账号修改或添加一个metadata到自己的metadata表中
 - 成功条件
   - 各项参数合法
 - json格式
 
-```json
+    ```JSON
     {
       "type": 4,
       "set_metadata": {
@@ -787,12 +824,13 @@ POST /getTransactionBlob
     - version: 版本号，可以不填写。若您想使用这个高级功能，参见[版本化控制](#版本化控制)
 
 #### 设置权重
+
 |参数|描述
 |:--- | --- 
-- master_weight optional，default 0， -1 ： 不设置该值，0：设置master权重值为0， >0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
-- address 需要操作的 signer 地址，符合地址校验规则。
-- weight  optional，default 0, 0 ：删除该signer，>0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
-- json格式
+|master_weight |optional，default 0， -1 ： 不设置该值，0：设置master权重值为0， >0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
+|address |需要操作的 signer 地址，符合地址校验规则。
+|weight | optional，default 0, 0 ：删除该signer，>0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
+
 - 功能
   设置签名者拥有的权重
 - 成功条件
@@ -821,7 +859,7 @@ POST /getTransactionBlob
     }
     ```
     - master_weight:本账号地址拥有的权力值
-    - 各个签名者的权力值, Singer的定义如下
+    - 各个签名者的权力值, Signer的定义如下
     ```text
     message Signer
     {
@@ -835,6 +873,12 @@ POST /getTransactionBlob
     ```
 
 #### 设置门限
+
+|参数|描述
+|:--- | --- 
+|tx_threshold |optional，default 0, 表示该账号的最低权限，-1: 表示不设置该值，>0 && <= MAX(INT64)：设置权重值为该值，其他：非法
+|type |表示某种类型的操作  (0, 100]
+|threshold | optional，default 0, 0 ：删除该类型操作，>0 && <= MAX(INT64)：设置权重值为该值，其他：非法
 
 - 功能
   设置各个操作所需要的门限
@@ -908,7 +952,7 @@ POST /getTransactionBlob
                 "type": 2,
                 "threshold": 21
             },
-            {//转移资产需要权力值 33
+            {//转移资产需要权力值 31
                 "type": 3,
                 "threshold": 31
             },
@@ -931,7 +975,7 @@ POST /getTransactionBlob
 
 ### 版本化控制
 
-每一个账号的metadata都是一个版本化的小型数据库。版本化的特点是可以避免修改冲突问题。
+每一个账号的metadata都是一个版本化的小型数据库。版本化的特点是可以避免修改冲突的问题。
 
 ### 表达式
 
