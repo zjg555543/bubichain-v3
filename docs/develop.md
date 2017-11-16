@@ -194,6 +194,7 @@ GET /getTransactionHistory?hash=ad545bfc26c440e324076fbbe1d8affbd8a2277858dc3592
 | :--------- | ------------------------ |
 | hash       | 用交易的唯一标识hash查询 |
 | ledger_seq | 查询指定区块中的所有交易 |
+
 上述两个参数产生的约束条件是逻辑与的关系，如果您同时指定两个参数，系统将在指定的区块中查询指定的交易
 
 返回示例
@@ -466,9 +467,6 @@ POST /getTransactionBlob
 ### 交易的基本结构
 
 - json格式
-## 定义交易
-### 交易的基本结构
-- json格式
   ```json
   {
       "source_address":"xxxxxxxxxxx",//交易源账号，即交易的发起方
@@ -567,14 +565,6 @@ POST /getTransactionBlob
   - 各项参数合法
   - 要创建的账号不存在
 - json格式
-
-- 功能
-  在区块链上创建一个新的账号
-- 成功条件
-  - 各项参数合法
-  - 要创建的账号不存在
-- json格式
-
 
 ```json
     {
@@ -679,67 +669,6 @@ POST /getTransactionBlob
     这是一个版本化的键值对数据库，如果您不需要，可以不填写这部分。
   - init_balance:暂时未启用
 
-#### 2. 发行资产
-  ```text
-  message OperationCreateAccount
-  {
-      string dest_address = 1;
-      Contract contract = 2;
-      AccountPrivilege priv = 3;
-      repeated KeyPair metadatas = 4;
-      int64    init_balance = 5;
-  }
-  ```
-
-  - dest_address:要创建的账号的地址
-  - contract:合约。若你想要创建一个不具有合约功能的账号，可以不填写这部分。若您想创建具有合约功能的账号，请参照[合约](#合约)
-  - priv: 账号的初始权力分配。相关的数据结构定义:
-      ```text
-        message OperationTypeThreshold
-        {
-            Operation.Type type = 1;
-            int64 threshold = 2;
-        }
-
-        message AccountPrivilege
-        {
-            int64 master_weight = 1;
-            repeated Signer signers = 2;
-            AccountThreshold thresholds = 3;
-        }
-        message Signer
-        {
-            enum Limit
-            {
-                SIGNER_NONE = 0;
-                SIGNER = 100;
-            };
-            string address = 1;
-            int64 weight = 2;
-        }
-        message AccountThreshold
-        {
-            int64 tx_threshold = 1; //required, [-1,MAX(INT64)] -1: 表示不设置
-            repeated OperationTypeThreshold type_thresholds = 2; //如果这个设置，则操作门限以这个为准
-        }
-        ```
-
-    若你想创建一个不受其他账号控制的账号。将priv.master_weight设置为1，将`priv.thresholds.tx_threshold`设为1即可。若您想创建一个受其他账号控制的账号，参见[控制权的分配](#控制权的分配)
-
-  - metadatas:metadata列表。您可以为新建的账号设置一批初始的metadata。其数据类型为KeyPair,结构如下
-
-    ```text
-    message KeyPair
-    {
-        string key = 1;
-        string value = 2;
-        int64 version = 3;
-    }
-    ```
-
-    这是一个版本化的键值对数据库，如果您不需要，可以不填写这部分。
-  - init_balance:暂时未启用
-
 #### 发行资产
 
 - 功能
@@ -773,14 +702,7 @@ POST /getTransactionBlob
 #### 转移资产
 
 - 功能
-若目标账号没有合约代码，则只进行转移资产操作。
-- 成功条件
-  - 各项参数合法
-  - 源账号该类型的资产数量足够
-- json格式
-
-- 功能
-  操作源账号将一笔资产转给目标账号
+  操作源账号将一笔资产转给目标账号。若目标账号没有合约代码，则只进行转移资产操作。
 - 成功条件
   - 各项参数合法
   - 源账号该类型的资产数量足够
@@ -809,29 +731,6 @@ POST /getTransactionBlob
     message OperationPayment
     {
         string dest_address = 1;
-- protocol buffer 结构
-        Asset asset = 2;
-#### 4. 设置metadata
-        string input = 3;
-    }
-    ```
-    - dest_address: 资产接收方账号地址
-    - asset: 要转移的资产
-    ```text
-    message Asset
-    {
-         AssetProperty property = 1; //资产属性
-         int64 amount = 2; //数量
-    }
-设置账号的metadata属性，metadata 是一个key-value 结构，可存储多个键值对。
-    message AssetProperty
-    {
-         string issuer = 1; //资产发行方
-         string code = 2; //资产代码
-    }
-    ```
-    - input: 本次转移触发接收方的合约，合约的执行入参就是input
-    {
 
         Asset asset = 2;
 
@@ -857,7 +756,6 @@ POST /getTransactionBlob
 
 #### 设置metadata
 
-- 功能
 - 功能
   操作源账号修改或添加一个metadata到自己的metadata表中
 - 成功条件
@@ -887,15 +785,7 @@ POST /getTransactionBlob
     - key: 主键，账号内唯一。长度范围[1,1024]
     - value: 值。长度范围[0,1M]
     - version: 版本号，可以不填写。若您想使用这个高级功能，参见[版本化控制](#版本化控制)
----
 
-#### 5. 设置Signer Weight
-        int64 version = 3;
-    ```
-    - key: 主键，账号内唯一。长度范围[1,1024]
-    - value: 值。长度范围[0,1M]
-    - version: 版本号，可以不填写。若您想使用这个高级功能，参见[版本化控制](#版本化控制)
-设置账号的签名属性
 #### 设置权重
 |参数|描述
 |:--- | --- 
@@ -943,29 +833,9 @@ POST /getTransactionBlob
          int64 weight = 2;
     }
     ```
-#### 6. 设置Threshold
-    message OperationSetSignerWeight
-         int64 master_weight = 1; //required, [-1,MAX(UINT32)] -1: 表示不设置
-         repeated Signer signers = 2; //address:weight, 如果weight 为0 表示删除这个signer
-    }
-    ```
-    - master_weight:本账号地址拥有的权力值
-    - 各个签名者的权力值, Signer的定义如下
-    ```text
-    message Signer
-    {
-    enum Limit{
-            SIGNER_NONE = 0;
-            SIGNER = 100;
-    };
-         string address = 1;
-         int64 weight = 2;
-    }
-    ```
-设置账号操作的权限
 
-  - 各项参数合法
-- json格式
+#### 设置门限
+
 - 功能
   设置各个操作所需要的门限
 - 成功条件
