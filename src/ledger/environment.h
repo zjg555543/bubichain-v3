@@ -62,13 +62,13 @@ namespace bubi {
 	class Environment{
 	public:
 		std::map<std::string, AccountFrm::pointer> entries_;
-		Environment *parent_;
+		//Environment *parent_;
 		//
-		Environment() = delete;
+		Environment();
 		Environment(Environment const&) = delete;
 		Environment& operator=(Environment const&) = delete;
 
-		Environment(Environment *parent);
+		//Environment(Environment *parent);
 		bool GetEntry(const std::string& key, AccountFrm::pointer &frm);
 		bool AddEntry(const std::string& key, AccountFrm::pointer frm);
 		void Commit();

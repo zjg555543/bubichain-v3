@@ -28,6 +28,12 @@ namespace bubi {
 	AccountFrm::AccountFrm(protocol::Account account_info) 
 		: account_info_(account_info) {
 		utils::AtomicInc(&bubi::General::account_new_count);
+
+		std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+		std::string metadata_prefix = ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+
+		assets_.init(Storage::Instance().account_db(), asset_prefix);
+		metadata_.init(Storage::Instance().account_db(), metadata_prefix);
 	}
 
 	AccountFrm::AccountFrm(std::shared_ptr<AccountFrm> account){
@@ -52,12 +58,10 @@ namespace bubi {
 		return true;
 	}
 
-
 	std::string AccountFrm::GetAccountAddress()const {
 		return account_info_.address();
 	}
 
-	
 	bool AccountFrm::UpdateSigner(const std::string &signer, int64_t weight) {
 		weight = weight & UINT8_MAX;
 		if (weight > 0) {
@@ -168,181 +172,70 @@ namespace bubi {
 	}
 
 	void AccountFrm::GetAllAssets(std::vector<protocol::Asset>& assets){
-		KVTrie trie;
-		auto batch = std::make_shared<WRITE_BATCH>();
-		std::string prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
-		trie.Init(Storage::Instance().account_db(), batch, prefix, 1);
-		std::vector<std::string> values;
-		trie.GetAll("", values);
-		for (size_t i = 0; i < values.size(); i++){
-			protocol::Asset asset;
-			asset.ParseFromString(values[i]);
-			assets.push_back(asset);
-		}
+		assets_.GetAll(assets);
 	}
 
 	void AccountFrm::GetAllMetaData(std::vector<protocol::KeyPair>& metadata){
-		KVTrie trie;
-		auto batch = std::make_shared<WRITE_BATCH>();
-		std::string prefix = ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
-		trie.Init(Storage::Instance().account_db(), batch, prefix, 1);
-		std::vector<std::string> values;
-		trie.GetAll("", values);
-		for (size_t i = 0; i < values.size(); i++){
-			protocol::KeyPair asset;
-			asset.ParseFromString(values[i]);
-			metadata.push_back(asset);
-		}
+		metadata_.GetAll(metadata);
 	}
 
-	bool AccountFrm::GetAsset(const protocol::AssetProperty &asset_property, protocol::Asset& asset){
-		//LOG_INFO("%p GetAsset", this);
-		auto it = assets_.find(asset_property);
-		if (it != assets_.end()){
-			if (it->second.action_ == utils::DEL){
-				return false;
-			}
-			asset.CopyFrom(it->second.data_);
-			return true;
-		}
-
-		auto batch = std::make_shared<WRITE_BATCH>();
-		std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
-		KVTrie trie;
-		trie.Init(Storage::Instance().account_db(), batch, asset_prefix, 1);
-
-		auto asset_key = asset_property.SerializeAsString();
-		std::string buff;
-	
-		if (!trie.Get(asset_key, buff)){
-			return false;
-		}
-
-		DataCache<protocol::Asset> Rec;
-		Rec.action_ = utils::MOD;
-		
-		if (!asset.ParseFromString(buff)){
-			BUBI_EXIT("fatal error,Asset ParseFromString fail, data may damaged");
-		}
-		Rec.data_.CopyFrom(asset);
-		assets_.insert({ asset_property, Rec });
-		return true;
+	bool AccountFrm::GetAsset(const protocol::AssetProperty &asset_property, protocol::Asset& asset)
+	{
+		return assets_.Get(asset_property, asset);
 	}
 
 	void AccountFrm::SetAsset(const protocol::Asset& data_ptr){
-		DataCache<protocol::Asset> Rec;
-		Rec.action_ = utils::ADD;
-		Rec.data_.CopyFrom(data_ptr);
-		assets_[data_ptr.property()] = Rec;
+		assets_.Set(data_ptr.property(), data_ptr);
 	}
 
 	//
-	bool AccountFrm::GetMetaData(const std::string& binkey, protocol::KeyPair& keypair_ptr){
-		//return assets_->GetEntry(asset_property, asset);
-		auto it = metadata_.find(binkey);
-		if (it != metadata_.end()){
-			if (it->second.action_ == utils::DEL){
-				return false;
-			}
-			keypair_ptr = it->second.data_;
-			return true;
-		}
-
-		auto batch = std::make_shared<WRITE_BATCH>();
-		KVTrie trie;
-		std::string prefix =  ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
-		trie.Init(Storage::Instance().account_db(), batch, prefix, 1);
-
-		std::string buff;
-		if (!trie.Get(binkey, buff)){
-			return false;
-		}
-		
-		if (!keypair_ptr.ParseFromString(buff)){
-			BUBI_EXIT("fatal error,Asset ParseFromString fail, data may damaged");
-		}
-		DataCache<protocol::KeyPair> Rec;
-		Rec.action_ = utils::MOD;
-		Rec.data_.CopyFrom(keypair_ptr);
-		metadata_.insert({ binkey, Rec });
-
-		return true;
+	bool AccountFrm::GetMetaData(const std::string& binkey, protocol::KeyPair& keypair_ptr)
+	{
+		StringPack key(binkey);
+		return metadata_.Get(key, keypair_ptr);
 	}
 
-	void AccountFrm::SetMetaData(const protocol::KeyPair& dataptr){
-		DataCache<protocol::KeyPair> Rec;
-		Rec.action_ = utils::ADD;
-		Rec.data_.CopyFrom(dataptr);
-		metadata_[dataptr.key()] = Rec;
+	void AccountFrm::SetMetaData(const protocol::KeyPair& dataptr)
+	{
+		StringPack key(dataptr.key());
+		metadata_.Set(key, dataptr);
 	}
 
-	bool AccountFrm::DeleteMetaData(const protocol::KeyPair& dataptr){		
-		DataCache<protocol::KeyPair> Rec;
-		Rec.action_ = utils::DEL;
-		Rec.data_.CopyFrom(dataptr);
-		metadata_[dataptr.key()] = Rec;
-		return true;
+	bool AccountFrm::DeleteMetaData(const protocol::KeyPair& dataptr)
+	{
+		StringPack key(dataptr.key());
+		return metadata_.Del(dataptr.key());
 	}
 
 	void AccountFrm::UpdateHash(std::shared_ptr<WRITE_BATCH> batch){
-		KVTrie trie_asset;
-		std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
-		trie_asset.Init(Storage::Instance().account_db(), batch, asset_prefix, 1);
 
-		KVTrie trie_metadata;
-		std::string meta_prefix = ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
-		trie_metadata.Init(Storage::Instance().account_db(), batch, meta_prefix, 1);
+		assets_.updateToDB();
+		metadata_.updateToDB();
 
-		auto& map = assets_;
-		for (auto it = map.begin(); it != map.end(); it++){
-			auto action = it->second.action_;
-			auto asset = it->second.data_;
-			Json::Value tmp = Proto2Json(asset);
-			switch (action)
-			{
-			case utils::ChangeAction::ADD:
-			case utils::ChangeAction::MOD:
-				if (asset.amount() == 0)
-					trie_asset.Delete(asset.property().SerializeAsString());
-				else
-					trie_asset.Set(asset.property().SerializeAsString(), asset.SerializeAsString());
-				break;
-			case utils::ChangeAction::DEL:
-				trie_asset.Delete(asset.property().SerializeAsString());
-				break;
-
-			default:
-				break;
-			}
-		}
-		trie_asset.UpdateHash();
-		account_info_.set_assets_hash(trie_asset.GetRootHash());
-		
-		for (auto it = metadata_.begin(); it != metadata_.end(); it++){
-			auto action = it->second.action_;
-			auto kp = it->second.data_;
-
-			switch (action)
-			{
-			case utils::ADD:
-			case utils::MOD:
-				trie_metadata.Set(it->first, kp.SerializeAsString());
-				break;
-			case utils::DEL:
-				trie_metadata.Delete(it->first);
-				break;
-
-			default:
-				break;
-			}
-		}
-		trie_metadata.UpdateHash();
-		account_info_.set_metadatas_hash(trie_metadata.GetRootHash());
+		account_info_.set_assets_hash(assets_.GetRootHash());
+		account_info_.set_metadatas_hash(metadata_.GetRootHash());
 	}
 
 	void AccountFrm::NonceIncrease(){
 		int64_t new_nonce = account_info_.nonce() + 1;
 		account_info_.set_nonce(new_nonce);
+	}
+
+	bool AccountFrm::Commit()
+	{
+		return assets_.Commit() && metadata_.Commit();
+	}
+
+	void AccountFrm::UnCommit()
+	{
+		assets_.UnCommit();
+		metadata_.UnCommit();
+	}
+
+	void AccountFrm::ResetCommitFlag()
+	{
+		assets_.ResetCommitFlag();
+		metadata_.ResetCommitFlag();
 	}
 }
 

@@ -19,10 +19,21 @@ limitations under the License.
 #include <utils/logger.h>
 #include <proto/cpp/chain.pb.h>
 #include <utils/entry_cache.h>
+#include <utils/atomBatch.h>
 #include "proto/cpp/merkeltrie.pb.h"
 #include <common/storage.h>
 #include "kv_trie.h"
 namespace bubi {
+
+
+	struct StringPack
+	{
+		std::string str_;
+		StringPack(std::string str) : str_(str){}
+
+		const std::string& SerializeAsString() const { return str_; }
+		void ParseFromString(std::string str){ str_ = str; }
+	};
 
 	struct AssetSort {
 		bool operator() (const protocol::AssetProperty& a, const protocol::AssetProperty& b)const{
@@ -30,20 +41,91 @@ namespace bubi {
 		}
 	};
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	struct StringSort {
-		bool operator() (const std::string &l, const std::string &r) const {
-			return l < r;
+	struct StringPackSort {
+		bool operator() (const StringPack &l, const StringPack &r) const {
+			return l.SerializeAsString() < r.SerializeAsString();
 		}
+	};
+
+	template<typename K, typename V, typename C = std::less<K>>
+	class AtomBatchForAccount: public AtomBatch<K, V, C>
+	{
+	public:
+		void init(KeyValueDb* db, const std::string prefix, int depth = 1)
+		{
+			auto batch = std::make_shared<WRITE_BATCH>();
+			trie_.Init(db, batch, prefix, depth);
+		}
+
+		void GetAll(std::vector<V>& vals)
+		{
+			std::vector<std::string> values;
+			trie_.GetAll("", values);
+			for (size_t i = 0; i < values.size(); i++)
+			{
+				V val;
+				val.ParseFromString(values[i]);
+				vals.push_back(val);
+			}
+		}
+
+		virtual bool GetFromDB(const K& key, V& val)
+		{
+			std::string buff;
+			auto dbKey = key.SerializeAsString();
+
+			if (!trie_.Get(dbKey, buff))
+			{
+				return false;
+			}
+
+			if (!val.ParseFromString(buff))
+			{
+				BUBI_EXIT("fatal error, obj ParseFromString fail, data may damaged.");
+				return false;
+			}
+
+			return true;
+		}
+
+		void updateToDB()
+		{
+			if (!committed_)
+				Commit();
+
+			for (auto it = data_->begin(); it != data_->end(); it++){
+				auto itAct = actionBuf_.find(it->first);
+
+				if (itAct != actionBuf_.end())
+				{
+					if (itAct->second.type_ == DEL)
+					{
+						trie_.Delete( itAct->first.SerializeAsString() );
+						continue;
+					}
+				}
+
+				trie_.Set(it->first.SerializeAsString(), it->second.SerializeAsString());
+			}
+
+			trie_.UpdateHash();
+			ClearBuf();
+		}
+
+		std::string GetRootHash(){
+			return trie_.GetRootHash();
+		}
+
+	private:
+		KVTrie trie_;
 	};
 
 
 	class AccountFrm {
 	public:
-
 		typedef std::shared_ptr<AccountFrm>	pointer;
 
-		//AccountFrm();
+		AccountFrm() = delete;
 		AccountFrm(protocol::Account account);
 		AccountFrm(std::shared_ptr< AccountFrm> account);
 
@@ -104,16 +186,14 @@ namespace bubi {
 		bool UpdateTypeThreshold(const protocol::Operation::Type type, int64_t threshold);
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
 		void NonceIncrease();
+		bool Commit();
+		void UnCommit();
+		void ResetCommitFlag();
+
 	public:
+		AtomBatchForAccount<protocol::AssetProperty, protocol::Asset, AssetSort> assets_;
+		AtomBatchForAccount<StringPack, protocol::KeyPair, StringPackSort> metadata_;
 
-		template <class T>
-		struct DataCache{
-			utils::ChangeAction action_;
-			T data_;
-		};
-
-		std::map<protocol::AssetProperty, DataCache<protocol::Asset>, AssetSort> assets_;
-		std::map<std::string, DataCache<protocol::KeyPair>> metadata_;
 	private:
 		protocol::Account	account_info_;
 	};

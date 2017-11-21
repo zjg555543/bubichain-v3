@@ -87,7 +87,7 @@ namespace bubi {
 
 	bool LedgerContext::Test() {
 		//if address not exist, then create temporary account
-		std::shared_ptr<Environment> environment = std::make_shared<Environment>(nullptr);
+		std::shared_ptr<Environment> environment = std::make_shared<Environment>();
 		if (parameter_.contract_address_.empty()) {
 			//create a temporary account
 			PrivateKey priv_key(SIGNTYPE_ED25519);

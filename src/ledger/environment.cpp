@@ -11,21 +11,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <stack>
 #include <common/storage.h>
+#include <utils/scopeGuard.h>
 #include "ledger_manager.h"
 
 namespace bubi{
 
 	//int64_t Environment::time_ = 0;
 
-	Environment::Environment(Environment* parent){
-		parent_ = parent;
-		if (parent_){
-			for (auto it = parent_->entries_.begin(); it != parent_->entries_.end(); it++){
-				entries_[it->first] = std::make_shared<AccountFrm>(it->second);
-			}
-		}
-	}
+	//Environment::Environment(Environment* parent){
+	//	parent_ = parent;
+	//	if (parent_){
+	//		for (auto it = parent_->entries_.begin(); it != parent_->entries_.end(); it++){
+	//			entries_[it->first] = std::make_shared<AccountFrm>(it->second);
+	//		}
+	//	}
+	//}
+	Environment::Environment(){}
 
 	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm){
 		if (entries_.find(key) == entries_.end()){
@@ -44,7 +47,25 @@ namespace bubi{
 	}
 
 	void Environment::Commit(){
-		parent_->entries_ = entries_;
+		std::stack< ObjScopeGuardParm0<AccountFrm*, void (AccountFrm::*)()> > scopeGuards;
+		for (auto it = entries_.begin(); it != entries_.end(); it++)
+		{
+			it->second->Commit();
+			auto pAccountFrm = it->second.get();
+			auto guard = MakeGuard(pAccountFrm, &AccountFrm::UnCommit);
+			scopeGuards.push(guard);
+		}
+		
+		while (!scopeGuards.empty())
+		{
+			scopeGuards.top().Dismiss();
+			scopeGuards.pop();
+		}
+
+		for (auto it = entries_.begin(); it != entries_.end(); it++)
+		{
+			it->second->ResetCommitFlag();
+		}
 	}
 
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer frm){

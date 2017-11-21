@@ -138,7 +138,7 @@ namespace bubi {
 		enabled_ = true;
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
-		environment_ = std::make_shared<Environment>(nullptr);
+		environment_ = std::make_shared<Environment>();
 
 		for (int i = 0; i < request.txset().txs_size() && enabled_; i++) {
 			auto txproto = request.txset().txs(i);
