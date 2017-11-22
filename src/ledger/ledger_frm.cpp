@@ -173,6 +173,7 @@ namespace bubi {
 				}
 			}
 
+			tx_frm->environment_->ClearChangeBuf();
 			apply_tx_frms_.push_back(tx_frm);
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
 			ledger_context->transaction_stack_.pop();

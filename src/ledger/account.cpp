@@ -232,10 +232,10 @@ namespace bubi {
 		metadata_.UnCommit();
 	}
 
-	void AccountFrm::ResetCommitFlag()
+	void AccountFrm::Reset()
 	{
-		assets_.ResetCommitFlag();
-		metadata_.ResetCommitFlag();
+		assets_.Reset();
+		metadata_.Reset();
 	}
 }
 

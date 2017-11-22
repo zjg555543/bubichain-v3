@@ -60,11 +60,12 @@ namespace bubi {
 		void GetAll(std::vector<V>& vals)
 		{
 			std::vector<std::string> values;
+
 			trie_.GetAll("", values);
-			for (size_t i = 0; i < values.size(); i++)
+			for (auto value : values)
 			{
 				V val;
-				val.ParseFromString(values[i]);
+				val.ParseFromString(value);
 				vals.push_back(val);
 			}
 		}
@@ -75,9 +76,7 @@ namespace bubi {
 			auto dbKey = key.SerializeAsString();
 
 			if (!trie_.Get(dbKey, buff))
-			{
 				return false;
-			}
 
 			if (!val.ParseFromString(buff))
 			{
@@ -93,23 +92,15 @@ namespace bubi {
 			if (!committed_)
 				Commit();
 
-			for (auto it = data_->begin(); it != data_->end(); it++){
-				auto itAct = actionBuf_.find(it->first);
-
-				if (itAct != actionBuf_.end())
-				{
-					if (itAct->second.type_ == DEL)
-					{
-						trie_.Delete( itAct->first.SerializeAsString() );
-						continue;
-					}
-				}
-
-				trie_.Set(it->first.SerializeAsString(), it->second.SerializeAsString());
+			for (auto entry : data_)
+			{
+				if (entry.second.type_ != DEL)
+					trie_.Set(entry.first.SerializeAsString(), entry.second.value_.SerializeAsString());
+				else
+					trie_.Delete(entry.first.SerializeAsString());
 			}
 
 			trie_.UpdateHash();
-			ClearBuf();
 		}
 
 		std::string GetRootHash(){
@@ -119,7 +110,6 @@ namespace bubi {
 	private:
 		KVTrie trie_;
 	};
-
 
 	class AccountFrm {
 	public:
@@ -188,7 +178,7 @@ namespace bubi {
 		void NonceIncrease();
 		bool Commit();
 		void UnCommit();
-		void ResetCommitFlag();
+		void Reset();
 
 	public:
 		AtomBatchForAccount<protocol::AssetProperty, protocol::Asset, AssetSort> assets_;

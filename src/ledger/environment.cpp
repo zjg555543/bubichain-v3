@@ -46,12 +46,14 @@ namespace bubi{
 		}
 	}
 
-	void Environment::Commit(){
+	void Environment::Commit()
+	{
 		std::stack< ObjScopeGuardParm0<AccountFrm*, void (AccountFrm::*)()> > scopeGuards;
-		for (auto it = entries_.begin(); it != entries_.end(); it++)
+
+		for (auto kv : entries_)
 		{
-			it->second->Commit();
-			auto pAccountFrm = it->second.get();
+			kv.second->Commit();
+			auto pAccountFrm = kv.second.get();
 			auto guard = MakeGuard(pAccountFrm, &AccountFrm::UnCommit);
 			scopeGuards.push(guard);
 		}
@@ -61,11 +63,11 @@ namespace bubi{
 			scopeGuards.top().Dismiss();
 			scopeGuards.pop();
 		}
+	}
 
-		for (auto it = entries_.begin(); it != entries_.end(); it++)
-		{
-			it->second->ResetCommitFlag();
-		}
+	void Environment::ClearChangeBuf()
+	{
+		for (auto entry : entries_){ entry.second->Reset(); }
 	}
 
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer frm){

@@ -32,44 +32,35 @@ namespace bubi
 				OBJ value_;
 				actType type_;
 				CacheValue(actType type = GET) :type_(type){}
-				CacheValue(OBJ obj, actType type = GET) :value_(obj), type_(type){}
+				CacheValue(const OBJ& obj, actType type = GET) :value_(obj), type_(type){}
 			};
 
-            typedef std::map<KEY, OBJ, COMPARE> mapKO;
             typedef std::map<KEY, CacheValue, COMPARE> mapKC;
 
 		protected:
             bool needCommit_;
             bool committed_;
 			bool uncommitted_;
-            mapKC  actionBuf_;
-            mapKC  revertBuf_;
-            mapKO  standby_;
-            mapKO  dataCopy_;
-            mapKO* data_;
+            mapKC actionBuf_;
+            mapKC revertBuf_;
+            mapKC dataCopy_;
+            mapKC data_;
 
         public:
-            AtomBatch(): data_(&standby_), needCommit_(true), committed_(false), uncommitted_(false){}
-
-			AtomBatch(mapKO* pData) : needCommit_(true), committed_(false), uncommitted_(false)
-			{
-                data_ = pData ? pData : &standby_; //avoid new\delete or malloc\free 
-			}
+            AtomBatch(): needCommit_(true), committed_(false), uncommitted_(false){}
 
 			virtual ~AtomBatch(){}
 
-            void ResetCommitFlag()
+            void Reset()
             {
                 needCommit_  = true;
                 committed_   = false;
 				uncommitted_ = false;
-            }
 
-			void ClearBuf()
-			{
 				actionBuf_.clear();
 				revertBuf_.clear();
-			}
+				dataCopy_.clear();
+            }
 
 			bool Set(const KEY& key, const OBJ& obj)
 			{
@@ -125,32 +116,10 @@ namespace bubi
 
                 try
                 {
-					for (auto itAct = actionBuf_.begin(); itAct != actionBuf_.end(); itAct++)
+					for (auto act : actionBuf_)
 					{
-						switch (itAct->second.type_)
-						{
-						case ADD:
-						{
-							revertBuf_[itAct->first] = CacheValue(DEL);
-							(*data_)[itAct->first] = itAct->second.value_;
-							break;
-						}
-						case GET:
-						case MOD:
-						{
-							revertBuf_[itAct->first] = CacheValue((*data_)[itAct->first], MOD);
-							(*data_)[itAct->first] = itAct->second.value_;
-							break;
-						}
-						case DEL:
-						{
-							revertBuf_[itAct->first] = CacheValue((*data_)[itAct->first], ADD);
-							(*data_).erase(itAct->first);
-							break;
-						}
-						default:
-							break;
-						}
+						revertBuf_[act.first] = data_[act.first];
+						data_[act.first] = act.second;
 					}
 
                     committed_  = true;
@@ -168,44 +137,23 @@ namespace bubi
 			{
                 if((!committed_) || uncommitted_)
                     return true;
-                    
-                bool ret = true;
 
 				try
 				{
-					for (auto itRev = revertBuf_.begin(); itRev != revertBuf_.end(); itRev++)
+					for (auto rev : revertBuf_)
 					{
-						switch (itRev->second.type_)
-						{
-						case ADD:
-						{
-							(*data_)[itRev->first] = itRev->second.value_;
-							break;
-						}
-						case MOD:
-						{
-							(*data_)[itRev->first] = itRev->second.value_;
-							break;
-						}
-						case DEL:
-						{
-							(*data_).erase(itRev->first);
-							break;
-						}
-
-						default:
-							break;
-						}
+						data_[rev.first] = rev.second;
 					}
+
+					uncommitted_ = true;
 				}
                 catch(std::exception& e)
                 { 
                     LOG_ERROR("uncommit exception, detail: %s", e.what());
-                    ret = false;
+                    uncommitted_ = false;
                 }
 
-				uncommitted_ = true;
-                return ret;
+                return uncommitted_;
 			}
 
             bool CopyCommit()
@@ -218,31 +166,14 @@ namespace bubi
 
                 try
                 {
-                    dataCopy_ = *data_;
-
-					for (auto itAct = actionBuf_.begin(); itAct != actionBuf_.end(); itAct++)
+                    dataCopy_ = data_;
+					for (auto act : actionBuf_)
 					{
-						switch (itAct->second.type_)
-						{
-						case ADD:
-						case MOD:
-						case GET:
-						{
-							(*data_)[itAct->first] = itAct->second.value_;
-							break;
-						}
-						case DEL:
-						{
-							(*data_).erase(itAct->first);
-							break;
-						}
-						default
-							break;
-						}
+						dataCopy_[act.first] = act.second;
 					}
 
-                    data_->swap(dataCopy_);
-					committed_ = true;
+                    data_.swap(dataCopy_);
+					committed_  = true;
 					needCommit_ = false;
                 }
 				catch (std::exception& e)
@@ -259,7 +190,7 @@ namespace bubi
                 if((!committed_) || uncommitted_)
                     return true;
 
-                data_->swap(dataCopy_);
+                data_.swap(dataCopy_);
 				uncommitted_ = true;
 
                 return true;
@@ -270,9 +201,10 @@ namespace bubi
 			virtual void updateToDB(){}
 
         private:
+
 			void SetObj(const KEY& key, const OBJ& obj)
             {
-				if (data_->find(key) == data_->end())
+				if (data_.find(key) == data_.end())
 					actionBuf_[key] = CacheValue(obj, ADD);
 				else
 					actionBuf_[key] = CacheValue(obj, MOD);
@@ -280,30 +212,39 @@ namespace bubi
 
             bool GetObj(const KEY& key, OBJ& obj)
             {
-				bool ret = true;
+				bool ret = false;
                 auto itAct = actionBuf_.find(key);
                 if(itAct != actionBuf_.end())
                 {
 					if (itAct->second.type_ != DEL)
+					{
 						obj = itAct->second.value_;
-					else
-						ret = false;
+						ret = true;
+					}
+					//else ret = false;
                 }
                 else
                 {
-                    auto itData = data_->find(key);
-                    if(itData != data_->end())
+                    auto itData = data_.find(key);
+                    if(itData != data_.end())
                     {
-                        actionBuf_[key] = CacheValue(itData->second, GET);
-						obj = actionBuf_[key].value_;
+						if (itData->second.type_ != DEL)
+						{
+							actionBuf_[key] = itData->second;
+							obj = actionBuf_[key].value_;
+							ret = true;
+						}
+						//else ret = false;
                     }
                     else
                     {
 						actionBuf_[key] = CacheValue(GET);
 						if (GetFromDB(key, actionBuf_[key].value_))
+						{
 							obj = actionBuf_[key].value_;
-						else
-							ret = false;
+							ret = true;
+						}
+						//else ret = false;
                     }
 				}
 				return ret;
