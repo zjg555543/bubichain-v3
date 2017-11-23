@@ -51,17 +51,20 @@ namespace bubi {
 	class AtomBatchForAccount: public AtomBatch<K, V, C>
 	{
 	public:
-		void init(KeyValueDb* db, const std::string prefix, int depth = 1)
+		void init(KeyValueDb* db, const std::string prefix)
 		{
-			auto batch = std::make_shared<WRITE_BATCH>();
-			trie_.Init(db, batch, prefix, depth);
+			db_ = db;
+			prefix_ = prefix;
 		}
 
 		void GetAll(std::vector<V>& vals)
 		{
+			KVTrie trie;
+			auto batch = std::make_shared<WRITE_BATCH>();
+			trie.Init(db_, batch, prefix_, 1);
 			std::vector<std::string> values;
 
-			trie_.GetAll("", values);
+			trie.GetAll("", values);
 			for (auto value : values)
 			{
 				V val;
@@ -75,7 +78,11 @@ namespace bubi {
 			std::string buff;
 			auto dbKey = key.SerializeAsString();
 
-			if (!trie_.Get(dbKey, buff))
+			KVTrie trie;
+			auto batch = std::make_shared<WRITE_BATCH>();
+			trie.Init(db_, batch, prefix_, 1);
+
+			if (!trie.Get(dbKey, buff))
 				return false;
 
 			if (!val.ParseFromString(buff))
@@ -87,28 +94,34 @@ namespace bubi {
 			return true;
 		}
 
-		void updateToDB()
+		void updateToDB(std::shared_ptr<WRITE_BATCH> batch)
 		{
 			if (!committed_)
 				Commit();
 
+			KVTrie trie;
+			trie.Init(db_, batch, prefix_, 1);
+
 			for (auto entry : data_)
 			{
 				if (entry.second.type_ != DEL)
-					trie_.Set(entry.first.SerializeAsString(), entry.second.value_.SerializeAsString());
+					trie.Set(entry.first.SerializeAsString(), entry.second.value_.SerializeAsString());
 				else
-					trie_.Delete(entry.first.SerializeAsString());
+					trie.Delete(entry.first.SerializeAsString());
 			}
 
-			trie_.UpdateHash();
+			trie.UpdateHash();
+			hash_ = trie.GetRootHash();
 		}
 
 		std::string GetRootHash(){
-			return trie_.GetRootHash();
+			return hash_;
 		}
 
 	private:
-		KVTrie trie_;
+		std::string prefix_;
+		std::string hash_;
+		KeyValueDb * db_;
 	};
 
 	class AccountFrm {

@@ -2,15 +2,12 @@
 #define TEMPLATE_ATOMIC_BATCH_PROCESS_H
 
 #include <map>
-#include <set>
 #include <stack>
-#include <vector>
 #include <string>
-#include <memory>
 #include <exception>
+#include "logger.h"
 
-#define CATCH_AND_PROCESS_EXCEPTION catch(std::exception& e){ LOG_ERROR(e.what()); needCommit_ = false; }
-//#define CATCH_AND_PROCESS_EXCEPTION catch(...){}
+//#define CATCH_AND_PROCESS_EXCEPTION catch(std::exception& e){ LOG_ERROR(e.what()); needCommit_ = false; }
 
 namespace bubi
 {
@@ -178,7 +175,7 @@ namespace bubi
                 }
 				catch (std::exception& e)
 				{
-					LOG_ERROR("uncommit exception, detail: %s", e.what());
+					LOG_ERROR("copy commit exception, detail: %s", e.what());
 					ret = false;
 				}
 

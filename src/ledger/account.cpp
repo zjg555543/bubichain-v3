@@ -209,8 +209,8 @@ namespace bubi {
 
 	void AccountFrm::UpdateHash(std::shared_ptr<WRITE_BATCH> batch){
 
-		assets_.updateToDB();
-		metadata_.updateToDB();
+		assets_.updateToDB(batch);
+		metadata_.updateToDB(batch);
 
 		account_info_.set_assets_hash(assets_.GetRootHash());
 		account_info_.set_metadatas_hash(metadata_.GetRootHash());
