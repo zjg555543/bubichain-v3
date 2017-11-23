@@ -72,14 +72,16 @@ namespace bubi {
 			batch.Put(ComposePrefix(General::TRANSACTION_PREFIX, ptr->GetContentHash()), env_store.SerializeAsString());
 			list.add_entry(ptr->GetContentHash());
 
-			for (size_t j = 0; j < ptr->instructions_.size(); j++){
-				protocol::TransactionEnvStore env_sto = ptr->instructions_.at(j);
-				env_sto.set_ledger_seq(ledger_.header().seq());
-				env_sto.set_close_time(ledger_.header().close_time());
-				std::string hash = HashWrapper::Crypto(env_sto.transaction_env().transaction().SerializeAsString());
-				batch.Put(ComposePrefix(General::TRANSACTION_PREFIX, hash), env_sto.SerializeAsString());
-				list.add_entry(hash);
-			}
+			//a transaction success so the transactions trigger by it can store
+			if (ptr->GetResult().code() == protocol::ERRCODE_SUCCESS)
+				for (size_t j = 0; j < ptr->instructions_.size(); j++){
+					protocol::TransactionEnvStore env_sto = ptr->instructions_.at(j);
+					env_sto.set_ledger_seq(ledger_.header().seq());
+					env_sto.set_close_time(ledger_.header().close_time());
+					std::string hash = HashWrapper::Crypto(env_sto.transaction_env().transaction().SerializeAsString());
+					batch.Put(ComposePrefix(General::TRANSACTION_PREFIX, hash), env_sto.SerializeAsString());
+					list.add_entry(hash);
+				}
 		}
 
 		batch.Put(ComposePrefix(General::LEDGER_TRANSACTION_PREFIX, ledger_.header().seq()), list.SerializeAsString());
@@ -140,6 +142,7 @@ namespace bubi {
 			}
 
 			LedgerManager::Instance().transaction_stack_.push(tx_frm);
+			tx_frm->NonceIncrease(this, environment_);
 			if (!tx_frm->Apply(this, environment_)){
 				LOG_ERROR("transaction(%s) apply failed. %s",
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());

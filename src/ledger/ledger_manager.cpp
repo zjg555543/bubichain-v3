@@ -928,9 +928,20 @@ namespace bubi {
 			}
 
 			transaction_stack_.push(txfrm);
-			if (txfrm->ValidForParameter()){
-				txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+			if (LedgerManager::Instance().closing_ledger_->GetProtoHeader().version() >= 3001){
+				txfrm->NonceIncrease(LedgerManager::Instance().closing_ledger_.get(), back->environment_);
+				if (txfrm->ValidForParameter()){
+					txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+				}
 			}
+			else{
+				
+				if (txfrm->ValidForParameter()){
+					txfrm->NonceIncrease(LedgerManager::Instance().closing_ledger_.get(), back->environment_);
+					txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+				}
+			}
+
 
 			protocol::TransactionEnvStore tx_store;
 			tx_store.mutable_transaction_env()->CopyFrom(txfrm->GetProtoTxEnv());
