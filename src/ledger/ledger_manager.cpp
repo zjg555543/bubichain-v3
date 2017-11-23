@@ -933,7 +933,7 @@ namespace bubi {
 
 			ledger_context->transaction_stack_.push(txfrm);
 			if (ledger_context->closing_ledger_->GetProtoHeader().version() >= 3001){
-				txfrm->NonceIncrease(LedgerManager::Instance().closing_ledger_.get(), back->environment_);
+				txfrm->NonceIncrease(ledger_context->closing_ledger_.get(), back->environment_);
 				if (txfrm->ValidForParameter()){
 				txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
 				}
@@ -941,8 +941,8 @@ namespace bubi {
 			else{
 				
 				if (txfrm->ValidForParameter()){
-					txfrm->NonceIncrease(LedgerManager::Instance().closing_ledger_.get(), back->environment_);
-					txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+					txfrm->NonceIncrease(ledger_context->closing_ledger_.get(), back->environment_);
+					txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
 				}
 			}
 

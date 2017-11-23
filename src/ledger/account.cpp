@@ -59,12 +59,6 @@ namespace bubi {
 
 	
 	bool AccountFrm::UpdateSigner(const std::string &signer, int64_t weight) {
-
-		//fit the bug for version < 3001
-		if (LedgerManager::Instance().closing_ledger_->GetProtoHeader().version() < 3001) {
-			weight = weight & UINT8_MAX;
-		}
-
 		if (weight > 0) {
 			bool found = false;
 			for (int32_t i = 0; i < account_info_.mutable_priv()->signers_size(); i++) {
