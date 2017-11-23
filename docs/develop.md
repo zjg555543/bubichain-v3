@@ -164,9 +164,9 @@ HTTP GET /getAccount?address=a002423c235a7ba9649347ff85b6be1c51980d1eff0398&key=
     ],
     "nonce" : 1, //账号当前作为交易源执行过的交易数量。若nonce为0，该字段不显示
     "priv" : {
-      "master_weight" : "1",
+      "master_weight" : 1,
       "thresholds" : {
-        "tx_threshold" : "1"
+        "tx_threshold" : 1
       }
     },
     "storage_hash" : "82c8407cc7cd77897be3100c47ed9d43ec4097ee1c00e2c13447187e5b1ac66c"
