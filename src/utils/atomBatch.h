@@ -115,7 +115,9 @@ namespace bubi
                 {
 					for (auto act : actionBuf_)
 					{
-						revertBuf_[act.first] = data_[act.first];
+                        if(data_.find(act.first) != data_.end())
+						    revertBuf_[act.first] = data_[act.first];
+
 						data_[act.first] = act.second;
 					}
 
