@@ -623,7 +623,6 @@ namespace bubi {
 		const protocol::OperationSetSignerWeight &ope = operation_.set_signer_weight();
 		do {
 
-
 			if (ope.master_weight() >= 0) {
 				source_account_->SetProtoMasterWeight(ope.master_weight());
 			}

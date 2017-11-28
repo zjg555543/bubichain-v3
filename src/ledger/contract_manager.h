@@ -121,7 +121,7 @@ namespace bubi{
 		static v8::Isolate::CreateParams create_params_;
 
 		static bool RemoveRandom(v8::Isolate* isolate, Json::Value &error_msg);
-		static v8::Local<v8::Context> CreateContext(v8::Isolate* isolate);
+		static v8::Local<v8::Context> CreateContext(v8::Isolate* isolate, bool readonly);
 		static V8Contract *GetContractFrom(v8::Isolate* isolate);
 		static Json::Value ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch);
 		static const char* ToCString(const v8::String::Utf8Value& value);
@@ -141,7 +141,8 @@ namespace bubi{
 		//make a transaction
 		static void CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static V8Contract *UnwrapContract(v8::Local<v8::Object> obj);
-		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, const std::string& key, Json::Value& jsonvalue);
+		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, Json::Value& jsonvalue);
+		static bool CppJsonToJsValue(v8::Isolate* isolate, Json::Value& jsonvalue, v8::Local<v8::Value>& jsvalue);
 	};
 
 	class QueryContract : public utils::Thread{

@@ -171,7 +171,7 @@ namespace bubi{
 		v8::HandleScope handle_scope(isolate_);
 		v8::TryCatch try_catch(isolate_);
 
-		v8::Local<v8::Context> context = CreateContext(isolate_);
+		v8::Local<v8::Context> context = CreateContext(isolate_, false);
 
 		v8::Context::Scope context_scope(context);
 
@@ -268,7 +268,7 @@ namespace bubi{
 		v8::HandleScope handle_scope(isolate_);
 		v8::TryCatch try_catch(isolate_);
 
-		v8::Local<v8::Context> context = CreateContext(isolate_);
+		v8::Local<v8::Context> context = CreateContext(isolate_, false);
 		v8::Context::Scope context_scope(context);
 
 
@@ -336,8 +336,40 @@ namespace bubi{
 		v8::HandleScope    handle_scope(isolate_);
 		v8::TryCatch       try_catch(isolate_);
 
-		v8::Local<v8::Context>       context = CreateContext(isolate_);
+		v8::Local<v8::Context>       context = CreateContext(isolate_, true);
 		v8::Context::Scope            context_scope(context);
+
+		v8::Local<v8::Value> vtoken = v8::String::NewFromUtf8(isolate_, parameter_.this_address_.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		context->SetSecurityToken(vtoken);
+
+		auto string_sender = v8::String::NewFromUtf8(isolate_, parameter_.sender_.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		context->Global()->Set(context,
+			v8::String::NewFromUtf8(isolate_, sender_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
+			string_sender);
+
+		auto string_contractor = v8::String::NewFromUtf8(isolate_, parameter_.this_address_.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		context->Global()->Set(context,
+			v8::String::NewFromUtf8(isolate_, this_address_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
+			string_contractor);
+
+
+		auto str_json_v8 = v8::String::NewFromUtf8(isolate_, parameter_.trigger_tx_.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		auto tx_v8 = v8::JSON::Parse(str_json_v8);
+		context->Global()->Set(context,
+			v8::String::NewFromUtf8(isolate_, trigger_tx_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
+			tx_v8);
+
+		v8::Local<v8::Integer> index_v8 = v8::Int32::New(isolate_, parameter_.ope_index_);
+		context->Global()->Set(context,
+			v8::String::NewFromUtf8(isolate_, trigger_tx_index_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
+			index_v8);
+
+		auto v8_consensus_value = v8::String::NewFromUtf8(isolate_, parameter_.consensus_value_.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+		auto v8HeadJson = v8::JSON::Parse(v8_consensus_value);
+		context->Global()->Set(context,
+			v8::String::NewFromUtf8(isolate_, this_header_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
+			v8HeadJson);
+
 
 		v8::Local<v8::String> v8src = v8::String::NewFromUtf8(isolate_, parameter_.code_.c_str());
 		v8::Local<v8::Script> compiled_script;
@@ -386,13 +418,9 @@ namespace bubi{
 				break;
 			}
 
-			if (!JsValueToCppJson(context, callRet, "result", temp_result)) {
-				Json::Value &exception = temp_result["result"];
-				LOG_ERROR("the result of function %s in contract parse failed", query_name_);
-				break;
-			}
-
-			js_result["result"] = temp_result["result"];
+			JsValueToCppJson(context, callRet, temp_result);
+			Json::Value &result_v = js_result["result"];
+			result_v[result_v.size()] = temp_result;
 			return true;
 		} while (false);
 
@@ -431,7 +459,7 @@ namespace bubi{
 		return true;
 	}
 
-	v8::Local<v8::Context> V8Contract::CreateContext(v8::Isolate* isolate) {
+	v8::Local<v8::Context> V8Contract::CreateContext(v8::Isolate* isolate, bool readonly) {
 		// Create a template for the global object.
 		v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
 		// Bind the global 'print' function to the C++ Print callback.
@@ -461,10 +489,17 @@ namespace bubi{
 			.ToLocalChecked(),
 			v8::FunctionTemplate::New(isolate, V8Contract::CallBackContractQuery));
 		
-		global->Set(
-			v8::String::NewFromUtf8(isolate, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
-			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate, V8Contract::CallBackSetAccountMetaData));
+		if (!readonly) {
+			global->Set(
+				v8::String::NewFromUtf8(isolate, "callBackSetAccountMetaData", v8::NewStringType::kNormal)
+				.ToLocalChecked(),
+				v8::FunctionTemplate::New(isolate, V8Contract::CallBackSetAccountMetaData));
+
+			global->Set(
+				v8::String::NewFromUtf8(isolate, "callBackDoOperation", v8::NewStringType::kNormal)
+				.ToLocalChecked(),
+				v8::FunctionTemplate::New(isolate, V8Contract::CallBackDoOperation));
+		} 
 		
 		global->Set(
 			v8::String::NewFromUtf8(isolate, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
@@ -475,11 +510,7 @@ namespace bubi{
 		v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
 		.ToLocalChecked(),
 		v8::FunctionTemplate::New(isolate_, ContractManager::CallBackGetTransactionInfo, v8::External::New(isolate_, this)));*/
-		
-		global->Set(
-			v8::String::NewFromUtf8(isolate, "callBackDoOperation", v8::NewStringType::kNormal)
-			.ToLocalChecked(),
-			v8::FunctionTemplate::New(isolate, V8Contract::CallBackDoOperation));
+
 		
 		global->Set(
 			v8::String::NewFromUtf8(isolate, "include", v8::NewStringType::kNormal)
@@ -527,31 +558,58 @@ namespace bubi{
 		return json_result;
 	}
 
-	bool V8Contract::JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, const std::string& key, Json::Value& jsonvalue) {
+	bool V8Contract::CppJsonToJsValue(v8::Isolate* isolate, Json::Value& jsonvalue, v8::Local<v8::Value>& jsvalue) {
+		std::string type = jsonvalue["type"].asString();
+		if (type == "jsobject") {
+			std::string value = jsonvalue["value"].asString();
+			v8::Local<v8::String> str = v8::String::NewFromUtf8(isolate, value.c_str());
+			jsvalue = v8::JSON::Parse(str);
+		}
+		else if (type == "number") {
+			std::string value = jsonvalue["value"].asString();
+			std::string bin_double = utils::String::HexStringToBin(value);
+			double d_value = 0;
+			memcpy(&d_value, bin_double.c_str(), sizeof(double));
+			jsvalue = v8::Number::New(isolate, d_value);
+		}
+		else if (type == "string") {
+			jsvalue = v8::String::NewFromUtf8(isolate, jsonvalue["value"].asCString());
+		}
+		else if (type == "bool") {
+			jsvalue = v8::Boolean::New(isolate, jsonvalue["value"].asBool());
+		}
+
+		return true;
+	}
+
+	bool V8Contract::JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, Json::Value& jsonvalue) {
 		if (jsvalue->IsObject()) {  //include map arrary
 			v8::Local<v8::String> jsStr = v8::JSON::Stringify(context, jsvalue->ToObject()).ToLocalChecked();
 			std::string str = std::string(ToCString(v8::String::Utf8Value(jsStr)));
-
-			Json::Value jsValue;
-			jsValue.fromString(str);
-			jsonvalue[key] = jsValue;
+			
+			jsonvalue["type"] = "jsobject";
+			jsonvalue["value"] = str;
 		}
 		else if (jsvalue->IsNumber()) {
-			double jsRet = jsvalue->NumberValue();
-
-			//char buf[16] = { 0 };
-			//snprintf(buf, sizeof(buf), "%lf", jsRet);
-			jsonvalue[key] = jsRet;
+			double s_value = jsvalue->NumberValue();
+			std::string value;
+			value.resize(sizeof(double));
+			memcpy((void *)value.c_str(), &s_value, sizeof(double));
+			jsonvalue["type"] = "number";
+			jsonvalue["value"] = utils::String::BinToHexString(value);
+			jsonvalue["valuePlain"] = jsvalue->NumberValue();
 		}
 		else if (jsvalue->IsBoolean()) {
-			//std::string jsRet = jsvalue->BooleanValue() ? "true" : "false";
-			jsonvalue[key] = jsvalue->BooleanValue();
+			jsonvalue["type"] = "bool";
+			jsonvalue["value"] = jsvalue->BooleanValue();
 		}
 		else if (jsvalue->IsString()) {
-			jsonvalue[key] = std::string(ToCString(v8::String::Utf8Value(jsvalue)));
+			jsonvalue["type"] = "string";
+			jsonvalue["value"] = std::string(ToCString(v8::String::Utf8Value(jsvalue)));
 		}
-		else{
-			jsonvalue[key] = false;
+		else {
+			jsonvalue["type"] = "bool";
+			jsonvalue["value"] = false;
 		}
 
 		return true;
@@ -932,16 +990,18 @@ namespace bubi{
 	}
 
 	void V8Contract::CallBackContractQuery(const v8::FunctionCallbackInfo<v8::Value>& args) {
-		Json::Value json;
-		json["success"] = false;
+
+		v8::HandleScope handle_scope(args.GetIsolate());
+		v8::Local<v8::Object> obj = v8::Object::New(args.GetIsolate());
+		v8::Local<v8::Boolean> flag_false = v8::Boolean::New(args.GetIsolate(), false);
+		obj->Set(v8::String::NewFromUtf8(args.GetIsolate(), "success"), flag_false);
+
 		do {
 			if (args.Length() != 2) {
 				LOG_ERROR("parameter error");
 				args.GetReturnValue().Set(false);
 				break;
 			}
-
-			v8::HandleScope handle_scope(args.GetIsolate());
 
 			if (!args[0]->IsString()) { //the called contract address
 				LOG_ERROR("contract execute error,CallBackContractQuery, parameter 0 should be a String");
@@ -1008,17 +1068,22 @@ namespace bubi{
 			//do query
 
 			Json::Value query_result;
-			json["success"] = ContractManager::Instance().Query(contract.type(), parameter, query_result);
-			if (json["success"].asBool()) {
-				json["result"] = query_result["result"];
+			bool ret = ContractManager::Instance().Query(contract.type(), parameter, query_result);
+
+			v8::Local<v8::Boolean> flag = v8::Boolean::New(args.GetIsolate(), ret);
+			obj->Set(v8::String::NewFromUtf8(args.GetIsolate(), "success"), flag);
+
+			Json::Value js_array = query_result["result"];
+			if (ret && js_array.size() > 0) {
+
+				v8::Local<v8::Value> v8_result;
+				CppJsonToJsValue(args.GetIsolate(), js_array[(uint32_t)0], v8_result);
+				obj->Set(v8::String::NewFromUtf8(args.GetIsolate(), "result"), v8_result);
 			} 
 
 		} while (false);
 
-		std::string strvalue = json.toFastString();
-		v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(
-			args.GetIsolate(), strvalue.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
-		args.GetReturnValue().Set(v8::JSON::Parse(returnvalue));
+		args.GetReturnValue().Set(obj);
 	}
 
 	void V8Contract::CallBackDoOperation(const v8::FunctionCallbackInfo<v8::Value>& args) {
