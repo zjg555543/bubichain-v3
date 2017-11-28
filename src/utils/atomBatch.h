@@ -21,7 +21,8 @@ namespace bubi
                 MOD = 1,
                 DEL = 2,
                 GET = 3,
-				DEF,
+				REV = 4,
+				MAX,
             };
 
 			struct CacheValue
@@ -115,10 +116,12 @@ namespace bubi
                 {
 					for (auto act : actionBuf_)
 					{
-                        if(data_.find(act.first) != data_.end())
-						    revertBuf_[act.first] = data_[act.first];
+						if(act.second.type_ == ADD)
+							revertBuf_[act.first] = CacheValue(REV); //if type_ == REV when UnCommit, data_.erase(key)
+						else
+							revertBuf_[act.first] = data_[act.first];
 
-						data_[act.first] = act.second;
+						data_[act.first] = act.second; //include type_ == DEL(UpdateToDB will use DEL and key)
 					}
 
                     committed_  = true;
@@ -141,7 +144,10 @@ namespace bubi
 				{
 					for (auto rev : revertBuf_)
 					{
-						data_[rev.first] = rev.second;
+						if (rev.second.type_ == REV)
+							data_.erase(rev.first);
+						else
+							data_[rev.first] = rev.second;
 					}
 
 					uncommitted_ = true;

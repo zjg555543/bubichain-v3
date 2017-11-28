@@ -196,11 +196,11 @@ namespace bubi {
 
 	bool LedgerFrm::Commit(KVTrie* trie, int64_t& new_count, int64_t& change_count) {
 		auto batch = trie->batch_;
-		for (auto it = environment_->entries_.begin(); it != environment_->entries_.end(); it++){
-			std::shared_ptr<AccountFrm> account = it->second;
+		for (auto entry : environment_->entries_){
+			std::shared_ptr<AccountFrm> account = entry.second;
 			account->UpdateHash(batch);
 			std::string ss = account->Serializer();
-			std::string index = utils::String::HexStringToBin(it->first);
+			std::string index = utils::String::HexStringToBin(entry.first);
 			bool is_new = trie->Set(index, ss);
 			if (is_new){
 				new_count++;
@@ -209,6 +209,7 @@ namespace bubi {
 				change_count++;
 			}
 		}
+
 		return true;
 	}
 }

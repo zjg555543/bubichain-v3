@@ -104,10 +104,10 @@ namespace bubi {
 
 			for (auto entry : data_)
 			{
-				if (entry.second.type_ != DEL)
-					trie.Set(entry.first.SerializeAsString(), entry.second.value_.SerializeAsString());
-				else
+				if (entry.second.type_ == DEL)
 					trie.Delete(entry.first.SerializeAsString());
+				else
+					trie.Set(entry.first.SerializeAsString(), entry.second.value_.SerializeAsString());
 			}
 
 			trie.UpdateHash();
