@@ -193,11 +193,9 @@ namespace bubi {
 		void UnCommit();
 		void Reset();
 
-	public:
+	private:
 		AtomBatchForAccount<protocol::AssetProperty, protocol::Asset, AssetSort> assets_;
 		AtomBatchForAccount<StringPack, protocol::KeyPair, StringPackSort> metadata_;
-
-	private:
 		protocol::Account	account_info_;
 	};
 

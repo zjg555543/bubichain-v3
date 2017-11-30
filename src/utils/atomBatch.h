@@ -2,7 +2,6 @@
 #define TEMPLATE_ATOMIC_BATCH_PROCESS_H
 
 #include <map>
-#include <stack>
 #include <string>
 #include <exception>
 #include "logger.h"
@@ -243,7 +242,7 @@ namespace bubi
                     }
                     else
                     {
-						actionBuf_[key] = CacheValue(GET);
+						actionBuf_[key] = CacheValue(ADD);
 						if (GetFromDB(key, actionBuf_[key].value_))
 						{
 							obj = actionBuf_[key].value_;
