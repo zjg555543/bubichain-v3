@@ -1062,7 +1062,7 @@ namespace bubi{
 			parameter.this_address_ = address;
 			parameter.input_ = input;
 			parameter.ope_index_ = 0;
-			parameter.trigger_tx_ = "";
+			parameter.trigger_tx_ = "{}";
 			parameter.consensus_value_ = v8_contract->GetParameter().consensus_value_;
 			parameter.ledger_context_ = v8_contract->GetParameter().ledger_context_;
 			//do query

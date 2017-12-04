@@ -181,7 +181,7 @@ namespace bubi {
 			parameter.this_address_ = parameter_.contract_address_;
 			parameter.input_ = parameter_.input_;
 			parameter.ope_index_ = 0;
-			parameter.trigger_tx_ = "";
+			parameter.trigger_tx_ = "{}";
 			parameter.consensus_value_ = Proto2Json(consensus_value_).toFastString();
 			parameter.ledger_context_ = this;
 			//do query
