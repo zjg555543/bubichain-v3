@@ -1753,12 +1753,14 @@ bool CA::CheckCertValidity(X509 *x509, char *not_before, char *not_after, char *
 		}
 
 		struct tm tm_not_before;
+		memset(&tm_not_before, 0, sizeof(tm_not_before));
 		if (asn1_time_to_tm(&tm_not_before, not_before_time) != 1) {
 			sprintf(out_msg, "parse begin time failed, maybe the certificate is broken");
 			break;
 		}
 
 		struct tm tm_not_after;
+		memset(&tm_not_after, 0, sizeof(tm_not_after));
 		if (asn1_time_to_tm(&tm_not_after, not_after_time) != 1) {
 			sprintf(out_msg, "parse end time failed, maybe the certificate is broken");
 			break;
