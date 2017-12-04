@@ -1269,23 +1269,12 @@ bool CA::mkRoot(stuSUBJECT *rootInfo, X509 **x509p, RSA **rsa, EVP_PKEY **ppkey,
 
 		X509_set_version(x, 2);
 		ASN1_INTEGER_set(X509_get_serialNumber(x), 1);
-		ASN1_TIME* not_before_time = X509_gmtime_adj(X509_get_notBefore(x), 0);
-		struct tm tm_not_before;
+		X509_gmtime_adj(X509_get_notBefore(x), 0);
+		X509_gmtime_adj(X509_get_notAfter(x), (long)SECS_PER_DAY * days);
 		char not_before[20] = { 0 };
-		if (asn1_time_to_tm(&tm_not_before, not_before_time) == 1) {
-			int hour = (1 == tm_not_before.tm_isdst) ? (tm_not_before.tm_hour + 7 >= 24 ? (tm_not_before.tm_hour - 17) : (tm_not_before.tm_hour + 7))
-				: (tm_not_before.tm_hour + 8 >= 24 ? (tm_not_before.tm_hour - 16) : (tm_not_before.tm_hour + 8));
-			sprintf(not_before, "%04d%02d%02d%02d%02d%02d", tm_not_before.tm_year + 1900, tm_not_before.tm_mon + 1, tm_not_before.tm_mday,
-				hour, tm_not_before.tm_min, tm_not_before.tm_sec);
-		}
-		ASN1_TIME* not_after_time = X509_gmtime_adj(X509_get_notAfter(x), (long)SECS_PER_DAY * days);
-		struct tm tm_not_after;
 		char not_after[20] = { 0 };
-		if (asn1_time_to_tm(&tm_not_after, not_after_time) == 1) {
-			int hour = (1 == tm_not_after.tm_isdst) ? (tm_not_after.tm_hour + 7 >= 24 ? (tm_not_after.tm_hour - 17) : (tm_not_after.tm_hour + 7))
-				: (tm_not_after.tm_hour + 8 >= 24 ? (tm_not_after.tm_hour - 16) : (tm_not_after.tm_hour + 8));
-			sprintf(not_after, "%04d%02d%02d%02d%02d%02d", tm_not_after.tm_year + 1900, tm_not_after.tm_mon + 1, tm_not_after.tm_mday,
-				hour, tm_not_after.tm_min, tm_not_after.tm_sec);
+		if (!CheckCertValidity(x, not_before, not_after, out_msg)) {
+			break;
 		}
 
 		X509_set_pubkey(x, pk);
@@ -1752,7 +1741,7 @@ bool CA::CheckCertValidity(X509 *x509, char *not_before, char *not_after, char *
 		}
 
 		ASN1_TIME* not_before_time = X509_get_notBefore(x509);
-		if (X509_cmp_current_time(not_before_time) > 0) {
+		if (X509_cmp_current_time(not_before_time) >= 0) {
 			sprintf(out_msg, "the begin time of the certificate can not later than the current time");
 			break;
 		}
