@@ -149,31 +149,6 @@ namespace bubi {
 
 			return LedgerManager::Instance().DoTransaction(env, this);
 		} else{
-			do {
-				if (parameter_.code_.empty()) {
-					break;
-				}
-				bubi::AccountFrm::pointer account_frm = nullptr;
-				if (!Environment::AccountFromDB(parameter_.contract_address_, account_frm)) {
-					LOG_ERROR("not found account");
-					break;
-				}
-				if (!account_frm->GetProtoAccount().has_contract()) {
-					LOG_ERROR("the called address not contract");
-					break;
-				}
-
-				protocol::Contract contract = account_frm->GetProtoAccount().contract();
-				if (contract.payload().size() == 0) {
-					LOG_ERROR("the called address not contract");
-					break;
-				}
-				parameter_.code_ = contract.payload();
-			} while (false);
-
-			if (parameter_.code_.empty() ){
-				return false;
-			} 
 
 			ContractParameter parameter;
 			parameter.code_ = parameter_.code_;

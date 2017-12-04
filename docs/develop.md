@@ -473,6 +473,52 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
 
 注：1. 本操作必须由本机回环地址提交。 2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
 
+### 调试合约
+```http
+POST /testContract
+{
+    contract_address : "a00166eab331780d29cbd0b6804de1ee92413a1fc924d4",
+    code : "",
+    input : "{}",
+    exe_or_query : true,
+    source_address : ""
+}
+```
+  - contract_address: 调用的智能合约地址，如果从数据库查询不到则返回错误。
+  - code： 如果 contract_address 为空，则使用code 字段，如果code字段你也为空，则返回错误。
+  - input： 给被调用的合约传参。
+  - exe_or_query: true :准备调用合约的读写接口main，false :调用只读接口query。
+  - source_address：模拟调用合约的原地址。
+
+
+  - 返回值如下：
+  
+
+```json
+  {
+   "error_code" : 0,
+   "error_desc" : "",
+   "result" : {
+      "logs" : {
+         "0-a00166eab331780d29cbd0b6804de1ee92413a1fc924d4" : null
+      },
+      "rets" : [
+         {
+            "result" : [
+               {
+                  "type" : "string",
+                  "value" : "abc"
+               }
+            ],
+            "success" : true
+         }
+      ],
+      "txs" : null
+   }
+}
+```
+
+
 
 ## 定义交易
 
@@ -792,6 +838,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
 | set_metadata.key  |required，length:(0, 256]
 | set_metadata.value  |optional，length:(0, 1048576]
 | set_metadata.version |optional，default 0, 0：不限制版本，>0 : 当前 value 的版本必须为该值， <0 : 非法
+| set_metadata.delete_flag | optional，default false。 false：非删除操作。 true: 删除该key，注意value此时必须为空
 
 - 功能
   操作源账号修改或添加一个metadata到自己的metadata表中
@@ -1014,7 +1061,9 @@ function foo(bar)
   /*do whatever you want*/
 
 }
-function main(input)
+
+ //read and write
+function main(input) 
 {
   var para = JSON.parse(input);
   if (para.do_foo)
@@ -1024,6 +1073,11 @@ function main(input)
     };
     foo(x);
   }
+}
+
+//read only
+function query(input){
+    return callBackGetAccountMetaData(thisAddress, input);
 }
 ```
 
@@ -1123,7 +1177,25 @@ function main(input)
     */
 
     ```
-
+    
+- #####  合约查询
+    ```javascript
+    callBackContractQuery(contractAddress, input);
+    ```
+    调用其他合约执行查询操作，第一个参数是被调用合约地址，第二个参数是需要传给合约的参数。
+     - 返回值是一个对象：
+     
+    ```javascript
+    {
+       'success' : true,
+       'result' : value
+    }
+    ```
+    
+    如果调用失败，则success 字段为false, 失败的原因可能为合约无法找到等。一旦为true，那result字段为被调用函数真正的返回值，可以
+    为字符串，数字，对象，布尔值这四种类型。
+  
+    
 - #####  做交易
     ```javascript
     callBackDoOperation(transaction)
