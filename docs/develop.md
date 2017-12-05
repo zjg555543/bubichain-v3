@@ -835,7 +835,7 @@ POST /testContract
 
 |参数|描述
 |:--- | --- 
-| set_metadata.key  |required，length:(0, 256]
+| set_metadata.key  |required，length:(0, 1024]
 | set_metadata.value  |optional，length:(0, 1048576]
 | set_metadata.version |optional，default 0, 0：不限制版本，>0 : 当前 value 的版本必须为该值， <0 : 非法
 | set_metadata.delete_flag | optional，default false。 false：非删除操作。 true: 删除该key，注意value此时必须为空
