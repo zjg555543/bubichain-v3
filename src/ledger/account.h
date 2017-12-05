@@ -48,10 +48,10 @@ namespace bubi {
 	};
 
 	template<typename K, typename V, typename C = std::less<K>>
-	class AtomBatchForAccount: public AtomBatch<K, V, C>
+	class MapPackForAcc: public AtomBatch<std::string, K, V, C>::MapPack
 	{
 	public:
-		void init(KeyValueDb* db, const std::string prefix)
+		void InitDB(KeyValueDb* db, const std::string prefix)
 		{
 			db_ = db;
 			prefix_ = prefix;
@@ -96,19 +96,17 @@ namespace bubi {
 
 		void updateToDB(std::shared_ptr<WRITE_BATCH> batch)
 		{
-			if (!committed_)
-				Commit();
-
 			KVTrie trie;
 			trie.Init(db_, batch, prefix_, 1);
 
-			for (auto entry : data_)
-			{
-				if (entry.second.type_ == DEL)
-					trie.Delete(entry.first.SerializeAsString());
-				else
-					trie.Set(entry.first.SerializeAsString(), entry.second.value_.SerializeAsString());
-			}
+			if (data_)
+			    for (auto entry : (*data_))
+			    {
+				    if (entry.second.first == AtomBatch<std::string, K, V, C>::DEL)
+					    trie.Delete(entry.first.SerializeAsString());
+				    else
+					    trie.Set(entry.first.SerializeAsString(), entry.second.second.SerializeAsString());
+			    }
 
 			trie.UpdateHash();
 			hash_ = trie.GetRootHash();
@@ -127,6 +125,8 @@ namespace bubi {
 	class AccountFrm {
 	public:
 		typedef std::shared_ptr<AccountFrm>	pointer;
+		typedef MapPackForAcc<protocol::AssetProperty, protocol::Asset, AssetSort> MapPackAssets;
+		typedef MapPackForAcc<StringPack, protocol::KeyPair, StringPackSort> MapPackMetadata;
 
 		AccountFrm() = delete;
 		AccountFrm(protocol::Account account);
@@ -189,13 +189,14 @@ namespace bubi {
 		bool UpdateTypeThreshold(const protocol::Operation::Type type, int64_t threshold);
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
 		void NonceIncrease();
-		bool Commit();
-		void UnCommit();
-		void Reset();
 
-	private:
-		AtomBatchForAccount<protocol::AssetProperty, protocol::Asset, AssetSort> assets_;
-		AtomBatchForAccount<StringPack, protocol::KeyPair, StringPackSort> metadata_;
+		MapPackAssets& GetAccountAsset();
+		MapPackMetadata& GetAccountMetadata();
+
+    private:
+		MapPackAssets assets_;
+		MapPackMetadata metadata_;
+
 		protocol::Account	account_info_;
 	};
 

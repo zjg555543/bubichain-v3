@@ -32,8 +32,8 @@ namespace bubi {
 		std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
 		std::string metadata_prefix = ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
 
-		assets_.init(Storage::Instance().account_db(), asset_prefix);
-		metadata_.init(Storage::Instance().account_db(), metadata_prefix);
+		assets_.InitDB(Storage::Instance().account_db(), asset_prefix);
+		metadata_.InitDB(Storage::Instance().account_db(), metadata_prefix);
 	}
 
 	AccountFrm::AccountFrm(std::shared_ptr<AccountFrm> account){
@@ -207,6 +207,16 @@ namespace bubi {
 		return metadata_.Del(dataptr.key());
 	}
 
+	AccountFrm::MapPackAssets& AccountFrm::GetAccountAsset()
+	{
+		return assets_;
+	}
+
+	AccountFrm::MapPackMetadata& AccountFrm::GetAccountMetadata()
+	{
+		return metadata_;
+	}
+
 	void AccountFrm::UpdateHash(std::shared_ptr<WRITE_BATCH> batch){
 
 		assets_.updateToDB(batch);
@@ -221,21 +231,5 @@ namespace bubi {
 		account_info_.set_nonce(new_nonce);
 	}
 
-	bool AccountFrm::Commit()
-	{
-		return assets_.Commit() && metadata_.Commit();
-	}
-
-	void AccountFrm::UnCommit()
-	{
-		assets_.UnCommit();
-		metadata_.UnCommit();
-	}
-
-	void AccountFrm::Reset()
-	{
-		assets_.Reset();
-		metadata_.Reset();
-	}
 }
 

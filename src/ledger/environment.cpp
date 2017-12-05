@@ -18,29 +18,23 @@ limitations under the License.
 
 namespace bubi{
 
-	//int64_t Environment::time_ = 0;
-
-	//Environment::Environment(Environment* parent){
-	//	parent_ = parent;
-	//	if (parent_){
-	//		for (auto it = parent_->entries_.begin(); it != parent_->entries_.end(); it++){
-	//			entries_[it->first] = std::make_shared<AccountFrm>(it->second);
-	//		}
-	//	}
-	//}
 	Environment::Environment(){}
 
-	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm){
+	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm)
+	{
 		if (entries_.find(key) == entries_.end()){
-			if (AccountFromDB(key, frm)){
-				entries_[key] = frm;
+			if (AccountFromDB(key, frm))
+			{
+				AddEntry(key, frm);
 				return true;
 			}
-			else{
+			else
+			{
 				return false;
 			}
 		}
-		else{
+		else
+		{
 			frm = entries_[key];
 			return true;
 		}
@@ -48,46 +42,42 @@ namespace bubi{
 
 	void Environment::Commit()
 	{
-		std::stack< ObjScopeGuardParm0<AccountFrm*, void (AccountFrm::*)()> > scopeGuards;
+		AllAccountAssert_.Commit();
+		ScopeGuard assetGuard = MakeGuard(AllAccountAssert_, &AtomBatchAsset::UnCommit);
 
-		for (auto kv : entries_)
-		{
-			kv.second->Commit();
-			auto pAccountFrm = kv.second.get();
-			auto guard = MakeGuard(pAccountFrm, &AccountFrm::UnCommit);
-			scopeGuards.push(guard);
-		}
+		AllAccountMetaData_.Commit();
+		assetGuard.Dismiss();
 		
-		while (!scopeGuards.empty())
-		{
-			scopeGuards.top().Dismiss();
-			scopeGuards.pop();
-		}
 	}
 
 	void Environment::ClearChangeBuf()
 	{
-		for (auto entry : entries_){ entry.second->Reset(); }
+		AllAccountAssert_.ClearChange();
+		AllAccountMetaData_.ClearChange();
 	}
 
-	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer frm){
+	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer& frm)
+	{
 		entries_[key] = frm;
+		frm->GetAccountAsset().Init(&AllAccountAssert_, &key);
+		frm->GetAccountMetadata().Init(&AllAccountMetaData_, &key);
+
 		return true;
 	}
 
-	bool Environment::AccountFromDB(const std::string &address, AccountFrm::pointer &account_ptr){
+	bool Environment::AccountFromDB(const std::string &address, AccountFrm::pointer &account_ptr)
+	{
+		//KeyValueDb* db = Storage::Instance().account_db();
 
-		auto db = Storage::Instance().account_db();
-		std::string index = utils::String::HexStringToBin(address);
 		std::string buff;
-		if (!LedgerManager::Instance().tree_->Get(index, buff)){
+		std::string index = utils::String::HexStringToBin(address);
+		if (!LedgerManager::Instance().tree_->Get(index, buff))
 			return false;
-		}
 
 		protocol::Account account;
-		if (!account.ParseFromString(buff)){
+		if (!account.ParseFromString(buff))
 			BUBI_EXIT("fatal error, account(%s) ParseFromString failed", address.c_str());
-		}
+
 		account_ptr = std::make_shared<AccountFrm>(account);
 		return true;
 	}

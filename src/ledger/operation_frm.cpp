@@ -426,6 +426,7 @@ namespace bubi {
 			account.set_address(createaccount.dest_address());
 			account.mutable_contract()->CopyFrom(createaccount.contract());
 			dest_account = std::make_shared<AccountFrm>(account);
+			environment->AddEntry(dest_account->GetAccountAddress(), dest_account);
 
 			bool success = true;
 			for (int i = 0; i < createaccount.metadatas_size(); i++){
@@ -446,9 +447,6 @@ namespace bubi {
 				
 				break;
 			}
-
-			environment->AddEntry(dest_account->GetAccountAddress(), dest_account);
-
 		} while (false);
 	}
 
