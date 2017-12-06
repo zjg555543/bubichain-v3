@@ -15,7 +15,8 @@ limitations under the License.
 #define ENVIRONMENT_H_
 
 #include <proto/cpp/chain.pb.h>
-#include <utils/entry_cache.h>
+//#include <utils/entry_cache.h>
+#include <utils/atom_map.h>
 #include "account.h"
 
 namespace bubi {

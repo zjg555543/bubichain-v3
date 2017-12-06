@@ -48,7 +48,7 @@ namespace bubi {
 	};
 
 	template<typename K, typename V, typename C = std::less<K>>
-	class PackMapForAcc : public AtomNestedMap<std::string, K, V, C>::InlayerProcessMap
+	class PackMapForAcc : public AtomNestedMap<std::string, K, V, C>::InlayerMap
 	{
 	public:
 		void InitDB(KeyValueDb* db, const std::string prefix)
@@ -99,14 +99,13 @@ namespace bubi {
 			KVTrie trie;
 			trie.Init(db_, batch, prefix_, 1);
 
-			if (data_)
-			    for (auto entry : (*data_))
-			    {
-					if (entry.second.first == AtomNestedMap<std::string, K, V, C>::DEL)
-					    trie.Delete(entry.first.SerializeAsString());
-				    else
-					    trie.Set(entry.first.SerializeAsString(), entry.second.second.SerializeAsString());
-			    }
+			for (auto entry : data_)
+			{
+				if (entry.second.first == AtomNestedMap<std::string, K, V, C>::DEL)
+				    trie.Delete(entry.first.SerializeAsString());
+			    else
+				    trie.Set(entry.first.SerializeAsString(), entry.second.second.SerializeAsString());
+			}
 
 			trie.UpdateHash();
 			hash_ = trie.GetRootHash();
@@ -141,7 +140,7 @@ namespace bubi {
 		void GetAllMetaData(std::vector<protocol::KeyPair>& metadata);
 
 		std::string	Serializer();
-		bool	UnSerializer(const std::string &str);
+		bool UnSerializer(const std::string &str);
 
 		std::string GetAccountAddress()const;
 
@@ -196,8 +195,7 @@ namespace bubi {
     private:
 		AssetsPackMap assets_;
 		MetadataPackMap metadata_;
-
-		protocol::Account	account_info_;
+		protocol::Account account_info_;
 	};
 
 }

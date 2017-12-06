@@ -47,7 +47,6 @@ namespace bubi{
 
 		AllAccountMetaData_.Commit();
 		assetGuard.Dismiss();
-		
 	}
 
 	void Environment::ClearChangeBuf()
@@ -59,8 +58,8 @@ namespace bubi{
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer& frm)
 	{
 		entries_[key] = frm;
-		frm->GetAccountAsset().AnchorReceptor(&AllAccountAssert_, &key);
-		frm->GetAccountMetadata().AnchorReceptor(&AllAccountMetaData_, &key);
+		AllAccountAssert_.JointData(key, frm->GetAccountAsset());
+		AllAccountMetaData_.JointData(key, frm->GetAccountMetadata());
 
 		return true;
 	}

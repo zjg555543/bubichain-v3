@@ -81,6 +81,9 @@
     <ClInclude Include="..\..\src\utils\atom_nested_map.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\utils\atom_map.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\utils\file.cpp">
