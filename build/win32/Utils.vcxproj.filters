@@ -75,10 +75,10 @@
     <ClInclude Include="..\..\src\utils\sm3.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\utils\atomBatch.h">
+    <ClInclude Include="..\..\src\utils\scopeGuard.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\utils\scopeGuard.h">
+    <ClInclude Include="..\..\src\utils\atom_nested_map.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,7 +16,6 @@ limitations under the License.
 
 #include <proto/cpp/chain.pb.h>
 #include <utils/entry_cache.h>
-//#include <utils/atomBatch.h>
 #include "account.h"
 
 namespace bubi {
@@ -24,8 +23,8 @@ namespace bubi {
 	class Environment
 	{
 	public:
-		typedef AtomBatch<std::string, protocol::AssetProperty, protocol::Asset, AssetSort> AtomBatchAsset;
-		typedef AtomBatch<std::string, StringPack, protocol::KeyPair, StringPackSort> AtomBatchMetadata;
+		typedef AtomNestedMap<std::string, protocol::AssetProperty, protocol::Asset, AssetSort> AtomBatchAsset;
+		typedef AtomNestedMap<std::string, StringPack, protocol::KeyPair, StringPackSort> AtomBatchMetadata;
 
 		AtomBatchAsset    AllAccountAssert_;
 		AtomBatchMetadata AllAccountMetaData_;

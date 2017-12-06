@@ -19,7 +19,7 @@ limitations under the License.
 #include <utils/logger.h>
 #include <proto/cpp/chain.pb.h>
 #include <utils/entry_cache.h>
-#include <utils/atomBatch.h>
+#include <utils/atom_nested_map.h>
 #include "proto/cpp/merkeltrie.pb.h"
 #include <common/storage.h>
 #include "kv_trie.h"
@@ -48,7 +48,7 @@ namespace bubi {
 	};
 
 	template<typename K, typename V, typename C = std::less<K>>
-	class MapPackForAcc: public AtomBatch<std::string, K, V, C>::MapPack
+	class PackMapForAcc : public AtomNestedMap<std::string, K, V, C>::InlayerProcessMap
 	{
 	public:
 		void InitDB(KeyValueDb* db, const std::string prefix)
@@ -102,7 +102,7 @@ namespace bubi {
 			if (data_)
 			    for (auto entry : (*data_))
 			    {
-				    if (entry.second.first == AtomBatch<std::string, K, V, C>::DEL)
+					if (entry.second.first == AtomNestedMap<std::string, K, V, C>::DEL)
 					    trie.Delete(entry.first.SerializeAsString());
 				    else
 					    trie.Set(entry.first.SerializeAsString(), entry.second.second.SerializeAsString());
@@ -125,8 +125,8 @@ namespace bubi {
 	class AccountFrm {
 	public:
 		typedef std::shared_ptr<AccountFrm>	pointer;
-		typedef MapPackForAcc<protocol::AssetProperty, protocol::Asset, AssetSort> MapPackAssets;
-		typedef MapPackForAcc<StringPack, protocol::KeyPair, StringPackSort> MapPackMetadata;
+		typedef PackMapForAcc<protocol::AssetProperty, protocol::Asset, AssetSort> AssetsPackMap;
+		typedef PackMapForAcc<StringPack, protocol::KeyPair, StringPackSort> MetadataPackMap;
 
 		AccountFrm() = delete;
 		AccountFrm(protocol::Account account);
@@ -190,12 +190,12 @@ namespace bubi {
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
 		void NonceIncrease();
 
-		MapPackAssets& GetAccountAsset();
-		MapPackMetadata& GetAccountMetadata();
+		AssetsPackMap& GetAccountAsset();
+		MetadataPackMap& GetAccountMetadata();
 
     private:
-		MapPackAssets assets_;
-		MapPackMetadata metadata_;
+		AssetsPackMap assets_;
+		MetadataPackMap metadata_;
 
 		protocol::Account	account_info_;
 	};

@@ -59,8 +59,8 @@ namespace bubi{
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer& frm)
 	{
 		entries_[key] = frm;
-		frm->GetAccountAsset().Init(&AllAccountAssert_, &key);
-		frm->GetAccountMetadata().Init(&AllAccountMetaData_, &key);
+		frm->GetAccountAsset().AnchorReceptor(&AllAccountAssert_, &key);
+		frm->GetAccountMetadata().AnchorReceptor(&AllAccountMetaData_, &key);
 
 		return true;
 	}

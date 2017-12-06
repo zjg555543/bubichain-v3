@@ -207,12 +207,12 @@ namespace bubi {
 		return metadata_.Del(dataptr.key());
 	}
 
-	AccountFrm::MapPackAssets& AccountFrm::GetAccountAsset()
+	AccountFrm::AssetsPackMap& AccountFrm::GetAccountAsset()
 	{
 		return assets_;
 	}
 
-	AccountFrm::MapPackMetadata& AccountFrm::GetAccountMetadata()
+	AccountFrm::MetadataPackMap& AccountFrm::GetAccountMetadata()
 	{
 		return metadata_;
 	}

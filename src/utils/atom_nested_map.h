@@ -1,6 +1,6 @@
 
-#ifndef TEMPLATE_ATOMIC_BATCH_H
-#define TEMPLATE_ATOMIC_BATCH_H
+#ifndef TEMPLATE_ATOMIC_NESTED_MAP_H
+#define TEMPLATE_ATOMIC_NESTED_MAP_H
 
 #include <map>
 #include <string>
@@ -10,49 +10,49 @@
 namespace bubi
 {
     template<class Index, class Key, class Value, class CompareKey = std::less<Key>, class CompareIndex = std::less<Index>>
-    class AtomBatch
+    class AtomNestedMap
     {
     public:
-	    enum actType
-	    {
-	    	ADD = 0,
-	    	MOD = 1,
-	    	DEL = 2,
-	    	REV = 3,
-	    	MAX,
-	    };
+		enum actType
+		{
+			ADD = 0,
+			MOD = 1,
+			DEL = 2,
+			REV = 3,
+			MAX,
+		};
 
 	    typedef std::pair<actType, Value> action;
 	    typedef std::map<Key, action, CompareKey> mapKV;
 
-	    class MapPack
+	    class InlayerProcessMap
         {
 		protected:
-            bool   isInit_;
-            Index  index_;
+            bool   anchored_;
+            Index  selfPosition_;
 	    	mapKV* data_;
 	    	mapKV* buff_;
-            AtomBatch* env_;
+            AtomNestedMap* receptor_;
 
 	    public:
-            MapPack(): isInit_(false), env_(nullptr), data_(nullptr), buff_(nullptr){}
+            InlayerProcessMap(): anchored_(false), receptor_(nullptr), data_(nullptr), buff_(nullptr){}
 
-            MapPack(AtomBatch* env, const Index* index): env_(env), index_(*index), isInit_(false), data_(nullptr), buff_(nullptr)
+            InlayerProcessMap(AtomNestedMap* receptor, const Index* position): receptor_(receptor), selfPosition_(*position), anchored_(false), data_(nullptr), buff_(nullptr)
             {
-                if(env && index)
-                    isInit_ == true;
+                if(receptor_ && selfPosition_)
+                    anchored_ == true;
             }
 
-            bool IsInit(){ return isInit_; }
+            bool IsAnchored(){ return anchored_; }
 
-            bool Init(AtomBatch* env, const Index* index)
+            bool AnchorReceptor(AtomNestedMap* receptor, const Index* index)
             {
-				if ((!env) || (!index))
+				if ((!receptor) || (!index))
 					return false;
 
-                env_    = env;
-                index_  = *index;
-				isInit_ = true;
+                receptor_     = receptor;
+                selfPosition_ = *index;
+				anchored_     = true;
 
 				return true;
             }
@@ -100,35 +100,35 @@ namespace bubi
 			virtual bool UpdateToDB(){ return false; }
 
         private:
-            bool ConnectData()
+            bool JointData()
             {
 				if (data_)
 					return true;
 
-				if (!IsInit())
+				if (!IsAnchored())
 					return false;
 
-                data_ = env_->GetData(index_);
+                data_ = receptor_->GetData(selfPosition_);
 
 				return true;
             }
 
-            bool ConnectBuff()
+            bool JointBuff()
             {
 				if (buff_)
 					return true;
 
-				if (!IsInit())
+				if (!IsAnchored())
 					return false;
 
-                buff_ = env_->GetBuff(index_);
+                buff_ = receptor_->GetBuff(selfPosition_);
 
 				return true;
             }
 
 	    	bool GetValue(const Key& key, Value& value)
 	    	{
-                if((ConnectBuff() == false) || (ConnectData() == false))
+                if((JointBuff() == false) || (JointData() == false))
                     return false;
 
 	    		bool ret = false;
@@ -171,7 +171,7 @@ namespace bubi
 
 	    	bool SetValue(const Key& key, const Value& value)
 	    	{
-                if((ConnectBuff() == false) || (ConnectData() == false))
+                if((JointBuff() == false) || (JointData() == false))
                     return false;
 
 	    		if (data_->find(key) == data_->end())
@@ -184,7 +184,7 @@ namespace bubi
 
 	    	bool DelValue(const Key& key)
 	    	{
-                if((ConnectBuff() == false) || (ConnectData() == false))
+                if((JointBuff() == false) || (JointData() == false))
                     return false;
 
 	    		(*buff_)[key] = action(DEL, Value());
@@ -198,7 +198,7 @@ namespace bubi
 		std::map<Index, mapKV, CompareIndex> totalData_;
 
 	protected:
-        std::map<Index, MapPack, CompareIndex> entries_;
+        std::map<Index, InlayerProcessMap, CompareIndex> entries_;
 
     public:
         mapKV* GetBuff(const Index& index)
@@ -217,20 +217,20 @@ namespace bubi
             return &totalData_[index];
         }
 
-        bool Set(const Index& index, MapPack& obj)
+        bool Set(const Index& index, InlayerProcessMap& obj)
         {
             if(!obj)
                 return false;
 
             entries_[index] = obj;
 
-            if(!obj->IsInit())
-                obj->Init(this, index);
+            if(!obj->IsAnchored())
+                obj->AnchorReceptor(this, index);
 
             return true;
         }
 
-        bool Get(const Index& index, MapPack& obj)
+        bool Get(const Index& index, InlayerProcessMap& obj)
         {
             ret = false;
 
@@ -324,9 +324,9 @@ namespace bubi
             revertBuf_.clear();
         }
 
-		virtual bool GetFromDB(const Index& index, MapPack& obj){ return false; }
+		virtual bool GetFromDB(const Index& index, InlayerProcessMap& obj){ return false; }
 		virtual bool UpdateToDB(){ return false; }
     };
 }
 
-#endif //TEMPLATE_ATOMIC_BATCH_H
+#endif //TEMPLATE_ATOMIC_NESTED_MAP_H
