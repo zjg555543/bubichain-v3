@@ -16,6 +16,7 @@
         - [提交交易](#提交交易)
         - [序列化交易](#序列化交易)
         - [配置验证节点](#配置验证节点)
+        - [调试合约](#调试合约)
     - [定义交易](#定义交易)
         - [交易的基本结构](#交易的基本结构)
         - [操作](#操作)
@@ -477,11 +478,11 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
 ```http
 POST /testContract
 {
-    contract_address : "a00166eab331780d29cbd0b6804de1ee92413a1fc924d4",
-    code : "",
-    input : "{}",
-    exe_or_query : true,
-    source_address : ""
+    "contract_address" : "a00166eab331780d29cbd0b6804de1ee92413a1fc924d4",
+    "code" : "",
+    "input" : "{}",
+    "exe_or_query" : true,
+    "source_address" : ""
 }
 ```
   - contract_address: 调用的智能合约地址，如果从数据库查询不到则返回错误。
@@ -499,21 +500,29 @@ POST /testContract
    "error_code" : 0,
    "error_desc" : "",
    "result" : {
-      "logs" : {
-         "0-a00166eab331780d29cbd0b6804de1ee92413a1fc924d4" : null
+      "logs" : {    //合约输出的日志，每个key-value对表示对应合约的输出。合约间调用可能会输出多个key-value对。
+         "0-a00166eab331780d29cbd0b6804de1ee92413a1fc924d4" : 
+         [
+             "contract output 1",
+             "contract output 2"
+         ]
       },
-      "rets" : [
+      "rets" : [    //合约返回值，如果是合约间调用，则可能输出多个返回值。
          {
-            "result" : [
+            "result" : [   //如果成功，则有返回值，返回值有可能多个，每个返回值由type和value构成，type 暂时有4中类型：jsobject、string、double、bool。
                {
-                  "type" : "string",
+                  "type" : "string",    
                   "value" : "abc"
                }
             ],
-            "success" : true
+            "success" : true   //是否成功调用。
          }
       ],
-      "txs" : null
+      "txs" : [ //合约间调用过程中产生的交易数据。
+          {
+              "transaction_env" : {...}  //具体参照交易格式。
+          }
+      ]
    }
 }
 ```
