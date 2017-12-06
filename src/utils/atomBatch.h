@@ -102,22 +102,26 @@ namespace bubi
         private:
             bool ConnectData()
             {
+				if (data_)
+					return true;
+
 				if (!IsInit())
 					return false;
 
-                if(!data_)
-                    data_ = env_->GetData(index_);
+                data_ = env_->GetData(index_);
 
 				return true;
             }
 
             bool ConnectBuff()
             {
+				if (buff_)
+					return true;
+
 				if (!IsInit())
 					return false;
 
-                if(!buff_)
-                    buff_ = env_->GetBuff(index_);
+                buff_ = env_->GetBuff(index_);
 
 				return true;
             }
@@ -250,47 +254,68 @@ namespace bubi
 
         bool Commit()
         {
-            for(auto indexBuf : actionBuf_)
+			bool ret = true;
+
+            try
             {
-                const Index& index = indexBuf.first;
-                const mapKV& mkv   = indexBuf.second;
-
-                for(auto keyAct : mkv)
+                for(auto indexBuf : actionBuf_)
                 {
-                    const Key&    key = keyAct.first;
-                    const action& act = keyAct.second;
+                    const Index& index = indexBuf.first;
+                    const mapKV& mkv   = indexBuf.second;
 
-                    if(act.first == ADD)
-                        revertBuf_[index][key] = action(REV, Value());
-                    else
-                        revertBuf_[index][key] = totalData_[index][key];
+                    for(auto keyAct : mkv)
+                    {
+                        const Key&    key = keyAct.first;
+                        const action& act = keyAct.second;
 
-					totalData_[index][key] = actionBuf_[index][key];
+                        if(act.first == ADD)
+                            revertBuf_[index][key] = action(REV, Value());
+                        else
+                            revertBuf_[index][key] = totalData_[index][key];
+
+			    		totalData_[index][key] = actionBuf_[index][key];
+                    }
                 }
             }
+			catch (std::exception& e)
+			{
+				LOG_ERROR("commit exception, detail: %s", e.what());
+                ret = false;
+			}
 
-            return true;
+            return ret;
         }
 
         bool UnCommit()
         {
-            for(auto indexBuf : revertBuf_)
+            bool ret = true;
+
+            try
             {
-                const Index& index = indexBuf.first;
-                const mapKV& mkv   = indexBuf.second;
-
-                for(auto keyAct : mkv)
+                for(auto indexBuf : revertBuf_)
                 {
-                    const Key&    key = keyAct.first;
-                    const action& act = keyAct.second;
+                    const Index& index = indexBuf.first;
+                    const mapKV& mkv   = indexBuf.second;
 
-                    if(act.first == REV)
-                        totalData_[index].erase(key);
-                    else
-                        totalData_[index][key] = revertBuf_[index][key];
+                    for(auto keyAct : mkv)
+                    {
+                        const Key&    key = keyAct.first;
+                        const action& act = keyAct.second;
+
+                        if(act.first == REV)
+                            totalData_[index].erase(key);
+                        else
+                            totalData_[index][key] = revertBuf_[index][key];
+                    }
                 }
             }
-            return true;
+			catch (std::exception& e)
+			{
+				LOG_ERROR("uncommit exception, detail: %s", e.what());
+                ret = false;
+			}
+
+            return ret;
         }
 
         void ClearChange()
