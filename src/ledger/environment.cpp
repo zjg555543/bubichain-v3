@@ -46,13 +46,25 @@ namespace bubi{
 		ScopeGuard assetGuard = MakeGuard(AllAccountAssert_, &AtomBatchAsset::UnCommit);
 
 		AllAccountMetaData_.Commit();
+		ScopeGuard metaGuard = MakeGuard(AllAccountMetaData_, &AtomBatchMetadata::UnCommit);
+
+		for (auto acc : entries_)
+			acc.second->UpdateAccountBak();
+
 		assetGuard.Dismiss();
+		metaGuard.Dismiss();
+
+		AllAccountAssert_.ClearRevertBuf(); //clear the buffer for rollback
+		AllAccountMetaData_.ClearRevertBuf();
 	}
 
-	void Environment::ClearChangeBuf()
+	void Environment::DiscardChange()
 	{
-		AllAccountAssert_.ClearChange();
-		AllAccountMetaData_.ClearChange();
+		AllAccountAssert_.ClearChangeBuf();
+		AllAccountMetaData_.ClearChangeBuf();
+
+		for (auto acc : entries_)
+			acc.second->RollbackAccountInfo();
 	}
 
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer& frm)

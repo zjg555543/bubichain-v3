@@ -38,7 +38,7 @@ namespace bubi {
 		bool GetEntry(const std::string& key, AccountFrm::pointer& frm);
 		bool AddEntry(const std::string& key, AccountFrm::pointer& frm);
 		void Commit();
-		void ClearChangeBuf();
+		void DiscardChange();
 		static bool AccountFromDB(const std::string &address, AccountFrm::pointer &account_ptr);
 	};
 }

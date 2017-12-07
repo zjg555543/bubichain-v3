@@ -184,6 +184,16 @@ namespace bubi {
 			return account_info_.mutable_priv()->mutable_thresholds()->set_tx_threshold(threshold);
 		}
 
+		void UpdateAccountBak()
+		{
+			account_bak_.CopyFrom(account_info_);
+		}
+
+		void RollbackAccountInfo()
+		{
+			account_info_.CopyFrom(account_bak_);
+		}
+
 		bool UpdateSigner(const std::string &signer, int64_t weight);
 		bool UpdateTypeThreshold(const protocol::Operation::Type type, int64_t threshold);
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
@@ -196,6 +206,7 @@ namespace bubi {
 		AssetsPackMap assets_;
 		MetadataPackMap metadata_;
 		protocol::Account account_info_;
+		protocol::Account account_bak_;
 	};
 
 }

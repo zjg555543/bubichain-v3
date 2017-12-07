@@ -38,6 +38,8 @@ namespace bubi {
 
 	AccountFrm::AccountFrm(std::shared_ptr<AccountFrm> account){
 		account_info_.CopyFrom(account->ProtocolAccount());
+		account_bak_.CopyFrom(account->ProtocolAccount());
+
 		assets_ = account->assets_;
 		metadata_ = account->metadata_;
 	}

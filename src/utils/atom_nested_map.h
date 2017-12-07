@@ -154,6 +154,7 @@ namespace bubi
         bool Set(const Index& index, InlayerMap& obj)
         {
             entries_[index] = obj;
+			JointData(index, entries_[index]);
 
             return true;
         }
@@ -246,14 +247,17 @@ namespace bubi
             return ret;
         }
 
-        void ClearChange()
+		void ClearChangeBuf()
         {
             for(auto buf : actionBuf_)
                 buf.second->clear();
-
-            for(auto rev : revertBuf_)
-                rev.second.clear();
         }
+
+		void ClearRevertBuf()
+		{
+			for (auto rev : revertBuf_)
+				rev.second.clear();
+		}
 
 		virtual bool GetFromDB(const Index& index, InlayerMap& obj){ return false; }
 		virtual bool UpdateToDB(){ return false; }

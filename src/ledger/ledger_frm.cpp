@@ -161,19 +161,20 @@ namespace bubi {
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str(),
 					time_use / utils::MICRO_UNITS_PER_MILLI, tx_time_out / utils::MICRO_UNITS_PER_MILLI);
 				tx_time_out_index = i;
+				tx_frm->environment_->DiscardChange();
 				return false;
 			} else{
 				if (!ret) {
 					LOG_ERROR("transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 					tx_time_out_index = i;
+					tx_frm->environment_->DiscardChange();
 				}
 				else {
 					tx_frm->environment_->Commit();
 				}
 			}
 
-			tx_frm->environment_->ClearChangeBuf();
 			apply_tx_frms_.push_back(tx_frm);
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
 			ledger_context->transaction_stack_.pop();
