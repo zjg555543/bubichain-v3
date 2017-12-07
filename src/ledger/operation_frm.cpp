@@ -577,7 +577,7 @@ namespace bubi {
 				}
 				else{
 					result_.set_code(protocol::ERRCODE_NOT_EXIST);
-					result_.set_desc(utils::String::Format("DeleteMetaData not exist key(%s)", key.c_str()));
+					result_.set_desc(utils::String::Format("Delete metadata, not exist key(%s)", key.c_str()));
 					break;
 				}
 			}

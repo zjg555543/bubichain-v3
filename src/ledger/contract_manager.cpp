@@ -1141,7 +1141,7 @@ namespace bubi{
 				break;
 			}
 
-			if (!v8_contract->IsReadonly()) {
+			if (v8_contract->IsReadonly()) {
 				LOG_ERROR("The contract is readonly");
 				break;
 			}
