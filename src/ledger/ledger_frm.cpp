@@ -161,14 +161,13 @@ namespace bubi {
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str(),
 					time_use / utils::MICRO_UNITS_PER_MILLI, tx_time_out / utils::MICRO_UNITS_PER_MILLI);
 				tx_time_out_index = i;
-				tx_frm->environment_->DiscardChange();
 				return false;
 			} else{
 				if (!ret) {
 					LOG_ERROR("transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 					tx_time_out_index = i;
-					tx_frm->environment_->DiscardChange();
+					tx_frm->environment_->ClearChange();
 				}
 				else {
 					tx_frm->environment_->Commit();
@@ -197,11 +196,17 @@ namespace bubi {
 
 	bool LedgerFrm::Commit(KVTrie* trie, int64_t& new_count, int64_t& change_count) {
 		auto batch = trie->batch_;
-		for (auto entry : environment_->entries_){
-			std::shared_ptr<AccountFrm> account = entry.second;
+		auto entries = environment_->GetData();
+
+		for (auto it = entries.begin(); it != entries.end(); it++){
+
+			if (it->second.type_ == AtomMap<std::string, AccountFrm>::DEL)
+				continue; //there is no delete account function now, not yet
+
+			std::shared_ptr<AccountFrm> account = it->second.value_;
 			account->UpdateHash(batch);
 			std::string ss = account->Serializer();
-			std::string index = utils::String::HexStringToBin(entry.first);
+			std::string index = utils::String::HexStringToBin(it->first);
 			bool is_new = trie->Set(index, ss);
 			if (is_new){
 				new_count++;
@@ -210,7 +215,6 @@ namespace bubi {
 				change_count++;
 			}
 		}
-
 		return true;
 	}
 }

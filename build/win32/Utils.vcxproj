@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\utils\atom_map.h" />
-    <ClInclude Include="..\..\src\utils\atom_nested_map.h" />
     <ClInclude Include="..\..\src\utils\basen.h" />
     <ClInclude Include="..\..\src\utils\common.h" />
     <ClInclude Include="..\..\src\utils\crypto.h" />

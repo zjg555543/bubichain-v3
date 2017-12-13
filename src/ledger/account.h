@@ -19,21 +19,10 @@ limitations under the License.
 #include <utils/logger.h>
 #include <proto/cpp/chain.pb.h>
 #include <utils/entry_cache.h>
-#include <utils/atom_nested_map.h>
 #include "proto/cpp/merkeltrie.pb.h"
 #include <common/storage.h>
 #include "kv_trie.h"
 namespace bubi {
-
-
-	struct StringPack
-	{
-		std::string str_;
-		StringPack(std::string str) : str_(str){}
-
-		const std::string& SerializeAsString() const { return str_; }
-		void ParseFromString(std::string str){ str_ = str; }
-	};
 
 	struct AssetSort {
 		bool operator() (const protocol::AssetProperty& a, const protocol::AssetProperty& b)const{
@@ -41,95 +30,23 @@ namespace bubi {
 		}
 	};
 
-	struct StringPackSort {
-		bool operator() (const StringPack &l, const StringPack &r) const {
-			return l.SerializeAsString() < r.SerializeAsString();
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	struct StringSort {
+		bool operator() (const std::string &l, const std::string &r) const {
+			return l < r;
 		}
 	};
 
-	template<typename K, typename V, typename C = std::less<K>>
-	class PackMapForAcc : public AtomNestedMap<std::string, K, V, C>::InlayerMap
-	{
-	public:
-		void InitDB(KeyValueDb* db, const std::string prefix)
-		{
-			db_ = db;
-			prefix_ = prefix;
-		}
-
-		void GetAll(std::vector<V>& vals)
-		{
-			KVTrie trie;
-			auto batch = std::make_shared<WRITE_BATCH>();
-			trie.Init(db_, batch, prefix_, 1);
-			std::vector<std::string> values;
-
-			trie.GetAll("", values);
-			for (auto value : values)
-			{
-				V val;
-				val.ParseFromString(value);
-				vals.push_back(val);
-			}
-		}
-
-		virtual bool GetFromDB(const K& key, V& val)
-		{
-			std::string buff;
-			auto dbKey = key.SerializeAsString();
-
-			KVTrie trie;
-			auto batch = std::make_shared<WRITE_BATCH>();
-			trie.Init(db_, batch, prefix_, 1);
-
-			if (!trie.Get(dbKey, buff))
-				return false;
-
-			if (!val.ParseFromString(buff))
-			{
-				BUBI_EXIT("fatal error, obj ParseFromString fail, data may damaged.");
-				return false;
-			}
-
-			return true;
-		}
-
-		void updateToDB(std::shared_ptr<WRITE_BATCH> batch)
-		{
-			KVTrie trie;
-			trie.Init(db_, batch, prefix_, 1);
-
-			for (auto entry : data_)
-			{
-				if (entry.second.first == AtomNestedMap<std::string, K, V, C>::DEL)
-				    trie.Delete(entry.first.SerializeAsString());
-			    else
-				    trie.Set(entry.first.SerializeAsString(), entry.second.second.SerializeAsString());
-			}
-
-			trie.UpdateHash();
-			hash_ = trie.GetRootHash();
-		}
-
-		std::string GetRootHash(){
-			return hash_;
-		}
-
-	private:
-		std::string prefix_;
-		std::string hash_;
-		KeyValueDb * db_;
-	};
 
 	class AccountFrm {
 	public:
-		typedef std::shared_ptr<AccountFrm>	pointer;
-		typedef PackMapForAcc<protocol::AssetProperty, protocol::Asset, AssetSort> AssetsPackMap;
-		typedef PackMapForAcc<StringPack, protocol::KeyPair, StringPackSort> MetadataPackMap;
 
-		AccountFrm() = delete;
+		typedef std::shared_ptr<AccountFrm>	pointer;
+
+		//AccountFrm();
 		AccountFrm(protocol::Account account);
 		AccountFrm(std::shared_ptr< AccountFrm> account);
+		AccountFrm(const AccountFrm& other);
 
 		~AccountFrm();
 
@@ -140,7 +57,7 @@ namespace bubi {
 		void GetAllMetaData(std::vector<protocol::KeyPair>& metadata);
 
 		std::string	Serializer();
-		bool UnSerializer(const std::string &str);
+		bool	UnSerializer(const std::string &str);
 
 		std::string GetAccountAddress()const;
 
@@ -184,29 +101,22 @@ namespace bubi {
 			return account_info_.mutable_priv()->mutable_thresholds()->set_tx_threshold(threshold);
 		}
 
-		void UpdateAccountBak()
-		{
-			account_bak_.CopyFrom(account_info_);
-		}
-
-		void RollbackAccountInfo()
-		{
-			account_info_.CopyFrom(account_bak_);
-		}
-
 		bool UpdateSigner(const std::string &signer, int64_t weight);
 		bool UpdateTypeThreshold(const protocol::Operation::Type type, int64_t threshold);
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
 		void NonceIncrease();
+	public:
 
-		AssetsPackMap& GetAccountAsset();
-		MetadataPackMap& GetAccountMetadata();
+		template <class T>
+		struct DataCache{
+			utils::ChangeAction action_;
+			T data_;
+		};
 
-    private:
-		AssetsPackMap assets_;
-		MetadataPackMap metadata_;
-		protocol::Account account_info_;
-		protocol::Account account_bak_;
+		std::map<protocol::AssetProperty, DataCache<protocol::Asset>, AssetSort> assets_;
+		std::map<std::string, DataCache<protocol::KeyPair>> metadata_;
+	private:
+		protocol::Account	account_info_;
 	};
 
 }

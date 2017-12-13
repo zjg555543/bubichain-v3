@@ -426,7 +426,6 @@ namespace bubi {
 			account.set_address(createaccount.dest_address());
 			account.mutable_contract()->CopyFrom(createaccount.contract());
 			dest_account = std::make_shared<AccountFrm>(account);
-			environment->AddEntry(dest_account->GetAccountAddress(), dest_account);
 
 			bool success = true;
 			for (int i = 0; i < createaccount.metadatas_size(); i++){
@@ -447,6 +446,9 @@ namespace bubi {
 				
 				break;
 			}
+
+			environment->AddEntry(dest_account->GetAccountAddress(), dest_account);
+
 		} while (false);
 	}
 
@@ -619,8 +621,9 @@ namespace bubi {
 
 	void OperationFrm::SetSignerWeight(std::shared_ptr<Environment> environment) {
 		const protocol::OperationSetSignerWeight &ope = operation_.set_signer_weight();
-
 		do {
+
+
 			if (ope.master_weight() >= 0) {
 				source_account_->SetProtoMasterWeight(ope.master_weight());
 			}
@@ -628,11 +631,13 @@ namespace bubi {
 			for (int32_t i = 0; i < ope.signers_size(); i++) {
 				source_account_->UpdateSigner(ope.signers(i).address(), ope.signers(i).weight());
 			}
+
 		} while (false);
 	}
 
 	void OperationFrm::SetThreshold(std::shared_ptr<Environment> environment) {
 		const protocol::OperationSetThreshold &ope = operation_.set_threshold();
+		std::shared_ptr<AccountFrm> source_account = nullptr;
 
 		do {
 			if (ope.tx_threshold() >= 0) {
