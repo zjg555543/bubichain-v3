@@ -69,9 +69,14 @@ namespace bubi
 				{
 					if (itData->second.type_ != DEL)
 					{
-						val = std::make_shared<VALUE>(*itData->second.value_);
-						actionBuf_[key] = ActValue(val, MOD);
-						ret = true;
+						auto pv = std::make_shared<VALUE>(*(itData->second.value_));
+						if (pv)
+						{
+							actionBuf_[key] = ActValue(pv, MOD);
+							val = pv;
+							ret = true;
+						}
+						//else ret = false;
 					}
 					//else ret = false;
 				}
