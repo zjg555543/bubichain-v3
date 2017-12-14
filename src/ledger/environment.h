@@ -25,7 +25,6 @@ namespace bubi {
 	public:
 		bool GetEntry(const std::string& key, AccountFrm::pointer &frm);
 		bool AddEntry(const std::string& key, AccountFrm::pointer frm);
-		void Commit();
 		virtual bool GetFromDB(const std::string& key, AccountFrm::pointer& val);
 		static bool AccountFromDB(const std::string &address, AccountFrm::pointer &account_ptr);
 	};

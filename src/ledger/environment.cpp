@@ -31,10 +31,6 @@ namespace bubi{
 		return Get(key, frm);
 	}
 
-	void Environment::Commit(){
-		CopyCommit();
-	}
-
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer frm){
 		return Set(key, frm);
 	}

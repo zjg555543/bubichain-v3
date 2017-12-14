@@ -35,18 +35,27 @@ namespace bubi
         typedef std::map<KEY, ActValue, COMPARE> mapKV;
 
 	protected:
+		bool  isRevertCommit_;
         mapKV actionBuf_;
         mapKV revertBuf_;
         mapKV dataCopy_;
         mapKV data_;
 
+	public:
+		AtomMap(bool revertCommit = false) : isRevertCommit_(revertCommit){}
+
 	private:
-		void SetValue(const KEY& key, const pointer& val)
+		void DistinguishSetValue(const KEY& key, const pointer& val)
 		{
 			if (data_.find(key) == data_.end())
 				actionBuf_[key] = ActValue(val, ADD);
 			else
 				actionBuf_[key] = ActValue(val, MOD);
+		}
+
+		void SetValue(const KEY& key, const pointer& val)
+		{
+			actionBuf_[key] = ActValue(val, MOD);
 		}
 
 		bool GetValue(const KEY& key, pointer& val)
@@ -69,6 +78,7 @@ namespace bubi
 				{
 					if (itData->second.type_ != DEL)
 					{
+						//can't be assigned directly, because itData->second.value_ is smart pointer
 						auto pv = std::make_shared<VALUE>(*(itData->second.value_));
 						if (pv)
 						{
@@ -103,7 +113,13 @@ namespace bubi
 		{
             bool ret = true;
 
-			try{ SetValue(key, val); }
+			try
+			{
+				if (isRevertCommit_)
+					DistinguishSetValue(key, val);
+				else
+					SetValue(key, val);
+			}
             catch(std::exception& e)
             { 
                 LOG_ERROR("set exception, detail: %s", e.what());
@@ -140,6 +156,7 @@ namespace bubi
             return ret;
         }
 
+	private:
         bool RevertCommit()
         {
             try
@@ -165,6 +182,9 @@ namespace bubi
                 return false;
             }
 
+			//CAUTION: now the pointers in actionBuf_ and revertBuf_ are overlapped with data_,
+			//so must be clear, otherwise the later modification to them will aslo directly act on data_.
+			actionBuf_.clear();
 			revertBuf_.clear();
             return true;
         }
@@ -212,11 +232,29 @@ namespace bubi
 			}
 
 			data_.swap(dataCopy_);
+
+			//CAUTION: now the pointers in actionBuf_ and dataCopy_ are overlapped with data_,
+			//so must be clear, otherwise the later modification to them will aslo directly act on data_.
+			actionBuf_.clear(); 
 			dataCopy_.clear();
 
             return true;
         }
 
+	public:
+		bool Commit()
+		{
+			bool ret = false;
+
+			if (isRevertCommit_)
+				ret = RevertCommit();
+			else
+				ret = CopyCommit();
+
+			return ret;
+		}
+
+		//call ClearChange to discard the modification if Commit failed
 		void ClearChange()
 		{
 			actionBuf_.clear();
