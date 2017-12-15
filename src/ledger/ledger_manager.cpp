@@ -926,7 +926,7 @@ namespace bubi {
 				if (contract->GetTxDoCount() > General::CONTRACT_TRANSACTION_LIMIT) {
 					//txfrm->result_.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS);
 					//break;
-					LOG_ERROR("Too many transaction called by transaction(hash:%s)", contract->GetParameter().sender_.c_str());
+					LOG_ERROR("Too many transaction(%d) called by transaction(hash:%s)", contract->GetTxDoCount(), contract->GetParameter().sender_.c_str());
 					return false;
 				}
 			}

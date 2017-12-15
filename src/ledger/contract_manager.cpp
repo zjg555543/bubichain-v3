@@ -43,6 +43,7 @@ namespace bubi{
 		utils::MutexGuard guard(contract_id_seed_lock_);
 		id_ = contract_id_seed_;
 		contract_id_seed_++;
+		tx_do_count_ = 0;
 	}
 
 	Contract::~Contract() {}
