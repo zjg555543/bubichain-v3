@@ -72,10 +72,12 @@ namespace bubi {
 	void Pbft::ClearStatus() {
 		//DelValue(PbftDesc::SEQUENCE_NAME);
 		//DelValue(PbftDesc::LOW_WATER_MRAK_NAME);
+		DelValue(PbftDesc::VIEW_ACTIVE);
 		DelValue(PbftDesc::VIEWNUMBER_NAME);
 		//DelValue(PbftDesc::LAST_EXE_SEQUENCE_NAME);
 		DelValue(PbftDesc::CHECKPOINT_NAME);
 		//DelValue(PbftDesc::INSTANCE_NAME);
+		DelValue(PbftDesc::VIEW_CHANGE_NAME);
 	}
 
 	int32_t Pbft::LoadCheckPoint() {
@@ -599,7 +601,7 @@ namespace bubi {
 		utils::MutexGuard lock_guad(lock_);
 		ValueSaver saver;
 
-		int64_t seq_find = -1;
+		int64_t seq_find = last_exe_seq_;
 		//delete the last uncommitted logs
 		for (PbftInstanceMap::iterator iter_inst = instances_.begin();
 			iter_inst != instances_.end();
@@ -617,22 +619,13 @@ namespace bubi {
 			}
 		}
 
-		if (seq_find > 0 && seq_find >= last_exe_seq_) {
-			sequence_ = seq_find + 1;
-
+		sequence_ = seq_find + 1;
 			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 			//SaveInstance(saver);
-		}
-
 		PbftEnvPointer env = NewPrePrepare(value);
 
-		//check the index if exist
+		//check the index
 		PbftInstanceIndex index(view_number_, sequence_);
-		PbftInstanceMap::const_iterator iter = instances_.find(index);
-		if (iter != instances_.end()) {
-			LOG_ERROR("Request failed, the view number(" FMT_I64 ") sequence(" FMT_I64 ") has been sent", view_number_, sequence_);
-			return false;
-		}
 
 		//auto increase the sequence
 		sequence_++;
@@ -1470,7 +1463,7 @@ namespace bubi {
 		for (PbftInstanceMap::iterator iter_inst = instances_.begin();
 			iter_inst != instances_.end();
 			) {
-			if (iter_inst->second.phase_ < PBFT_PHASE_PREPARED) {
+			if (iter_inst->second.phase_ < PBFT_PHASE_COMMITED) {
 				instances_.erase(iter_inst++);
 			}
 			else {
@@ -1672,7 +1665,7 @@ namespace bubi {
 						, data + 1);
 				}
 				else {
-					LOG_INFO("The new view(vn: " FMT_I64 ")'s primary does not respond,  negotiate next view(vn: " FMT_I64 ")", data
+					LOG_INFO("The new view(vn: " FMT_I64 ")'s primary not respond,  negotiate next view(vn: " FMT_I64 ")", data
 						, data + 1);
 
 					//SEND NEW VIEW
@@ -1712,45 +1705,12 @@ namespace bubi {
 		for (PbftInstanceMap::iterator iter_inst = instances_.begin();
 			iter_inst != instances_.end();
 			) {
-			if (iter_inst->second.phase_ < PBFT_PHASE_PREPARED) {
+			if (iter_inst->second.phase_ < PBFT_PHASE_COMMITED) {
 				instances_.erase(iter_inst++);
 			}
 			else {
 				iter_inst++;
 			}
-		}
-
-		//new instance
-		for (std::map<int64_t, protocol::PbftEnv>::iterator iter_pre = pre_prepares.begin();
-			iter_pre != pre_prepares.end();
-			iter_pre++) {
-
-			const protocol::PbftEnv &pre_prepare_env = iter_pre->second;
-			const protocol::PbftPrePrepare &pre_prepare = pre_prepare_env.pbft().pre_prepare();
-			PbftInstanceIndex index(pre_prepare.view_number(), pre_prepare.sequence());
-
-			if (pre_prepare.sequence() <= last_exe_seq_) {
-				continue;
-			}
-
-			//delete the original object with the sequence
-			for (PbftInstanceMap::iterator iter_inst = instances_.begin();
-				iter_inst != instances_.end();
-				iter_inst++) {
-				if (iter_inst->first.sequence_ == pre_prepare.sequence()) {
-					instances_.erase(iter_inst);
-					break;
-				}
-			}
-
-			//add new
-			PbftInstance pinstance;
-			pinstance.pre_prepare_msg_ = pre_prepare_env;
-			pinstance.phase_ = PBFT_PHASE_PREPREPARED;
-			pinstance.pre_prepare_ = pre_prepare;
-			pinstance.msg_buf_[pre_prepare_env.pbft().type()].push_back(pre_prepare_env);
-			pinstance.check_value_result_ = CheckValue(pinstance.pre_prepare_.value());
-			instances_.insert(std::make_pair(index, pinstance));
 		}
 
 		ValueSaver saver;
@@ -2453,7 +2413,7 @@ namespace bubi {
 			view_active_ = true;
 			saver.SaveValue(PbftDesc::VIEW_ACTIVE, true);
 
-			LOG_INFO("%s enter the new view(number:" FMT_I64 ")", replica_id_ > 0 ? (IsLeader() ? "Primary" : "replica") : "SynNode", view_number_);
+			LOG_INFO("%s enter the new view(number:" FMT_I64 ")", replica_id_ >= 0 ? (IsLeader() ? "Primary" : "replica") : "SynNode", view_number_);
 			saver.SaveValue(PbftDesc::VIEWNUMBER_NAME, view_number_);
 
 			//delete other not ended view change instance or other view change instance which sequence is less than 5

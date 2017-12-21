@@ -125,7 +125,7 @@ namespace bubi {
 			AccountFrm::pointer source_account;
 
 			if (!environment->GetEntry(str_address, source_account)) {
-				LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
+				LOG_ERROR("Source account(%s) not exists", str_address.c_str());
 				result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
 				break;
 			}
@@ -133,7 +133,7 @@ namespace bubi {
 			//判断序号是否正确
 			int64_t last_seq = source_account->GetAccountNonce();
 			if (last_seq + 1 != GetNonce()) {
-				LOG_ERROR("Account(%s) Tx sequence(" FMT_I64 ") doesnot match reserve sequence (" FMT_I64 " + 1)",
+				LOG_ERROR("Account(%s) Tx sequence(" FMT_I64 ") not match reserve sequence (" FMT_I64 " + 1)",
 					str_address.c_str(),
 					GetNonce(),
 					last_seq);
@@ -178,7 +178,7 @@ namespace bubi {
 		if (last_seq == 0 && GetNonce() != source_account->GetAccountNonce() + 1) {
 			
 			result_.set_code(protocol::ERRCODE_BAD_SEQUENCE);
-			result_.set_desc(utils::String::Format("Account(%s) tx sequence(" FMT_I64 ")  doesnot match  reserve sequence (" FMT_I64 " + 1), txhash(%s)",
+			result_.set_desc(utils::String::Format("Account(%s) tx sequence(" FMT_I64 ")  not match  reserve sequence (" FMT_I64 " + 1), txhash(%s)",
 				GetSourceAddress().c_str(),
 				GetNonce(),
 				source_account->GetAccountNonce(),
@@ -189,7 +189,7 @@ namespace bubi {
 
 		if (last_seq > 0 && (GetNonce() != last_seq + 1)) {
 			result_.set_code(protocol::ERRCODE_BAD_SEQUENCE);
-			result_.set_desc(utils::String::Format("Account(%s) Tx sequence(" FMT_I64 ")  doesnot match  reserve sequence (" FMT_I64 " + 1)",
+			result_.set_desc(utils::String::Format("Account(%s) Tx sequence(" FMT_I64 ")  not match  reserve sequence (" FMT_I64 " + 1)",
 				GetSourceAddress().c_str(),
 				GetNonce(),
 				last_seq));
