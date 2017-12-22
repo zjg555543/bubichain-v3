@@ -36,7 +36,10 @@ namespace bubi {
 			last_check_time_ = current_time;
 		}
 		cpu_used_percent_ = processor.usage_percent_;
+		current_cpu_used_percent_ = processor.usage_current_percent_;
 	}
+
+
 
 	bool SystemManager::GetSystemMonitor(std::string paths, monitor::SystemStatus* &system_status) {
 
@@ -124,4 +127,18 @@ namespace bubi {
 
 		return true;
 	}
+
+	bool SystemManager::GetCurrentMonitor(double &current_cpu_percent, double &current_memory_percent) {
+		current_cpu_percent = current_cpu_used_percent_;
+		utils::PhysicalMemory physical_memory;
+		if (false == system_.GetPhysicalMemory(physical_memory)) {
+			LOG_STD_ERR("Common::SystemManager , Get physical memory status failed");
+		}
+		else {
+			current_memory_percent = physical_memory.current_usage_percent_;
+		}
+
+		return true;
+	}
+
 }

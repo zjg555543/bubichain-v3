@@ -26,7 +26,8 @@ namespace bubi {
 	MonitorManager::MonitorManager() : Network(SslParameter()) {
 		connect_interval_ = 120 * utils::MICRO_UNITS_PER_SEC;
 		check_alert_interval_ = 5 * utils::MICRO_UNITS_PER_SEC;
-		last_alert_time_ = utils::Timestamp::HighResolution();
+		percent_interval_ = 5 * 60 * utils::MICRO_UNITS_PER_SEC;
+		last_alert_time_ = last_percent_time_ = utils::Timestamp::HighResolution();
 		last_connect_time_ = 0;
 
 		request_methods_[monitor::MONITOR_MSGTYPE_HELLO] = std::bind(&MonitorManager::OnMonitorHello, this, std::placeholders::_1, std::placeholders::_2);
@@ -281,6 +282,14 @@ namespace bubi {
 			}
 
 			last_alert_time_ = current_time;
+		}
+
+		// log for current process cpu and memory
+		if (current_time - last_percent_time_ > percent_interval_) {
+			double current_cpu_percent = 0;
+			double current_memory_percent = 0;
+			system_manager_.GetCurrentMonitor(current_cpu_percent, current_memory_percent);
+			LOG_INFO("bubi cpu (%.2lf%%) memory (%.2lf%%)", current_cpu_percent, current_memory_percent);
 		}
 	}
 

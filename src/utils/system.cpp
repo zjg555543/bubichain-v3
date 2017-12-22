@@ -14,7 +14,7 @@ limitations under the License.
 #include "system.h"
 
 #ifdef WIN32
-#else
+#else:
 #include <mntent.h>
 #endif // WIN32
 
@@ -31,6 +31,12 @@ namespace utils{
 		irq_time_ = 0;
 		soft_irq_time_ = 0;
 		usage_percent_ = 0;
+
+		utime_ = 0;
+		stime_ = 0;
+		cutime_ = 0;
+		cstime_ = 0;
+		usage_current_percent_ = 0;
 	}
 	SystemProcessor::~SystemProcessor() {
 
@@ -48,6 +54,14 @@ namespace utils{
 		return user_time_ + system_time_ - idle_time_;
 #else
 		return user_time_+nice_time_+system_time_;
+#endif
+	}
+
+	uint64_t SystemProcessor::GetCurrentUsageTime() {
+#ifdef WIN32
+		return utime_ + stime_;
+#else
+		return utime_ + stime_ + cutime_ + cstime_;
 #endif
 	}
 
@@ -135,6 +149,14 @@ namespace utils{
 			}
 			free(pBuffer);
 		}
+
+		HANDLE hprocess = GetCurrentProcess();
+		FILETIME nCreationTime, nExitTime, nKernelTime, nUserTime;
+		if (GetProcessTimes(hprocess, &nCreationTime, &nExitTime, &nKernelTime, &nUserTime)) {
+			processor_.utime_ = ((uint64_t)nUserTime.dwHighDateTime) << 32 | nUserTime.dwLowDateTime;
+			processor_.stime_ = ((uint64_t)nKernelTime.dwHighDateTime) << 32 | nKernelTime.dwLowDateTime;
+		}
+		CloseHandle(hprocess);
 #else
 		File proce_file;
 
@@ -164,6 +186,7 @@ namespace utils{
 		processor_.soft_irq_time_ = String::Stoi64(values[7]);
 		processor_.core_count_ = 0;
 
+		strline = "";
 		while (proce_file.ReadLine(strline, 1024)) {
 			values = String::split(strline, " ");
 			if (values.size() < 8)
@@ -174,21 +197,49 @@ namespace utils{
 			processor_.core_count_++;
 		}
 		proce_file.Close();
+
+		uint32_t process_id = getpid();
+		std::string stat_name = utils::String::Format("/proc/%d/stat", process_id);
+		strline = "";
+		if (!proce_file.ReadLine(strline, 1024)){
+			proce_file.Close();
+			return false;
+		}
+
+		values = String::split(strline, " ");
+		printf("\n");
+		if (values.size() < 44){
+			proce_file.Close();
+			return false;
+		}
+
+		processor_.utime_ = String::Stoi64(values[13]);
+		processor_.stime_ = String::Stoi64(values[14]);
+		processor_.cutime_ = String::Stoi64(values[15]);
+		processor_.cstime_ = String::Stoi64(values[16]);
+		proce_file.Close();
 #endif
 		if (nold_processer.system_time_ > 0) {
-			int64_t totalTime1 = nold_processer.GetTotalTime();
-			int64_t usageTime1 = nold_processer.GetUsageTime();
-			int64_t totalTime2 = processor_.GetTotalTime();
-			int64_t usageTime2 = processor_.GetUsageTime();
-			if (totalTime2 > totalTime1 && usageTime2 > usageTime1) {
-				processor_.usage_percent_ = double(usageTime2 - usageTime1) / double(totalTime2 - totalTime1)*100.0;
+			int64_t total_time1 = nold_processer.GetTotalTime();
+			int64_t total_time2 = processor_.GetTotalTime();
+			int64_t usage_time1 = nold_processer.GetUsageTime();
+			int64_t usage_time2 = processor_.GetUsageTime();
+			int64_t current_usage_time1 = nold_processer.GetCurrentUsageTime();
+			int64_t current_usage_time2 = processor_.GetCurrentUsageTime();
+			if (total_time2 > total_time1 && usage_time2 > usage_time1) {
+				processor_.usage_percent_ = double(usage_time2 - usage_time1) / double(total_time2 - total_time1)*100.0;
 			}
 			else {
 				processor_.usage_percent_ = 0;
 			}
+
+			if (total_time2 > total_time1 && current_usage_time2 > current_usage_time1) {
+				processor_.usage_current_percent_ = double(current_usage_time2 - current_usage_time1) / double(total_time2 - total_time1)*100.0;
+			}
 		}
 		else {
 			processor_.usage_percent_ = double(processor_.GetUsageTime()) / double(processor_.GetTotalTime()) * 100;
+			processor_.usage_current_percent_ = double(processor_.GetCurrentUsageTime()) / double(processor_.GetTotalTime()) * 100;
 		}
 
 		return true;
@@ -235,6 +286,16 @@ namespace utils{
 		memory.available_bytes_ = status.ullTotalPhys - status.ullAvailPhys;
 		memory.cached_bytes_ = 0;
 		memory.buffers_bytes_ = 0;
+
+		HANDLE hprocess = GetCurrentProcess();
+		PROCESS_MEMORY_COUNTERS nMemoryInfo = { 0 };
+		nMemoryInfo.cb = sizeof(nMemoryInfo);
+		if (GetProcessMemoryInfo(hprocess, &nMemoryInfo, sizeof(nMemoryInfo))) {
+			memory.physical_memory_size_ = nMemoryInfo.PeakWorkingSetSize;
+			memory.virtual_memory_size_ = nMemoryInfo.WorkingSetSize;
+		}
+
+		CloseHandle(hprocess);
 #else
 		File proc_file;
 
@@ -265,10 +326,31 @@ namespace utils{
 		}
 		proc_file.Close();
 
-		memory.available_bytes_ = memory.free_bytes_ + memory.buffers_bytes_ + memory.cached_bytes_;
+		uint32_t process_id = getpid();
+
+		std::string stat_name = utils::String::Format("/proc/%d/statm", process_id);
+		if (proc_file.Open(stat_name, File::FILE_M_READ))
+		{
+			std::string line_str;
+			utils::StringVector& values_str = utils::String::split(line_str, " ");
+			if (!proc_file.ReadLine(line_str, 1024) || values_str.size() < 2)
+			{
+				proc_file.Close();
+			}
+			proc_file.Close();
+
+			memory.virtual_memory_size_ = String::Stoi64(values_str[0]) * 4 * 1024;
+			memory.physical_memory_size_ = String::Stoi64(values_str[1]) * 4 * 1024;
+		}
 #endif
+		memory.available_bytes_ = memory.free_bytes_ + memory.buffers_bytes_ + memory.cached_bytes_;
+
 		if (memory.total_bytes_ > memory.available_bytes_) {
 			memory.usage_percent_ = double(memory.total_bytes_ - memory.available_bytes_) / double(memory.total_bytes_) * (double)100.0;
+		}
+
+		if (memory.total_bytes_ > memory.physical_memory_size_) {
+			memory.current_usage_percent_ = double(memory.physical_memory_size_) / double(memory.total_bytes_) * (double)100.0;
 		}
 
 		return true;
@@ -864,5 +946,4 @@ namespace utils{
 
 		return true;
 	}
-
 }
