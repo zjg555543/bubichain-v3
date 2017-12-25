@@ -332,7 +332,7 @@ namespace utils{
 		if (proc_file.Open(stat_name, File::FILE_M_READ))
 		{
 			std::string line_str;
-			utils::StringVector& values_str = utils::String::split(line_str, " ");
+			utils::StringVector values_str = utils::String::split(line_str, " ");
 			if (!proc_file.ReadLine(line_str, 1024) || values_str.size() < 2)
 			{
 				proc_file.Close();
