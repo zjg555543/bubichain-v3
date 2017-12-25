@@ -81,12 +81,14 @@ namespace cfca {
 		do {
 			int error_code = -1;
 			char pszBase64CertContent[4096] = { 0 };
-			if (!GetPublicCertContent("SM2", pszPFXFilePath, pszPFXPassword, pszBase64CertContent)) {
+			char* algorithm = "SM2";
+			if (!GetPublicCertContent(algorithm, pszPFXFilePath, pszPFXPassword, pszBase64CertContent)) {
 				break;
 			}
 
 			char* szInfoContent = NULL;
-			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, "SubjectDN", &szInfoContent)) != 0) {
+			char* subject_dn = "SubjectDN";
+			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, subject_dn, &szInfoContent)) != 0) {
 				Error::PrintError(error_code);
 				break;
 			}
@@ -111,7 +113,8 @@ namespace cfca {
 
 			int error_code = 0;
 			char* szInfoContent = NULL;
-			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, "SubjectDN", &szInfoContent)) != 0) {
+			char *subject_dn = "SubjectDN";
+			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, subject_dn, &szInfoContent)) != 0) {
 				Error::PrintError(error_code);
 				break;
 			}
@@ -130,7 +133,8 @@ namespace cfca {
 		do {
 			int error_code = 0;
 			char* szInfoContent = NULL;
-			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, "CertType", &szInfoContent)) != 0) {
+			char* cert_type = "CertType";
+			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, cert_type, &szInfoContent)) != 0) {
 				Error::PrintError(error_code);
 				break;
 			}
@@ -182,7 +186,7 @@ namespace cfca {
 		return bret;
 	}
 
-	bool CFCA::GetPublicCertContent(char*  pszAlgorithm,char* pszPFXFilePath, char* pszPFXPassword, char* szBase64CertContent) {
+	bool CFCA::GetPublicCertContent(char*  pszAlgorithm, char* pszPFXFilePath, char* pszPFXPassword, char* szBase64CertContent) {
 		bool bret = false;
 		do {
 			char* pszBase64CertContent = NULL;

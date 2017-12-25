@@ -14,7 +14,7 @@ limitations under the License.
 #include "system.h"
 
 #ifdef WIN32
-#else:
+#else
 #include <mntent.h>
 #endif // WIN32
 
