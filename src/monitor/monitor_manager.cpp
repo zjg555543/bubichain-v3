@@ -290,6 +290,7 @@ namespace bubi {
 			double current_memory_percent = 0;
 			system_manager_.GetCurrentMonitor(current_cpu_percent, current_memory_percent);
 			LOG_INFO("bubi cpu (%.2lf%%) memory (%.2lf%%)", current_cpu_percent, current_memory_percent);
+			last_percent_time_ = current_time;
 		}
 	}
 

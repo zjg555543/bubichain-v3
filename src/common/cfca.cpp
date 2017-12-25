@@ -66,12 +66,12 @@ namespace cfca {
 
 			bret = true;
 		} while (false);
-		
+
 		return bret;
 	}
 
 	bool CFCA::Exit() {
-		if(handle_) cfca_functions_.Uninitialize();
+		if (handle_) cfca_functions_.Uninitialize();
 		//FreeLibrary(handle_);
 		return true;
 	}
@@ -81,7 +81,7 @@ namespace cfca {
 		do {
 			int error_code = -1;
 			char pszBase64CertContent[4096] = { 0 };
-			char* algorithm = "SM2";
+			char algorithm[] = "SM2";
 			if (!GetPublicCertContent(algorithm, pszPFXFilePath, pszPFXPassword, pszBase64CertContent)) {
 				break;
 			}
@@ -113,7 +113,7 @@ namespace cfca {
 
 			int error_code = 0;
 			char* szInfoContent = NULL;
-			char *subject_dn = "SubjectDN";
+			char subject_dn[] = "SubjectDN";
 			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, subject_dn, &szInfoContent)) != 0) {
 				Error::PrintError(error_code);
 				break;
@@ -133,7 +133,7 @@ namespace cfca {
 		do {
 			int error_code = 0;
 			char* szInfoContent = NULL;
-			char* cert_type = "CertType";
+			char cert_type[] = "CertType";
 			if ((error_code = cfca_functions_.GetCertificateInfo(pszBase64CertContent, cert_type, &szInfoContent)) != 0) {
 				Error::PrintError(error_code);
 				break;
@@ -258,7 +258,7 @@ namespace cfca {
 		if (!handle_){
 			LOG_ERROR("cfca not support");
 			return false;
-		} 
+		}
 
 		// check publickey is or not a base64 character string
 		if (!IsBase64String(publickey)) {
