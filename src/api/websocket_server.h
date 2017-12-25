@@ -15,10 +15,32 @@ limitations under the License.
 #define WEBSOCKET_SERVER_H_
 
 #include <proto/cpp/chain.pb.h>
+#include <proto/cpp/overlay.pb.h>
 #include <common/network.h>
 #include <monitor/system_manager.h>
+#include <main/configure.h>
 
 namespace bubi {
+	class ContractLogMessage : public utils::Runnable {
+	public:
+		ContractLogMessage();
+		~ContractLogMessage();
+
+		bool Initialize();
+		bool Exit();
+
+		bool PullLog(const protocol::ContractLog& message);
+	protected:
+		virtual void Run(utils::Thread *thread) override;
+
+	public:
+		utils::Thread *thread_ptr_;
+
+		const uint32_t list_limit_;
+		utils::Mutex ws_send_message_list_mutex_;
+		std::list<protocol::ContractLog> ws_contract_log_list;
+	};
+
 	class WebSocketServer :public utils::Singleton<WebSocketServer>,
 		public StatusModule,
 		public Network,
@@ -28,10 +50,7 @@ namespace bubi {
 		WebSocketServer();
 		~WebSocketServer();
 
-		
-		//virtual bool Send(const ZMQTaskType type, const std::string& buf);
-
-		bool Initialize(WsServerConfigure & ws_server_configure);
+		bool Initialize(WsServerConfigure &ws_server_configure);
 		bool Exit();
 
 		// Handlers
@@ -42,6 +61,8 @@ namespace bubi {
 		void BroadcastMsg(int64_t type, const std::string &data);
 		void BroadcastChainTxMsg(const std::string &hash, const std::string &source_address, Result result, protocol::ChainTxStatus_TxStatus status);
 
+		bool SendContractLog(const char* sender, const char* data, uint64_t data_size);
+
 		virtual void GetModuleStatus(Json::Value &data);
 	protected:
 		virtual void Run(utils::Thread *thread) override;
@@ -51,6 +72,9 @@ namespace bubi {
 
 		uint64_t last_connect_time_;
 		uint64_t connect_interval_;
+		
+		const uint64_t log_size_limit_;
+		ContractLogMessage log_message_;
 	};
 }
 

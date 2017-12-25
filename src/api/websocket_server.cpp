@@ -23,7 +23,68 @@ limitations under the License.
 #include "websocket_server.h"
 
 namespace bubi {
-	WebSocketServer::WebSocketServer() : Network(SslParameter()) {
+	ContractLogMessage::ContractLogMessage() : list_limit_(1000), thread_ptr_(NULL){
+	}
+
+	ContractLogMessage::~ContractLogMessage() {
+
+	}
+
+	bool ContractLogMessage::Initialize() {
+		ws_contract_log_list.clear();
+		thread_ptr_ = new utils::Thread(this);
+		if (!thread_ptr_->Start("wsmessage")) {
+			return false;
+		}
+		return true;
+	}
+
+	void ContractLogMessage::Run(utils::Thread *thread) {
+		WebSocketServer& websocket_server = WebSocketServer::Instance();
+		while (thread_ptr_->enabled()) {
+			bool is_empty = false;
+			do {
+				utils::MutexGuard guard(ws_send_message_list_mutex_);
+				if (ws_contract_log_list.empty()) {
+					is_empty = true;
+					break;
+				}
+
+				protocol::ContractLog socket_message = ws_contract_log_list.front();
+				websocket_server.BroadcastMsg(protocol::ChainMessageType::CHAIN_CONTRACT_LOG, socket_message.SerializeAsString());
+				ws_contract_log_list.pop_front();
+			} while (false);
+
+			if (is_empty) {
+				utils::Sleep(3 * utils::MILLI_UNITS_PER_SEC);
+			}
+			else {
+				utils::Sleep(10);
+			}
+		}
+	}
+
+	bool ContractLogMessage::PullLog(const protocol::ContractLog& message) {
+		utils::MutexGuard guard(ws_send_message_list_mutex_);
+		if (ws_contract_log_list.size() >= list_limit_) {
+			LOG_ERROR("the queue of web socket is full, sender(%s) log(%s)", message.sender().c_str(), message.data().c_str());
+			return false;
+		}
+		ws_contract_log_list.push_back(message);
+		return true;
+	}
+
+	bool ContractLogMessage::Exit() {
+		if (thread_ptr_){
+			delete thread_ptr_;
+			thread_ptr_ = NULL;
+		}
+		utils::MutexGuard guard(ws_send_message_list_mutex_);
+		ws_contract_log_list.clear();
+		return false;
+	}
+
+	WebSocketServer::WebSocketServer() : Network(SslParameter()), log_size_limit_(64 * 1024){
 		connect_interval_ = 120 * utils::MICRO_UNITS_PER_SEC;
 		last_connect_time_ = 0;
 
@@ -37,6 +98,7 @@ namespace bubi {
 	WebSocketServer::~WebSocketServer() {
 		if (thread_ptr_){
 			delete thread_ptr_;
+			thread_ptr_ = NULL;
 		} 
 	}
 
@@ -45,8 +107,8 @@ namespace bubi {
 		if (!thread_ptr_->Start("websocket")) {
 			return false;
 		}
-
 		StatusModule::RegisterModule(this);
+		log_message_.Initialize();
 		LOG_INFO("Websocket server initialized");
 		return true;
 	}
@@ -177,6 +239,18 @@ namespace bubi {
 		BroadcastMsg(protocol::CHAIN_TX_STATUS, str);
 		
 		return true;
+	}
+
+	bool WebSocketServer::SendContractLog(const char* sender, const char* data, uint64_t data_size) {
+		if (data_size > log_size_limit_) {
+			LOG_ERROR("log's size (%lld) is too big, sender(%s) log(%s)", data_size, sender, data);
+			return false;
+		}
+		protocol::ContractLog contract_log;
+		contract_log.set_sender(sender);
+		contract_log.set_data(data);
+		contract_log.set_timestamp(utils::Timestamp::HighResolution());
+		return log_message_.PullLog(contract_log);
 	}
 
 	void WebSocketServer::GetModuleStatus(Json::Value &data) {

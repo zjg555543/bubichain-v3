@@ -215,6 +215,22 @@ public final class Overlay {
      * <code>CHAIN_SUBMITTRANSACTION = 15;</code>
      */
     CHAIN_SUBMITTRANSACTION(15),
+    /**
+     * <pre>
+     *bubi notify the client ledger(protocol::LedgerHeader) when closed
+     * </pre>
+     *
+     * <code>CHAIN_LEDGER_HEADER = 16;</code>
+     */
+    CHAIN_LEDGER_HEADER(16),
+    /**
+     * <pre>
+     * smart contract log
+     * </pre>
+     *
+     * <code>CHAIN_CONTRACT_LOG = 17;</code>
+     */
+    CHAIN_CONTRACT_LOG(17),
     UNRECOGNIZED(-1),
     ;
 
@@ -250,6 +266,22 @@ public final class Overlay {
      * <code>CHAIN_SUBMITTRANSACTION = 15;</code>
      */
     public static final int CHAIN_SUBMITTRANSACTION_VALUE = 15;
+    /**
+     * <pre>
+     *bubi notify the client ledger(protocol::LedgerHeader) when closed
+     * </pre>
+     *
+     * <code>CHAIN_LEDGER_HEADER = 16;</code>
+     */
+    public static final int CHAIN_LEDGER_HEADER_VALUE = 16;
+    /**
+     * <pre>
+     * smart contract log
+     * </pre>
+     *
+     * <code>CHAIN_CONTRACT_LOG = 17;</code>
+     */
+    public static final int CHAIN_CONTRACT_LOG_VALUE = 17;
 
 
     public final int getNumber() {
@@ -277,6 +309,8 @@ public final class Overlay {
         case 13: return CHAIN_PEER_OFFLINE;
         case 14: return CHAIN_PEER_MESSAGE;
         case 15: return CHAIN_SUBMITTRANSACTION;
+        case 16: return CHAIN_LEDGER_HEADER;
+        case 17: return CHAIN_CONTRACT_LOG;
         default: return null;
       }
     }
@@ -1990,6 +2024,11 @@ public final class Overlay {
      * <code>optional int64 active_time = 5;</code>
      */
     long getActiveTime();
+
+    /**
+     * <code>optional int64 connection_id = 6;</code>
+     */
+    long getConnectionId();
   }
   /**
    * <pre>
@@ -2012,6 +2051,7 @@ public final class Overlay {
       numFailures_ = 0L;
       nextAttemptTime_ = 0L;
       activeTime_ = 0L;
+      connectionId_ = 0L;
     }
 
     @java.lang.Override
@@ -2063,6 +2103,11 @@ public final class Overlay {
             case 40: {
 
               activeTime_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              connectionId_ = input.readInt64();
               break;
             }
           }
@@ -2158,6 +2203,15 @@ public final class Overlay {
       return activeTime_;
     }
 
+    public static final int CONNECTION_ID_FIELD_NUMBER = 6;
+    private long connectionId_;
+    /**
+     * <code>optional int64 connection_id = 6;</code>
+     */
+    public long getConnectionId() {
+      return connectionId_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2185,6 +2239,9 @@ public final class Overlay {
       if (activeTime_ != 0L) {
         output.writeInt64(5, activeTime_);
       }
+      if (connectionId_ != 0L) {
+        output.writeInt64(6, connectionId_);
+      }
     }
 
     public int getSerializedSize() {
@@ -2210,6 +2267,10 @@ public final class Overlay {
       if (activeTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(5, activeTime_);
+      }
+      if (connectionId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, connectionId_);
       }
       memoizedSize = size;
       return size;
@@ -2237,6 +2298,8 @@ public final class Overlay {
           == other.getNextAttemptTime());
       result = result && (getActiveTime()
           == other.getActiveTime());
+      result = result && (getConnectionId()
+          == other.getConnectionId());
       return result;
     }
 
@@ -2261,6 +2324,9 @@ public final class Overlay {
       hash = (37 * hash) + ACTIVE_TIME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getActiveTime());
+      hash = (37 * hash) + CONNECTION_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getConnectionId());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2393,6 +2459,8 @@ public final class Overlay {
 
         activeTime_ = 0L;
 
+        connectionId_ = 0L;
+
         return this;
       }
 
@@ -2420,6 +2488,7 @@ public final class Overlay {
         result.numFailures_ = numFailures_;
         result.nextAttemptTime_ = nextAttemptTime_;
         result.activeTime_ = activeTime_;
+        result.connectionId_ = connectionId_;
         onBuilt();
         return result;
       }
@@ -2476,6 +2545,9 @@ public final class Overlay {
         }
         if (other.getActiveTime() != 0L) {
           setActiveTime(other.getActiveTime());
+        }
+        if (other.getConnectionId() != 0L) {
+          setConnectionId(other.getConnectionId());
         }
         onChanged();
         return this;
@@ -2672,6 +2744,32 @@ public final class Overlay {
       public Builder clearActiveTime() {
         
         activeTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long connectionId_ ;
+      /**
+       * <code>optional int64 connection_id = 6;</code>
+       */
+      public long getConnectionId() {
+        return connectionId_;
+      }
+      /**
+       * <code>optional int64 connection_id = 6;</code>
+       */
+      public Builder setConnectionId(long value) {
+        
+        connectionId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 connection_id = 6;</code>
+       */
+      public Builder clearConnectionId() {
+        
+        connectionId_ = 0L;
         onChanged();
         return this;
       }
@@ -10991,6 +11089,710 @@ public final class Overlay {
 
   }
 
+  public interface ContractLogOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:protocol.ContractLog)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    java.lang.String getSender();
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <code>optional string data = 2;</code>
+     */
+    java.lang.String getData();
+    /**
+     * <code>optional string data = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getDataBytes();
+
+    /**
+     * <code>optional int64 timestamp = 3;</code>
+     */
+    long getTimestamp();
+  }
+  /**
+   * Protobuf type {@code protocol.ContractLog}
+   */
+  public  static final class ContractLog extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.ContractLog)
+      ContractLogOrBuilder {
+    // Use ContractLog.newBuilder() to construct.
+    private ContractLog(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ContractLog() {
+      sender_ = "";
+      data_ = "";
+      timestamp_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private ContractLog(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              sender_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              data_ = s;
+              break;
+            }
+            case 24: {
+
+              timestamp_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.bubi.blockchain.adapter3.Overlay.internal_static_protocol_ContractLog_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.bubi.blockchain.adapter3.Overlay.internal_static_protocol_ContractLog_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.bubi.blockchain.adapter3.Overlay.ContractLog.class, cn.bubi.blockchain.adapter3.Overlay.ContractLog.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    private volatile java.lang.Object sender_;
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 2;
+    private volatile java.lang.Object data_;
+    /**
+     * <code>optional string data = 2;</code>
+     */
+    public java.lang.String getData() {
+      java.lang.Object ref = data_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        data_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string data = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDataBytes() {
+      java.lang.Object ref = data_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        data_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TIMESTAMP_FIELD_NUMBER = 3;
+    private long timestamp_;
+    /**
+     * <code>optional int64 timestamp = 3;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getSenderBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sender_);
+      }
+      if (!getDataBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, data_);
+      }
+      if (timestamp_ != 0L) {
+        output.writeInt64(3, timestamp_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getSenderBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sender_);
+      }
+      if (!getDataBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, data_);
+      }
+      if (timestamp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, timestamp_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.bubi.blockchain.adapter3.Overlay.ContractLog)) {
+        return super.equals(obj);
+      }
+      cn.bubi.blockchain.adapter3.Overlay.ContractLog other = (cn.bubi.blockchain.adapter3.Overlay.ContractLog) obj;
+
+      boolean result = true;
+      result = result && getSender()
+          .equals(other.getSender());
+      result = result && getData()
+          .equals(other.getData());
+      result = result && (getTimestamp()
+          == other.getTimestamp());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTimestamp());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.bubi.blockchain.adapter3.Overlay.ContractLog prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code protocol.ContractLog}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.ContractLog)
+        cn.bubi.blockchain.adapter3.Overlay.ContractLogOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.bubi.blockchain.adapter3.Overlay.internal_static_protocol_ContractLog_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.bubi.blockchain.adapter3.Overlay.internal_static_protocol_ContractLog_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.bubi.blockchain.adapter3.Overlay.ContractLog.class, cn.bubi.blockchain.adapter3.Overlay.ContractLog.Builder.class);
+      }
+
+      // Construct using cn.bubi.blockchain.adapter3.Overlay.ContractLog.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        sender_ = "";
+
+        data_ = "";
+
+        timestamp_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.bubi.blockchain.adapter3.Overlay.internal_static_protocol_ContractLog_descriptor;
+      }
+
+      public cn.bubi.blockchain.adapter3.Overlay.ContractLog getDefaultInstanceForType() {
+        return cn.bubi.blockchain.adapter3.Overlay.ContractLog.getDefaultInstance();
+      }
+
+      public cn.bubi.blockchain.adapter3.Overlay.ContractLog build() {
+        cn.bubi.blockchain.adapter3.Overlay.ContractLog result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public cn.bubi.blockchain.adapter3.Overlay.ContractLog buildPartial() {
+        cn.bubi.blockchain.adapter3.Overlay.ContractLog result = new cn.bubi.blockchain.adapter3.Overlay.ContractLog(this);
+        result.sender_ = sender_;
+        result.data_ = data_;
+        result.timestamp_ = timestamp_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.bubi.blockchain.adapter3.Overlay.ContractLog) {
+          return mergeFrom((cn.bubi.blockchain.adapter3.Overlay.ContractLog)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.bubi.blockchain.adapter3.Overlay.ContractLog other) {
+        if (other == cn.bubi.blockchain.adapter3.Overlay.ContractLog.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          onChanged();
+        }
+        if (!other.getData().isEmpty()) {
+          data_ = other.data_;
+          onChanged();
+        }
+        if (other.getTimestamp() != 0L) {
+          setTimestamp(other.getTimestamp());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.bubi.blockchain.adapter3.Overlay.ContractLog parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.bubi.blockchain.adapter3.Overlay.ContractLog) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        sender_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public Builder clearSender() {
+        
+        sender_ = getDefaultInstance().getSender();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        sender_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object data_ = "";
+      /**
+       * <code>optional string data = 2;</code>
+       */
+      public java.lang.String getData() {
+        java.lang.Object ref = data_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          data_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string data = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDataBytes() {
+        java.lang.Object ref = data_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          data_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string data = 2;</code>
+       */
+      public Builder setData(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        data_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string data = 2;</code>
+       */
+      public Builder clearData() {
+        
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string data = 2;</code>
+       */
+      public Builder setDataBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        data_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long timestamp_ ;
+      /**
+       * <code>optional int64 timestamp = 3;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      /**
+       * <code>optional int64 timestamp = 3;</code>
+       */
+      public Builder setTimestamp(long value) {
+        
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 timestamp = 3;</code>
+       */
+      public Builder clearTimestamp() {
+        
+        timestamp_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:protocol.ContractLog)
+    }
+
+    // @@protoc_insertion_point(class_scope:protocol.ContractLog)
+    private static final cn.bubi.blockchain.adapter3.Overlay.ContractLog DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.bubi.blockchain.adapter3.Overlay.ContractLog();
+    }
+
+    public static cn.bubi.blockchain.adapter3.Overlay.ContractLog getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ContractLog>
+        PARSER = new com.google.protobuf.AbstractParser<ContractLog>() {
+      public ContractLog parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ContractLog(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ContractLog> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ContractLog> getParserForType() {
+      return PARSER;
+    }
+
+    public cn.bubi.blockchain.adapter3.Overlay.ContractLog getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_protocol_Hello_descriptor;
   private static final 
@@ -11056,6 +11858,11 @@ public final class Overlay {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_protocol_ChainTxStatus_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_protocol_ContractLog_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_ContractLog_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -11072,50 +11879,53 @@ public final class Overlay {
       "tening_port\030\005 \001(\003\022\024\n\014node_address\030\006 \001(\t\022" +
       "\021\n\tnode_rand\030\007 \001(\t\"L\n\rHelloResponse\022\'\n\ne" +
       "rror_code\030\001 \001(\0162\023.protocol.ERRORCODE\022\022\n\n" +
-      "error_desc\030\002 \001(\t\"f\n\004Peer\022\n\n\002ip\030\001 \001(\t\022\014\n\004" +
+      "error_desc\030\002 \001(\t\"}\n\004Peer\022\n\n\002ip\030\001 \001(\t\022\014\n\004" +
       "port\030\002 \001(\003\022\024\n\014num_failures\030\003 \001(\003\022\031\n\021next" +
       "_attempt_time\030\004 \001(\003\022\023\n\013active_time\030\005 \001(\003",
-      "\"&\n\005Peers\022\035\n\005peers\030\001 \003(\0132\016.protocol.Peer" +
-      "\";\n\nGetLedgers\022\r\n\005begin\030\001 \001(\003\022\013\n\003end\030\002 \001" +
-      "(\003\022\021\n\ttimestamp\030\003 \001(\003\"\337\001\n\007Ledgers\022(\n\006val" +
-      "ues\030\001 \003(\0132\030.protocol.ConsensusValue\022-\n\ts" +
-      "ync_code\030\002 \001(\0162\032.protocol.Ledgers.SyncCo" +
-      "de\022\017\n\007max_seq\030\003 \001(\003\022\r\n\005proof\030\004 \001(\014\"[\n\010Sy" +
-      "ncCode\022\006\n\002OK\020\000\022\017\n\013OUT_OF_SYNC\020\001\022\022\n\016OUT_O" +
-      "F_LEDGERS\020\002\022\010\n\004BUSY\020\003\022\n\n\006REFUSE\020\004\022\014\n\010INT" +
-      "ERNAL\020\005\"&\n\010DontHave\022\014\n\004type\030\001 \001(\003\022\014\n\004has" +
-      "h\030\002 \001(\014\"v\n\023LedgerUpgradeNotify\022\r\n\005nonce\030",
-      "\001 \001(\003\022(\n\007upgrade\030\002 \001(\0132\027.protocol.Ledger" +
-      "Upgrade\022&\n\tsignature\030\003 \001(\0132\023.protocol.Si" +
-      "gnature\"\032\n\tEntryList\022\r\n\005entry\030\001 \003(\014\"M\n\nC" +
-      "hainHello\022,\n\010api_list\030\001 \003(\0162\032.protocol.C" +
-      "hainMessageType\022\021\n\ttimestamp\030\002 \001(\003\"z\n\013Ch" +
-      "ainStatus\022\021\n\tself_addr\030\001 \001(\t\022\026\n\016ledger_v" +
-      "ersion\030\002 \001(\003\022\027\n\017monitor_version\030\003 \001(\003\022\024\n" +
-      "\014bubi_version\030\004 \001(\t\022\021\n\ttimestamp\030\005 \001(\003\"O" +
-      "\n\020ChainPeerMessage\022\025\n\rsrc_peer_addr\030\001 \001(" +
-      "\t\022\026\n\016des_peer_addrs\030\002 \003(\t\022\014\n\004data\030\003 \001(\014\"",
-      "\325\002\n\rChainTxStatus\0220\n\006status\030\001 \001(\0162 .prot" +
-      "ocol.ChainTxStatus.TxStatus\022\017\n\007tx_hash\030\002" +
-      " \001(\t\022\026\n\016source_address\030\003 \001(\t\022\032\n\022source_a" +
-      "ccount_seq\030\004 \001(\003\022\022\n\nledger_seq\030\005 \001(\003\022\027\n\017" +
-      "new_account_seq\030\006 \001(\003\022\'\n\nerror_code\030\007 \001(" +
-      "\0162\023.protocol.ERRORCODE\022\022\n\nerror_desc\030\010 \001" +
-      "(\t\022\021\n\ttimestamp\030\t \001(\003\"P\n\010TxStatus\022\r\n\tUND" +
-      "EFINED\020\000\022\r\n\tCONFIRMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010" +
-      "COMPLETE\020\003\022\013\n\007FAILURE\020\004*\203\002\n\024OVERLAY_MESS" +
-      "AGE_TYPE\022\030\n\024OVERLAY_MSGTYPE_NONE\020\000\022\030\n\024OV",
-      "ERLAY_MSGTYPE_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_" +
-      "HELLO\020\002\022\031\n\025OVERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OV" +
-      "ERLAY_MSGTYPE_TRANSACTION\020\004\022\033\n\027OVERLAY_M" +
-      "SGTYPE_LEDGERS\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT" +
-      "\020\006\022)\n%OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOT" +
-      "IFY\020\007*\261\001\n\020ChainMessageType\022\023\n\017CHAIN_TYPE" +
-      "_NONE\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN_TX_STA" +
-      "TUS\020\013\022\025\n\021CHAIN_PEER_ONLINE\020\014\022\026\n\022CHAIN_PE" +
-      "ER_OFFLINE\020\r\022\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027" +
-      "CHAIN_SUBMITTRANSACTION\020\017B\035\n\033cn.bubi.blo",
-      "ckchain.adapter3b\006proto3"
+      "\022\025\n\rconnection_id\030\006 \001(\003\"&\n\005Peers\022\035\n\005peer" +
+      "s\030\001 \003(\0132\016.protocol.Peer\";\n\nGetLedgers\022\r\n" +
+      "\005begin\030\001 \001(\003\022\013\n\003end\030\002 \001(\003\022\021\n\ttimestamp\030\003" +
+      " \001(\003\"\337\001\n\007Ledgers\022(\n\006values\030\001 \003(\0132\030.proto" +
+      "col.ConsensusValue\022-\n\tsync_code\030\002 \001(\0162\032." +
+      "protocol.Ledgers.SyncCode\022\017\n\007max_seq\030\003 \001" +
+      "(\003\022\r\n\005proof\030\004 \001(\014\"[\n\010SyncCode\022\006\n\002OK\020\000\022\017\n" +
+      "\013OUT_OF_SYNC\020\001\022\022\n\016OUT_OF_LEDGERS\020\002\022\010\n\004BU" +
+      "SY\020\003\022\n\n\006REFUSE\020\004\022\014\n\010INTERNAL\020\005\"&\n\010DontHa" +
+      "ve\022\014\n\004type\030\001 \001(\003\022\014\n\004hash\030\002 \001(\014\"v\n\023Ledger",
+      "UpgradeNotify\022\r\n\005nonce\030\001 \001(\003\022(\n\007upgrade\030" +
+      "\002 \001(\0132\027.protocol.LedgerUpgrade\022&\n\tsignat" +
+      "ure\030\003 \001(\0132\023.protocol.Signature\"\032\n\tEntryL" +
+      "ist\022\r\n\005entry\030\001 \003(\014\"M\n\nChainHello\022,\n\010api_" +
+      "list\030\001 \003(\0162\032.protocol.ChainMessageType\022\021" +
+      "\n\ttimestamp\030\002 \001(\003\"z\n\013ChainStatus\022\021\n\tself" +
+      "_addr\030\001 \001(\t\022\026\n\016ledger_version\030\002 \001(\003\022\027\n\017m" +
+      "onitor_version\030\003 \001(\003\022\024\n\014bubi_version\030\004 \001" +
+      "(\t\022\021\n\ttimestamp\030\005 \001(\003\"O\n\020ChainPeerMessag" +
+      "e\022\025\n\rsrc_peer_addr\030\001 \001(\t\022\026\n\016des_peer_add",
+      "rs\030\002 \003(\t\022\014\n\004data\030\003 \001(\014\"\325\002\n\rChainTxStatus" +
+      "\0220\n\006status\030\001 \001(\0162 .protocol.ChainTxStatu" +
+      "s.TxStatus\022\017\n\007tx_hash\030\002 \001(\t\022\026\n\016source_ad" +
+      "dress\030\003 \001(\t\022\032\n\022source_account_seq\030\004 \001(\003\022" +
+      "\022\n\nledger_seq\030\005 \001(\003\022\027\n\017new_account_seq\030\006" +
+      " \001(\003\022\'\n\nerror_code\030\007 \001(\0162\023.protocol.ERRO" +
+      "RCODE\022\022\n\nerror_desc\030\010 \001(\t\022\021\n\ttimestamp\030\t" +
+      " \001(\003\"P\n\010TxStatus\022\r\n\tUNDEFINED\020\000\022\r\n\tCONFI" +
+      "RMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010COMPLETE\020\003\022\013\n\007FAI" +
+      "LURE\020\004\">\n\013ContractLog\022\016\n\006sender\030\001 \001(\t\022\014\n",
+      "\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003*\203\002\n\024OVERL" +
+      "AY_MESSAGE_TYPE\022\030\n\024OVERLAY_MSGTYPE_NONE\020" +
+      "\000\022\030\n\024OVERLAY_MSGTYPE_PING\020\001\022\031\n\025OVERLAY_M" +
+      "SGTYPE_HELLO\020\002\022\031\n\025OVERLAY_MSGTYPE_PEERS\020" +
+      "\003\022\037\n\033OVERLAY_MSGTYPE_TRANSACTION\020\004\022\033\n\027OV" +
+      "ERLAY_MSGTYPE_LEDGERS\020\005\022\030\n\024OVERLAY_MSGTY" +
+      "PE_PBFT\020\006\022)\n%OVERLAY_MSGTYPE_LEDGER_UPGR" +
+      "ADE_NOTIFY\020\007*\342\001\n\020ChainMessageType\022\023\n\017CHA" +
+      "IN_TYPE_NONE\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN" +
+      "_TX_STATUS\020\013\022\025\n\021CHAIN_PEER_ONLINE\020\014\022\026\n\022C",
+      "HAIN_PEER_OFFLINE\020\r\022\026\n\022CHAIN_PEER_MESSAG" +
+      "E\020\016\022\033\n\027CHAIN_SUBMITTRANSACTION\020\017\022\027\n\023CHAI" +
+      "N_LEDGER_HEADER\020\020\022\026\n\022CHAIN_CONTRACT_LOG\020" +
+      "\021B\035\n\033cn.bubi.blockchain.adapter3b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -11148,7 +11958,7 @@ public final class Overlay {
     internal_static_protocol_Peer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_Peer_descriptor,
-        new java.lang.String[] { "Ip", "Port", "NumFailures", "NextAttemptTime", "ActiveTime", });
+        new java.lang.String[] { "Ip", "Port", "NumFailures", "NextAttemptTime", "ActiveTime", "ConnectionId", });
     internal_static_protocol_Peers_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_protocol_Peers_fieldAccessorTable = new
@@ -11209,6 +12019,12 @@ public final class Overlay {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_ChainTxStatus_descriptor,
         new java.lang.String[] { "Status", "TxHash", "SourceAddress", "SourceAccountSeq", "LedgerSeq", "NewAccountSeq", "ErrorCode", "ErrorDesc", "Timestamp", });
+    internal_static_protocol_ContractLog_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_protocol_ContractLog_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_ContractLog_descriptor,
+        new java.lang.String[] { "Sender", "Data", "Timestamp", });
     cn.bubi.blockchain.adapter3.Common.getDescriptor();
     cn.bubi.blockchain.adapter3.Chain.getDescriptor();
   }
