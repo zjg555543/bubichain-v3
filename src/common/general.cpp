@@ -175,8 +175,8 @@ namespace bubi {
 			for (auto item : TimerNotify::notifys_){
 				item->SlowTimerWrapper(utils::Timestamp::HighResolution());
 
-				if (item->IsSlowExpire(5 * utils::MICRO_UNITS_PER_SEC)){
-					LOG_WARN("The timer(%s) execute time(" FMT_I64 " us) is expire than 5s", item->GetTimerName().c_str(), item->GetSlowLastExecuteTime());
+				if (item->IsSlowExpire(2 * utils::MICRO_UNITS_PER_SEC)){
+					LOG_WARN("The slow timer(%s) execute time(" FMT_I64 " us) is expire than 2s", item->GetTimerName().c_str(), item->GetSlowLastExecuteTime());
 				}
 			}
 

@@ -29,7 +29,7 @@ namespace bubi {
 		bool Initialize();
 		bool Exit();
 
-		bool PullLog(const protocol::ContractLog& message);
+		bool PullLog(const protocol::ChainContractLog &message);
 	protected:
 		virtual void Run(utils::Thread *thread) override;
 
@@ -38,7 +38,7 @@ namespace bubi {
 
 		const uint32_t list_limit_;
 		utils::Mutex ws_send_message_list_mutex_;
-		std::list<protocol::ContractLog> ws_contract_log_list;
+		std::list<protocol::ChainContractLog> ws_contract_log_list;
 	};
 
 	class WebSocketServer :public utils::Singleton<WebSocketServer>,

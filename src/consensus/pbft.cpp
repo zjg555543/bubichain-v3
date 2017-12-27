@@ -2261,6 +2261,7 @@ namespace bubi {
 			item["start_time"] = utils::Timestamp(vc_instance.start_time_).ToFormatString(true);
 			item["last_propose_time"] = utils::Timestamp(vc_instance.last_propose_time_).ToFormatString(true);
 			item["end_time"] = utils::Timestamp(vc_instance.end_time_).ToFormatString(true);
+			item["newview_init"] = vc_instance.newview_.IsInitialized();
 
 			Json::Value &vc = item["viewchange"];
 			for (PbftViewChangeMap::const_iterator iter_vc = vc_instance.viewchanges_.begin(); iter_vc != vc_instance.viewchanges_.end(); iter_vc++) {

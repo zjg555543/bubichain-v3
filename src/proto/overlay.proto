@@ -148,7 +148,7 @@ message ChainTxStatus {
 	int64		timestamp = 9;			
 }
 
-message ContractLog {
+message ChainContractLog {
 	string sender = 1;
 	string data = 2;
 	int64 timestamp = 3;

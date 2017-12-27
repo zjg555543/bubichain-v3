@@ -50,7 +50,7 @@ namespace bubi {
 					break;
 				}
 
-				protocol::ContractLog socket_message = ws_contract_log_list.front();
+				protocol::ChainContractLog socket_message = ws_contract_log_list.front();
 				websocket_server.BroadcastMsg(protocol::ChainMessageType::CHAIN_CONTRACT_LOG, socket_message.SerializeAsString());
 				ws_contract_log_list.pop_front();
 			} while (false);
@@ -64,7 +64,7 @@ namespace bubi {
 		}
 	}
 
-	bool ContractLogMessage::PullLog(const protocol::ContractLog& message) {
+	bool ContractLogMessage::PullLog(const protocol::ChainContractLog& message) {
 		utils::MutexGuard guard(ws_send_message_list_mutex_);
 		if (ws_contract_log_list.size() >= list_limit_) {
 			LOG_ERROR("the queue of web socket is full, sender(%s) log(%s)", message.sender().c_str(), message.data().c_str());
@@ -246,7 +246,7 @@ namespace bubi {
 			LOG_ERROR("log's size (%lld) is too big, sender(%s) log(%s)", data_size, sender, data);
 			return false;
 		}
-		protocol::ContractLog contract_log;
+		protocol::ChainContractLog contract_log;
 		contract_log.set_sender(sender);
 		contract_log.set_data(data);
 		contract_log.set_timestamp(utils::Timestamp::HighResolution());

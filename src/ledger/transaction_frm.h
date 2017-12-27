@@ -55,8 +55,9 @@ namespace bubi {
 		int64_t GetNonce() const;
 
 		const protocol::TransactionEnv &GetTransactionEnv() const;
+		std::string &GetTransactionString();
 
-		bool CheckValid(int64_t last_seq);
+		bool CheckValid(int64_t last_seq); 
 		bool CheckExpr(const std::string &code, const std::string &log_prefix);
 
 		bool SignerHashPriv(utils::StringVector &address, std::shared_ptr<Environment> env, int32_t type) const;
@@ -99,6 +100,7 @@ namespace bubi {
 		std::set<std::string> valid_signature_;
 		
 		int64_t incoming_time_;
+		std::string *trans_value;  //accelate the program
 	};
 };
 
