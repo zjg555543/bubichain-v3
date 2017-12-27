@@ -96,6 +96,19 @@ namespace bubi {
 			return false;
 		}
 
+		//fee
+		if (lcl_header_.version() > 3300) {
+			std::string fees_hash = lclheader.fees_hash();
+			if (!FeesConfigGet(fees_hash, fees_)) {
+				LOG_ERROR("FeesConfigGet failed!");
+				return false;
+			}
+		}
+		else {
+			fees_.Clear();
+			LOG_INFO("Byte fee :" FMT_I64 " Base reserver fee:" FMT_I64 " Pay fee:" FMT_I64 " .", fees_.byte_fee(), fees_.base_reserve(), fees_.pay_fee());
+		}
+
 		//load proof
 		Storage::Instance().account_db()->Get(General::LAST_PROOF, proof_);
 
@@ -218,6 +231,21 @@ namespace bubi {
 		return vlidators_set.ParseFromString(str);
 	}
 
+	void LedgerManager::FeesConfigSet(std::shared_ptr<WRITE_BATCH> batch, const protocol::FeeConfig &fee) {
+		std::string hash = HashWrapper::Crypto(fee.SerializeAsString());
+		batch->Put(utils::String::Format("fees-%s", utils::String::BinToHexString(hash).c_str()), fee.SerializeAsString());
+	}
+
+	bool LedgerManager::FeesConfigGet(const std::string& hash, protocol::FeeConfig &fee) {
+		std::string key = utils::String::Format("fees-%s", utils::String::BinToHexString(hash).c_str());
+		auto db = Storage::Instance().account_db();
+		std::string str;
+		if (!db->Get(key, str)) {
+			return false;
+		}
+		return fee.ParseFromString(str);
+	}
+
 	bool LedgerManager::CreateGenesisAccount() {
 		LOG_INFO("There is no ledger exist,then create a init ledger");
 		//set global hash caculate
@@ -256,6 +284,19 @@ namespace bubi {
 		std::string validators_hash = HashWrapper::Crypto(validators_.SerializeAsString());
 		header->set_validators_hash(validators_hash);
 
+		/*fees_.set_byte_fee(Configure::Instance().ledger_configure_.fees_.byte_fee_);
+		fees_.set_base_reserve(Configure::Instance().ledger_configure_.fees_.base_reserve_);
+		fees_.set_create_account_fee(Configure::Instance().ledger_configure_.fees_.create_account_fee_);
+		fees_.set_pay_fee(Configure::Instance().ledger_configure_.fees_.pay_fee_);
+		fees_.set_issue_asset_fee(Configure::Instance().ledger_configure_.fees_.issue_asset_fee_);
+		fees_.set_set_metadata_fee(Configure::Instance().ledger_configure_.fees_.set_metadata_fee_);
+		fees_.set_set_sigure_weight_fee(Configure::Instance().ledger_configure_.fees_.set_sigure_weight_fee_);
+		fees_.set_set_threshold_fee(Configure::Instance().ledger_configure_.fees_.set_threshold_fee_);
+		fees_.set_pay_coin_fee(Configure::Instance().ledger_configure_.fees_.pay_coin_fee_);
+		std::string fees_hash = HashWrapper::Crypto(fees_.SerializeAsString());*/
+		fees_.Clear();
+		header->set_fees_hash("");
+
 		header->set_hash("");
 		header->set_hash(HashWrapper::Crypto(ledger.SerializeAsString()));
 
@@ -265,6 +306,7 @@ namespace bubi {
 		batch->Put(bubi::General::KEY_LEDGER_SEQ, "1");
 		batch->Put(bubi::General::KEY_GENE_ACCOUNT, Configure::Instance().ledger_configure_.genesis_account_);
 		ValidatorsSet(batch, validators_);
+		FeesConfigSet(batch, fees_);
 
 		WRITE_BATCH batch_ledger;
 		if (!last_closed_ledger_->AddToDb(batch_ledger)) {
@@ -554,6 +596,18 @@ namespace bubi {
 		ValidatorsSet(account_db_batch, new_set);
 		validators_ = new_set;
 
+		//fee
+		header->set_fees_hash("");
+		if (header->version() > 3300) {
+			protocol::FeeConfig new_fees;
+			if (closing_ledger->GetVotedFee(new_fees)) {
+				FeesConfigSet(account_db_batch, new_fees);
+				fees_ = new_fees;
+			}
+			header->set_fees_hash(HashWrapper::Crypto(fees_.SerializeAsString()));	
+		}
+
+		//proof
 		account_db_batch->Put(bubi::General::LAST_PROOF, proof);
 		account_db_batch->Put(bubi::General::STATISTICS, statistics_.toFastString());
 		proof_ = proof;
@@ -945,7 +999,10 @@ namespace bubi {
 					txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
 				}
 			}
-
+			
+			//caculate byte fee
+			txfrm->real_fee_ += txfrm->GetSelfByteFee();
+			back->real_fee_ += txfrm->real_fee_;
 
 			protocol::TransactionEnvStore tx_store;
 			tx_store.mutable_transaction_env()->CopyFrom(txfrm->GetProtoTxEnv());
@@ -966,6 +1023,9 @@ namespace bubi {
 			return txfrm->GetResult().code() == protocol::ERRCODE_SUCCESS;
 		} while (false);
 
+		//caculate byte fee
+		txfrm->real_fee_ += txfrm->GetSelfByteFee();
+		back->real_fee_ += txfrm->real_fee_;
 
 		//
 		protocol::TransactionEnvStore tx_store;

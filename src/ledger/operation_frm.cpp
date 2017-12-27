@@ -373,6 +373,7 @@ namespace bubi {
 			return result_;
 		}
 		auto type = operation_.type();
+		OptFee(type);
 		switch (type) {
 		case protocol::Operation_Type_UNKNOWN:
 			break;
@@ -707,6 +708,40 @@ namespace bubi {
 				}
 			}
 		} while (false);
+	}
+
+	void OperationFrm::OptFee(const protocol::Operation_Type type) {
+		switch (type) {
+		case protocol::Operation_Type_UNKNOWN:
+			break;
+		case protocol::Operation_Type_CREATE_ACCOUNT:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.create_account_fee();
+			break;
+		case protocol::Operation_Type_PAYMENT:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.pay_fee();
+			break;
+		case protocol::Operation_Type_ISSUE_ASSET:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.issue_asset_fee();
+			break;
+		case protocol::Operation_Type_SET_METADATA:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.set_metadata_fee();
+			break;
+		case protocol::Operation_Type_SET_SIGNER_WEIGHT:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.set_sigure_weight_fee();
+			break;
+		case protocol::Operation_Type_SET_THRESHOLD:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.set_threshold_fee();
+			break;
+		case protocol::Operation_Type_PAY_COIN:
+			transaction_->real_fee_ += LedgerManager::Instance().fees_.pay_coin_fee();
+			break;
+		case protocol::Operation_Type_Operation_Type_INT_MIN_SENTINEL_DO_NOT_USE_:
+			break;
+		case protocol::Operation_Type_Operation_Type_INT_MAX_SENTINEL_DO_NOT_USE_:
+			break;
+		default:
+			break;
+		}
 	}
 }
 

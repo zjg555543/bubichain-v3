@@ -76,7 +76,7 @@ namespace bubi {
 		KVTrie* tree_;
 
 		LedgerContextManager context_manager_;
-
+		protocol::FeeConfig fees_;
 	private:
 		LedgerManager();
 		~LedgerManager();
@@ -91,6 +91,9 @@ namespace bubi {
 
 		static void ValidatorsSet(std::shared_ptr<WRITE_BATCH> batch, const protocol::ValidatorSet& validators);
 		static bool ValidatorsGet(const std::string& hash, protocol::ValidatorSet& vlidators_set);
+
+		static void FeesConfigSet(std::shared_ptr<WRITE_BATCH> batch, const protocol::FeeConfig &fee);
+		static bool FeesConfigGet(const std::string& hash, protocol::FeeConfig &fee);
 		
 		LedgerFrm::pointer last_closed_ledger_;
 		protocol::ValidatorSet validators_;

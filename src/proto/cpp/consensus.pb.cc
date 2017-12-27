@@ -54,6 +54,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* PbftProof_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   PbftProof_reflection_ = NULL;
+const ::google::protobuf::Descriptor* FeeConfig_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  FeeConfig_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* PbftMessageType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* PbftValueType_descriptor_ = NULL;
 
@@ -261,6 +264,29 @@ void protobuf_AssignDesc_consensus_2eproto() {
       sizeof(PbftProof),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PbftProof, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PbftProof, _is_default_instance_));
+  FeeConfig_descriptor_ = file->message_type(11);
+  static const int FeeConfig_offsets_[9] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, byte_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, base_reserve_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, create_account_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, pay_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, issue_asset_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, set_metadata_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, set_sigure_weight_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, set_threshold_fee_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, pay_coin_fee_),
+  };
+  FeeConfig_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      FeeConfig_descriptor_,
+      FeeConfig::default_instance_,
+      FeeConfig_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(FeeConfig),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FeeConfig, _is_default_instance_));
   PbftMessageType_descriptor_ = file->enum_type(0);
   PbftValueType_descriptor_ = file->enum_type(1);
 }
@@ -298,6 +324,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
       ValidatorSet_descriptor_, &ValidatorSet::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       PbftProof_descriptor_, &PbftProof::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      FeeConfig_descriptor_, &FeeConfig::default_instance());
 }
 
 }  // namespace
@@ -325,6 +353,8 @@ void protobuf_ShutdownFile_consensus_2eproto() {
   delete ValidatorSet_reflection_;
   delete PbftProof::default_instance_;
   delete PbftProof_reflection_;
+  delete FeeConfig::default_instance_;
+  delete FeeConfig_reflection_;
 }
 
 void protobuf_AddDesc_consensus_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -369,13 +399,19 @@ void protobuf_AddDesc_consensus_2eproto() {
     "\016.protocol.Pbft\022&\n\tsignature\030\002 \001(\0132\023.pro"
     "tocol.Signature\"\"\n\014ValidatorSet\022\022\n\nvalid"
     "ators\030\001 \003(\t\"/\n\tPbftProof\022\"\n\007commits\030\001 \003("
-    "\0132\021.protocol.PbftEnv*\243\001\n\017PbftMessageType"
-    "\022\030\n\024PBFT_TYPE_PREPREPARE\020\000\022\025\n\021PBFT_TYPE_"
-    "PREPARE\020\001\022\024\n\020PBFT_TYPE_COMMIT\020\002\022\030\n\024PBFT_"
-    "TYPE_CHECKPOINT\020\003\022\030\n\024PBFT_TYPE_VIEWCHANG"
-    "E\020\004\022\025\n\021PBFT_TYPE_NEWVIEW\020\005*8\n\rPbftValueT"
-    "ype\022\021\n\rPBFT_VALUE_TX\020\000\022\024\n\020PBFT_VALUE_TXS"
-    "ET\020\001b\006proto3", 1572);
+    "\0132\021.protocol.PbftEnv\"\343\001\n\tFeeConfig\022\020\n\010by"
+    "te_fee\030\001 \001(\003\022\024\n\014base_reserve\030\002 \001(\003\022\032\n\022cr"
+    "eate_account_fee\030\003 \001(\003\022\017\n\007pay_fee\030\004 \001(\003\022"
+    "\027\n\017issue_asset_fee\030\005 \001(\003\022\030\n\020set_metadata"
+    "_fee\030\006 \001(\003\022\035\n\025set_sigure_weight_fee\030\007 \001("
+    "\003\022\031\n\021set_threshold_fee\030\010 \001(\003\022\024\n\014pay_coin"
+    "_fee\030\t \001(\003*\243\001\n\017PbftMessageType\022\030\n\024PBFT_T"
+    "YPE_PREPREPARE\020\000\022\025\n\021PBFT_TYPE_PREPARE\020\001\022"
+    "\024\n\020PBFT_TYPE_COMMIT\020\002\022\030\n\024PBFT_TYPE_CHECK"
+    "POINT\020\003\022\030\n\024PBFT_TYPE_VIEWCHANGE\020\004\022\025\n\021PBF"
+    "T_TYPE_NEWVIEW\020\005*8\n\rPbftValueType\022\021\n\rPBF"
+    "T_VALUE_TX\020\000\022\024\n\020PBFT_VALUE_TXSET\020\001b\006prot"
+    "o3", 1802);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "consensus.proto", &protobuf_RegisterTypes);
   PbftPrePrepare::default_instance_ = new PbftPrePrepare();
@@ -389,6 +425,7 @@ void protobuf_AddDesc_consensus_2eproto() {
   PbftEnv::default_instance_ = new PbftEnv();
   ValidatorSet::default_instance_ = new ValidatorSet();
   PbftProof::default_instance_ = new PbftProof();
+  FeeConfig::default_instance_ = new FeeConfig();
   PbftPrePrepare::default_instance_->InitAsDefaultInstance();
   PbftPrepare::default_instance_->InitAsDefaultInstance();
   PbftCommit::default_instance_->InitAsDefaultInstance();
@@ -400,6 +437,7 @@ void protobuf_AddDesc_consensus_2eproto() {
   PbftEnv::default_instance_->InitAsDefaultInstance();
   ValidatorSet::default_instance_->InitAsDefaultInstance();
   PbftProof::default_instance_->InitAsDefaultInstance();
+  FeeConfig::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_consensus_2eproto);
 }
 
@@ -5292,6 +5330,681 @@ const ::google::protobuf::RepeatedPtrField< ::protocol::PbftEnv >&
 PbftProof::commits() const {
   // @@protoc_insertion_point(field_list:protocol.PbftProof.commits)
   return commits_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int FeeConfig::kByteFeeFieldNumber;
+const int FeeConfig::kBaseReserveFieldNumber;
+const int FeeConfig::kCreateAccountFeeFieldNumber;
+const int FeeConfig::kPayFeeFieldNumber;
+const int FeeConfig::kIssueAssetFeeFieldNumber;
+const int FeeConfig::kSetMetadataFeeFieldNumber;
+const int FeeConfig::kSetSigureWeightFeeFieldNumber;
+const int FeeConfig::kSetThresholdFeeFieldNumber;
+const int FeeConfig::kPayCoinFeeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+FeeConfig::FeeConfig()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.FeeConfig)
+}
+
+void FeeConfig::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+FeeConfig::FeeConfig(const FeeConfig& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.FeeConfig)
+}
+
+void FeeConfig::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  byte_fee_ = GOOGLE_LONGLONG(0);
+  base_reserve_ = GOOGLE_LONGLONG(0);
+  create_account_fee_ = GOOGLE_LONGLONG(0);
+  pay_fee_ = GOOGLE_LONGLONG(0);
+  issue_asset_fee_ = GOOGLE_LONGLONG(0);
+  set_metadata_fee_ = GOOGLE_LONGLONG(0);
+  set_sigure_weight_fee_ = GOOGLE_LONGLONG(0);
+  set_threshold_fee_ = GOOGLE_LONGLONG(0);
+  pay_coin_fee_ = GOOGLE_LONGLONG(0);
+}
+
+FeeConfig::~FeeConfig() {
+  // @@protoc_insertion_point(destructor:protocol.FeeConfig)
+  SharedDtor();
+}
+
+void FeeConfig::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void FeeConfig::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* FeeConfig::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return FeeConfig_descriptor_;
+}
+
+const FeeConfig& FeeConfig::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_consensus_2eproto();
+  return *default_instance_;
+}
+
+FeeConfig* FeeConfig::default_instance_ = NULL;
+
+FeeConfig* FeeConfig::New(::google::protobuf::Arena* arena) const {
+  FeeConfig* n = new FeeConfig;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void FeeConfig::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.FeeConfig)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(FeeConfig, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<FeeConfig*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(byte_fee_, set_threshold_fee_);
+  pay_coin_fee_ = GOOGLE_LONGLONG(0);
+
+#undef ZR_HELPER_
+#undef ZR_
+
+}
+
+bool FeeConfig::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.FeeConfig)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional int64 byte_fee = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &byte_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_base_reserve;
+        break;
+      }
+
+      // optional int64 base_reserve = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_base_reserve:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &base_reserve_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_create_account_fee;
+        break;
+      }
+
+      // optional int64 create_account_fee = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_create_account_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &create_account_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_pay_fee;
+        break;
+      }
+
+      // optional int64 pay_fee = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_pay_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &pay_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_issue_asset_fee;
+        break;
+      }
+
+      // optional int64 issue_asset_fee = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_issue_asset_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &issue_asset_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(48)) goto parse_set_metadata_fee;
+        break;
+      }
+
+      // optional int64 set_metadata_fee = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_set_metadata_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &set_metadata_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(56)) goto parse_set_sigure_weight_fee;
+        break;
+      }
+
+      // optional int64 set_sigure_weight_fee = 7;
+      case 7: {
+        if (tag == 56) {
+         parse_set_sigure_weight_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &set_sigure_weight_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(64)) goto parse_set_threshold_fee;
+        break;
+      }
+
+      // optional int64 set_threshold_fee = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_set_threshold_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &set_threshold_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_pay_coin_fee;
+        break;
+      }
+
+      // optional int64 pay_coin_fee = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_pay_coin_fee:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &pay_coin_fee_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.FeeConfig)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.FeeConfig)
+  return false;
+#undef DO_
+}
+
+void FeeConfig::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.FeeConfig)
+  // optional int64 byte_fee = 1;
+  if (this->byte_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->byte_fee(), output);
+  }
+
+  // optional int64 base_reserve = 2;
+  if (this->base_reserve() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->base_reserve(), output);
+  }
+
+  // optional int64 create_account_fee = 3;
+  if (this->create_account_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->create_account_fee(), output);
+  }
+
+  // optional int64 pay_fee = 4;
+  if (this->pay_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(4, this->pay_fee(), output);
+  }
+
+  // optional int64 issue_asset_fee = 5;
+  if (this->issue_asset_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(5, this->issue_asset_fee(), output);
+  }
+
+  // optional int64 set_metadata_fee = 6;
+  if (this->set_metadata_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(6, this->set_metadata_fee(), output);
+  }
+
+  // optional int64 set_sigure_weight_fee = 7;
+  if (this->set_sigure_weight_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(7, this->set_sigure_weight_fee(), output);
+  }
+
+  // optional int64 set_threshold_fee = 8;
+  if (this->set_threshold_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(8, this->set_threshold_fee(), output);
+  }
+
+  // optional int64 pay_coin_fee = 9;
+  if (this->pay_coin_fee() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(9, this->pay_coin_fee(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.FeeConfig)
+}
+
+::google::protobuf::uint8* FeeConfig::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.FeeConfig)
+  // optional int64 byte_fee = 1;
+  if (this->byte_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->byte_fee(), target);
+  }
+
+  // optional int64 base_reserve = 2;
+  if (this->base_reserve() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->base_reserve(), target);
+  }
+
+  // optional int64 create_account_fee = 3;
+  if (this->create_account_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->create_account_fee(), target);
+  }
+
+  // optional int64 pay_fee = 4;
+  if (this->pay_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(4, this->pay_fee(), target);
+  }
+
+  // optional int64 issue_asset_fee = 5;
+  if (this->issue_asset_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(5, this->issue_asset_fee(), target);
+  }
+
+  // optional int64 set_metadata_fee = 6;
+  if (this->set_metadata_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(6, this->set_metadata_fee(), target);
+  }
+
+  // optional int64 set_sigure_weight_fee = 7;
+  if (this->set_sigure_weight_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(7, this->set_sigure_weight_fee(), target);
+  }
+
+  // optional int64 set_threshold_fee = 8;
+  if (this->set_threshold_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(8, this->set_threshold_fee(), target);
+  }
+
+  // optional int64 pay_coin_fee = 9;
+  if (this->pay_coin_fee() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(9, this->pay_coin_fee(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.FeeConfig)
+  return target;
+}
+
+int FeeConfig::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.FeeConfig)
+  int total_size = 0;
+
+  // optional int64 byte_fee = 1;
+  if (this->byte_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->byte_fee());
+  }
+
+  // optional int64 base_reserve = 2;
+  if (this->base_reserve() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->base_reserve());
+  }
+
+  // optional int64 create_account_fee = 3;
+  if (this->create_account_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->create_account_fee());
+  }
+
+  // optional int64 pay_fee = 4;
+  if (this->pay_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->pay_fee());
+  }
+
+  // optional int64 issue_asset_fee = 5;
+  if (this->issue_asset_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->issue_asset_fee());
+  }
+
+  // optional int64 set_metadata_fee = 6;
+  if (this->set_metadata_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->set_metadata_fee());
+  }
+
+  // optional int64 set_sigure_weight_fee = 7;
+  if (this->set_sigure_weight_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->set_sigure_weight_fee());
+  }
+
+  // optional int64 set_threshold_fee = 8;
+  if (this->set_threshold_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->set_threshold_fee());
+  }
+
+  // optional int64 pay_coin_fee = 9;
+  if (this->pay_coin_fee() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->pay_coin_fee());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void FeeConfig::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.FeeConfig)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const FeeConfig* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const FeeConfig>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.FeeConfig)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.FeeConfig)
+    MergeFrom(*source);
+  }
+}
+
+void FeeConfig::MergeFrom(const FeeConfig& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.FeeConfig)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.byte_fee() != 0) {
+    set_byte_fee(from.byte_fee());
+  }
+  if (from.base_reserve() != 0) {
+    set_base_reserve(from.base_reserve());
+  }
+  if (from.create_account_fee() != 0) {
+    set_create_account_fee(from.create_account_fee());
+  }
+  if (from.pay_fee() != 0) {
+    set_pay_fee(from.pay_fee());
+  }
+  if (from.issue_asset_fee() != 0) {
+    set_issue_asset_fee(from.issue_asset_fee());
+  }
+  if (from.set_metadata_fee() != 0) {
+    set_set_metadata_fee(from.set_metadata_fee());
+  }
+  if (from.set_sigure_weight_fee() != 0) {
+    set_set_sigure_weight_fee(from.set_sigure_weight_fee());
+  }
+  if (from.set_threshold_fee() != 0) {
+    set_set_threshold_fee(from.set_threshold_fee());
+  }
+  if (from.pay_coin_fee() != 0) {
+    set_pay_coin_fee(from.pay_coin_fee());
+  }
+}
+
+void FeeConfig::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.FeeConfig)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void FeeConfig::CopyFrom(const FeeConfig& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.FeeConfig)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool FeeConfig::IsInitialized() const {
+
+  return true;
+}
+
+void FeeConfig::Swap(FeeConfig* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void FeeConfig::InternalSwap(FeeConfig* other) {
+  std::swap(byte_fee_, other->byte_fee_);
+  std::swap(base_reserve_, other->base_reserve_);
+  std::swap(create_account_fee_, other->create_account_fee_);
+  std::swap(pay_fee_, other->pay_fee_);
+  std::swap(issue_asset_fee_, other->issue_asset_fee_);
+  std::swap(set_metadata_fee_, other->set_metadata_fee_);
+  std::swap(set_sigure_weight_fee_, other->set_sigure_weight_fee_);
+  std::swap(set_threshold_fee_, other->set_threshold_fee_);
+  std::swap(pay_coin_fee_, other->pay_coin_fee_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata FeeConfig::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = FeeConfig_descriptor_;
+  metadata.reflection = FeeConfig_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// FeeConfig
+
+// optional int64 byte_fee = 1;
+void FeeConfig::clear_byte_fee() {
+  byte_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::byte_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.byte_fee)
+  return byte_fee_;
+}
+ void FeeConfig::set_byte_fee(::google::protobuf::int64 value) {
+  
+  byte_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.byte_fee)
+}
+
+// optional int64 base_reserve = 2;
+void FeeConfig::clear_base_reserve() {
+  base_reserve_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::base_reserve() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.base_reserve)
+  return base_reserve_;
+}
+ void FeeConfig::set_base_reserve(::google::protobuf::int64 value) {
+  
+  base_reserve_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.base_reserve)
+}
+
+// optional int64 create_account_fee = 3;
+void FeeConfig::clear_create_account_fee() {
+  create_account_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::create_account_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.create_account_fee)
+  return create_account_fee_;
+}
+ void FeeConfig::set_create_account_fee(::google::protobuf::int64 value) {
+  
+  create_account_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.create_account_fee)
+}
+
+// optional int64 pay_fee = 4;
+void FeeConfig::clear_pay_fee() {
+  pay_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::pay_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.pay_fee)
+  return pay_fee_;
+}
+ void FeeConfig::set_pay_fee(::google::protobuf::int64 value) {
+  
+  pay_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.pay_fee)
+}
+
+// optional int64 issue_asset_fee = 5;
+void FeeConfig::clear_issue_asset_fee() {
+  issue_asset_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::issue_asset_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.issue_asset_fee)
+  return issue_asset_fee_;
+}
+ void FeeConfig::set_issue_asset_fee(::google::protobuf::int64 value) {
+  
+  issue_asset_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.issue_asset_fee)
+}
+
+// optional int64 set_metadata_fee = 6;
+void FeeConfig::clear_set_metadata_fee() {
+  set_metadata_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::set_metadata_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.set_metadata_fee)
+  return set_metadata_fee_;
+}
+ void FeeConfig::set_set_metadata_fee(::google::protobuf::int64 value) {
+  
+  set_metadata_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.set_metadata_fee)
+}
+
+// optional int64 set_sigure_weight_fee = 7;
+void FeeConfig::clear_set_sigure_weight_fee() {
+  set_sigure_weight_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::set_sigure_weight_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.set_sigure_weight_fee)
+  return set_sigure_weight_fee_;
+}
+ void FeeConfig::set_set_sigure_weight_fee(::google::protobuf::int64 value) {
+  
+  set_sigure_weight_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.set_sigure_weight_fee)
+}
+
+// optional int64 set_threshold_fee = 8;
+void FeeConfig::clear_set_threshold_fee() {
+  set_threshold_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::set_threshold_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.set_threshold_fee)
+  return set_threshold_fee_;
+}
+ void FeeConfig::set_set_threshold_fee(::google::protobuf::int64 value) {
+  
+  set_threshold_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.set_threshold_fee)
+}
+
+// optional int64 pay_coin_fee = 9;
+void FeeConfig::clear_pay_coin_fee() {
+  pay_coin_fee_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 FeeConfig::pay_coin_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.pay_coin_fee)
+  return pay_coin_fee_;
+}
+ void FeeConfig::set_pay_coin_fee(::google::protobuf::int64 value) {
+  
+  pay_coin_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.pay_coin_fee)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

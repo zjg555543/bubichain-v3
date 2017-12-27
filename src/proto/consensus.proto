@@ -100,3 +100,16 @@ message PbftProof
 {
 	repeated PbftEnv commits = 1;
 }
+
+message FeeConfig
+{
+	int64 byte_fee = 1;
+	int64 base_reserve = 2;
+	int64 create_account_fee = 3;
+	int64 pay_fee = 4;
+	int64 issue_asset_fee = 5;
+	int64 set_metadata_fee = 6;
+	int64 set_sigure_weight_fee = 7;
+	int64 set_threshold_fee = 8;
+	int64 pay_coin_fee = 9;
+}

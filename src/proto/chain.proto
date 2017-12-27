@@ -35,7 +35,8 @@ message LedgerHeader
 	int64	version 			    = 7;
 	int64	tx_count 				= 8;
 	bytes   validators_hash = 9;	// hash
-	string	reserve = 10;
+	bytes	fees_hash = 10;
+	string	reserve = 11;
 }
 
 message Ledger{

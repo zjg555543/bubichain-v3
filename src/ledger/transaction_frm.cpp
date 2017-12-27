@@ -34,6 +34,7 @@ namespace bubi {
 		valid_signature_(),
 		ledger_(),
 		processing_operation_(0),
+		real_fee_(0),
 		incoming_time_(utils::Timestamp::HighResolution())
 		{
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -48,6 +49,7 @@ namespace bubi {
 		valid_signature_(),
 		ledger_(),
 		processing_operation_(0),
+		real_fee_(0),
 		incoming_time_(utils::Timestamp::HighResolution()){
 		Initialize();
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -110,6 +112,64 @@ namespace bubi {
 		return tran.source_address();
 	}
 
+	int64_t TransactionFrm::GetSourceBalance(std::shared_ptr<Environment> environment)	{
+		std::string str_address = transaction_env_.transaction().source_address();
+		AccountFrm::pointer source_account;
+		int64_t balance=0;
+		if (!environment->GetEntry(str_address, source_account))
+		{
+			LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
+			result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
+		}
+		else{
+			protocol::Account& proto_source_account = source_account->GetProtoAccount();
+			balance =proto_source_account.balance();
+		}		
+		return balance;
+	}
+	void TransactionFrm::SetSourceBalance(std::shared_ptr<Environment> environment,int64_t balance)
+	{
+		std::string str_address = transaction_env_.transaction().source_address();
+		AccountFrm::pointer source_account;
+
+		if (!environment->GetEntry(str_address, source_account))
+		{
+			LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
+			result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
+		}
+		else{
+			protocol::Account& proto_source_account = source_account->GetProtoAccount();
+			proto_source_account.set_balance(balance);
+		}
+	}
+
+	int64_t TransactionFrm::GetFee() const {
+		return transaction_env_.transaction().fee();
+	}
+	int64_t TransactionFrm::GetSelfByteFee(){
+		return LedgerManager::Instance().fees_.byte_fee()*transaction_env_.ByteSize();
+	}
+
+	bool TransactionFrm::PayFee(std::shared_ptr<Environment> environment,int64_t& total_fee){
+		int64_t fee = (int64_t)GetFee();
+		std::string str_address = transaction_env_.transaction().source_address();
+		AccountFrm::pointer source_account;
+
+		if (!environment->GetEntry(str_address, source_account))
+		{
+			LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
+			result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
+		}
+		else{
+			total_fee +=fee;
+			protocol::Account& proto_source_account = source_account->GetProtoAccount();
+			int64_t new_balance =proto_source_account.balance()-fee;
+			proto_source_account.set_balance(new_balance);
+			return true;
+		}
+		return false;
+	}
+
 	int64_t TransactionFrm::GetNonce() const {
 		return transaction_env_.transaction().nonce();
 	}
@@ -149,6 +209,32 @@ namespace bubi {
 				LOG_ERROR(result_.desc().c_str());
 				break;
 			}
+
+			//first check fee for this transaction,but not include transaction triggered by contract
+			int64_t bytes_fee = GetSelfByteFee();
+			int64_t tran_fee = GetFee();
+			if (bytes_fee > 0 && tran_fee > 0 ) {				
+				if (tran_fee < bytes_fee) {
+					std::string error_desc = utils::String::Format(
+						"Transaction(%s) fee(%u<%d) not enought",
+						utils::String::BinToHexString(hash_).c_str(), tran_fee, bytes_fee);
+
+					result_.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
+					result_.set_desc(error_desc);
+					LOG_ERROR("%s", error_desc.c_str());
+					return false;
+				}			
+
+				if (source_account->GetAccountBalance() - tran_fee < (int64_t)LedgerManager::Instance().fees_.base_reserve()) {
+					std::string error_desc = utils::String::Format(
+						"Account(%s) reserve balance not enough for transaction fee and base reserve:" FMT_I64 " - " FMT_I64 " < %u",
+						str_address.c_str(), source_account->GetAccountBalance(), tran_fee, (int64_t)LedgerManager::Instance().fees_.base_reserve());
+					result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+					result_.set_desc(error_desc);
+					LOG_ERROR("%s", error_desc.c_str());
+					return false;
+				}	
+			}
 			return true;
 		} while (false);
 
@@ -163,6 +249,35 @@ namespace bubi {
 			LOG_ERROR("%s", result_.desc().c_str());
 			return false;
 		}
+
+		//LOG_INFO("CheckValid source balance(" FMT_I64 ") GetFee(" FMT_I64 ") base reserve(" FMT_I64 ")", 
+		//	source_account->GetAccountBalance(), GetFee(), LedgerManager::Instance().fees_.base_reserve());
+
+		int64_t bytes_fee = GetSelfByteFee();
+		int64_t tran_fee = GetFee();
+		if (bytes_fee > 0 && tran_fee > 0) {
+			if (tran_fee < bytes_fee) {
+				std::string error_desc = utils::String::Format(
+					"Transaction(%s) fee(%u<%d) not enought",
+					utils::String::BinToHexString(hash_).c_str(), tran_fee, bytes_fee);
+
+				result_.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
+				result_.set_desc(error_desc);
+				LOG_ERROR("%s", error_desc.c_str());
+				return false;
+			}
+
+			if (LedgerManager::Instance().fees_.base_reserve() > 0) {
+				if (source_account->GetAccountBalance() - tran_fee < LedgerManager::Instance().fees_.base_reserve()) {
+					result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+					result_.set_desc("source account balance is not enough");
+					LOG_ERROR("Account(%s) reserve ballance not enough for transaction fee and base reserve:" FMT_I64 "- " FMT_I64 " < %d,last transaction hash(%s)",
+						GetSourceAddress().c_str(), source_account->GetAccountBalance(), tran_fee, LedgerManager::Instance().fees_.base_reserve(), utils::String::Bin4ToHexString(GetContentHash()).c_str());
+					return false;
+				}
+			}
+		}
+		
 
 		if (GetNonce() <= source_account->GetAccountNonce()) {
 			result_.set_code(protocol::ERRCODE_BAD_SEQUENCE);

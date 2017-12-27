@@ -10558,6 +10558,948 @@ public final class Consensus {
 
   }
 
+  public interface FeeConfigOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:protocol.FeeConfig)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional int64 byte_fee = 1;</code>
+     */
+    long getByteFee();
+
+    /**
+     * <code>optional int64 base_reserve = 2;</code>
+     */
+    long getBaseReserve();
+
+    /**
+     * <code>optional int64 create_account_fee = 3;</code>
+     */
+    long getCreateAccountFee();
+
+    /**
+     * <code>optional int64 pay_fee = 4;</code>
+     */
+    long getPayFee();
+
+    /**
+     * <code>optional int64 issue_asset_fee = 5;</code>
+     */
+    long getIssueAssetFee();
+
+    /**
+     * <code>optional int64 set_metadata_fee = 6;</code>
+     */
+    long getSetMetadataFee();
+
+    /**
+     * <code>optional int64 set_sigure_weight_fee = 7;</code>
+     */
+    long getSetSigureWeightFee();
+
+    /**
+     * <code>optional int64 set_threshold_fee = 8;</code>
+     */
+    long getSetThresholdFee();
+
+    /**
+     * <code>optional int64 pay_coin_fee = 9;</code>
+     */
+    long getPayCoinFee();
+  }
+  /**
+   * Protobuf type {@code protocol.FeeConfig}
+   */
+  public  static final class FeeConfig extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.FeeConfig)
+      FeeConfigOrBuilder {
+    // Use FeeConfig.newBuilder() to construct.
+    private FeeConfig(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private FeeConfig() {
+      byteFee_ = 0L;
+      baseReserve_ = 0L;
+      createAccountFee_ = 0L;
+      payFee_ = 0L;
+      issueAssetFee_ = 0L;
+      setMetadataFee_ = 0L;
+      setSigureWeightFee_ = 0L;
+      setThresholdFee_ = 0L;
+      payCoinFee_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private FeeConfig(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              byteFee_ = input.readInt64();
+              break;
+            }
+            case 16: {
+
+              baseReserve_ = input.readInt64();
+              break;
+            }
+            case 24: {
+
+              createAccountFee_ = input.readInt64();
+              break;
+            }
+            case 32: {
+
+              payFee_ = input.readInt64();
+              break;
+            }
+            case 40: {
+
+              issueAssetFee_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              setMetadataFee_ = input.readInt64();
+              break;
+            }
+            case 56: {
+
+              setSigureWeightFee_ = input.readInt64();
+              break;
+            }
+            case 64: {
+
+              setThresholdFee_ = input.readInt64();
+              break;
+            }
+            case 72: {
+
+              payCoinFee_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return protocol.Consensus.internal_static_protocol_FeeConfig_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return protocol.Consensus.internal_static_protocol_FeeConfig_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              protocol.Consensus.FeeConfig.class, protocol.Consensus.FeeConfig.Builder.class);
+    }
+
+    public static final int BYTE_FEE_FIELD_NUMBER = 1;
+    private long byteFee_;
+    /**
+     * <code>optional int64 byte_fee = 1;</code>
+     */
+    public long getByteFee() {
+      return byteFee_;
+    }
+
+    public static final int BASE_RESERVE_FIELD_NUMBER = 2;
+    private long baseReserve_;
+    /**
+     * <code>optional int64 base_reserve = 2;</code>
+     */
+    public long getBaseReserve() {
+      return baseReserve_;
+    }
+
+    public static final int CREATE_ACCOUNT_FEE_FIELD_NUMBER = 3;
+    private long createAccountFee_;
+    /**
+     * <code>optional int64 create_account_fee = 3;</code>
+     */
+    public long getCreateAccountFee() {
+      return createAccountFee_;
+    }
+
+    public static final int PAY_FEE_FIELD_NUMBER = 4;
+    private long payFee_;
+    /**
+     * <code>optional int64 pay_fee = 4;</code>
+     */
+    public long getPayFee() {
+      return payFee_;
+    }
+
+    public static final int ISSUE_ASSET_FEE_FIELD_NUMBER = 5;
+    private long issueAssetFee_;
+    /**
+     * <code>optional int64 issue_asset_fee = 5;</code>
+     */
+    public long getIssueAssetFee() {
+      return issueAssetFee_;
+    }
+
+    public static final int SET_METADATA_FEE_FIELD_NUMBER = 6;
+    private long setMetadataFee_;
+    /**
+     * <code>optional int64 set_metadata_fee = 6;</code>
+     */
+    public long getSetMetadataFee() {
+      return setMetadataFee_;
+    }
+
+    public static final int SET_SIGURE_WEIGHT_FEE_FIELD_NUMBER = 7;
+    private long setSigureWeightFee_;
+    /**
+     * <code>optional int64 set_sigure_weight_fee = 7;</code>
+     */
+    public long getSetSigureWeightFee() {
+      return setSigureWeightFee_;
+    }
+
+    public static final int SET_THRESHOLD_FEE_FIELD_NUMBER = 8;
+    private long setThresholdFee_;
+    /**
+     * <code>optional int64 set_threshold_fee = 8;</code>
+     */
+    public long getSetThresholdFee() {
+      return setThresholdFee_;
+    }
+
+    public static final int PAY_COIN_FEE_FIELD_NUMBER = 9;
+    private long payCoinFee_;
+    /**
+     * <code>optional int64 pay_coin_fee = 9;</code>
+     */
+    public long getPayCoinFee() {
+      return payCoinFee_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (byteFee_ != 0L) {
+        output.writeInt64(1, byteFee_);
+      }
+      if (baseReserve_ != 0L) {
+        output.writeInt64(2, baseReserve_);
+      }
+      if (createAccountFee_ != 0L) {
+        output.writeInt64(3, createAccountFee_);
+      }
+      if (payFee_ != 0L) {
+        output.writeInt64(4, payFee_);
+      }
+      if (issueAssetFee_ != 0L) {
+        output.writeInt64(5, issueAssetFee_);
+      }
+      if (setMetadataFee_ != 0L) {
+        output.writeInt64(6, setMetadataFee_);
+      }
+      if (setSigureWeightFee_ != 0L) {
+        output.writeInt64(7, setSigureWeightFee_);
+      }
+      if (setThresholdFee_ != 0L) {
+        output.writeInt64(8, setThresholdFee_);
+      }
+      if (payCoinFee_ != 0L) {
+        output.writeInt64(9, payCoinFee_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (byteFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, byteFee_);
+      }
+      if (baseReserve_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, baseReserve_);
+      }
+      if (createAccountFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, createAccountFee_);
+      }
+      if (payFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, payFee_);
+      }
+      if (issueAssetFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, issueAssetFee_);
+      }
+      if (setMetadataFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, setMetadataFee_);
+      }
+      if (setSigureWeightFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, setSigureWeightFee_);
+      }
+      if (setThresholdFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(8, setThresholdFee_);
+      }
+      if (payCoinFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(9, payCoinFee_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof protocol.Consensus.FeeConfig)) {
+        return super.equals(obj);
+      }
+      protocol.Consensus.FeeConfig other = (protocol.Consensus.FeeConfig) obj;
+
+      boolean result = true;
+      result = result && (getByteFee()
+          == other.getByteFee());
+      result = result && (getBaseReserve()
+          == other.getBaseReserve());
+      result = result && (getCreateAccountFee()
+          == other.getCreateAccountFee());
+      result = result && (getPayFee()
+          == other.getPayFee());
+      result = result && (getIssueAssetFee()
+          == other.getIssueAssetFee());
+      result = result && (getSetMetadataFee()
+          == other.getSetMetadataFee());
+      result = result && (getSetSigureWeightFee()
+          == other.getSetSigureWeightFee());
+      result = result && (getSetThresholdFee()
+          == other.getSetThresholdFee());
+      result = result && (getPayCoinFee()
+          == other.getPayCoinFee());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + BYTE_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getByteFee());
+      hash = (37 * hash) + BASE_RESERVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBaseReserve());
+      hash = (37 * hash) + CREATE_ACCOUNT_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCreateAccountFee());
+      hash = (37 * hash) + PAY_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPayFee());
+      hash = (37 * hash) + ISSUE_ASSET_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getIssueAssetFee());
+      hash = (37 * hash) + SET_METADATA_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSetMetadataFee());
+      hash = (37 * hash) + SET_SIGURE_WEIGHT_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSetSigureWeightFee());
+      hash = (37 * hash) + SET_THRESHOLD_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSetThresholdFee());
+      hash = (37 * hash) + PAY_COIN_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPayCoinFee());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static protocol.Consensus.FeeConfig parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static protocol.Consensus.FeeConfig parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static protocol.Consensus.FeeConfig parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static protocol.Consensus.FeeConfig parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(protocol.Consensus.FeeConfig prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code protocol.FeeConfig}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.FeeConfig)
+        protocol.Consensus.FeeConfigOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return protocol.Consensus.internal_static_protocol_FeeConfig_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return protocol.Consensus.internal_static_protocol_FeeConfig_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                protocol.Consensus.FeeConfig.class, protocol.Consensus.FeeConfig.Builder.class);
+      }
+
+      // Construct using protocol.Consensus.FeeConfig.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        byteFee_ = 0L;
+
+        baseReserve_ = 0L;
+
+        createAccountFee_ = 0L;
+
+        payFee_ = 0L;
+
+        issueAssetFee_ = 0L;
+
+        setMetadataFee_ = 0L;
+
+        setSigureWeightFee_ = 0L;
+
+        setThresholdFee_ = 0L;
+
+        payCoinFee_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return protocol.Consensus.internal_static_protocol_FeeConfig_descriptor;
+      }
+
+      public protocol.Consensus.FeeConfig getDefaultInstanceForType() {
+        return protocol.Consensus.FeeConfig.getDefaultInstance();
+      }
+
+      public protocol.Consensus.FeeConfig build() {
+        protocol.Consensus.FeeConfig result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public protocol.Consensus.FeeConfig buildPartial() {
+        protocol.Consensus.FeeConfig result = new protocol.Consensus.FeeConfig(this);
+        result.byteFee_ = byteFee_;
+        result.baseReserve_ = baseReserve_;
+        result.createAccountFee_ = createAccountFee_;
+        result.payFee_ = payFee_;
+        result.issueAssetFee_ = issueAssetFee_;
+        result.setMetadataFee_ = setMetadataFee_;
+        result.setSigureWeightFee_ = setSigureWeightFee_;
+        result.setThresholdFee_ = setThresholdFee_;
+        result.payCoinFee_ = payCoinFee_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof protocol.Consensus.FeeConfig) {
+          return mergeFrom((protocol.Consensus.FeeConfig)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(protocol.Consensus.FeeConfig other) {
+        if (other == protocol.Consensus.FeeConfig.getDefaultInstance()) return this;
+        if (other.getByteFee() != 0L) {
+          setByteFee(other.getByteFee());
+        }
+        if (other.getBaseReserve() != 0L) {
+          setBaseReserve(other.getBaseReserve());
+        }
+        if (other.getCreateAccountFee() != 0L) {
+          setCreateAccountFee(other.getCreateAccountFee());
+        }
+        if (other.getPayFee() != 0L) {
+          setPayFee(other.getPayFee());
+        }
+        if (other.getIssueAssetFee() != 0L) {
+          setIssueAssetFee(other.getIssueAssetFee());
+        }
+        if (other.getSetMetadataFee() != 0L) {
+          setSetMetadataFee(other.getSetMetadataFee());
+        }
+        if (other.getSetSigureWeightFee() != 0L) {
+          setSetSigureWeightFee(other.getSetSigureWeightFee());
+        }
+        if (other.getSetThresholdFee() != 0L) {
+          setSetThresholdFee(other.getSetThresholdFee());
+        }
+        if (other.getPayCoinFee() != 0L) {
+          setPayCoinFee(other.getPayCoinFee());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        protocol.Consensus.FeeConfig parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (protocol.Consensus.FeeConfig) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private long byteFee_ ;
+      /**
+       * <code>optional int64 byte_fee = 1;</code>
+       */
+      public long getByteFee() {
+        return byteFee_;
+      }
+      /**
+       * <code>optional int64 byte_fee = 1;</code>
+       */
+      public Builder setByteFee(long value) {
+        
+        byteFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 byte_fee = 1;</code>
+       */
+      public Builder clearByteFee() {
+        
+        byteFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long baseReserve_ ;
+      /**
+       * <code>optional int64 base_reserve = 2;</code>
+       */
+      public long getBaseReserve() {
+        return baseReserve_;
+      }
+      /**
+       * <code>optional int64 base_reserve = 2;</code>
+       */
+      public Builder setBaseReserve(long value) {
+        
+        baseReserve_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 base_reserve = 2;</code>
+       */
+      public Builder clearBaseReserve() {
+        
+        baseReserve_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long createAccountFee_ ;
+      /**
+       * <code>optional int64 create_account_fee = 3;</code>
+       */
+      public long getCreateAccountFee() {
+        return createAccountFee_;
+      }
+      /**
+       * <code>optional int64 create_account_fee = 3;</code>
+       */
+      public Builder setCreateAccountFee(long value) {
+        
+        createAccountFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 create_account_fee = 3;</code>
+       */
+      public Builder clearCreateAccountFee() {
+        
+        createAccountFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long payFee_ ;
+      /**
+       * <code>optional int64 pay_fee = 4;</code>
+       */
+      public long getPayFee() {
+        return payFee_;
+      }
+      /**
+       * <code>optional int64 pay_fee = 4;</code>
+       */
+      public Builder setPayFee(long value) {
+        
+        payFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 pay_fee = 4;</code>
+       */
+      public Builder clearPayFee() {
+        
+        payFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long issueAssetFee_ ;
+      /**
+       * <code>optional int64 issue_asset_fee = 5;</code>
+       */
+      public long getIssueAssetFee() {
+        return issueAssetFee_;
+      }
+      /**
+       * <code>optional int64 issue_asset_fee = 5;</code>
+       */
+      public Builder setIssueAssetFee(long value) {
+        
+        issueAssetFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 issue_asset_fee = 5;</code>
+       */
+      public Builder clearIssueAssetFee() {
+        
+        issueAssetFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long setMetadataFee_ ;
+      /**
+       * <code>optional int64 set_metadata_fee = 6;</code>
+       */
+      public long getSetMetadataFee() {
+        return setMetadataFee_;
+      }
+      /**
+       * <code>optional int64 set_metadata_fee = 6;</code>
+       */
+      public Builder setSetMetadataFee(long value) {
+        
+        setMetadataFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 set_metadata_fee = 6;</code>
+       */
+      public Builder clearSetMetadataFee() {
+        
+        setMetadataFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long setSigureWeightFee_ ;
+      /**
+       * <code>optional int64 set_sigure_weight_fee = 7;</code>
+       */
+      public long getSetSigureWeightFee() {
+        return setSigureWeightFee_;
+      }
+      /**
+       * <code>optional int64 set_sigure_weight_fee = 7;</code>
+       */
+      public Builder setSetSigureWeightFee(long value) {
+        
+        setSigureWeightFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 set_sigure_weight_fee = 7;</code>
+       */
+      public Builder clearSetSigureWeightFee() {
+        
+        setSigureWeightFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long setThresholdFee_ ;
+      /**
+       * <code>optional int64 set_threshold_fee = 8;</code>
+       */
+      public long getSetThresholdFee() {
+        return setThresholdFee_;
+      }
+      /**
+       * <code>optional int64 set_threshold_fee = 8;</code>
+       */
+      public Builder setSetThresholdFee(long value) {
+        
+        setThresholdFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 set_threshold_fee = 8;</code>
+       */
+      public Builder clearSetThresholdFee() {
+        
+        setThresholdFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long payCoinFee_ ;
+      /**
+       * <code>optional int64 pay_coin_fee = 9;</code>
+       */
+      public long getPayCoinFee() {
+        return payCoinFee_;
+      }
+      /**
+       * <code>optional int64 pay_coin_fee = 9;</code>
+       */
+      public Builder setPayCoinFee(long value) {
+        
+        payCoinFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 pay_coin_fee = 9;</code>
+       */
+      public Builder clearPayCoinFee() {
+        
+        payCoinFee_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:protocol.FeeConfig)
+    }
+
+    // @@protoc_insertion_point(class_scope:protocol.FeeConfig)
+    private static final protocol.Consensus.FeeConfig DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new protocol.Consensus.FeeConfig();
+    }
+
+    public static protocol.Consensus.FeeConfig getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<FeeConfig>
+        PARSER = new com.google.protobuf.AbstractParser<FeeConfig>() {
+      public FeeConfig parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new FeeConfig(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<FeeConfig> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<FeeConfig> getParserForType() {
+      return PARSER;
+    }
+
+    public protocol.Consensus.FeeConfig getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_protocol_PbftPrePrepare_descriptor;
   private static final 
@@ -10613,6 +11555,11 @@ public final class Consensus {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_protocol_PbftProof_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_protocol_FeeConfig_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_FeeConfig_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -10655,13 +11602,19 @@ public final class Consensus {
       "\016.protocol.Pbft\022&\n\tsignature\030\002 \001(\0132\023.pro" +
       "tocol.Signature\"\"\n\014ValidatorSet\022\022\n\nvalid" +
       "ators\030\001 \003(\t\"/\n\tPbftProof\022\"\n\007commits\030\001 \003(" +
-      "\0132\021.protocol.PbftEnv*\243\001\n\017PbftMessageType" +
-      "\022\030\n\024PBFT_TYPE_PREPREPARE\020\000\022\025\n\021PBFT_TYPE_" +
-      "PREPARE\020\001\022\024\n\020PBFT_TYPE_COMMIT\020\002\022\030\n\024PBFT_" +
-      "TYPE_CHECKPOINT\020\003\022\030\n\024PBFT_TYPE_VIEWCHANG" +
-      "E\020\004\022\025\n\021PBFT_TYPE_NEWVIEW\020\005*8\n\rPbftValueT" +
-      "ype\022\021\n\rPBFT_VALUE_TX\020\000\022\024\n\020PBFT_VALUE_TXS" +
-      "ET\020\001b\006proto3"
+      "\0132\021.protocol.PbftEnv\"\343\001\n\tFeeConfig\022\020\n\010by" +
+      "te_fee\030\001 \001(\003\022\024\n\014base_reserve\030\002 \001(\003\022\032\n\022cr" +
+      "eate_account_fee\030\003 \001(\003\022\017\n\007pay_fee\030\004 \001(\003\022" +
+      "\027\n\017issue_asset_fee\030\005 \001(\003\022\030\n\020set_metadata" +
+      "_fee\030\006 \001(\003\022\035\n\025set_sigure_weight_fee\030\007 \001(" +
+      "\003\022\031\n\021set_threshold_fee\030\010 \001(\003\022\024\n\014pay_coin" +
+      "_fee\030\t \001(\003*\243\001\n\017PbftMessageType\022\030\n\024PBFT_T",
+      "YPE_PREPREPARE\020\000\022\025\n\021PBFT_TYPE_PREPARE\020\001\022" +
+      "\024\n\020PBFT_TYPE_COMMIT\020\002\022\030\n\024PBFT_TYPE_CHECK" +
+      "POINT\020\003\022\030\n\024PBFT_TYPE_VIEWCHANGE\020\004\022\025\n\021PBF" +
+      "T_TYPE_NEWVIEW\020\005*8\n\rPbftValueType\022\021\n\rPBF" +
+      "T_VALUE_TX\020\000\022\024\n\020PBFT_VALUE_TXSET\020\001b\006prot" +
+      "o3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -10742,6 +11695,12 @@ public final class Consensus {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_PbftProof_descriptor,
         new java.lang.String[] { "Commits", });
+    internal_static_protocol_FeeConfig_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_protocol_FeeConfig_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_FeeConfig_descriptor,
+        new java.lang.String[] { "ByteFee", "BaseReserve", "CreateAccountFee", "PayFee", "IssueAssetFee", "SetMetadataFee", "SetSigureWeightFee", "SetThresholdFee", "PayCoinFee", });
     cn.bubi.blockchain.adapter3.Common.getDescriptor();
   }
 

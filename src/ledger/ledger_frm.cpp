@@ -28,6 +28,7 @@ namespace bubi {
 		lpledger_context_ = NULL;
 		enabled_ = false;
 		apply_time_ = -1;
+		total_fee_ = 0;
 	}
 
 	
@@ -140,6 +141,8 @@ namespace bubi {
 		enabled_ = true;
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
+		bool fee_not_enough=false;
+		total_fee_=0;
 		environment_ = std::make_shared<Environment>(nullptr);
 
 		for (int i = 0; i < request.txset().txs_size() && enabled_; i++) {
@@ -151,6 +154,13 @@ namespace bubi {
 				dropped_tx_frms_.push_back(tx_frm);
 				continue;
 			}
+			//付费
+			if (ledger_.header().version() >= 3300){
+				if (!tx_frm->PayFee(environment_, total_fee_)){
+					dropped_tx_frms_.push_back(tx_frm);
+					continue;
+				}
+			}
 
 			ledger_context->transaction_stack_.push(tx_frm);
 			tx_frm->NonceIncrease(this, environment_);
@@ -158,27 +168,38 @@ namespace bubi {
 			bool ret = tx_frm->Apply(this, environment_);
 			int64_t time_use = utils::Timestamp::HighResolution() - time_start;
 
+			//caculate byte fee ,do not store when fee not enough 
+			tx_frm->real_fee_ += tx_frm->GetSelfByteFee();
+			if (ledger_.header().version() >= 3300){
+				if (tx_frm->real_fee_ > tx_frm->GetFee())
+					fee_not_enough = true;
+			}
+
+
 			if (tx_time_out > 0 && time_use > tx_time_out ) { //special treatment, return false
 				LOG_ERROR("transaction(%s) apply failed. %s, time out(" FMT_I64 "ms > " FMT_I64 "ms)",
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str(),
 					time_use / utils::MICRO_UNITS_PER_MILLI, tx_time_out / utils::MICRO_UNITS_PER_MILLI);
 				tx_time_out_index = i;
 				return false;
-			} else{
+			} else {
 				if (!ret) {
 					LOG_ERROR("transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 					tx_time_out_index = i;
 				}
 				else {
-					tx_frm->environment_->Commit();
+					if(!fee_not_enough)
+						tx_frm->environment_->Commit();
 				}
 			}
 
-			apply_tx_frms_.push_back(tx_frm);
+			if(!fee_not_enough)
+				apply_tx_frms_.push_back(tx_frm);			
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
 			ledger_context->transaction_stack_.pop();
 		}
+		AllocateFee();
 		apply_time_ = utils::Timestamp::HighResolution() - start_time;
 		return true;
 	}
@@ -211,5 +232,94 @@ namespace bubi {
 			}
 		}
 		return true;
+	}
+
+	bool LedgerFrm::AllocateFee() {
+		LOG_INFO("total_fee(" FMT_I64 ")", total_fee_);
+		if (total_fee_==0){
+			return true;
+		}
+		protocol::ValidatorSet set;
+		int64_t seq = ledger_.header().seq() - 1;
+		if (!LedgerManager::Instance().GetValidators(seq, set))	{
+			LOG_ERROR("Get validator failed of ledger seq(" FMT_I64 ")", seq);
+			return false;
+		}
+		if (set.validators_size() == 0) {
+			LOG_ERROR("Get validator failed of ledger seq(" FMT_I64 "),validator number is 0", seq);
+			return false;
+		}
+		int64_t tfee = total_fee_;
+		std::shared_ptr<AccountFrm> random_account;
+		int64_t random_index = seq % set.validators_size();
+		int64_t fee = tfee / set.validators_size();
+		for (size_t i = 0; i < set.validators_size(); i++) {
+			std::shared_ptr<AccountFrm> account;
+			if (!environment_->GetEntry(set.validators(i), account)) {
+				account =CreatBookKeeperAccount(set.validators(i));
+			}
+			if (random_index == i)
+				random_account = account;
+			tfee -= fee;
+			protocol::Account &proto_account = account->GetProtoAccount();
+			proto_account.set_balance(proto_account.balance() + fee);
+		}
+		protocol::Account &proto_account = random_account->GetProtoAccount();
+		proto_account.set_balance(proto_account.balance() + tfee);
+		LOG_INFO("validators account balance change");
+		return true;
+	}
+	AccountFrm::pointer LedgerFrm::CreatBookKeeperAccount(const std::string& account_address) {
+		protocol::Account acc;
+		acc.set_address(account_address);
+		acc.set_nonce(0);
+		acc.set_balance(0); //100000000000000000
+		AccountFrm::pointer acc_frm = std::make_shared<AccountFrm>(acc);
+		acc_frm->SetProtoMasterWeight(1);
+		acc_frm->SetProtoTxThreshold(1);
+		environment_->AddEntry(acc_frm->GetAccountAddress(), acc_frm);
+		LOG_INFO("Add bookeeper account(%)", account_address);
+		return acc_frm;
+	}
+
+	bool LedgerFrm::GetVotedFee(protocol::FeeConfig& fee_config) {
+		std::string dest_address;
+		std::shared_ptr<AccountFrm> dest_account_ptr = nullptr;
+		do {
+			if (!environment_->GetEntry(dest_address, dest_account_ptr)) {
+				LOG_ERROR("Account(%s) not exist", dest_address.c_str());
+				return false;
+			}
+			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
+			if (!javascript.empty()){
+				QueryContract qcontract;
+				ContractParameter parameter;
+				parameter.code_ = javascript;
+				parameter.input_ = "getFeesResult";
+				parameter.this_address_ = dest_address;
+				parameter.sender_ = "";
+				parameter.trigger_tx_ = "";
+				parameter.ope_index_ = 0;
+				parameter.consensus_value_ = "";
+				if (!qcontract.Init(Contract::TYPE_V8, parameter)) {
+					LOG_ERROR("Query contract(%s) init error", dest_address.c_str());
+					return false;
+				}
+				qcontract.Run();
+				Json::Value result;
+				if (!qcontract.GetResult(result)) {
+					LOG_ERROR("Query contract(%s) executive error(%s)", dest_address.c_str(), result["error_desc_f"].toFastString().c_str());
+					return false;
+				}
+				//set fee_config by result
+				std::string error_msg;
+				if (!Json2Proto(result["fees"], fee_config, error_msg)) {
+					LOG_ERROR("Query contract(%s) result convert error(%s)",dest_address.c_str(), error_msg.c_str());
+					return false;
+				}
+				return true;
+			}
+		} while (false);
+		return false;
 	}
 }

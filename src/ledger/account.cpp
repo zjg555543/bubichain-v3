@@ -52,6 +52,9 @@ namespace bubi {
 		return true;
 	}
 
+	int64_t AccountFrm::GetAccountBalance() const {
+		return account_info_.balance();
+	}
 
 	std::string AccountFrm::GetAccountAddress()const {
 		return account_info_.address();

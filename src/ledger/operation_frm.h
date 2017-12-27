@@ -53,6 +53,7 @@ namespace bubi{
 		void PayCoin(std::shared_ptr<Environment> environment);
 		//void OperationDeployContract(Environment *environment);
 		//void InvokeContract(Environment *environment);
+		void OptFee(const protocol::Operation_Type type);
 	};
 };
 #endif

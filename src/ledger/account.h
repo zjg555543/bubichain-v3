@@ -104,6 +104,7 @@ namespace bubi {
 		bool UpdateTypeThreshold(const protocol::Operation::Type type, int64_t threshold);
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
 		void NonceIncrease();
+		int64_t GetAccountBalance() const;
 	public:
 
 		template <class T>

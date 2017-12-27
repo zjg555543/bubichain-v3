@@ -38,6 +38,7 @@ void protobuf_AddDesc_consensus_2eproto();
 void protobuf_AssignDesc_consensus_2eproto();
 void protobuf_ShutdownFile_consensus_2eproto();
 
+class FeeConfig;
 class Pbft;
 class PbftCheckPoint;
 class PbftCommit;
@@ -1299,6 +1300,144 @@ class PbftProof : public ::google::protobuf::Message /* @@protoc_insertion_point
   void InitAsDefaultInstance();
   static PbftProof* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class FeeConfig : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.FeeConfig) */ {
+ public:
+  FeeConfig();
+  virtual ~FeeConfig();
+
+  FeeConfig(const FeeConfig& from);
+
+  inline FeeConfig& operator=(const FeeConfig& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FeeConfig& default_instance();
+
+  void Swap(FeeConfig* other);
+
+  // implements Message ----------------------------------------------
+
+  inline FeeConfig* New() const { return New(NULL); }
+
+  FeeConfig* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const FeeConfig& from);
+  void MergeFrom(const FeeConfig& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(FeeConfig* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional int64 byte_fee = 1;
+  void clear_byte_fee();
+  static const int kByteFeeFieldNumber = 1;
+  ::google::protobuf::int64 byte_fee() const;
+  void set_byte_fee(::google::protobuf::int64 value);
+
+  // optional int64 base_reserve = 2;
+  void clear_base_reserve();
+  static const int kBaseReserveFieldNumber = 2;
+  ::google::protobuf::int64 base_reserve() const;
+  void set_base_reserve(::google::protobuf::int64 value);
+
+  // optional int64 create_account_fee = 3;
+  void clear_create_account_fee();
+  static const int kCreateAccountFeeFieldNumber = 3;
+  ::google::protobuf::int64 create_account_fee() const;
+  void set_create_account_fee(::google::protobuf::int64 value);
+
+  // optional int64 pay_fee = 4;
+  void clear_pay_fee();
+  static const int kPayFeeFieldNumber = 4;
+  ::google::protobuf::int64 pay_fee() const;
+  void set_pay_fee(::google::protobuf::int64 value);
+
+  // optional int64 issue_asset_fee = 5;
+  void clear_issue_asset_fee();
+  static const int kIssueAssetFeeFieldNumber = 5;
+  ::google::protobuf::int64 issue_asset_fee() const;
+  void set_issue_asset_fee(::google::protobuf::int64 value);
+
+  // optional int64 set_metadata_fee = 6;
+  void clear_set_metadata_fee();
+  static const int kSetMetadataFeeFieldNumber = 6;
+  ::google::protobuf::int64 set_metadata_fee() const;
+  void set_set_metadata_fee(::google::protobuf::int64 value);
+
+  // optional int64 set_sigure_weight_fee = 7;
+  void clear_set_sigure_weight_fee();
+  static const int kSetSigureWeightFeeFieldNumber = 7;
+  ::google::protobuf::int64 set_sigure_weight_fee() const;
+  void set_set_sigure_weight_fee(::google::protobuf::int64 value);
+
+  // optional int64 set_threshold_fee = 8;
+  void clear_set_threshold_fee();
+  static const int kSetThresholdFeeFieldNumber = 8;
+  ::google::protobuf::int64 set_threshold_fee() const;
+  void set_set_threshold_fee(::google::protobuf::int64 value);
+
+  // optional int64 pay_coin_fee = 9;
+  void clear_pay_coin_fee();
+  static const int kPayCoinFeeFieldNumber = 9;
+  ::google::protobuf::int64 pay_coin_fee() const;
+  void set_pay_coin_fee(::google::protobuf::int64 value);
+
+  // @@protoc_insertion_point(class_scope:protocol.FeeConfig)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::int64 byte_fee_;
+  ::google::protobuf::int64 base_reserve_;
+  ::google::protobuf::int64 create_account_fee_;
+  ::google::protobuf::int64 pay_fee_;
+  ::google::protobuf::int64 issue_asset_fee_;
+  ::google::protobuf::int64 set_metadata_fee_;
+  ::google::protobuf::int64 set_sigure_weight_fee_;
+  ::google::protobuf::int64 set_threshold_fee_;
+  ::google::protobuf::int64 pay_coin_fee_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_consensus_2eproto();
+  friend void protobuf_AssignDesc_consensus_2eproto();
+  friend void protobuf_ShutdownFile_consensus_2eproto();
+
+  void InitAsDefaultInstance();
+  static FeeConfig* default_instance_;
+};
 // ===================================================================
 
 
@@ -2410,7 +2549,139 @@ PbftProof::commits() const {
   return commits_;
 }
 
+// -------------------------------------------------------------------
+
+// FeeConfig
+
+// optional int64 byte_fee = 1;
+inline void FeeConfig::clear_byte_fee() {
+  byte_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::byte_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.byte_fee)
+  return byte_fee_;
+}
+inline void FeeConfig::set_byte_fee(::google::protobuf::int64 value) {
+  
+  byte_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.byte_fee)
+}
+
+// optional int64 base_reserve = 2;
+inline void FeeConfig::clear_base_reserve() {
+  base_reserve_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::base_reserve() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.base_reserve)
+  return base_reserve_;
+}
+inline void FeeConfig::set_base_reserve(::google::protobuf::int64 value) {
+  
+  base_reserve_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.base_reserve)
+}
+
+// optional int64 create_account_fee = 3;
+inline void FeeConfig::clear_create_account_fee() {
+  create_account_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::create_account_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.create_account_fee)
+  return create_account_fee_;
+}
+inline void FeeConfig::set_create_account_fee(::google::protobuf::int64 value) {
+  
+  create_account_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.create_account_fee)
+}
+
+// optional int64 pay_fee = 4;
+inline void FeeConfig::clear_pay_fee() {
+  pay_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::pay_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.pay_fee)
+  return pay_fee_;
+}
+inline void FeeConfig::set_pay_fee(::google::protobuf::int64 value) {
+  
+  pay_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.pay_fee)
+}
+
+// optional int64 issue_asset_fee = 5;
+inline void FeeConfig::clear_issue_asset_fee() {
+  issue_asset_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::issue_asset_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.issue_asset_fee)
+  return issue_asset_fee_;
+}
+inline void FeeConfig::set_issue_asset_fee(::google::protobuf::int64 value) {
+  
+  issue_asset_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.issue_asset_fee)
+}
+
+// optional int64 set_metadata_fee = 6;
+inline void FeeConfig::clear_set_metadata_fee() {
+  set_metadata_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::set_metadata_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.set_metadata_fee)
+  return set_metadata_fee_;
+}
+inline void FeeConfig::set_set_metadata_fee(::google::protobuf::int64 value) {
+  
+  set_metadata_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.set_metadata_fee)
+}
+
+// optional int64 set_sigure_weight_fee = 7;
+inline void FeeConfig::clear_set_sigure_weight_fee() {
+  set_sigure_weight_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::set_sigure_weight_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.set_sigure_weight_fee)
+  return set_sigure_weight_fee_;
+}
+inline void FeeConfig::set_set_sigure_weight_fee(::google::protobuf::int64 value) {
+  
+  set_sigure_weight_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.set_sigure_weight_fee)
+}
+
+// optional int64 set_threshold_fee = 8;
+inline void FeeConfig::clear_set_threshold_fee() {
+  set_threshold_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::set_threshold_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.set_threshold_fee)
+  return set_threshold_fee_;
+}
+inline void FeeConfig::set_set_threshold_fee(::google::protobuf::int64 value) {
+  
+  set_threshold_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.set_threshold_fee)
+}
+
+// optional int64 pay_coin_fee = 9;
+inline void FeeConfig::clear_pay_coin_fee() {
+  pay_coin_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::pay_coin_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.pay_coin_fee)
+  return pay_coin_fee_;
+}
+inline void FeeConfig::set_pay_coin_fee(::google::protobuf::int64 value) {
+  
+  pay_coin_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.pay_coin_fee)
+}
+
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

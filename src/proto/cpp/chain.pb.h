@@ -673,9 +673,20 @@ class LedgerHeader : public ::google::protobuf::Message /* @@protoc_insertion_po
   ::std::string* release_validators_hash();
   void set_allocated_validators_hash(::std::string* validators_hash);
 
-  // optional string reserve = 10;
+  // optional bytes fees_hash = 10;
+  void clear_fees_hash();
+  static const int kFeesHashFieldNumber = 10;
+  const ::std::string& fees_hash() const;
+  void set_fees_hash(const ::std::string& value);
+  void set_fees_hash(const char* value);
+  void set_fees_hash(const void* value, size_t size);
+  ::std::string* mutable_fees_hash();
+  ::std::string* release_fees_hash();
+  void set_allocated_fees_hash(::std::string* fees_hash);
+
+  // optional string reserve = 11;
   void clear_reserve();
-  static const int kReserveFieldNumber = 10;
+  static const int kReserveFieldNumber = 11;
   const ::std::string& reserve() const;
   void set_reserve(const ::std::string& value);
   void set_reserve(const char* value);
@@ -698,6 +709,7 @@ class LedgerHeader : public ::google::protobuf::Message /* @@protoc_insertion_po
   ::google::protobuf::int64 version_;
   ::google::protobuf::int64 tx_count_;
   ::google::protobuf::internal::ArenaStringPtr validators_hash_;
+  ::google::protobuf::internal::ArenaStringPtr fees_hash_;
   ::google::protobuf::internal::ArenaStringPtr reserve_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_chain_2eproto();
@@ -3893,7 +3905,51 @@ inline void LedgerHeader::set_allocated_validators_hash(::std::string* validator
   // @@protoc_insertion_point(field_set_allocated:protocol.LedgerHeader.validators_hash)
 }
 
-// optional string reserve = 10;
+// optional bytes fees_hash = 10;
+inline void LedgerHeader::clear_fees_hash() {
+  fees_hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& LedgerHeader::fees_hash() const {
+  // @@protoc_insertion_point(field_get:protocol.LedgerHeader.fees_hash)
+  return fees_hash_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void LedgerHeader::set_fees_hash(const ::std::string& value) {
+  
+  fees_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.LedgerHeader.fees_hash)
+}
+inline void LedgerHeader::set_fees_hash(const char* value) {
+  
+  fees_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.LedgerHeader.fees_hash)
+}
+inline void LedgerHeader::set_fees_hash(const void* value, size_t size) {
+  
+  fees_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerHeader.fees_hash)
+}
+inline ::std::string* LedgerHeader::mutable_fees_hash() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.LedgerHeader.fees_hash)
+  return fees_hash_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* LedgerHeader::release_fees_hash() {
+  // @@protoc_insertion_point(field_release:protocol.LedgerHeader.fees_hash)
+  
+  return fees_hash_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void LedgerHeader::set_allocated_fees_hash(::std::string* fees_hash) {
+  if (fees_hash != NULL) {
+    
+  } else {
+    
+  }
+  fees_hash_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), fees_hash);
+  // @@protoc_insertion_point(field_set_allocated:protocol.LedgerHeader.fees_hash)
+}
+
+// optional string reserve = 11;
 inline void LedgerHeader::clear_reserve() {
   reserve_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }

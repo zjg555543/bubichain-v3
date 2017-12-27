@@ -120,6 +120,10 @@ public final class Common {
      */
     ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE(105),
     /**
+     * <code>ERRCODE_FEE_NOT_ENOUGH = 111;</code>
+     */
+    ERRCODE_FEE_NOT_ENOUGH(111),
+    /**
      * <code>ERRCODE_OUT_OF_TXCACHE = 114;</code>
      */
     ERRCODE_OUT_OF_TXCACHE(114),
@@ -159,6 +163,10 @@ public final class Common {
      * <code>ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS = 154;</code>
      */
     ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS(154),
+    /**
+     * <code>ERRCODE_CONTEXT_EXPIRED = 155;</code>
+     */
+    ERRCODE_CONTEXT_EXPIRED(155),
     UNRECOGNIZED(-1),
     ;
 
@@ -263,6 +271,10 @@ public final class Common {
      */
     public static final int ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE_VALUE = 105;
     /**
+     * <code>ERRCODE_FEE_NOT_ENOUGH = 111;</code>
+     */
+    public static final int ERRCODE_FEE_NOT_ENOUGH_VALUE = 111;
+    /**
      * <code>ERRCODE_OUT_OF_TXCACHE = 114;</code>
      */
     public static final int ERRCODE_OUT_OF_TXCACHE_VALUE = 114;
@@ -302,6 +314,10 @@ public final class Common {
      * <code>ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS = 154;</code>
      */
     public static final int ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS_VALUE = 154;
+    /**
+     * <code>ERRCODE_CONTEXT_EXPIRED = 155;</code>
+     */
+    public static final int ERRCODE_CONTEXT_EXPIRED_VALUE = 155;
 
 
     public final int getNumber() {
@@ -344,6 +360,7 @@ public final class Common {
         case 103: return ERRCODE_ACCOUNT_NOT_EXIST;
         case 104: return ERRCODE_ACCOUNT_ASSET_LOW_RESERVE;
         case 105: return ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE;
+        case 111: return ERRCODE_FEE_NOT_ENOUGH;
         case 114: return ERRCODE_OUT_OF_TXCACHE;
         case 120: return ERRCODE_WEIGHT_NOT_VALID;
         case 121: return ERRCODE_THRESHOLD_NOT_VALID;
@@ -353,6 +370,7 @@ public final class Common {
         case 152: return ERRCODE_CONTRACT_SYNTAX_ERROR;
         case 153: return ERRCODE_CONTRACT_TOO_MANY_RECURSION;
         case 154: return ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS;
+        case 155: return ERRCODE_CONTEXT_EXPIRED;
         default: return null;
       }
     }
@@ -4234,7 +4252,7 @@ public final class Common {
       "\t\022\026\n\016del_validators\030\003 \003(\t\"J\n\tWsMessage\022\014" +
       "\n\004type\030\001 \001(\003\022\017\n\007request\030\002 \001(\010\022\020\n\010sequenc" +
       "e\030\003 \001(\003\022\014\n\004data\030\004 \001(\014\"\025\n\004Ping\022\r\n\005nonce\030\001" +
-      " \001(\003\"\025\n\004Pong\022\r\n\005nonce\030\001 \001(\003*\356\007\n\tERRORCOD" +
+      " \001(\003\"\025\n\004Pong\022\r\n\005nonce\030\001 \001(\003*\250\010\n\tERRORCOD" +
       "E\022\023\n\017ERRCODE_SUCCESS\020\000\022\032\n\026ERRCODE_INTERN",
       "AL_ERROR\020\001\022\035\n\031ERRCODE_INVALID_PARAMETER\020" +
       "\002\022\031\n\025ERRCODE_ALREADY_EXIST\020\003\022\025\n\021ERRCODE_" +
@@ -4252,15 +4270,17 @@ public final class Common {
       "_EXIST\020f\022\035\n\031ERRCODE_ACCOUNT_NOT_EXIST\020g\022" +
       "%\n!ERRCODE_ACCOUNT_ASSET_LOW_RESERVE\020h\022*" +
       "\n&ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE" +
-      "\020i\022\032\n\026ERRCODE_OUT_OF_TXCACHE\020r\022\034\n\030ERRCOD" +
-      "E_WEIGHT_NOT_VALID\020x\022\037\n\033ERRCODE_THRESHOL" +
-      "D_NOT_VALID\020y\022 \n\033ERRCODE_INVALID_DATAVER" +
-      "SION\020\220\001\022\034\n\027ERRCODE_TX_SIZE_TOO_BIG\020\222\001\022\"\n",
-      "\035ERRCODE_CONTRACT_EXECUTE_FAIL\020\227\001\022\"\n\035ERR" +
-      "CODE_CONTRACT_SYNTAX_ERROR\020\230\001\022(\n#ERRCODE" +
-      "_CONTRACT_TOO_MANY_RECURSION\020\231\001\022+\n&ERRCO" +
-      "DE_CONTRACT_TOO_MANY_TRANSACTIONS\020\232\001B\035\n\033" +
-      "cn.bubi.blockchain.adapter3b\006proto3"
+      "\020i\022\032\n\026ERRCODE_FEE_NOT_ENOUGH\020o\022\032\n\026ERRCOD" +
+      "E_OUT_OF_TXCACHE\020r\022\034\n\030ERRCODE_WEIGHT_NOT" +
+      "_VALID\020x\022\037\n\033ERRCODE_THRESHOLD_NOT_VALID\020" +
+      "y\022 \n\033ERRCODE_INVALID_DATAVERSION\020\220\001\022\034\n\027E",
+      "RRCODE_TX_SIZE_TOO_BIG\020\222\001\022\"\n\035ERRCODE_CON" +
+      "TRACT_EXECUTE_FAIL\020\227\001\022\"\n\035ERRCODE_CONTRAC" +
+      "T_SYNTAX_ERROR\020\230\001\022(\n#ERRCODE_CONTRACT_TO" +
+      "O_MANY_RECURSION\020\231\001\022+\n&ERRCODE_CONTRACT_" +
+      "TOO_MANY_TRANSACTIONS\020\232\001\022\034\n\027ERRCODE_CONT" +
+      "EXT_EXPIRED\020\233\001B\035\n\033cn.bubi.blockchain.ada" +
+      "pter3b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

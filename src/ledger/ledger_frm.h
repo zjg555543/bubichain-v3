@@ -19,6 +19,7 @@ limitations under the License.
 #include "transaction_frm.h"
 #include "glue/transaction_set.h"
 #include "account.h"
+#include "proto/cpp/consensus.pb.h"
 
 namespace bubi {
 	class AccountEntry;
@@ -67,6 +68,10 @@ namespace bubi {
 		Json::Value ToJson();
 
 		bool Commit(KVTrie* trie, int64_t& new_count, int64_t& change_count);
+
+		bool AllocateFee();
+		AccountFrm::pointer CreatBookKeeperAccount(const std::string& account_address);
+		bool GetVotedFee(protocol::FeeConfig& fee_config);
 	private:
 		protocol::Ledger ledger_;
 	public:
@@ -78,6 +83,7 @@ namespace bubi {
 		LedgerContext *lpledger_context_;
 		int64_t apply_time_;
 		bool enabled_;
+		int64_t total_fee_;
 	};
 }
 #endif //end of ifndef

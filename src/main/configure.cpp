@@ -131,8 +131,8 @@ namespace bubi {
 	LedgerConfigure::~LedgerConfigure() {}
 
 	bool LedgerConfigure::Load(const Json::Value &value) {
-		Configure::GetValue(value, "base_fee", base_fee_);
-		Configure::GetValue(value, "base_reserve", base_reserve_);
+		//Configure::GetValue(value, "byte_fee", byte_fee_);
+		//Configure::GetValue(value, "base_reserve", base_reserve_);
 		Configure::GetValue(value, "hash_type", hash_type_);
 		Configure::GetValue(value, "max_trans_per_ledger", max_trans_per_ledger_);
 		Configure::GetValue(value, "max_ledger_per_message", max_ledger_per_message_);
@@ -141,6 +141,21 @@ namespace bubi {
 		Configure::GetValue(value, "test_model", test_model_);
 		Configure::GetValue(value, "genesis_account", genesis_account_);
 		Configure::GetValue(value, "hardfork_points", hardfork_points_);
+
+		if (!value.isMember("fees")) {
+			memset(&fees_,0,sizeof(fees_));
+		}
+		else{
+			Configure::GetValue(value["fees"], "byte_fee", fees_.byte_fee_);
+			Configure::GetValue(value["fees"], "base_reserve", fees_.base_reserve_);
+			Configure::GetValue(value["fees"], "create_account_fee", fees_.create_account_fee_);
+			Configure::GetValue(value["fees"], "pay_fee", fees_.pay_fee_);
+			Configure::GetValue(value["fees"], "issue_asset_fee", fees_.issue_asset_fee_);
+			Configure::GetValue(value["fees"], "set_metadata_fee", fees_.set_metadata_fee_);
+			Configure::GetValue(value["fees"], "set_sigure_weight_fee", fees_.set_sigure_weight_fee_);
+			Configure::GetValue(value["fees"], "set_threshold_fee", fees_.set_threshold_fee_);
+			Configure::GetValue(value["fees"], "pay_coin_fee", fees_.pay_coin_fee_);
+		}
 
 		if (max_apply_ledger_per_round_ == 0
 			|| max_trans_in_memory_ / max_apply_ledger_per_round_ == 0) {
