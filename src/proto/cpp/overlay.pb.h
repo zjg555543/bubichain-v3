@@ -39,11 +39,11 @@ void protobuf_AddDesc_overlay_2eproto();
 void protobuf_AssignDesc_overlay_2eproto();
 void protobuf_ShutdownFile_overlay_2eproto();
 
+class ChainContractLog;
 class ChainHello;
 class ChainPeerMessage;
 class ChainStatus;
 class ChainTxStatus;
-class ContractLog;
 class DontHave;
 class EntryList;
 class GetLedgers;
@@ -1650,32 +1650,32 @@ class ChainTxStatus : public ::google::protobuf::Message /* @@protoc_insertion_p
 };
 // -------------------------------------------------------------------
 
-class ContractLog : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.ContractLog) */ {
+class ChainContractLog : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.ChainContractLog) */ {
  public:
-  ContractLog();
-  virtual ~ContractLog();
+  ChainContractLog();
+  virtual ~ChainContractLog();
 
-  ContractLog(const ContractLog& from);
+  ChainContractLog(const ChainContractLog& from);
 
-  inline ContractLog& operator=(const ContractLog& from) {
+  inline ChainContractLog& operator=(const ChainContractLog& from) {
     CopyFrom(from);
     return *this;
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const ContractLog& default_instance();
+  static const ChainContractLog& default_instance();
 
-  void Swap(ContractLog* other);
+  void Swap(ChainContractLog* other);
 
   // implements Message ----------------------------------------------
 
-  inline ContractLog* New() const { return New(NULL); }
+  inline ChainContractLog* New() const { return New(NULL); }
 
-  ContractLog* New(::google::protobuf::Arena* arena) const;
+  ChainContractLog* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ContractLog& from);
-  void MergeFrom(const ContractLog& from);
+  void CopyFrom(const ChainContractLog& from);
+  void MergeFrom(const ChainContractLog& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1694,7 +1694,7 @@ class ContractLog : public ::google::protobuf::Message /* @@protoc_insertion_poi
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(ContractLog* other);
+  void InternalSwap(ChainContractLog* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -1738,7 +1738,7 @@ class ContractLog : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::google::protobuf::int64 timestamp() const;
   void set_timestamp(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.ContractLog)
+  // @@protoc_insertion_point(class_scope:protocol.ChainContractLog)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -1752,7 +1752,7 @@ class ContractLog : public ::google::protobuf::Message /* @@protoc_insertion_poi
   friend void protobuf_ShutdownFile_overlay_2eproto();
 
   void InitAsDefaultInstance();
-  static ContractLog* default_instance_;
+  static ChainContractLog* default_instance_;
 };
 // ===================================================================
 
@@ -3082,108 +3082,108 @@ inline void ChainTxStatus::set_timestamp(::google::protobuf::int64 value) {
 
 // -------------------------------------------------------------------
 
-// ContractLog
+// ChainContractLog
 
 // optional string sender = 1;
-inline void ContractLog::clear_sender() {
+inline void ChainContractLog::clear_sender() {
   sender_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& ContractLog::sender() const {
-  // @@protoc_insertion_point(field_get:protocol.ContractLog.sender)
+inline const ::std::string& ChainContractLog::sender() const {
+  // @@protoc_insertion_point(field_get:protocol.ChainContractLog.sender)
   return sender_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void ContractLog::set_sender(const ::std::string& value) {
+inline void ChainContractLog::set_sender(const ::std::string& value) {
   
   sender_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.ContractLog.sender)
+  // @@protoc_insertion_point(field_set:protocol.ChainContractLog.sender)
 }
-inline void ContractLog::set_sender(const char* value) {
+inline void ChainContractLog::set_sender(const char* value) {
   
   sender_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.ContractLog.sender)
+  // @@protoc_insertion_point(field_set_char:protocol.ChainContractLog.sender)
 }
-inline void ContractLog::set_sender(const char* value, size_t size) {
+inline void ChainContractLog::set_sender(const char* value, size_t size) {
   
   sender_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.ContractLog.sender)
+  // @@protoc_insertion_point(field_set_pointer:protocol.ChainContractLog.sender)
 }
-inline ::std::string* ContractLog::mutable_sender() {
+inline ::std::string* ChainContractLog::mutable_sender() {
   
-  // @@protoc_insertion_point(field_mutable:protocol.ContractLog.sender)
+  // @@protoc_insertion_point(field_mutable:protocol.ChainContractLog.sender)
   return sender_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* ContractLog::release_sender() {
-  // @@protoc_insertion_point(field_release:protocol.ContractLog.sender)
+inline ::std::string* ChainContractLog::release_sender() {
+  // @@protoc_insertion_point(field_release:protocol.ChainContractLog.sender)
   
   return sender_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void ContractLog::set_allocated_sender(::std::string* sender) {
+inline void ChainContractLog::set_allocated_sender(::std::string* sender) {
   if (sender != NULL) {
     
   } else {
     
   }
   sender_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sender);
-  // @@protoc_insertion_point(field_set_allocated:protocol.ContractLog.sender)
+  // @@protoc_insertion_point(field_set_allocated:protocol.ChainContractLog.sender)
 }
 
 // optional string data = 2;
-inline void ContractLog::clear_data() {
+inline void ChainContractLog::clear_data() {
   data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& ContractLog::data() const {
-  // @@protoc_insertion_point(field_get:protocol.ContractLog.data)
+inline const ::std::string& ChainContractLog::data() const {
+  // @@protoc_insertion_point(field_get:protocol.ChainContractLog.data)
   return data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void ContractLog::set_data(const ::std::string& value) {
+inline void ChainContractLog::set_data(const ::std::string& value) {
   
   data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.ContractLog.data)
+  // @@protoc_insertion_point(field_set:protocol.ChainContractLog.data)
 }
-inline void ContractLog::set_data(const char* value) {
+inline void ChainContractLog::set_data(const char* value) {
   
   data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.ContractLog.data)
+  // @@protoc_insertion_point(field_set_char:protocol.ChainContractLog.data)
 }
-inline void ContractLog::set_data(const char* value, size_t size) {
+inline void ChainContractLog::set_data(const char* value, size_t size) {
   
   data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.ContractLog.data)
+  // @@protoc_insertion_point(field_set_pointer:protocol.ChainContractLog.data)
 }
-inline ::std::string* ContractLog::mutable_data() {
+inline ::std::string* ChainContractLog::mutable_data() {
   
-  // @@protoc_insertion_point(field_mutable:protocol.ContractLog.data)
+  // @@protoc_insertion_point(field_mutable:protocol.ChainContractLog.data)
   return data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* ContractLog::release_data() {
-  // @@protoc_insertion_point(field_release:protocol.ContractLog.data)
+inline ::std::string* ChainContractLog::release_data() {
+  // @@protoc_insertion_point(field_release:protocol.ChainContractLog.data)
   
   return data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void ContractLog::set_allocated_data(::std::string* data) {
+inline void ChainContractLog::set_allocated_data(::std::string* data) {
   if (data != NULL) {
     
   } else {
     
   }
   data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
-  // @@protoc_insertion_point(field_set_allocated:protocol.ContractLog.data)
+  // @@protoc_insertion_point(field_set_allocated:protocol.ChainContractLog.data)
 }
 
 // optional int64 timestamp = 3;
-inline void ContractLog::clear_timestamp() {
+inline void ChainContractLog::clear_timestamp() {
   timestamp_ = GOOGLE_LONGLONG(0);
 }
-inline ::google::protobuf::int64 ContractLog::timestamp() const {
-  // @@protoc_insertion_point(field_get:protocol.ContractLog.timestamp)
+inline ::google::protobuf::int64 ChainContractLog::timestamp() const {
+  // @@protoc_insertion_point(field_get:protocol.ChainContractLog.timestamp)
   return timestamp_;
 }
-inline void ContractLog::set_timestamp(::google::protobuf::int64 value) {
+inline void ChainContractLog::set_timestamp(::google::protobuf::int64 value) {
   
   timestamp_ = value;
-  // @@protoc_insertion_point(field_set:protocol.ContractLog.timestamp)
+  // @@protoc_insertion_point(field_set:protocol.ChainContractLog.timestamp)
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
