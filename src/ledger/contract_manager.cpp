@@ -1189,9 +1189,8 @@ namespace bubi{
 			Json::Value currentValidators;
 			for (int i = 0; i < set.validators_size(); i++)
 			{
-				Json::Value validator;
-				validator.fromString(*set.mutable_validators(i));
-				currentValidators.append(validator);
+				std::string address = *set.mutable_validators(i);
+				currentValidators[i] = address;
 			}
 
 			std::string strvalue = currentValidators.toFastString();
