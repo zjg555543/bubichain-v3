@@ -39,6 +39,7 @@ namespace bubi{
 		int32_t ope_index_;
 		std::string consensus_value_;
 		LedgerContext *ledger_context_;
+		int32_t pay_coin_amount_;
 	};
 
 	class ContractTestParameter {
@@ -113,6 +114,7 @@ namespace bubi{
 		static const std::string trigger_tx_name_;
 		static const std::string trigger_tx_index_name_;
 		static const std::string this_header_name_;
+		static const std::string pay_coin_amount_name_;
 
 		static utils::Mutex isolate_to_contract_mutex_;
 		static std::unordered_map<v8::Isolate*, V8Contract *> isolate_to_contract_;
@@ -129,6 +131,8 @@ namespace bubi{
 		static void CallBackGetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static void CallBackSetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static void CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static void CallBackSetValidators(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static void CallBackGetValidators(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static void Include(const v8::FunctionCallbackInfo<v8::Value>& args);
 		//get account info from an account
 		static void CallBackGetAccountInfo(const v8::FunctionCallbackInfo<v8::Value>& args);

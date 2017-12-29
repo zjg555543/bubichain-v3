@@ -20,7 +20,7 @@ limitations under the License.
     
 namespace bubi{
 
-	ContractParameter::ContractParameter() : ope_index_(-1), ledger_context_(NULL){}
+	ContractParameter::ContractParameter() : ope_index_(-1), ledger_context_(NULL), pay_coin_amount_(0){}
 
 	ContractParameter::~ContractParameter() {}
 
@@ -105,6 +105,7 @@ namespace bubi{
 	const std::string V8Contract::trigger_tx_name_ = "trigger";
 	const std::string V8Contract::trigger_tx_index_name_ = "triggerIndex";
 	const std::string V8Contract::this_header_name_ = "consensusValue";
+	const std::string V8Contract::pay_coin_amount_name_ = "payCoinAmount";
 	utils::Mutex V8Contract::isolate_to_contract_mutex_;
 	std::unordered_map<v8::Isolate*, V8Contract *> V8Contract::isolate_to_contract_;
 
@@ -200,6 +201,11 @@ namespace bubi{
 		context->Global()->Set(context,
 			v8::String::NewFromUtf8(isolate_, trigger_tx_index_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
 			index_v8);
+
+		v8::Local<v8::Integer> coin_amount = v8::Int32::New(isolate_, parameter_.pay_coin_amount_);
+		context->Global()->Set(context,
+			v8::String::NewFromUtf8(isolate_, pay_coin_amount_name_.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
+			coin_amount);
 
 		auto v8_consensus_value = v8::String::NewFromUtf8(isolate_, parameter_.consensus_value_.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
 		auto v8HeadJson = v8::JSON::Parse(v8_consensus_value);
@@ -506,6 +512,14 @@ namespace bubi{
 			v8::String::NewFromUtf8(isolate, "callBackGetLedgerInfo", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
 			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetLedgerInfo));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackGetValidators", v8::NewStringType::kNormal).ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackGetValidators));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "callBackSetValidators", v8::NewStringType::kNormal).ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, V8Contract::CallBackSetValidators));
 		
 		/*		global->Set(
 		v8::String::NewFromUtf8(isolate_, "callBackGetTransactionInfo", v8::NewStringType::kNormal)
@@ -1158,6 +1172,87 @@ namespace bubi{
 
 		args.GetReturnValue().Set(false);
 
+	}
+
+	void V8Contract::CallBackGetValidators(const v8::FunctionCallbackInfo<v8::Value>& args)
+	{
+		do {
+			if (args.Length() != 0) 
+			{
+				LOG_ERROR("parameter error");
+				args.GetReturnValue().Set(false);
+				break;
+			}
+			v8::HandleScope handle_scope(args.GetIsolate());
+			protocol::ValidatorSet set = LedgerManager::Instance().Validators();
+
+			Json::Value currentValidators;
+			for (int i = 0; i < set.validators_size(); i++)
+			{
+				Json::Value validator;
+				validator.fromString(*set.mutable_validators(i));
+				currentValidators.append(validator);
+			}
+
+			std::string strvalue = currentValidators.toFastString();
+			v8::Local<v8::String> returnvalue = v8::String::NewFromUtf8(args.GetIsolate(), strvalue.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+			args.GetReturnValue().Set(v8::JSON::Parse(returnvalue));
+
+			return;
+		} while (false);
+		args.GetReturnValue().Set(false);
+	}
+
+	void V8Contract::CallBackSetValidators(const v8::FunctionCallbackInfo<v8::Value>& args)
+	{
+		do
+		{
+			if (args.Length() != 1)
+			{
+				LOG_ERROR("parameter error.");
+				break;
+			}
+
+			v8::HandleScope handle_scope(args.GetIsolate());
+
+			if (!args[0]->IsArray()) 
+			{
+				LOG_ERROR("contract execute error, CallBackSetValidators, parameter 0 should be a Arrary.");
+				break;
+			}
+
+			v8::Local<v8::String> str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), args[0]->ToObject()).ToLocalChecked();
+			v8::String::Utf8Value  utf8(str);
+
+			Json::Value json;
+			if (!json.fromCString(ToCString(utf8))) 
+			{
+				LOG_ERROR("fromCString fail, fatal error");
+				break;
+			}
+
+			int len = json.size();
+			std::set<std::string> validatorSet;
+			for (int i = 0; i < len; i++)
+			{
+				if (json[i].isString())
+				{
+					validatorSet.insert(json[i].asString());
+				}
+				else
+				{
+					LOG_ERROR("parse candidates form JSON failed, candidate should be a string!");
+					args.GetReturnValue().Set(false);
+					return;
+				}
+			}
+
+			LedgerManager::Instance().UpdateValidatorset(validatorSet);
+			args.GetReturnValue().Set(true);
+			return;
+
+		} while (false);
+		args.GetReturnValue().Set(false);
 	}
 
 	QueryContract::QueryContract():contract_(NULL){}

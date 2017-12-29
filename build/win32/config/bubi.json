@@ -36,7 +36,8 @@
 		"listen_address": "0.0.0.0:7053"
 	},
 	"ledger": {
-       		"genesis_account": "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",//privatekey:c00205ce8de2892b26c3b95caf3404831d6e913c655d85b517f076380ebfcbef47ff8f
+       	"genesis_account": "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",//privatekey:c00205ce8de2892b26c3b95caf3404831d6e913c655d85b517f076380ebfcbef47ff8f
+		"election_account": "a00162ec92b31d1d7aab1a6245874ae140b993c54402a0", //privatekey:c00193035fd48629d7a8ce3cdc145036ccd2869320283ab566449ebb13889769e7c5e1
 		"hash_type": 0, //0: SHA256 1: SM3
 		"max_trans_per_ledger": 1000,
 		"max_trans_per_ledger": 1000,

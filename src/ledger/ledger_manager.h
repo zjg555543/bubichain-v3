@@ -61,9 +61,16 @@ namespace bubi {
 
 		bool GetValidators(int64_t seq, protocol::ValidatorSet& validators_set);
 
+		const protocol::ValidatorSet& Validators()
+		{
+			return validators_;
+		}
+
 		bool ConsensusValueFromDB(int64_t seq, protocol::ConsensusValue& request);
 
 		bool DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context);
+
+		void UpdateValidatorset(const std::set<std::string>& newSet);
 
 		virtual void OnTimer(int64_t current_time) override;
 		virtual void OnSlowTimer(int64_t current_time) override;

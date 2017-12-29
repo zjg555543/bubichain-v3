@@ -576,6 +576,49 @@ namespace utils {
 			return result;
 		}
 
+		static void String2Mapstr(const std::string& str, std::map<std::string, std::string>& mss, char delimit = ',', char separator = ':')
+		{
+			if (str.empty())
+				return;
+
+			std::vector<std::string> vs;
+			size_t start = 0;
+			size_t end = str.find(delimit);
+			vs.push_back(str.substr(start, end - start));
+			while (end != std::string::npos)
+			{
+				start = end + 1;
+				end = str.find(delimit, start);
+				vs.push_back(str.substr(start, end - start));
+			}
+
+			for (auto element : vs)
+			{
+				size_t pos = element.find(separator);
+				if (pos == std::string::npos)
+					continue;
+
+				std::string key = element.substr(0, pos);
+				std::string value = element.substr(pos + 1, element.size() - pos - 1);
+				mss[key] = value;
+			}
+		}
+
+		static void Mapstr2String(const std::map<std::string, std::string>& mss, std::string& str, char delimit = ',', char separator = ':')
+		{
+			if (mss.empty())
+				return;
+
+			for (auto kv : mss)
+			{
+				str += kv.first;
+				str += separator;
+				str += kv.second;
+				str += delimit;
+			}
+
+			str = str.substr(0, str.size() - 1); //strip the last delimit
+		}
 		static bool HexStringToBin(const std::string &hex_string, std::string &out_put) {
 			if (!IsHexString(hex_string)) {
 				return false;

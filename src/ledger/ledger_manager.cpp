@@ -230,7 +230,14 @@ namespace bubi {
 		}
 		return vlidators_set.ParseFromString(str);
 	}
+	void LedgerManager::UpdateValidatorset(const std::set<std::string>& newSet)
+	{
+		validators_.clear_validators();
 
+		for (auto validator : newSet)
+			validators_.add_validators(validator);
+	}
+	
 	void LedgerManager::FeesConfigSet(std::shared_ptr<WRITE_BATCH> batch, const protocol::FeeConfig &fee) {
 		std::string hash = HashWrapper::Crypto(fee.SerializeAsString());
 		batch->Put(utils::String::Format("fees-%s", utils::String::BinToHexString(hash).c_str()), fee.SerializeAsString());

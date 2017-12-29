@@ -140,6 +140,8 @@ namespace bubi {
 		Configure::GetValue(value, "max_trans_in_memory", max_trans_in_memory_);
 		Configure::GetValue(value, "test_model", test_model_);
 		Configure::GetValue(value, "genesis_account", genesis_account_);
+		Configure::GetValue(value, "election_account", election_account_);
+		//Configure::GetValue(value, "audit_account", audit_account_);
 		Configure::GetValue(value, "hardfork_points", hardfork_points_);
 
 		if (!value.isMember("fees")) {

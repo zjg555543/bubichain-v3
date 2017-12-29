@@ -51,6 +51,7 @@ namespace bubi{
 		void SetSignerWeight(std::shared_ptr<Environment> environment);
 		void SetThreshold(std::shared_ptr<Environment> environment);
 		void PayCoin(std::shared_ptr<Environment> environment);
+		void SetPledgors(std::string sourceAddress, std::shared_ptr<AccountFrm>& destAccount, int64_t coinNumber);
 		//void OperationDeployContract(Environment *environment);
 		//void InvokeContract(Environment *environment);
 		void OptFee(const protocol::Operation_Type type);
