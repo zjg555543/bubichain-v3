@@ -356,8 +356,8 @@ namespace bubi {
 
 				//judge if the address exist the path
 				bool exist = false;
-				for (size_t i = 0; i < addresses.size(); i++) {
-					if (addresses[i] == signer.address()) {
+				for (size_t m = 0; m < addresses.size(); m++) {
+					if (addresses[m] == signer.address()) {
 						exist = true;
 						break;
 					}

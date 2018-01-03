@@ -774,7 +774,7 @@ namespace bubi {
 		} while (false);
 		data["peer_cache_size"] = db_peer_cache_.size();
 		data["recv_peerlist_size"] = received_peer_list_.size();
-		data["broad_reocrd_size"] = broadcast_.GetRecordSize();
+		data["broad_record_size"] = broadcast_.GetRecordSize();
 		int active_size = 0;
 		Json::Value peers;
 
