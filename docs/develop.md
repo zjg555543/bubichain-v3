@@ -486,7 +486,7 @@ POST /testContract
 }
 ```
   - contract_address: 调用的智能合约地址，如果从数据库查询不到则返回错误。
-  - code： 如果 contract_address 为空，则使用code 字段，如果code字段你也为空，则返回错误。
+  - code：需要调试的合约代码，如果 contract_address 为空，则使用code 字段，如果code字段你也为空，则返回错误。
   - input： 给被调用的合约传参。
   - exe_or_query: true :准备调用合约的读写接口main，false :调用只读接口query。
   - source_address：模拟调用合约的原地址。
@@ -509,7 +509,7 @@ POST /testContract
       },
       "rets" : [    //合约返回值，如果是合约间调用，则可能输出多个返回值。
          {
-            "result" : [   //如果成功，则有返回值，返回值有可能多个，每个返回值由type和value构成，type 暂时有4中类型：jsobject、string、double、bool。
+            "result" : [   //如果成功，则有返回值，返回值有可能多个，每个返回值由type和value构成，type 暂时有4种类型：jsobject、string、number、bool。
                {
                   "type" : "string",    
                   "value" : "abc"
