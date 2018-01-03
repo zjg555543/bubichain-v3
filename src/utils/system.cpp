@@ -200,14 +200,18 @@ namespace utils{
 
 		uint32_t process_id = getpid();
 		std::string stat_name = utils::String::Format("/proc/%d/stat", process_id);
+
+		if (!proce_file.Open(stat_name, File::FILE_M_READ))
+			return false;
+
 		strline = "";
 		if (!proce_file.ReadLine(strline, 1024)){
 			proce_file.Close();
 			return false;
 		}
 
+		values.clear();
 		values = String::split(strline, " ");
-		printf("\n");
 		if (values.size() < 44){
 			proce_file.Close();
 			return false;
@@ -235,6 +239,9 @@ namespace utils{
 
 			if (total_time2 > total_time1 && current_usage_time2 > current_usage_time1) {
 				processor_.usage_current_percent_ = double(current_usage_time2 - current_usage_time1) / double(total_time2 - total_time1)*100.0;
+			}
+			else {
+				processor_.usage_current_percent_ = 0;
 			}
 		}
 		else {
@@ -329,19 +336,24 @@ namespace utils{
 		uint32_t process_id = getpid();
 
 		std::string stat_name = utils::String::Format("/proc/%d/statm", process_id);
-		if (proc_file.Open(stat_name, File::FILE_M_READ))
-		{
-			std::string line_str;
-			utils::StringVector values_str = utils::String::split(line_str, " ");
-			if (!proc_file.ReadLine(line_str, 1024) || values_str.size() < 2)
-			{
-				proc_file.Close();
-			}
-			proc_file.Close();
+		if (!proc_file.Open(stat_name, File::FILE_M_READ))
+			return false;
 
-			memory.virtual_memory_size_ = String::Stoi64(values_str[0]) * 4 * 1024;
-			memory.physical_memory_size_ = String::Stoi64(values_str[1]) * 4 * 1024;
+		strline = "";
+		if (!proc_file.ReadLine(strline, 1024)){
+			proc_file.Close();
+			return false;
 		}
+		StringVector values = String::split(strline, " ");
+		if (values.size() < 2){
+			proc_file.Close();
+			return false;
+		}
+
+		proc_file.Close();
+
+		memory.virtual_memory_size_ = String::Stoi64(values[0]) * 4 * 1024;
+		memory.physical_memory_size_ = String::Stoi64(values[1]) * 4 * 1024;
 #endif
 		memory.available_bytes_ = memory.free_bytes_ + memory.buffers_bytes_ + memory.cached_bytes_;
 
