@@ -1218,17 +1218,29 @@ namespace bubi{
 
 			v8::HandleScope handle_scope(args.GetIsolate());
 
-			if (!args[0]->IsArray()) 
+			v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
+			std::string contractor(ToCString(token));
+
+			std::string election_account = Configure::Instance().ledger_configure_.election_account_;
+			if (contractor != election_account)
 			{
-				LOG_ERROR("contract execute error, CallBackSetValidators, parameter 0 should be a Arrary.");
+				LOG_ERROR("contract(%s) has no permission to call CallBackSetValidators interface.", contractor);
 				break;
 			}
 
-			v8::Local<v8::String> str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), args[0]->ToObject()).ToLocalChecked();
-			v8::String::Utf8Value  utf8(str);
+			if (!args[0]->IsString()) 
+			{
+				LOG_ERROR("contract execute error, CallBackSetValidators, parameter 0 should be a String.");
+				break;
+			}
+
+			//v8::Local<v8::String> str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), args[0]->ToObject()).ToLocalChecked();
+			//v8::String::Utf8Value  utf8(str);
+
+			v8::String::Utf8Value str(args[0]);
 
 			Json::Value json;
-			if (!json.fromCString(ToCString(utf8))) 
+			if (!json.fromCString(ToCString(str)))
 			{
 				LOG_ERROR("fromCString fail, fatal error");
 				break;
@@ -1240,7 +1252,8 @@ namespace bubi{
 			{
 				if (json[i].isString())
 				{
-					validatorSet.insert(json[i].asString());
+					auto validatorAddr = json[i].asString();
+					validatorSet.insert(validatorAddr);
 				}
 				else
 				{

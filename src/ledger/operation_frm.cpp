@@ -397,7 +397,7 @@ namespace bubi {
 			SetThreshold(environment);
 			break;
 		case protocol::Operation_Type_PAY_COIN:
-
+			PayCoin(environment);
 			break;
 		case protocol::Operation_Type_Operation_Type_INT_MIN_SENTINEL_DO_NOT_USE_:
 			break;
@@ -420,15 +420,6 @@ namespace bubi {
 			if (environment->GetEntry(createaccount.dest_address(), dest_account)) {
 				result_.set_code(protocol::ERRCODE_ACCOUNT_DEST_EXIST);
 				result_.set_desc(utils::String::Format("Dest address(%s) already exist", createaccount.dest_address().c_str()));
-				break;
-			}
-
-			std::string jsCode           = createaccount.contract().payload();
-			std::string election_account = Configure::Instance().ledger_configure_.election_account_;
-			if ((std::string::npos != jsCode.find("callBackSetValidators")) && (createaccount.dest_address() != election_account))
-			{
-				result_.set_code(protocol::ERRCODE_INTERNAL_ERROR);
-				result_.set_desc(utils::String::Format("unelection account(%s) can't create election contract", createaccount.dest_address().c_str()));
 				break;
 			}
 
@@ -540,18 +531,6 @@ namespace bubi {
 					dest_account->SetAsset(dest_asset_ptr);
 				}
 			}
-
-			//std::string election_account = Configure::Instance().ledger_configure_.election_account_;
-			//if (std::string::npos != payment.input().find("agreedElection") && payment.dest_address() == election_account)
-			//{
-			//	std::string audit_account = Configure::Instance().ledger_configure_.audit_account_;
-			//	if (source_account_->GetAccountAddress() != audit_account)
-			//	{
-			//		result_.set_code(protocol::ERRCODE_NO_ELECTION_AUDIT_PERMISSION);
-			//		result_.set_desc(utils::String::Format("source account(%s) has no election audit permission", source_account_->GetAccountAddress().c_str()));
-			//		break;
-			//	}
-			//}
 			
 			std::string javascript = dest_account->GetProtoAccount().contract().payload();
 			if (!javascript.empty()){
@@ -705,10 +684,6 @@ namespace bubi {
 			int64_t new_balance = proto_source_account.balance() - ope.amount();
 			proto_source_account.set_balance(new_balance);
 			proto_dest_account.set_balance(proto_dest_account.balance() + ope.amount());
-			
-			//std::string election_account = Configure::Instance().ledger_configure_.election_account_;
-			//if (address == election_account)
-			//	SetPledgors(proto_source_account.address(), dest_account_ptr, ope.amount());
 
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
 			if (!javascript.empty()){
@@ -736,43 +711,6 @@ namespace bubi {
 				}
 			}
 		} while (false);
-	}
-
-	void OperationFrm::SetPledgors(std::string sourceAddress, std::shared_ptr<AccountFrm>& destAccount, int64_t coinNumber)
-	{
-		protocol::KeyPair equityStructure;
-		if (!destAccount->GetMetaData("equityStructure", equityStructure))
-		{
-			protocol::ValidatorSet set = LedgerManager::Instance().Validators();
-			std::string currentValidators;
-			for (int i = 0; i < set.validators_size(); i++)
-				currentValidators += *(set.mutable_validators(i));
-
-			protocol::KeyPair standbyValidators;
-			standbyValidators.set_key("standbyValidators");
-			standbyValidators.set_value(currentValidators);
-			destAccount->SetMetaData(standbyValidators);
-		}
-		else
-		{
-			std::map<std::string, std::string> mss;
-			utils::String::String2Mapstr(equityStructure.value(), mss);
-
-			std::string mount = utils::String::ToString(coinNumber);
-
-			if (mss.end() != mss.find(sourceAddress))
-				mss[sourceAddress] = mss[sourceAddress] + mount;
-			else
-				mss[sourceAddress] = mount;
-
-			std::string str;
-			utils::String::Mapstr2String(mss, str);
-			equityStructure.set_key("equityStructure");
-			equityStructure.set_value(str);
-
-			destAccount->SetMetaData(equityStructure);
-		}
-
 	}
 	
 	void OperationFrm::OptFee(const protocol::Operation_Type type) {
