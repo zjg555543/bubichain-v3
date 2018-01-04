@@ -2385,6 +2385,7 @@ namespace bubi {
 				validators_.size(), fault_number_, replica_id_, view_number_ % validators_.size() == replica_id_ ? "is" : "isnot");
 			
 			ClearNotCommitedInstance();
+			notify_->OnResetCloseTimer();
 		} 
 		
 		if (new_seq > 0) {
