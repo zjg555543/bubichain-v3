@@ -63,8 +63,6 @@ namespace bubi {
 
 					std::string decodeblob;
 					std::string decodesig;
-					//utils::decode_b16(json_item["transaction_blob"].asString(), decodeblob);
-					decodeblob;// = utils::String::HexStringToBin(json_item["transaction_blob"].asString());
 					if (!utils::String::HexStringToBin(json_item["transaction_blob"].asString(), decodeblob)) {
 						result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
 						result.set_desc("'transaction_blob' value must be Hex");
@@ -291,14 +289,15 @@ namespace bubi {
 					break;
 				}
 
-				std::string code = acc->GetProtoAccount().contract().payload();
-				if (code.empty()) {
-					error_code = protocol::ERRCODE_NOT_EXIST;
-					error_desc = utils::String::Format("Account(%s) has no contract code", test_parameter.contract_address_.c_str());
-					LOG_ERROR("%s", error_desc.c_str());
-					break;
-				}
+				test_parameter.code_ = acc->GetProtoAccount().contract().payload();
 			} 
+
+			if (test_parameter.code_.empty()) {
+				error_code = protocol::ERRCODE_NOT_EXIST;
+				error_desc = utils::String::Format("Account(%s) has no contract code", test_parameter.contract_address_.c_str());
+				LOG_ERROR("%s", error_desc.c_str());
+				break;
+			}
 
 			Result exe_result;
 			if (!LedgerManager::Instance().context_manager_.SyncTestProcess(Contract::TYPE_V8, 

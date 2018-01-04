@@ -310,13 +310,13 @@ namespace bubi {
 				result.set_desc(utils::String::Format("Amount should be bigger than 0"));
 			}
 
-			if (source_address == payment.dest_address()) {
+			if (source_address == pay_coin.dest_address()) {
 				result.set_code(protocol::ERRCODE_ACCOUNT_SOURCEDEST_EQUAL);
 				result.set_desc(utils::String::Format("Source address(%s) equal to dest address", source_address.c_str()));
 				break;
 			}
 
-			if (!bubi::PublicKey::IsAddressValid(payment.dest_address())) {
+			if (!bubi::PublicKey::IsAddressValid(pay_coin.dest_address())) {
 				result.set_code(protocol::ERRCODE_ASSET_INVALID);
 				result.set_desc(utils::String::Format("Dest address should be a valid account address"));
 				break;
