@@ -39,7 +39,10 @@ namespace bubi{
 		int32_t ope_index_;
 		std::string consensus_value_;
 		LedgerContext *ledger_context_;
-		int32_t pay_coin_amount_;
+		int64_t pay_coin_amount_;
+	};
+
+	class TestParameter{
 	};
 
 	class ContractTestParameter {
@@ -52,6 +55,14 @@ namespace bubi{
 		std::string code_;
 		std::string input_;
 		std::string source_address_;
+	};
+
+	class TransactionTestParameter :public TestParameter{
+	public:
+		TransactionTestParameter();
+		~TransactionTestParameter();
+
+		protocol::ConsensusValue consensus_value_;
 	};
 
 	class Contract {
@@ -148,6 +159,7 @@ namespace bubi{
 		static V8Contract *UnwrapContract(v8::Local<v8::Object> obj);
 		static bool JsValueToCppJson(v8::Handle<v8::Context>& context, v8::Local<v8::Value>& jsvalue, Json::Value& jsonvalue);
 		static bool CppJsonToJsValue(v8::Isolate* isolate, Json::Value& jsonvalue, v8::Local<v8::Value>& jsvalue);
+		static void CallBackOutputLedger(const v8::FunctionCallbackInfo<v8::Value>& args);
 	};
 
 	class QueryContract : public utils::Thread{

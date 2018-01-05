@@ -60,6 +60,12 @@ namespace bubi {
 		return account_info_.address();
 	}
 
+	bool AccountFrm::AddBalance(int64_t amount){
+		int64_t tmp = account_info_.balance() + amount;
+		if (tmp < 0)	return false;
+		account_info_.set_balance(tmp);
+		return true;
+	}
 	
 	bool AccountFrm::UpdateSigner(const std::string &signer, int64_t weight) {
 		if (weight > 0) {

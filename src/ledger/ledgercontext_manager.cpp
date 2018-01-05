@@ -18,7 +18,7 @@ limitations under the License.
 namespace bubi {
 
 	LedgerContext::LedgerContext(const std::string &chash, const protocol::ConsensusValue &consvalue, int64_t timeout) :
-		type_(-1),
+		type_(AT_NORMAL),
 		lpmanager_(NULL),
 		hash_(chash),
 		consensus_value_(consvalue),
@@ -31,7 +31,7 @@ namespace bubi {
 	}
 
 	LedgerContext::LedgerContext(LedgerContextManager *lpmanager, const std::string &chash, const protocol::ConsensusValue &consvalue, int64_t timeout, PreProcessCallback callback) :
-		type_(-1),
+		type_(AT_NORMAL),
 		lpmanager_(lpmanager),
 		hash_(chash),
 		consensus_value_(consvalue),
@@ -51,16 +51,36 @@ namespace bubi {
 		lpmanager_(NULL) {
 		closing_ledger_ = std::make_shared<LedgerFrm>();
 	}
+	LedgerContext::LedgerContext(
+		int32_t type,
+		const protocol::ConsensusValue &consensus_value) :
+		type_(type),
+		consensus_value_(consensus_value),
+		lpmanager_(NULL) {
+		closing_ledger_ = std::make_shared<LedgerFrm>();
+	}
 	LedgerContext::~LedgerContext() {}
 
 	void LedgerContext::Run() {
 		LOG_INFO("Thread preprocessing the consensus value, ledger seq(" FMT_I64 ")", consensus_value_.ledger_seq());
 		start_time_ = utils::Timestamp::HighResolution();
-		if (type_ >= 0) {
-			Test();
-		}
-		else {
+		switch (type_)
+		{
+		case AT_NORMAL:
 			Do();
+			break;
+		case AT_TEST_V8:
+			TestV8();
+			break;
+		case AT_TEST_EVM:
+			LOG_ERROR("Test evm not support");
+			break;
+		case AT_TEST_TRANSACTION:
+			TestTransaction();
+			break;
+		default:
+			LOG_ERROR("LedgerContext action type unknown");
+			break;
 		}
 	}
 
@@ -85,7 +105,7 @@ namespace bubi {
 		}
 	}
 
-	bool LedgerContext::Test() {
+	bool LedgerContext::TestV8() {
 		//if address not exist, then create temporary account
 		std::shared_ptr<Environment> environment = std::make_shared<Environment>(nullptr);
 		if (parameter_.contract_address_.empty()) {
@@ -257,6 +277,22 @@ namespace bubi {
 		return timeout_tx_index_;
 	}
 
+	bool LedgerContext::TestTransaction() {
+		//std::shared_ptr<Environment> environment = std::make_shared<Environment>(nullptr);
+
+		//测试交易必须建立在系统中账户的基础上，账号不存在无法顺利完成交易测试
+		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
+		consensus_value_.set_ledger_seq(lcl.seq() + 1);
+		consensus_value_.set_close_time(lcl.close_time() + 1);
+		tx_timeout_ = utils::MICRO_UNITS_PER_SEC;
+		
+		closing_ledger_->value_ = std::make_shared<protocol::ConsensusValue>(consensus_value_);
+		closing_ledger_->lpledger_context_ = this;
+
+		exe_result_ = closing_ledger_->Apply(consensus_value_, this, tx_timeout_, timeout_tx_index_);
+		return exe_result_;
+	}
+
 	LedgerContextManager::LedgerContextManager() {
 		check_interval_ = 10 * utils::MICRO_UNITS_PER_MILLI;
 	}
@@ -336,14 +372,25 @@ namespace bubi {
 		return -1;
 	}
 
-	bool LedgerContextManager::SyncTestProcess(int32_t type, 
-		const ContractTestParameter &parameter, 
+	bool LedgerContextManager::SyncTestProcess(LedgerContext::ACTION_TYPE type,
+		TestParameter *parameter, 
 		int64_t total_timeout, 
 		Result &result, 
 		Json::Value &logs,
 		Json::Value &txs,
-		Json::Value &rets) {
-		LedgerContext *ledger_context = new LedgerContext(type, parameter);
+		Json::Value &rets,
+		Json::Value &fee) {
+		LedgerContext *ledger_context = nullptr;
+		if (type == LedgerContext::AT_TEST_V8)
+			ledger_context = new LedgerContext(type, *((ContractTestParameter*)parameter));
+		else if (type == LedgerContext::AT_TEST_TRANSACTION)
+			ledger_context = new LedgerContext(type, ((TransactionTestParameter*)parameter)->consensus_value_);
+		else {
+			LOG_ERROR("Test type(%d) error",type);
+			delete ledger_context;
+			return false;
+		}
+
 
 		if (!ledger_context->Start("test-contract")) {
 			LOG_ERROR_ERRNO("Start test contract thread failed",
@@ -369,6 +416,8 @@ namespace bubi {
 			result.set_code(protocol::ERRCODE_TX_TIMEOUT);
 			result.set_desc("Execute contract timeout");
 			LOG_ERROR("Test consvalue time(" FMT_I64 "ms) is out", total_timeout / utils::MICRO_UNITS_PER_MILLI);
+			ledger_context->JoinWithStop();
+			delete ledger_context;
 			return false;
 		}
 
@@ -400,7 +449,9 @@ namespace bubi {
 
 		ledger_context->GetLogs(logs);
 		ledger_context->GetRets(rets);
-		
+		fee = ledger->total_real_fee_;
+		ledger_context->JoinWithStop();
+		delete ledger_context;
 		return true;
 	}
 

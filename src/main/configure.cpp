@@ -143,6 +143,7 @@ namespace bubi {
 		Configure::GetValue(value, "election_account", election_account_);
 		//Configure::GetValue(value, "audit_account", audit_account_);
 		Configure::GetValue(value, "hardfork_points", hardfork_points_);
+		Configure::GetValue(value, "fees_vote_account", fees_vote_account_);
 
 		if (!value.isMember("fees")) {
 			memset(&fees_,0,sizeof(fees_));

@@ -105,6 +105,7 @@ namespace bubi {
 		void UpdateHash(std::shared_ptr<WRITE_BATCH> batch);
 		void NonceIncrease();
 		int64_t GetAccountBalance() const;
+		bool AddBalance(int64_t amount);
 	public:
 
 		template <class T>

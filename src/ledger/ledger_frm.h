@@ -84,6 +84,8 @@ namespace bubi {
 		int64_t apply_time_;
 		bool enabled_;
 		int64_t total_fee_;
+		int64_t total_real_fee_;
+		std::unordered_map<std::string, Json::Value> contracts_output_;
 	};
 }
 #endif //end of ifndef

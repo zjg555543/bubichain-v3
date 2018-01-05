@@ -10578,14 +10578,14 @@ public final class Consensus {
     long getCreateAccountFee();
 
     /**
-     * <code>optional int64 pay_fee = 4;</code>
-     */
-    long getPayFee();
-
-    /**
-     * <code>optional int64 issue_asset_fee = 5;</code>
+     * <code>optional int64 issue_asset_fee = 4;</code>
      */
     long getIssueAssetFee();
+
+    /**
+     * <code>optional int64 pay_fee = 5;</code>
+     */
+    long getPayFee();
 
     /**
      * <code>optional int64 set_metadata_fee = 6;</code>
@@ -10622,8 +10622,8 @@ public final class Consensus {
       byteFee_ = 0L;
       baseReserve_ = 0L;
       createAccountFee_ = 0L;
-      payFee_ = 0L;
       issueAssetFee_ = 0L;
+      payFee_ = 0L;
       setMetadataFee_ = 0L;
       setSigureWeightFee_ = 0L;
       setThresholdFee_ = 0L;
@@ -10672,12 +10672,12 @@ public final class Consensus {
             }
             case 32: {
 
-              payFee_ = input.readInt64();
+              issueAssetFee_ = input.readInt64();
               break;
             }
             case 40: {
 
-              issueAssetFee_ = input.readInt64();
+              payFee_ = input.readInt64();
               break;
             }
             case 48: {
@@ -10723,6 +10723,176 @@ public final class Consensus {
               protocol.Consensus.FeeConfig.class, protocol.Consensus.FeeConfig.Builder.class);
     }
 
+    /**
+     * Protobuf enum {@code protocol.FeeConfig.Type}
+     */
+    public enum Type
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>UNKNOWN = 0;</code>
+       */
+      UNKNOWN(0),
+      /**
+       * <code>BYTE_FEE = 1;</code>
+       */
+      BYTE_FEE(1),
+      /**
+       * <code>BASE_RESERVE_FEE = 2;</code>
+       */
+      BASE_RESERVE_FEE(2),
+      /**
+       * <code>CREATE_ACCOUNT_FEE = 3;</code>
+       */
+      CREATE_ACCOUNT_FEE(3),
+      /**
+       * <code>ISSUE_ASSET_FEE = 4;</code>
+       */
+      ISSUE_ASSET_FEE(4),
+      /**
+       * <code>PAYMENT_FEE = 5;</code>
+       */
+      PAYMENT_FEE(5),
+      /**
+       * <code>SET_METADATA_FEE = 6;</code>
+       */
+      SET_METADATA_FEE(6),
+      /**
+       * <code>SET_SIGNER_WEIGHT_FEE = 7;</code>
+       */
+      SET_SIGNER_WEIGHT_FEE(7),
+      /**
+       * <code>SET_THRESHOLD_FEE = 8;</code>
+       */
+      SET_THRESHOLD_FEE(8),
+      /**
+       * <code>PAY_COIN_FEE = 9;</code>
+       */
+      PAY_COIN_FEE(9),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>UNKNOWN = 0;</code>
+       */
+      public static final int UNKNOWN_VALUE = 0;
+      /**
+       * <code>BYTE_FEE = 1;</code>
+       */
+      public static final int BYTE_FEE_VALUE = 1;
+      /**
+       * <code>BASE_RESERVE_FEE = 2;</code>
+       */
+      public static final int BASE_RESERVE_FEE_VALUE = 2;
+      /**
+       * <code>CREATE_ACCOUNT_FEE = 3;</code>
+       */
+      public static final int CREATE_ACCOUNT_FEE_VALUE = 3;
+      /**
+       * <code>ISSUE_ASSET_FEE = 4;</code>
+       */
+      public static final int ISSUE_ASSET_FEE_VALUE = 4;
+      /**
+       * <code>PAYMENT_FEE = 5;</code>
+       */
+      public static final int PAYMENT_FEE_VALUE = 5;
+      /**
+       * <code>SET_METADATA_FEE = 6;</code>
+       */
+      public static final int SET_METADATA_FEE_VALUE = 6;
+      /**
+       * <code>SET_SIGNER_WEIGHT_FEE = 7;</code>
+       */
+      public static final int SET_SIGNER_WEIGHT_FEE_VALUE = 7;
+      /**
+       * <code>SET_THRESHOLD_FEE = 8;</code>
+       */
+      public static final int SET_THRESHOLD_FEE_VALUE = 8;
+      /**
+       * <code>PAY_COIN_FEE = 9;</code>
+       */
+      public static final int PAY_COIN_FEE_VALUE = 9;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static Type valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static Type forNumber(int value) {
+        switch (value) {
+          case 0: return UNKNOWN;
+          case 1: return BYTE_FEE;
+          case 2: return BASE_RESERVE_FEE;
+          case 3: return CREATE_ACCOUNT_FEE;
+          case 4: return ISSUE_ASSET_FEE;
+          case 5: return PAYMENT_FEE;
+          case 6: return SET_METADATA_FEE;
+          case 7: return SET_SIGNER_WEIGHT_FEE;
+          case 8: return SET_THRESHOLD_FEE;
+          case 9: return PAY_COIN_FEE;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<Type>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          Type> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+              public Type findValueByNumber(int number) {
+                return Type.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return protocol.Consensus.FeeConfig.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final Type[] VALUES = values();
+
+      public static Type valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private Type(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:protocol.FeeConfig.Type)
+    }
+
     public static final int BYTE_FEE_FIELD_NUMBER = 1;
     private long byteFee_;
     /**
@@ -10750,22 +10920,22 @@ public final class Consensus {
       return createAccountFee_;
     }
 
-    public static final int PAY_FEE_FIELD_NUMBER = 4;
-    private long payFee_;
-    /**
-     * <code>optional int64 pay_fee = 4;</code>
-     */
-    public long getPayFee() {
-      return payFee_;
-    }
-
-    public static final int ISSUE_ASSET_FEE_FIELD_NUMBER = 5;
+    public static final int ISSUE_ASSET_FEE_FIELD_NUMBER = 4;
     private long issueAssetFee_;
     /**
-     * <code>optional int64 issue_asset_fee = 5;</code>
+     * <code>optional int64 issue_asset_fee = 4;</code>
      */
     public long getIssueAssetFee() {
       return issueAssetFee_;
+    }
+
+    public static final int PAY_FEE_FIELD_NUMBER = 5;
+    private long payFee_;
+    /**
+     * <code>optional int64 pay_fee = 5;</code>
+     */
+    public long getPayFee() {
+      return payFee_;
     }
 
     public static final int SET_METADATA_FEE_FIELD_NUMBER = 6;
@@ -10825,11 +10995,11 @@ public final class Consensus {
       if (createAccountFee_ != 0L) {
         output.writeInt64(3, createAccountFee_);
       }
-      if (payFee_ != 0L) {
-        output.writeInt64(4, payFee_);
-      }
       if (issueAssetFee_ != 0L) {
-        output.writeInt64(5, issueAssetFee_);
+        output.writeInt64(4, issueAssetFee_);
+      }
+      if (payFee_ != 0L) {
+        output.writeInt64(5, payFee_);
       }
       if (setMetadataFee_ != 0L) {
         output.writeInt64(6, setMetadataFee_);
@@ -10862,13 +11032,13 @@ public final class Consensus {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, createAccountFee_);
       }
-      if (payFee_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, payFee_);
-      }
       if (issueAssetFee_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, issueAssetFee_);
+          .computeInt64Size(4, issueAssetFee_);
+      }
+      if (payFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, payFee_);
       }
       if (setMetadataFee_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -10908,10 +11078,10 @@ public final class Consensus {
           == other.getBaseReserve());
       result = result && (getCreateAccountFee()
           == other.getCreateAccountFee());
-      result = result && (getPayFee()
-          == other.getPayFee());
       result = result && (getIssueAssetFee()
           == other.getIssueAssetFee());
+      result = result && (getPayFee()
+          == other.getPayFee());
       result = result && (getSetMetadataFee()
           == other.getSetMetadataFee());
       result = result && (getSetSigureWeightFee()
@@ -10939,12 +11109,12 @@ public final class Consensus {
       hash = (37 * hash) + CREATE_ACCOUNT_FEE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCreateAccountFee());
-      hash = (37 * hash) + PAY_FEE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getPayFee());
       hash = (37 * hash) + ISSUE_ASSET_FEE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getIssueAssetFee());
+      hash = (37 * hash) + PAY_FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPayFee());
       hash = (37 * hash) + SET_METADATA_FEE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getSetMetadataFee());
@@ -11081,9 +11251,9 @@ public final class Consensus {
 
         createAccountFee_ = 0L;
 
-        payFee_ = 0L;
-
         issueAssetFee_ = 0L;
+
+        payFee_ = 0L;
 
         setMetadataFee_ = 0L;
 
@@ -11118,8 +11288,8 @@ public final class Consensus {
         result.byteFee_ = byteFee_;
         result.baseReserve_ = baseReserve_;
         result.createAccountFee_ = createAccountFee_;
-        result.payFee_ = payFee_;
         result.issueAssetFee_ = issueAssetFee_;
+        result.payFee_ = payFee_;
         result.setMetadataFee_ = setMetadataFee_;
         result.setSigureWeightFee_ = setSigureWeightFee_;
         result.setThresholdFee_ = setThresholdFee_;
@@ -11174,11 +11344,11 @@ public final class Consensus {
         if (other.getCreateAccountFee() != 0L) {
           setCreateAccountFee(other.getCreateAccountFee());
         }
-        if (other.getPayFee() != 0L) {
-          setPayFee(other.getPayFee());
-        }
         if (other.getIssueAssetFee() != 0L) {
           setIssueAssetFee(other.getIssueAssetFee());
+        }
+        if (other.getPayFee() != 0L) {
+          setPayFee(other.getPayFee());
         }
         if (other.getSetMetadataFee() != 0L) {
           setSetMetadataFee(other.getSetMetadataFee());
@@ -11296,41 +11466,15 @@ public final class Consensus {
         return this;
       }
 
-      private long payFee_ ;
-      /**
-       * <code>optional int64 pay_fee = 4;</code>
-       */
-      public long getPayFee() {
-        return payFee_;
-      }
-      /**
-       * <code>optional int64 pay_fee = 4;</code>
-       */
-      public Builder setPayFee(long value) {
-        
-        payFee_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 pay_fee = 4;</code>
-       */
-      public Builder clearPayFee() {
-        
-        payFee_ = 0L;
-        onChanged();
-        return this;
-      }
-
       private long issueAssetFee_ ;
       /**
-       * <code>optional int64 issue_asset_fee = 5;</code>
+       * <code>optional int64 issue_asset_fee = 4;</code>
        */
       public long getIssueAssetFee() {
         return issueAssetFee_;
       }
       /**
-       * <code>optional int64 issue_asset_fee = 5;</code>
+       * <code>optional int64 issue_asset_fee = 4;</code>
        */
       public Builder setIssueAssetFee(long value) {
         
@@ -11339,11 +11483,37 @@ public final class Consensus {
         return this;
       }
       /**
-       * <code>optional int64 issue_asset_fee = 5;</code>
+       * <code>optional int64 issue_asset_fee = 4;</code>
        */
       public Builder clearIssueAssetFee() {
         
         issueAssetFee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long payFee_ ;
+      /**
+       * <code>optional int64 pay_fee = 5;</code>
+       */
+      public long getPayFee() {
+        return payFee_;
+      }
+      /**
+       * <code>optional int64 pay_fee = 5;</code>
+       */
+      public Builder setPayFee(long value) {
+        
+        payFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 pay_fee = 5;</code>
+       */
+      public Builder clearPayFee() {
+        
+        payFee_ = 0L;
         onChanged();
         return this;
       }
@@ -11602,19 +11772,24 @@ public final class Consensus {
       "\016.protocol.Pbft\022&\n\tsignature\030\002 \001(\0132\023.pro" +
       "tocol.Signature\"\"\n\014ValidatorSet\022\022\n\nvalid" +
       "ators\030\001 \003(\t\"/\n\tPbftProof\022\"\n\007commits\030\001 \003(" +
-      "\0132\021.protocol.PbftEnv\"\343\001\n\tFeeConfig\022\020\n\010by" +
+      "\0132\021.protocol.PbftEnv\"\265\003\n\tFeeConfig\022\020\n\010by" +
       "te_fee\030\001 \001(\003\022\024\n\014base_reserve\030\002 \001(\003\022\032\n\022cr" +
-      "eate_account_fee\030\003 \001(\003\022\017\n\007pay_fee\030\004 \001(\003\022" +
-      "\027\n\017issue_asset_fee\030\005 \001(\003\022\030\n\020set_metadata" +
+      "eate_account_fee\030\003 \001(\003\022\027\n\017issue_asset_fe" +
+      "e\030\004 \001(\003\022\017\n\007pay_fee\030\005 \001(\003\022\030\n\020set_metadata" +
       "_fee\030\006 \001(\003\022\035\n\025set_sigure_weight_fee\030\007 \001(" +
       "\003\022\031\n\021set_threshold_fee\030\010 \001(\003\022\024\n\014pay_coin" +
-      "_fee\030\t \001(\003*\243\001\n\017PbftMessageType\022\030\n\024PBFT_T",
-      "YPE_PREPREPARE\020\000\022\025\n\021PBFT_TYPE_PREPARE\020\001\022" +
-      "\024\n\020PBFT_TYPE_COMMIT\020\002\022\030\n\024PBFT_TYPE_CHECK" +
-      "POINT\020\003\022\030\n\024PBFT_TYPE_VIEWCHANGE\020\004\022\025\n\021PBF" +
-      "T_TYPE_NEWVIEW\020\005*8\n\rPbftValueType\022\021\n\rPBF" +
-      "T_VALUE_TX\020\000\022\024\n\020PBFT_VALUE_TXSET\020\001b\006prot" +
-      "o3"
+      "_fee\030\t \001(\003\"\317\001\n\004Type\022\013\n\007UNKNOWN\020\000\022\014\n\010BYTE",
+      "_FEE\020\001\022\024\n\020BASE_RESERVE_FEE\020\002\022\026\n\022CREATE_A" +
+      "CCOUNT_FEE\020\003\022\023\n\017ISSUE_ASSET_FEE\020\004\022\017\n\013PAY" +
+      "MENT_FEE\020\005\022\024\n\020SET_METADATA_FEE\020\006\022\031\n\025SET_" +
+      "SIGNER_WEIGHT_FEE\020\007\022\025\n\021SET_THRESHOLD_FEE" +
+      "\020\010\022\020\n\014PAY_COIN_FEE\020\t*\243\001\n\017PbftMessageType" +
+      "\022\030\n\024PBFT_TYPE_PREPREPARE\020\000\022\025\n\021PBFT_TYPE_" +
+      "PREPARE\020\001\022\024\n\020PBFT_TYPE_COMMIT\020\002\022\030\n\024PBFT_" +
+      "TYPE_CHECKPOINT\020\003\022\030\n\024PBFT_TYPE_VIEWCHANG" +
+      "E\020\004\022\025\n\021PBFT_TYPE_NEWVIEW\020\005*8\n\rPbftValueT" +
+      "ype\022\021\n\rPBFT_VALUE_TX\020\000\022\024\n\020PBFT_VALUE_TXS",
+      "ET\020\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -11700,7 +11875,7 @@ public final class Consensus {
     internal_static_protocol_FeeConfig_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_FeeConfig_descriptor,
-        new java.lang.String[] { "ByteFee", "BaseReserve", "CreateAccountFee", "PayFee", "IssueAssetFee", "SetMetadataFee", "SetSigureWeightFee", "SetThresholdFee", "PayCoinFee", });
+        new java.lang.String[] { "ByteFee", "BaseReserve", "CreateAccountFee", "IssueAssetFee", "PayFee", "SetMetadataFee", "SetSigureWeightFee", "SetThresholdFee", "PayCoinFee", });
     cn.bubi.blockchain.adapter3.Common.getDescriptor();
   }
 

@@ -27,7 +27,7 @@ namespace bubi {
 	class LedgerContext : public utils::Thread {
 		std::stack<int64_t> contract_ids_; //may be called by check thread or execute thread.so need lock
 		//parameter
-		int32_t type_; // -1 : normal, 0 : test v8 , 1: test evm
+		int32_t type_; // -1 : normal, 0 : test v8 , 1: test evm ,2 test transaction
 		ContractTestParameter parameter_; // when type_ >= 0
 
 		std::string hash_;
@@ -53,7 +53,17 @@ namespace bubi {
 		LedgerContext(
 			int32_t type,
 			const ContractTestParameter &parameter);
+		LedgerContext(
+			int32_t type,
+			const protocol::ConsensusValue &consensus_value);
 		~LedgerContext();
+
+		enum ACTION_TYPE{
+			AT_NORMAL = -1,
+			AT_TEST_V8,
+			AT_TEST_EVM,
+			AT_TEST_TRANSACTION
+		};
 
 		protocol::ConsensusValue consensus_value_;
 		bool sync_;
@@ -71,7 +81,8 @@ namespace bubi {
 
 		virtual void Run();
 		void Do();
-		bool Test();
+		bool TestV8();
+		bool TestTransaction();
 		void Cancel();
 		bool CheckExpire(int64_t total_timeout);
 		
@@ -109,13 +120,14 @@ namespace bubi {
 		void RemoveCompleted(int64_t ledger_seq);
 		void GetModuleStatus(Json::Value &data);
 
-		bool SyncTestProcess(int32_t type, 
-			const ContractTestParameter &parameter, 
+		bool SyncTestProcess(LedgerContext::ACTION_TYPE type,
+			TestParameter *parameter, 
 			int64_t total_timeout, 
 			Result &result, 
 			Json::Value &logs,
 			Json::Value &txs,
-			Json::Value &rets);
+			Json::Value &rets,
+			Json::Value &fee);
 
 		//<0 : notfound 1: found and success 0: found and failed
 		int32_t CheckComplete(const std::string &chash);

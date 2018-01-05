@@ -28,6 +28,9 @@ namespace bubi{
 
 	ContractTestParameter::~ContractTestParameter() {}
 
+	TransactionTestParameter::TransactionTestParameter() {}
+	TransactionTestParameter::~TransactionTestParameter() {}
+
 	utils::Mutex Contract::contract_id_seed_lock_;
 	int64_t Contract::contract_id_seed_ = 0; 
 	Contract::Contract() {
@@ -506,6 +509,11 @@ namespace bubi{
 				v8::String::NewFromUtf8(isolate, "callBackDoOperation", v8::NewStringType::kNormal)
 				.ToLocalChecked(),
 				v8::FunctionTemplate::New(isolate, V8Contract::CallBackDoOperation));
+
+			global->Set(
+				v8::String::NewFromUtf8(isolate, "callBackOutputLedger", v8::NewStringType::kNormal)
+				.ToLocalChecked(),
+				v8::FunctionTemplate::New(isolate, V8Contract::CallBackOutputLedger));
 		} 
 		
 		global->Set(
@@ -632,6 +640,38 @@ namespace bubi{
 		}
 
 		return true;
+	}
+
+	void V8Contract::CallBackOutputLedger(const v8::FunctionCallbackInfo<v8::Value>& args){
+		LOG_INFO("CallBackOutputLedger");
+		do{
+			if (args.Length() < 1) {
+				LOG_ERROR("parameter error");
+				break;
+			}
+			v8::HandleScope scope(args.GetIsolate());
+
+			v8::String::Utf8Value token(args.GetIsolate()->GetCurrentContext()->GetSecurityToken()->ToString());
+
+
+			v8::Local<v8::String> str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), args[0]->ToObject()).ToLocalChecked();
+			v8::String::Utf8Value  utf8(str);
+
+			Json::Value json;
+			if (!json.fromCString(ToCString(utf8))) {
+				LOG_ERROR("fromCString fail, fatal error");
+				break;
+			}
+
+			V8Contract *v8_contract = GetContractFrom(args.GetIsolate());
+			if (!v8_contract || !v8_contract->parameter_.ledger_context_) {
+				LOG_ERROR("Can't find contract object by isolate id");
+				break;
+			}
+			v8_contract->parameter_.ledger_context_->closing_ledger_->contracts_output_[v8_contract->parameter_.this_address_] = json;
+			args.GetReturnValue().Set(true);
+		} while (false);
+		args.GetReturnValue().Set(false);
 	}
 
 	V8Contract* V8Contract::UnwrapContract(v8::Local<v8::Object> obj) {

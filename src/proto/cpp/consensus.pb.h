@@ -51,6 +51,35 @@ class PbftProof;
 class PbftViewChange;
 class ValidatorSet;
 
+enum FeeConfig_Type {
+  FeeConfig_Type_UNKNOWN = 0,
+  FeeConfig_Type_BYTE_FEE = 1,
+  FeeConfig_Type_BASE_RESERVE_FEE = 2,
+  FeeConfig_Type_CREATE_ACCOUNT_FEE = 3,
+  FeeConfig_Type_ISSUE_ASSET_FEE = 4,
+  FeeConfig_Type_PAYMENT_FEE = 5,
+  FeeConfig_Type_SET_METADATA_FEE = 6,
+  FeeConfig_Type_SET_SIGNER_WEIGHT_FEE = 7,
+  FeeConfig_Type_SET_THRESHOLD_FEE = 8,
+  FeeConfig_Type_PAY_COIN_FEE = 9,
+  FeeConfig_Type_FeeConfig_Type_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  FeeConfig_Type_FeeConfig_Type_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool FeeConfig_Type_IsValid(int value);
+const FeeConfig_Type FeeConfig_Type_Type_MIN = FeeConfig_Type_UNKNOWN;
+const FeeConfig_Type FeeConfig_Type_Type_MAX = FeeConfig_Type_PAY_COIN_FEE;
+const int FeeConfig_Type_Type_ARRAYSIZE = FeeConfig_Type_Type_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* FeeConfig_Type_descriptor();
+inline const ::std::string& FeeConfig_Type_Name(FeeConfig_Type value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    FeeConfig_Type_descriptor(), value);
+}
+inline bool FeeConfig_Type_Parse(
+    const ::std::string& name, FeeConfig_Type* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<FeeConfig_Type>(
+    FeeConfig_Type_descriptor(), name, value);
+}
 enum PbftMessageType {
   PBFT_TYPE_PREPREPARE = 0,
   PBFT_TYPE_PREPARE = 1,
@@ -1360,6 +1389,48 @@ class FeeConfig : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   // nested types ----------------------------------------------------
 
+  typedef FeeConfig_Type Type;
+  static const Type UNKNOWN =
+    FeeConfig_Type_UNKNOWN;
+  static const Type BYTE_FEE =
+    FeeConfig_Type_BYTE_FEE;
+  static const Type BASE_RESERVE_FEE =
+    FeeConfig_Type_BASE_RESERVE_FEE;
+  static const Type CREATE_ACCOUNT_FEE =
+    FeeConfig_Type_CREATE_ACCOUNT_FEE;
+  static const Type ISSUE_ASSET_FEE =
+    FeeConfig_Type_ISSUE_ASSET_FEE;
+  static const Type PAYMENT_FEE =
+    FeeConfig_Type_PAYMENT_FEE;
+  static const Type SET_METADATA_FEE =
+    FeeConfig_Type_SET_METADATA_FEE;
+  static const Type SET_SIGNER_WEIGHT_FEE =
+    FeeConfig_Type_SET_SIGNER_WEIGHT_FEE;
+  static const Type SET_THRESHOLD_FEE =
+    FeeConfig_Type_SET_THRESHOLD_FEE;
+  static const Type PAY_COIN_FEE =
+    FeeConfig_Type_PAY_COIN_FEE;
+  static inline bool Type_IsValid(int value) {
+    return FeeConfig_Type_IsValid(value);
+  }
+  static const Type Type_MIN =
+    FeeConfig_Type_Type_MIN;
+  static const Type Type_MAX =
+    FeeConfig_Type_Type_MAX;
+  static const int Type_ARRAYSIZE =
+    FeeConfig_Type_Type_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Type_descriptor() {
+    return FeeConfig_Type_descriptor();
+  }
+  static inline const ::std::string& Type_Name(Type value) {
+    return FeeConfig_Type_Name(value);
+  }
+  static inline bool Type_Parse(const ::std::string& name,
+      Type* value) {
+    return FeeConfig_Type_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // optional int64 byte_fee = 1;
@@ -1380,17 +1451,17 @@ class FeeConfig : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::google::protobuf::int64 create_account_fee() const;
   void set_create_account_fee(::google::protobuf::int64 value);
 
-  // optional int64 pay_fee = 4;
-  void clear_pay_fee();
-  static const int kPayFeeFieldNumber = 4;
-  ::google::protobuf::int64 pay_fee() const;
-  void set_pay_fee(::google::protobuf::int64 value);
-
-  // optional int64 issue_asset_fee = 5;
+  // optional int64 issue_asset_fee = 4;
   void clear_issue_asset_fee();
-  static const int kIssueAssetFeeFieldNumber = 5;
+  static const int kIssueAssetFeeFieldNumber = 4;
   ::google::protobuf::int64 issue_asset_fee() const;
   void set_issue_asset_fee(::google::protobuf::int64 value);
+
+  // optional int64 pay_fee = 5;
+  void clear_pay_fee();
+  static const int kPayFeeFieldNumber = 5;
+  ::google::protobuf::int64 pay_fee() const;
+  void set_pay_fee(::google::protobuf::int64 value);
 
   // optional int64 set_metadata_fee = 6;
   void clear_set_metadata_fee();
@@ -1424,8 +1495,8 @@ class FeeConfig : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::google::protobuf::int64 byte_fee_;
   ::google::protobuf::int64 base_reserve_;
   ::google::protobuf::int64 create_account_fee_;
-  ::google::protobuf::int64 pay_fee_;
   ::google::protobuf::int64 issue_asset_fee_;
+  ::google::protobuf::int64 pay_fee_;
   ::google::protobuf::int64 set_metadata_fee_;
   ::google::protobuf::int64 set_sigure_weight_fee_;
   ::google::protobuf::int64 set_threshold_fee_;
@@ -2595,21 +2666,7 @@ inline void FeeConfig::set_create_account_fee(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:protocol.FeeConfig.create_account_fee)
 }
 
-// optional int64 pay_fee = 4;
-inline void FeeConfig::clear_pay_fee() {
-  pay_fee_ = GOOGLE_LONGLONG(0);
-}
-inline ::google::protobuf::int64 FeeConfig::pay_fee() const {
-  // @@protoc_insertion_point(field_get:protocol.FeeConfig.pay_fee)
-  return pay_fee_;
-}
-inline void FeeConfig::set_pay_fee(::google::protobuf::int64 value) {
-  
-  pay_fee_ = value;
-  // @@protoc_insertion_point(field_set:protocol.FeeConfig.pay_fee)
-}
-
-// optional int64 issue_asset_fee = 5;
+// optional int64 issue_asset_fee = 4;
 inline void FeeConfig::clear_issue_asset_fee() {
   issue_asset_fee_ = GOOGLE_LONGLONG(0);
 }
@@ -2621,6 +2678,20 @@ inline void FeeConfig::set_issue_asset_fee(::google::protobuf::int64 value) {
   
   issue_asset_fee_ = value;
   // @@protoc_insertion_point(field_set:protocol.FeeConfig.issue_asset_fee)
+}
+
+// optional int64 pay_fee = 5;
+inline void FeeConfig::clear_pay_fee() {
+  pay_fee_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 FeeConfig::pay_fee() const {
+  // @@protoc_insertion_point(field_get:protocol.FeeConfig.pay_fee)
+  return pay_fee_;
+}
+inline void FeeConfig::set_pay_fee(::google::protobuf::int64 value) {
+  
+  pay_fee_ = value;
+  // @@protoc_insertion_point(field_set:protocol.FeeConfig.pay_fee)
 }
 
 // optional int64 set_metadata_fee = 6;
@@ -2711,6 +2782,11 @@ inline void FeeConfig::set_pay_coin_fee(::google::protobuf::int64 value) {
 namespace google {
 namespace protobuf {
 
+template <> struct is_proto_enum< ::protocol::FeeConfig_Type> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::FeeConfig_Type>() {
+  return ::protocol::FeeConfig_Type_descriptor();
+}
 template <> struct is_proto_enum< ::protocol::PbftMessageType> : ::google::protobuf::internal::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::protocol::PbftMessageType>() {

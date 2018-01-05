@@ -29,6 +29,7 @@ namespace bubi {
 		enabled_ = false;
 		apply_time_ = -1;
 		total_fee_ = 0;
+		total_real_fee_ = 0;
 	}
 
 	
@@ -143,6 +144,7 @@ namespace bubi {
 		uint32_t success_count = 0;
 		bool fee_not_enough=false;
 		total_fee_=0;
+		total_real_fee_ = 0;
 		environment_ = std::make_shared<Environment>(nullptr);
 
 		for (int i = 0; i < request.txset().txs_size() && enabled_; i++) {
@@ -170,6 +172,7 @@ namespace bubi {
 
 			//caculate byte fee ,do not store when fee not enough 
 			tx_frm->real_fee_ += tx_frm->GetSelfByteFee();
+			total_real_fee_ += tx_frm->real_fee_;
 			if (ledger_.header().version() >= 3300){
 				if (tx_frm->real_fee_ > tx_frm->GetFee())
 					fee_not_enough = true;
@@ -235,7 +238,7 @@ namespace bubi {
 	}
 
 	bool LedgerFrm::AllocateFee() {
-		LOG_INFO("total_fee(" FMT_I64 ")", total_fee_);
+		LOG_INFO("Ledger total_fee(" FMT_I64 ")", total_fee_);
 		if (total_fee_==0){
 			return true;
 		}
@@ -266,7 +269,6 @@ namespace bubi {
 		}
 		protocol::Account &proto_account = random_account->GetProtoAccount();
 		proto_account.set_balance(proto_account.balance() + tfee);
-		LOG_INFO("validators account balance change");
 		return true;
 	}
 	AccountFrm::pointer LedgerFrm::CreatBookKeeperAccount(const std::string& account_address) {
@@ -281,45 +283,105 @@ namespace bubi {
 		LOG_INFO("Add bookeeper account(%)", account_address);
 		return acc_frm;
 	}
-
+	
 	bool LedgerFrm::GetVotedFee(protocol::FeeConfig& fee_config) {
-		std::string dest_address;
-		std::shared_ptr<AccountFrm> dest_account_ptr = nullptr;
-		do {
-			if (!environment_->GetEntry(dest_address, dest_account_ptr)) {
-				LOG_ERROR("Account(%s) not exist", dest_address.c_str());
-				return false;
+		
+		/*//for test format
+		for (auto it = contracts_output_.begin(); it != contracts_output_.end();it++)
+		{
+			std::string key = it->first;
+			Json::Value v= it->second;
+			LOG_INFO("victory fee key(%s)--%s",key.c_str(),v.toStyledString().c_str());
+		}*/
+		/*victory fee format
+		[
+		null,
+		{
+			"count" : 3,
+		    "enroll_id" : "xx1",
+			"fee_type" : 1,
+			"price" : 5
+		}
+		]
+		*/
+		std::string dest_address = Configure::Instance().ledger_configure_.fees_vote_account_;
+		if (dest_address.empty()){
+			LOG_ERROR("Ledger config fees_vote_account not set");
+			return false;
+		}
+		auto iter =contracts_output_.find(dest_address);
+		if (iter == contracts_output_.end()){
+			return false;
+		}
+		bool change = false;
+		Json::Value victor_fees =contracts_output_[dest_address];
+		for (uint32_t i = 0; i < victor_fees.size();i++) {
+			const Json::Value &item = victor_fees[i];
+			int fee_type =item["fee_type"].asInt();
+			switch ((protocol::FeeConfig_Type)fee_type)
+			{
+			case protocol::FeeConfig_Type_UNKNOWN:
+				LOG_ERROR("FeeConfig type error");
+				break;
+			case protocol::FeeConfig_Type_BYTE_FEE:
+				if (fee_config.byte_fee() != item["price"].asInt64()){
+					fee_config.set_byte_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_BASE_RESERVE_FEE:
+				if (fee_config.base_reserve() != item["price"].asInt64()){
+					fee_config.set_base_reserve(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_CREATE_ACCOUNT_FEE:
+				if (fee_config.create_account_fee() != item["price"].asInt64()){
+					fee_config.set_create_account_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_ISSUE_ASSET_FEE:
+				if (fee_config.issue_asset_fee() != item["price"].asInt64()){
+					fee_config.set_issue_asset_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_PAYMENT_FEE:
+				if (fee_config.pay_fee() != item["price"].asInt64()){
+					fee_config.set_pay_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_SET_METADATA_FEE:
+				if (fee_config.set_metadata_fee() != item["price"].asInt64()){
+					fee_config.set_set_metadata_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_SET_SIGNER_WEIGHT_FEE:
+				if (fee_config.set_sigure_weight_fee() != item["price"].asInt64()){
+					fee_config.set_set_sigure_weight_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_SET_THRESHOLD_FEE:
+				if (fee_config.set_threshold_fee() != item["price"].asInt64()){
+					fee_config.set_set_threshold_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			case protocol::FeeConfig_Type_PAY_COIN_FEE:
+				if (fee_config.pay_coin_fee() != item["price"].asInt64()){
+					fee_config.set_pay_fee(item["price"].asInt64());
+					change = true;
+				}
+				break;
+			default:
+				LOG_ERROR("FeeConfig type error");
+				break;
 			}
-			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
-			if (!javascript.empty()){
-				QueryContract qcontract;
-				ContractParameter parameter;
-				parameter.code_ = javascript;
-				parameter.input_ = "getFeesResult";
-				parameter.this_address_ = dest_address;
-				parameter.sender_ = "";
-				parameter.trigger_tx_ = "";
-				parameter.ope_index_ = 0;
-				parameter.consensus_value_ = "";
-				if (!qcontract.Init(Contract::TYPE_V8, parameter)) {
-					LOG_ERROR("Query contract(%s) init error", dest_address.c_str());
-					return false;
-				}
-				qcontract.Run();
-				Json::Value result;
-				if (!qcontract.GetResult(result)) {
-					LOG_ERROR("Query contract(%s) executive error(%s)", dest_address.c_str(), result["error_desc_f"].toFastString().c_str());
-					return false;
-				}
-				//set fee_config by result
-				std::string error_msg;
-				if (!Json2Proto(result["fees"], fee_config, error_msg)) {
-					LOG_ERROR("Query contract(%s) result convert error(%s)",dest_address.c_str(), error_msg.c_str());
-					return false;
-				}
-				return true;
-			}
-		} while (false);
-		return false;
+		}		
+		return change;
 	}
 }
