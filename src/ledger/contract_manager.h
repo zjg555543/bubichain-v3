@@ -45,7 +45,7 @@ namespace bubi{
 	class TestParameter{
 	};
 
-	class ContractTestParameter {
+	class ContractTestParameter :public TestParameter {
 	public:
 		ContractTestParameter();
 		~ContractTestParameter();

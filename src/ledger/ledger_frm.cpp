@@ -142,7 +142,6 @@ namespace bubi {
 		enabled_ = true;
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
-		bool fee_not_enough=false;
 		total_fee_=0;
 		total_real_fee_ = 0;
 		environment_ = std::make_shared<Environment>(nullptr);
@@ -156,12 +155,11 @@ namespace bubi {
 				dropped_tx_frms_.push_back(tx_frm);
 				continue;
 			}
-			//付费
-			if (ledger_.header().version() >= 3300){
-				if (!tx_frm->PayFee(environment_, total_fee_)){
-					dropped_tx_frms_.push_back(tx_frm);
-					continue;
-				}
+
+			//pay fee
+			if (!tx_frm->PayFee(environment_, total_fee_)) {
+				dropped_tx_frms_.push_back(tx_frm);
+				continue;
 			}
 
 			ledger_context->transaction_stack_.push(tx_frm);
@@ -171,14 +169,6 @@ namespace bubi {
 			int64_t time_use = utils::Timestamp::HighResolution() - time_start;
 
 			//caculate byte fee ,do not store when fee not enough 
-			tx_frm->real_fee_ += tx_frm->GetSelfByteFee();
-			total_real_fee_ += tx_frm->real_fee_;
-			if (ledger_.header().version() >= 3300){
-				if (tx_frm->real_fee_ > tx_frm->GetFee())
-					fee_not_enough = true;
-			}
-
-
 			if (tx_time_out > 0 && time_use > tx_time_out ) { //special treatment, return false
 				LOG_ERROR("transaction(%s) apply failed. %s, time out(" FMT_I64 "ms > " FMT_I64 "ms)",
 					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str(),
@@ -186,19 +176,18 @@ namespace bubi {
 				tx_time_out_index = i;
 				return false;
 			} else {
-				if (!ret) {
+				if (!ret ) {
 					LOG_ERROR("transaction(%s) apply failed. %s",
 						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 					tx_time_out_index = i;
 				}
 				else {
-					if(!fee_not_enough)
-						tx_frm->environment_->Commit();
+					tx_frm->environment_->Commit();
 				}
 			}
 
-			if(!fee_not_enough)
-				apply_tx_frms_.push_back(tx_frm);			
+			total_real_fee_ += tx_frm->GetRealFee();
+			apply_tx_frms_.push_back(tx_frm);			
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
 			ledger_context->transaction_stack_.pop();
 		}

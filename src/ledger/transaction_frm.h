@@ -84,12 +84,11 @@ namespace bubi {
 
 		bool ValidForApply(std::shared_ptr<Environment> environment);
 
-		int64_t GetSourceBalance(std::shared_ptr<Environment> environment);
-		void SetSourceBalance(std::shared_ptr<Environment> environment,int64_t balance);
 		bool PayFee(std::shared_ptr<Environment> environment,int64_t& total_fee);
 		int64_t GetFee() const;
 		int64_t GetSelfByteFee();
-		int64_t real_fee_;
+		int64_t GetRealFee() const;
+		void AddRealFee(int64_t fee);
 
 		uint64_t apply_time_;
 		int64_t ledger_seq_;
@@ -106,6 +105,7 @@ namespace bubi {
 		std::set<std::string> valid_signature_;
 		
 		int64_t incoming_time_;
+		int64_t real_fee_;
 	};
 };
 

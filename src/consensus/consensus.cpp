@@ -205,6 +205,7 @@ namespace bubi {
 	void ValueSaver::SaveValue(const std::string &name, const std::string &value) {
 		writes.Put(utils::String::Format("%s_%s", bubi::General::CONSENSUS_PREFIX, name.c_str()), value);
 		write_size++;
+		LOG_INFO("Set %s of size(" FMT_SIZE ")", name.c_str(), value.size());
 	}
 
 	void ValueSaver::SaveValue(const std::string &name, int64_t value) {

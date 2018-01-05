@@ -332,7 +332,6 @@ namespace bubi {
 
 		int64_t begin_time = utils::Timestamp::HighResolution();
 		const Json::Value &json_items = body["items"];
-		//限制只有1笔交易
 		if (json_items.size() > 1) {			
 			LOG_ERROR("Test transaction too much(%d)", json_items.size());
 			Json::Value reply_json;

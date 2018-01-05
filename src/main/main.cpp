@@ -99,28 +99,6 @@ int main(int argc, char *argv[]){
 		LOG_INFO("Initialize logger successful");
 
 		// end run command
-		
-		// check certificate
-		char serial[128] = { 0 };
-		bool cert_enabled = false;
-
-		bubi::CAManager ca;
-		char out_msg[256] = { 0 };
-		std::string node_private_key = config.p2p_configure_.node_private_key_;
-		std::string verify_file = config.p2p_configure_.ssl_configure_.verify_file_;
-		std::string chain_file = config.p2p_configure_.ssl_configure_.chain_file_;
-		std::string private_key_file = config.p2p_configure_.ssl_configure_.private_key_file_;
-		std::string private_password = config.p2p_configure_.ssl_configure_.private_password_;
-		std::string domain = "";// config.p2p_configure_.ca_server_configure_.domain_;
-		std::string path = "";//config.p2p_configure_.ca_server_configure_.path_;
-		int port = 8080;//config.p2p_configure_.ca_server_configure_.port_;
-		int iret = ca.CheckCertificate(node_private_key, verify_file, chain_file, private_key_file, private_password,
-		domain, path, port, serial, cert_enabled, out_msg);
-		if (0 == iret) {
-			LOG_ERROR("check certificate failed, because %s", out_msg);
-			break;
-		}
-
 		bubi::Storage &storage = bubi::Storage::Instance();
 		LOG_INFO("keyvalue(%s),account(%s),ledger(%s)", 
 			config.db_configure_.keyvalue_db_path_.c_str(),
@@ -198,7 +176,7 @@ int main(int argc, char *argv[]){
 		LOG_INFO("Initialize glue manager successful");
 
 		bubi::PeerManager &p2p = bubi::PeerManager::Instance();
-		if (!bubi::g_enable_ || !p2p.Initialize(serial, true)) {
+		if (!bubi::g_enable_ || !p2p.Initialize(NULL, false)) {
 			LOG_ERROR("Initialize peer network failed");
 			break;
 		}

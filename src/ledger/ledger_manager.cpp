@@ -93,21 +93,18 @@ namespace bubi {
 		const protocol::LedgerHeader& lclheader = last_closed_ledger_->GetProtoHeader();
 		std::string validators_hash = lclheader.validators_hash();
 		if (!ValidatorsGet(validators_hash, validators_)) {
+			LOG_ERROR("Get validators failed!");
 			return false;
 		}
 
 		//fee
-		if (lcl_header_.version() > 3300) {
-			std::string fees_hash = lclheader.fees_hash();
-			if (!FeesConfigGet(fees_hash, fees_)) {
-				LOG_ERROR("FeesConfigGet failed!");
-				return false;
-			}
+		std::string fees_hash = lclheader.fees_hash();
+		if (!FeesConfigGet(fees_hash, fees_)) {
+			LOG_ERROR("Get config fee failed!");
+			return false;
 		}
-		else {
-			fees_.Clear();
-			LOG_INFO("Byte fee :" FMT_I64 " Base reserver fee:" FMT_I64 " Pay fee:" FMT_I64 " .", fees_.byte_fee(), fees_.base_reserve(), fees_.pay_fee());
-		}
+	
+		LOG_INFO("Byte fee :" FMT_I64 " Base reserver fee:" FMT_I64 " Pay fee:" FMT_I64 " .", fees_.byte_fee(), fees_.base_reserve(), fees_.pay_fee());
 
 		//load proof
 		Storage::Instance().account_db()->Get(General::LAST_PROOF, proof_);
@@ -301,8 +298,7 @@ namespace bubi {
 		fees_.set_set_threshold_fee(Configure::Instance().ledger_configure_.fees_.set_threshold_fee_);
 		fees_.set_pay_coin_fee(Configure::Instance().ledger_configure_.fees_.pay_coin_fee_);
 		std::string fees_hash = HashWrapper::Crypto(fees_.SerializeAsString());*/
-		fees_.Clear();
-		header->set_fees_hash("");
+		header->set_fees_hash(HashWrapper::Crypto(fees_.SerializeAsString()));
 
 		header->set_hash("");
 		header->set_hash(HashWrapper::Crypto(ledger.SerializeAsString()));
@@ -993,23 +989,13 @@ namespace bubi {
 			}
 
 			ledger_context->transaction_stack_.push(txfrm);
-			if (ledger_context->closing_ledger_->GetProtoHeader().version() >= 3001){
-				txfrm->NonceIncrease(ledger_context->closing_ledger_.get(), back->environment_);
-				if (txfrm->ValidForParameter()){
+			txfrm->NonceIncrease(ledger_context->closing_ledger_.get(), back->environment_);
+			if (txfrm->ValidForParameter()) {
 				txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
-				}
 			}
-			else{
-				
-				if (txfrm->ValidForParameter()){
-					txfrm->NonceIncrease(ledger_context->closing_ledger_.get(), back->environment_);
-					txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
-				}
-			}
-			
+	
 			//caculate byte fee
-			txfrm->real_fee_ += txfrm->GetSelfByteFee();
-			back->real_fee_ += txfrm->real_fee_;
+			back->AddRealFee(txfrm->GetRealFee());
 
 			protocol::TransactionEnvStore tx_store;
 			tx_store.mutable_transaction_env()->CopyFrom(txfrm->GetProtoTxEnv());
@@ -1031,9 +1017,7 @@ namespace bubi {
 		} while (false);
 
 		//caculate byte fee
-		txfrm->real_fee_ += txfrm->GetSelfByteFee();
-		back->real_fee_ += txfrm->real_fee_;
-
+		back->AddRealFee(txfrm->GetRealFee());
 		//
 		protocol::TransactionEnvStore tx_store;
 		tx_store.set_error_code(txfrm->GetResult().code());

@@ -112,68 +112,48 @@ namespace bubi {
 		return tran.source_address();
 	}
 
-	int64_t TransactionFrm::GetSourceBalance(std::shared_ptr<Environment> environment)	{
-		std::string str_address = transaction_env_.transaction().source_address();
-		AccountFrm::pointer source_account;
-		int64_t balance=0;
-		if (!environment->GetEntry(str_address, source_account))
-		{
-			LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
-			result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
-		}
-		else{
-			protocol::Account& proto_source_account = source_account->GetProtoAccount();
-			balance =proto_source_account.balance();
-		}		
-		return balance;
-	}
-	void TransactionFrm::SetSourceBalance(std::shared_ptr<Environment> environment,int64_t balance)
-	{
-		std::string str_address = transaction_env_.transaction().source_address();
-		AccountFrm::pointer source_account;
-
-		if (!environment->GetEntry(str_address, source_account))
-		{
-			LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
-			result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
-		}
-		else{
-			protocol::Account& proto_source_account = source_account->GetProtoAccount();
-			proto_source_account.set_balance(balance);
-		}
-	}
-
 	int64_t TransactionFrm::GetFee() const {
 		return transaction_env_.transaction().fee();
 	}
+
 	int64_t TransactionFrm::GetSelfByteFee(){
 		return LedgerManager::Instance().fees_.byte_fee()*transaction_env_.ByteSize();
 	}
 
-	bool TransactionFrm::PayFee(std::shared_ptr<Environment> environment,int64_t& total_fee){
-		int64_t fee = (int64_t)GetFee();
+	int64_t TransactionFrm::GetRealFee() const {
+		return real_fee_;
+	}
+
+	void TransactionFrm::AddRealFee(int64_t fee) {
+		real_fee_ += fee;
+	}
+
+	bool TransactionFrm::PayFee(std::shared_ptr<Environment> environment,int64_t &total_fee){
+		int64_t fee = GetFee();
 		std::string str_address = transaction_env_.transaction().source_address();
 		AccountFrm::pointer source_account;
 
-		if (!environment->GetEntry(str_address, source_account))
-		{
-			LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
-			result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
-		}
-		else{
-			total_fee +=fee;
+		do {
+			if (!environment->GetEntry(str_address, source_account)) {
+				LOG_ERROR("Source account(%s) does not exists", str_address.c_str());
+				result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
+				break;
+			}
+
+			total_fee += fee;
 			protocol::Account& proto_source_account = source_account->GetProtoAccount();
-			int64_t new_balance =proto_source_account.balance()-fee;
+			int64_t new_balance = proto_source_account.balance() - fee;
 			proto_source_account.set_balance(new_balance);
+
 			return true;
-		}
+		} while (false);
+
 		return false;
 	}
 
 	int64_t TransactionFrm::GetNonce() const {
 		return transaction_env_.transaction().nonce();
 	}
-
 
 	bool TransactionFrm::ValidForApply(std::shared_ptr<Environment> environment) {
 		do
@@ -574,7 +554,6 @@ namespace bubi {
 	bool TransactionFrm::Apply(LedgerFrm* ledger_frm, std::shared_ptr<Environment> parent, bool bool_contract) {
 		ledger_ = ledger_frm;
 	
-
 		environment_ = std::make_shared<Environment>(parent.get());
 
 		bool bSucess = true;
@@ -586,7 +565,16 @@ namespace bubi {
 			bSucess = false;
 			return bSucess;
 		}
-		
+
+		real_fee_ += GetSelfByteFee();
+		if (real_fee_ > GetFee()) {
+			result_.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
+			LOG_ERROR_ERRNO("Transaction(%s) Fee not enough",
+				utils::String::BinToHexString(hash_).c_str());
+			bSucess = false;
+			return bSucess;
+		}
+
 		for (processing_operation_ = 0; processing_operation_ < tran.operations_size(); processing_operation_++) {
 			const protocol::Operation &ope = tran.operations(processing_operation_);
 			std::shared_ptr<OperationFrm> opt = std::make_shared< OperationFrm>(ope, this, processing_operation_);
@@ -624,7 +612,16 @@ namespace bubi {
 					utils::String::BinToHexString(hash_).c_str(), processing_operation_, result_.code(), result_.desc().c_str());
 				break;
 			}
+
+			if (real_fee_ > GetFee()) {
+				result_.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
+				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) Fee not enough",
+					utils::String::BinToHexString(hash_).c_str(), processing_operation_);
+				bSucess = false;
+				break;
+			}
 		}
+
 		return bSucess;
 	}
 }

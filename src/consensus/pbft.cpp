@@ -19,7 +19,6 @@ namespace bubi {
 	Pbft::Pbft() :view_number_(0),
 		last_exe_seq_(1),
 		sequence_(2),
-		low_water_mark_(0),
 		fault_number_(0),
 		view_active_(true),
 		new_view_repond_timer_(0),
@@ -27,8 +26,7 @@ namespace bubi {
 		name_ = "pbft";
 
 		//should load from the configure
-		ckp_count_ = 5;
-		ckp_interval_ = 2 * ckp_count_;
+		ckp_interval_ = 10;
 	}
 
 	Pbft::~Pbft() {
@@ -62,7 +60,6 @@ namespace bubi {
 		//LoadValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
 
 		LoadValue(PbftDesc::VIEWNUMBER_NAME, view_number_);
-		LoadCheckPoint();
 		//LoadValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
 		//LoadInstance();
 		LoadVcInstance();
@@ -70,101 +67,9 @@ namespace bubi {
 	}
 
 	void Pbft::ClearStatus() {
-		//DelValue(PbftDesc::SEQUENCE_NAME);
-		//DelValue(PbftDesc::LOW_WATER_MRAK_NAME);
 		DelValue(PbftDesc::VIEW_ACTIVE);
 		DelValue(PbftDesc::VIEWNUMBER_NAME);
-		//DelValue(PbftDesc::LAST_EXE_SEQUENCE_NAME);
-		DelValue(PbftDesc::CHECKPOINT_NAME);
-		//DelValue(PbftDesc::INSTANCE_NAME);
 		DelValue(PbftDesc::VIEW_CHANGE_NAME);
-	}
-
-	int32_t Pbft::LoadCheckPoint() {
-		do {
-			std::string str_checkpoint;
-			int32_t ret = LoadValue(PbftDesc::CHECKPOINT_NAME, str_checkpoint);
-			if (ret < 0) {
-				LOG_ERROR("Load checkpoint failed");
-				return ret;
-			}
-			else if (ret == 0) {
-				return ret;
-			}
-
-			Json::Value json_checkpoint;
-			if (!json_checkpoint.fromString(str_checkpoint)) {
-				LOG_ERROR("Parse loaded checkpoint failed, string checkpoint(%s)", str_checkpoint.c_str());
-				return -1;
-			}
-
-			for (uint32_t i = 0; i < json_checkpoint.size(); i++) {
-				Json::Value &item = json_checkpoint[i];
-
-				//for checkpoint instance
-				PbftCkpInstanceIndex index;
-				index.sequence_ = item["sequence"].asInt64();
-				index.state_digest_ = utils::String::HexStringToBin(item["state_digest"].asString());
-				PbftCkpInstance &instance = ckp_instances_[index];
-
-				//for stable tag
-				instance.stable_ = item["stable"].asBool();
-
-				//for message buffer
-				const Json::Value &msg_buffer_json = item["msg_buffer"];
-				for (uint32_t m = 0; m < msg_buffer_json.size(); m++) {
-					protocol::PbftEnv env;
-					if (!env.ParseFromString(utils::String::HexStringToBin(msg_buffer_json[m].asString()))) {
-						LOG_ERROR("Consensus load checkpoint, parse message buffer string failed");
-						continue;
-					}
-					instance.msg_buf_.push_back(env);
-				}
-
-				//for checkpoint map
-				const Json::Value &checkpoint_map = item["checkpoints"];
-				for (Json::ValueConstIterator iter = checkpoint_map.begin(); iter != checkpoint_map.end(); iter++) {
-					std::string key = iter.memberName();
-					std::string checkpoint_str = utils::String::HexStringToBin(checkpoint_map[key].asString());
-					protocol::PbftCheckPoint cp;
-					if (!cp.ParseFromString(checkpoint_str)) {
-						LOG_ERROR("Consensus load checkpoint, parse checkpoint map string failed");
-						continue;
-					}
-					instance.checkpoints_.insert(std::make_pair(utils::String::Stoi64(key), cp));
-				}
-			}
-		} while (false);
-
-		return 1;
-	}
-
-	bool Pbft::SaveCheckPoint(ValueSaver &saver) {
-		Json::Value total = Json::Value(Json::arrayValue);
-		for (PbftCkpInstanceMap::const_iterator iter = ckp_instances_.begin(); iter != ckp_instances_.end(); iter++) {
-			const PbftCkpInstanceIndex &index = iter->first;
-			const PbftCkpInstance &instance = iter->second;
-			Json::Value &item = total[total.size()];
-			item["sequence"] = index.sequence_;
-			item["state_digest"] = utils::String::BinToHexString(index.state_digest_);
-			item["stable"] = instance.stable_;
-
-			//for message buffer
-			Json::Value &msg_buffer_json = item["msg_buffer"];
-			for (PbftPhaseVector::const_iterator iter_msg = instance.msg_buf_.begin(); iter_msg != instance.msg_buf_.end(); iter_msg++) {
-				msg_buffer_json[msg_buffer_json.size()] = utils::String::BinToHexString(iter_msg->SerializeAsString());
-			}
-
-			//for checkpoint map
-			Json::Value &checkpoint_map = item["checkpoints"];
-			for (PbftCheckPointMap::const_iterator iter_cp = instance.checkpoints_.begin(); iter_cp != instance.checkpoints_.end(); iter_cp++) {
-				checkpoint_map[utils::String::ToString(iter_cp->first)] = utils::String::BinToHexString(iter_cp->second.SerializeAsString());
-			}
-		}
-
-		saver.SaveValue(PbftDesc::CHECKPOINT_NAME, total.toFastString());
-
-		return true;
 	}
 
 	int32_t Pbft::LoadInstance() {
@@ -188,7 +93,6 @@ namespace bubi {
 			for (uint32_t i = 0; i < json_instance.size(); i++) {
 				const Json::Value &item = json_instance[i];
 
-				//for checkpoint instance
 				PbftInstanceIndex index(item["view_number"].asInt64(), item["sequence"].asInt64());
 				PbftInstance &instance = instances_[index];
 
@@ -288,7 +192,6 @@ namespace bubi {
 			for (uint32_t i = 0; i < json_instance.size(); i++) {
 				const Json::Value &item = json_instance[i];
 
-				//for checkpoint instance
 				int64_t index = item["sequence"].asInt64();
 				PbftVcInstance &instance = vc_instances_[index];
 
@@ -563,27 +466,10 @@ namespace bubi {
 		//		iter_vc++;
 		//	}
 		//}
-
-		//check the stable checkpoint's sequence is too large than the execute sequence
-		int64_t last_check_point_seq = 0;
-		for (PbftCkpInstanceMap::iterator iter = ckp_instances_.begin(); iter != ckp_instances_.end(); iter++) {
-			PbftCkpInstance &ckp_instance = iter->second;
-			const PbftCkpInstanceIndex &ckp_index = iter->first;
-			if (ckp_instance.stable_) {
-				last_check_point_seq = ckp_index.sequence_ / ckp_count_ * ckp_count_;
-			}
-		}
-
-		if (last_check_point_seq > 0 && last_check_point_seq - last_exe_seq_ >= ckp_count_) {
-			//trigger the ledger synchronize
-			//call ledger manager, and return the block hash
-			//LOG_INFO("Call the ledger synchronize");
-		}
-
 	}
 
 	bool Pbft::InWaterMark(int64_t seq) {
-		return seq > low_water_mark_ && seq <= low_water_mark_ + ckp_interval_;
+		return seq >= last_exe_seq_  && seq <= last_exe_seq_ + ckp_interval_;
 	}
 
 	bool Pbft::Request(const std::string &value) {
@@ -620,8 +506,6 @@ namespace bubi {
 		}
 
 		sequence_ = seq_find + 1;
-			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
-			//SaveInstance(saver);
 		PbftEnvPointer env = NewPrePrepare(value);
 
 		//check the index
@@ -715,15 +599,6 @@ namespace bubi {
 				return false;
 			}
 			replica_id = pbft.commit().replica_id();
-			break;
-		}
-		case protocol::PBFT_TYPE_CHECKPOINT:
-		{
-			if (!pbft.has_checkpoint()) {
-				LOG_ERROR("Check received message failed, Check point message has not related object");
-				return false;
-			}
-			replica_id = pbft.checkpoint().replica_id();
 			break;
 		}
 		case protocol::PBFT_TYPE_VIEWCHANGE:
@@ -830,7 +705,6 @@ namespace bubi {
 				view_active_ = true;
 				view_number_ = index.view_number_;
 				sequence_ = index.sequence_;
-				low_water_mark_ = sequence_ / ckp_count_ * ckp_count_;
 
 				ValueSaver saver;
 			//	saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
@@ -846,14 +720,6 @@ namespace bubi {
 					}
 				}
 				SaveViewChange(saver);
-
-				//delete checkpoint
-				for (PbftCkpInstanceMap::iterator iter = ckp_instances_.begin(); iter != ckp_instances_.end();) {
-					PbftCkpInstance &ckp_instance = iter->second;
-					if (iter->first.sequence_ < sequence_) ckp_instances_.erase(iter++);
-					else iter++;
-				}
-				SaveCheckPoint(saver);
 
 				//delete instance
 				for (PbftInstanceMap::iterator iter = instances_.begin(); iter != instances_.end();) {
@@ -907,7 +773,7 @@ namespace bubi {
 		if (!in_water || !same_view) {
 
 			if (!in_water) LOG_TRACE("The message(type:%s) sequence(" FMT_I64 ") is not in water mark(" FMT_I64 ", " FMT_I64"), desc(%s)", PbftDesc::GetMessageTypeDesc(pbft.type()),
-				sequence, low_water_mark_, low_water_mark_ + ckp_interval_, PbftDesc::GetPbft(pbft).c_str());
+				sequence, last_exe_seq_, last_exe_seq_ + ckp_interval_, PbftDesc::GetPbft(pbft).c_str());
 			if (!same_view)	LOG_ERROR("The message(type:%s) view number(" FMT_I64 ") != this view number(" FMT_I64 "), desc(%s)", PbftDesc::GetMessageTypeDesc(pbft.type()),
 				view_number, view_number_, PbftDesc::GetPbft(pbft).c_str());
 			if (sequence > last_exe_seq_) {
@@ -987,11 +853,6 @@ namespace bubi {
 			utils::MutexGuard lock_guad(lock_);
 			PbftInstance *pinstance = CreateInstanceIfNotExist(env);
 			if (pinstance) doret = pinstance->Go(env, this, ret);
-			break;
-		}
-		case protocol::PBFT_TYPE_CHECKPOINT:{
-			utils::MutexGuard lock_guad(lock_);
-			doret = OnCheckPoint(env);
 			break;
 		}
 		case protocol::PBFT_TYPE_VIEWCHANGE:{
@@ -1178,78 +1039,7 @@ namespace bubi {
 		return true;
 	}
 
-	bool Pbft::OnCheckPoint(const protocol::PbftEnv &pbft_env) {
-		const protocol::Pbft &pbft = pbft_env.pbft();
-		const protocol::PbftCheckPoint &checkpoint = pbft.checkpoint();
-
-		LOG_INFO("Receive check point");
-		if (!InWaterMark(checkpoint.sequence())) {
-			LOG_TRACE("The message(type:%s) sequence(" FMT_I64 ") is not in water mark(" FMT_I64 ", " FMT_I64"), desc(%s)", PbftDesc::GetMessageTypeDesc(pbft.type()),
-				checkpoint.sequence(), low_water_mark_, low_water_mark_ + ckp_interval_, PbftDesc::GetPbft(pbft).c_str());
-			return NULL;
-		}
-
-		LOG_INFO("Receive check point message from replica(" FMT_I64 "), sequence(" FMT_I64 "), state digest(%s)",
-			checkpoint.replica_id(), checkpoint.sequence(), utils::String::Bin4ToHexString(checkpoint.state_digest()).c_str());
-
-		PbftCkpInstanceIndex index(checkpoint.sequence(), checkpoint.state_digest());
-		PbftCkpInstanceMap::iterator iter = ckp_instances_.find(index);
-		if (iter == ckp_instances_.end()) {
-			ckp_instances_.insert(std::make_pair(index, PbftCkpInstance()));
-		}
-
-		PbftCkpInstance &ckp_instance = ckp_instances_[index];
-		ckp_instance.msg_buf_.push_back(pbft_env);
-		ckp_instance.checkpoints_.insert(std::make_pair(checkpoint.replica_id(), checkpoint));
-
-		do {
-			ValueSaver saver;
-			SaveCheckPoint(saver);
-		} while (false);
-
-		if (ckp_instance.checkpoints_.size() >= GetQuorumSize() + 1) {
-			//check point have achieve
-			ckp_instance.stable_ = true;
-
-			LOG_INFO("Try to move water mark, sequence(" FMT_I64 "), state digest(%s)",
-				checkpoint.sequence(), utils::String::Bin4ToHexString(checkpoint.state_digest()).c_str());
-			TryMoveWaterMark();
-		}
-
-		return true;
-	}
-
 	bool Pbft::CheckViewChange(const protocol::PbftViewChange &view_change) {
-		//check the checkpoint message
-		std::set<int64_t> replica_ids;
-		std::string state_digest = "";
-		for (int32_t i = 0; i < view_change.checkpoints_size(); i++) {
-			const protocol::PbftEnv &env = view_change.checkpoints(i);
-			if (!CheckMessageItem(env)) {
-				continue;
-			}
-			const protocol::PbftCheckPoint &check_point = env.pbft().checkpoint();
-			if (check_point.sequence() != view_change.sequence()) {
-				continue;
-			}
-
-			if (state_digest.empty()) {
-				state_digest = check_point.state_digest();
-			}
-
-			if (state_digest != check_point.state_digest()) {
-				continue;
-			}
-			replica_ids.insert(check_point.replica_id());
-		}
-
-// 		if (view_change.checkpoints_size() > 0 &&
-// 			view_change.sequence() > 0 &&
-// 			replica_ids.size() < GetQuorumSize()) { // for debug
-// 			LOG_ERROR("The view-change message(sequence:" FMT_I64 ")'s  checkpoint message's replica count(" FMT_SIZE ") is less than quorom size(" FMT_SIZE")",
-// 				view_change.sequence(), replica_ids.size(), GetQuorumSize() + 1);
-// 			return false;
-// 		}
 
 		bool error_ret = false;
 		//check the prepared message
@@ -1471,9 +1261,6 @@ namespace bubi {
 			}
 		}
 
-		//insert the lastest stable checkpoint into this log
-		ckp_instances_.insert(ckp_pair);
-
 		//get max sequence
 		int64_t max_seq = last_exe_seq_;
 		for (PbftInstanceMap::iterator iter_inst = instances_.begin();
@@ -1491,9 +1278,6 @@ namespace bubi {
 			sequence_ = max_seq + 1;
 			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 		}
-
-		//try to move new watermark
-		TryMoveWaterMark();
 
 		LOG_INFO("Replica enter the new view(number:" FMT_I64 ")", new_view.view_number());
 		//enter to new view
@@ -1553,6 +1337,7 @@ namespace bubi {
 	bool Pbft::CreateViewChangeParam(const PbftVcInstance &vc_instance,
 		std::map<int64_t, protocol::PbftEnv> &pre_prepares,
 		PbftCkpInstancePair &lasted_ckp_pair) {
+
 		//get min sequence and max sequence
 		int64_t min_seq = 0, max_seq = 0;
 		std::map<int64_t, protocol::PbftPrePrepare> pre_prepares_tmp;
@@ -1584,20 +1369,6 @@ namespace bubi {
 
 		LOG_INFO("Create view change param, min seq(" FMT_I64 "), max seq(" FMT_I64 ")", min_seq, max_seq);
 
-		//get the lastest stable checkpoint
-		std::string state_digest;
-		for (int32_t i = 0; i < lastest_ckp_viewchange.checkpoints_size(); i++) {
-			const protocol::PbftEnv &env = lastest_ckp_viewchange.checkpoints(i);
-			const protocol::Pbft &pbft = env.pbft();
-			const protocol::PbftCheckPoint &checkpoint = pbft.checkpoint();
-			if (state_digest.empty())state_digest = checkpoint.state_digest();
-			lasted_ckp_pair.second.checkpoints_.insert(std::make_pair(checkpoint.replica_id(), pbft.checkpoint()));
-			lasted_ckp_pair.second.msg_buf_.push_back(env);
-		}
-		lasted_ckp_pair.second.stable_ = true;
-		lasted_ckp_pair.first.sequence_ = lastest_ckp_viewchange.sequence();
-		lasted_ckp_pair.first.state_digest_ = state_digest;
-
 		//create the pre-prepare message
 		for (PbftViewChangeMap::const_iterator iter = vc_instance.viewchanges_.begin();
 			iter != vc_instance.viewchanges_.end();
@@ -1625,28 +1396,7 @@ namespace bubi {
 			tmp_preprepare.set_replica_id(replica_id_);
 			pre_prepares.insert(std::make_pair(iter->first, NewPrePrepare(tmp_preprepare)));
 			if (iter->first > min_seq + 1) {
-				//we should set the property close time
-				const std::string &the_value = tmp_preprepare.value();
-				//int64_t the_time = the_value.close_time();
-				//insert null 
-				for (int64_t m = min_seq + 1; m < iter->first; m++) {
-					protocol::PbftPrePrepare null_preprepare;
-					null_preprepare.set_view_number(vc_instance.view_number_);
-					null_preprepare.set_sequence(m);
-					null_preprepare.set_replica_id(replica_id_);
-					std::string value = notify_->FetchNullMsg();
-					null_preprepare.set_value(value);
-					//protocol::Request *value = null_preprepare.mutable_value();
-					//value->set_payload(null_hash);
-					//value->set_close_time(the_time - (iter->first - (min_seq + 1)));
-					null_preprepare.set_value_digest(HashWrapper::Crypto(value));
-					pre_prepares.insert(std::make_pair(m, NewPrePrepare(null_preprepare)));
-
-					//GlueManager::Instance().RecvConsensusTxSet(GetNullTxset());
-					LOG_INFO("Create null preprepare(hash:%s) message for new view message, seq(" FMT_I64 "), vn(" FMT_I64 ")",
-						utils::String::Bin4ToHexString(value).c_str(),
-						m, vc_instance.view_number_);
-				}
+				LOG_ERROR("Should not go here");
 			}
 
 			min_seq = iter->first;
@@ -1696,11 +1446,6 @@ namespace bubi {
 		//send new view message
 		vc_instance.SendNewView(this, utils::Timestamp::HighResolution(), msg);
 
-		//insert the lastest stable checkpoint into this log
-		if (!ckp_pair.first.state_digest_.empty()) {
-			ckp_instances_.insert(ckp_pair);
-		}
-
 		//disacard the other log
 		for (PbftInstanceMap::iterator iter_inst = instances_.begin();
 			iter_inst != instances_.end();
@@ -1734,9 +1479,6 @@ namespace bubi {
 		}
 		saver.Commit();
 
-		//try to move new watermark
-		TryMoveWaterMark();
-
 		//enter to new view
 		view_number_ = vc_instance.view_number_;
 		view_active_ = true;
@@ -1764,57 +1506,6 @@ namespace bubi {
 		saver.Commit();
 
 		OnViewChanged();
-
-		return true;
-	}
-
-	bool Pbft::TryMoveWaterMark() {
-		//get lastest stable checkpoint and
-		int64_t move_to_seq = -1;
-		for (PbftCkpInstanceMap::iterator iter = ckp_instances_.begin(); iter != ckp_instances_.end(); iter++) {
-			PbftCkpInstance &ckp_instance = iter->second;
-			const PbftCkpInstanceIndex &ckp_index = iter->first;
-			if (ckp_instance.stable_ && ckp_index.sequence_ <= last_exe_seq_) {
-				move_to_seq = ckp_index.sequence_ / ckp_count_ * ckp_count_;
-			}
-		}
-
-		if (move_to_seq < 0) {
-			return false;
-		}
-
-		//delete checkpoint
-		for (PbftCkpInstanceMap::iterator iter = ckp_instances_.begin(); iter != ckp_instances_.end();) {
-			const PbftCkpInstanceIndex &ckp_index = iter->first;
-			if (ckp_index.sequence_ < move_to_seq) { //keep the last stable checkpoint
-				ckp_instances_.erase(iter++);
-			}
-			else {
-				iter++;
-			}
-		}
-
-		ValueSaver saver;
-		SaveCheckPoint(saver);
-
-		//delete pbft instance
-		for (PbftInstanceMap::iterator iter = instances_.begin(); iter != instances_.end();) {
-			const PbftInstanceIndex &index = iter->first;
-			if (index.sequence_ <= move_to_seq) {
-				instances_.erase(iter++);
-			}
-			else {
-				iter++;
-			}
-		}
-
-		//SaveInstance(saver);
-
-		LOG_INFO("The prepare message view number(" FMT_I64 ") move " FMT_I64 " to new water mark " FMT_I64, view_number_, low_water_mark_, move_to_seq);
-		low_water_mark_ = move_to_seq;
-
-		//saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
-		saver.Commit();
 
 		return true;
 	}
@@ -1852,17 +1543,14 @@ namespace bubi {
 				instance.pre_prepare_.value(), 
 				proof.SerializeAsString(),true);
 
-			//ValueSaver saver;
-			//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
-			//saver.Commit();
-
-			//call ledger manager, and return the block hash
-			if (last_exe_seq_ % ckp_count_ == 0) {
-				LOG_INFO("Send check point message, view number(" FMT_I64 "),sequence(" FMT_I64 "), state digest(%s)",
-					view_number_, last_exe_seq_, utils::String::Bin4ToHexString(state_digest).c_str());
-				//check point
-				PbftEnvPointer msg = NewCheckPoint(state_digest, last_exe_seq_);
-				SendMessage(msg);
+			//delete the older check point
+			for (PbftInstanceMap::iterator iter = instances_.begin(); iter != instances_.end();) {
+				if (iter->first.sequence_ <= index.sequence_ - ckp_interval_) {
+					instances_.erase(iter++);
+				} 
+				else {
+					iter++;
+				}
 			}
 		}
 		return true;
@@ -1947,30 +1635,10 @@ namespace bubi {
 		pbft->set_round_number(0);
 		pbft->set_type(protocol::PBFT_TYPE_VIEWCHANGE);
 
-		//get last stable checkpoint
-		PbftCkpInstanceMap::reverse_iterator iter = ckp_instances_.rbegin();
-		for (; iter != ckp_instances_.rend(); iter++) {
-			PbftCkpInstance &ckp_instance = iter->second;
-			if (ckp_instance.stable_) {
-				break;
-			}
-		}
-
-		//add checkpoint
 		protocol::PbftViewChange *pviewchange = pbft->mutable_view_change();
 		pviewchange->set_view_number(view_number);
 		pviewchange->set_sequence(0);
 		pviewchange->set_replica_id(replica_id_);
-		if (iter != ckp_instances_.rend()) {
-			PbftCkpInstance &ckp_instance = iter->second;
-			pviewchange->set_sequence(iter->first.sequence_);
-			for (PbftPhaseVector::iterator iter_vec = ckp_instance.msg_buf_.begin();
-				iter_vec != ckp_instance.msg_buf_.end();
-				iter_vec++) {
-				*pviewchange->add_checkpoints() = *iter_vec;
-			}
-		}
-
 		//add prepared msg large than lastest checkpoint's sequence
 		for (PbftInstanceMap::iterator iter_instance = instances_.begin();
 			iter_instance != instances_.end();
@@ -2016,24 +1684,6 @@ namespace bubi {
 		for (std::map<int64_t, protocol::PbftEnv>::iterator iter = pre_prepares.begin(); iter != pre_prepares.end(); iter++) {
 			*pnewview->add_pre_prepares() = iter->second;
 		}
-
-		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
-		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
-		return env;
-	}
-
-	PbftEnvPointer Pbft::NewCheckPoint(const std::string &state_digest, int64_t seq) {
-		PbftEnvPointer env = std::make_shared<protocol::PbftEnv>();
-
-		protocol::Pbft *pbft = env->mutable_pbft();
-		pbft->set_round_number(0);
-		pbft->set_type(protocol::PBFT_TYPE_CHECKPOINT);
-
-		protocol::PbftCheckPoint *pcheckpoint = pbft->mutable_checkpoint();
-		pcheckpoint->set_state_digest(state_digest);
-		pcheckpoint->set_replica_id(replica_id_);
-		pcheckpoint->set_sequence(seq);
 
 		protocol::Signature *sig = env->mutable_signature();
 		sig->set_public_key(private_key_.GetBase16PublicKey());
@@ -2122,10 +1772,6 @@ namespace bubi {
 			if (pbft.has_commit()) sequence = pbft.commit().sequence();
 			break;
 		}
-										//case protocol::PBFT_TYPE_CHECKPOINT:{
-										//	if (pbft.has_checkpoint()) sequence = pbft.checkpoint().sequence();
-										//	break;
-										//}
 		case protocol::PBFT_TYPE_VIEWCHANGE:{
 			if (pbft.has_view_change()) sequence = pbft.view_change().sequence();
 			break;
@@ -2201,10 +1847,8 @@ namespace bubi {
 		data["replica_id"] = replica_id_;
 		data["sequence"] = sequence_;
 		data["view_number"] = view_number_;
-		data["ckp_count"] = ckp_count_;
 		data["ckp_interval"] = ckp_interval_;
 		data["last_exe_seq"] = last_exe_seq_;
-		data["low_water_mark"] = low_water_mark_;
 		data["fault_number"] = fault_number_;
 		data["view_active"] = view_active_;
 		Json::Value &instances = data["instances"];
@@ -2240,21 +1884,6 @@ namespace bubi {
 			item["pre_prepare_round"] = instance.pre_prepare_round_;
 		}
 
-		Json::Value &checkpoints = data["checkpoints"];
-		for (PbftCkpInstanceMap::const_iterator iter = ckp_instances_.begin(); iter != ckp_instances_.end(); iter++) {
-			const PbftCkpInstance &ckp_instance = iter->second;
-			Json::Value &item = checkpoints[checkpoints.size()];
-			item["sequence"] = iter->first.sequence_;
-			item["state_digest"] = utils::String::BinToHexString(iter->first.state_digest_);
-			item["stable"] = ckp_instance.stable_ ? "true" : "false";
-
-			Json::Value &ckp = item["checkpoint"];
-			for (PbftCheckPointMap::const_iterator iter_ckp = ckp_instance.checkpoints_.begin(); iter_ckp != ckp_instance.checkpoints_.end(); iter_ckp++) {
-				Json::Value &ckp_item = ckp[ckp.size()];
-				ckp_item = PbftDesc::GetCheckPoint(iter_ckp->second);
-			}
-		}
-
 		Json::Value &viewchanges = data["viewchanges"];
 		for (PbftVcInstanceMap::const_iterator iter = vc_instances_.begin(); iter != vc_instances_.end(); iter++) {
 			const PbftVcInstance &vc_instance = iter->second;
@@ -2263,6 +1892,7 @@ namespace bubi {
 			item["start_time"] = utils::Timestamp(vc_instance.start_time_).ToFormatString(true);
 			item["last_propose_time"] = utils::Timestamp(vc_instance.last_propose_time_).ToFormatString(true);
 			item["end_time"] = utils::Timestamp(vc_instance.end_time_).ToFormatString(true);
+			item["newview_init"] = vc_instance.newview_.IsInitialized();
 
 			Json::Value &vc = item["viewchange"];
 			for (PbftViewChangeMap::const_iterator iter_vc = vc_instance.viewchanges_.begin(); iter_vc != vc_instance.viewchanges_.end(); iter_vc++) {
@@ -2386,6 +2016,7 @@ namespace bubi {
 				validators_.size(), fault_number_, replica_id_, view_number_ % validators_.size() == replica_id_ ? "is" : "isnot");
 			
 			ClearNotCommitedInstance();
+			notify_->OnResetCloseTimer();
 		} 
 		
 		if (new_seq > 0) {
@@ -2393,15 +2024,8 @@ namespace bubi {
 			last_exe_seq_ = new_seq;
 			sequence_ = last_exe_seq_ + 1;
 
-			//saver.SaveValue(PbftDesc::LAST_EXE_SEQUENCE_NAME, last_exe_seq_);
-			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
-
-			//try to move new watermark
-			TryMoveWaterMark();
-			low_water_mark_ = last_exe_seq_ / ckp_count_ * ckp_count_;
-			//saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
-			LOG_INFO("Set the last exe sequence(" FMT_I64 "), sequence(" FMT_I64 "), low water mark(" FMT_I64 ")",
-				last_exe_seq_, sequence_, low_water_mark_);
+			LOG_INFO("Set the last exe sequence(" FMT_I64 "), sequence(" FMT_I64 ")",
+				last_exe_seq_, sequence_);
 			saver.SaveValue(PbftDesc::VIEWNUMBER_NAME, view_number_);
 		}
 		
