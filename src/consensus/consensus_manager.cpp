@@ -27,19 +27,15 @@ namespace bubi {
 	ConsensusManager::~ConsensusManager() {}
 
 	bool ConsensusManager::Initialize(const ValidationConfigure &config) {
-		if (config.type_ == "pbft") {
-			consensus_ = std::shared_ptr<Consensus>(new Pbft());
-			if (!consensus_->Initialize())
-				return false;
-		}
-		else if (config.type_ == "one_node") {
+		if (config.type_ == "one_node") {
 			consensus_ = std::shared_ptr<Consensus>(new OneNode());
 			if (!consensus_->Initialize())
 				return false;
 		}
 		else {
-			LOG_ERROR("type(%s) not support", config.type_.c_str());
-			return false;
+			consensus_ = std::shared_ptr<Consensus>(new Pbft());
+			if (!consensus_->Initialize())
+				return false;
 		}
 
 		TimerNotify::RegisterModule(this);

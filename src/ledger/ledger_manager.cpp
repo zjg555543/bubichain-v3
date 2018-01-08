@@ -375,16 +375,13 @@ namespace bubi {
 			protocol::LedgerHeader *header = ledger.mutable_header();
 			protocol::ConsensusValue request;
 			protocol::LedgerUpgrade *ledger_upgrade = request.mutable_ledger_upgrade();
+			ledger_upgrade->set_new_validator(this_node_address);
 			//for validators
-			for (int32_t i = 0; i < validator_set.validators_size(); i++) {
-				ledger_upgrade->add_del_validators(validator_set.validators(i));
-			}
-			ledger_upgrade->add_add_validators(this_node_address);
 			protocol::ValidatorSet new_validator_set;
 			new_validator_set.add_validators(this_node_address);
 
 			request.set_previous_ledger_hash(last_closed_ledger_hdr.hash());
-			request.set_close_time(last_closed_ledger_hdr.close_time() + utils::MICRO_UNITS_PER_SEC);
+			request.set_close_time(last_closed_ledger_hdr.close_time() + Configure::Instance().validation_configure_.close_interval_);
 			request.set_ledger_seq(last_closed_ledger_hdr.seq() + 1);
 			request.set_previous_proof(str_proof);
 			std::string consensus_value_hash = HashWrapper::Crypto(request.SerializeAsString());
@@ -405,39 +402,7 @@ namespace bubi {
 
 			std::shared_ptr<WRITE_BATCH> batch = std::make_shared<WRITE_BATCH>();
 			batch->Put(bubi::General::KEY_LEDGER_SEQ, utils::String::ToString(header->seq()));
-
-			//for new proof, new pbft commit self
-			do {
-				protocol::PbftProof old_proof;
-				if (!old_proof.ParseFromString(str_proof)) {
-					LOG_ERROR("Parse old proof failed");
-					return;
-				}
-				if (old_proof.commits_size() == 0) {
-					LOG_ERROR("Old proof commit is empty");
-					return;
-				}
-				const protocol::PbftEnv &old_env = old_proof.commits(0);
-				const protocol::Pbft &old_pbft = old_env.pbft();
-				const protocol::PbftCommit &old_pbft_commit = old_pbft.commit();
-
-				protocol::PbftProof new_proof;
-				protocol::PbftEnv *env = new_proof.add_commits();
-				protocol::Pbft *pbft = env->mutable_pbft();
-				pbft->set_round_number(1);
-				pbft->set_type(protocol::PBFT_TYPE_COMMIT);
-				protocol::PbftCommit *preprepare = pbft->mutable_commit();
-				preprepare->set_view_number(old_pbft_commit.view_number());
-				preprepare->set_replica_id(0);
-				preprepare->set_sequence(old_pbft_commit.sequence() + 1);
-				preprepare->set_value_digest(consensus_value_hash);
-
-				protocol::Signature *sig = env->mutable_signature();
-				sig->set_public_key(private_key.GetBase16PublicKey());
-				sig->set_sign_data(private_key.Sign(pbft->SerializeAsString()));
-
-				batch->Put(bubi::General::LAST_PROOF, new_proof.SerializeAsString());
-			} while (false);
+			batch->Put(bubi::General::LAST_PROOF, "");
 
 			ValidatorsSet(batch, new_validator_set);
 
@@ -539,8 +504,6 @@ namespace bubi {
 		std::string chash = HashWrapper::Crypto(con_str);
 		LedgerFrm::pointer closing_ledger = context_manager_.SyncProcess(consensus_value);
 
-//		LOG_TRACE("Closing ledger, sync complete");
-
 		protocol::Ledger& ledger = closing_ledger->ProtoLedger();
 		auto header = ledger.mutable_header();
 		header->set_seq(consensus_value.ledger_seq());
@@ -563,9 +526,7 @@ namespace bubi {
 		header->set_account_tree_hash(tree_->GetRootHash());
 		header->set_tx_count(last_closed_ledger_->GetProtoHeader().tx_count() + closing_ledger->ProtoLedger().transaction_envs_size());
 
-		protocol::ValidatorSet new_set;
-		utils::StringVector new_validator;
-		for (int32_t i = 0; i < validators_.validators_size(); i++) new_validator.push_back(validators_.validators(i));
+		protocol::ValidatorSet new_set = validators_;
 		bool has_upgrade = consensus_value.has_ledger_upgrade();
 		if (has_upgrade) {
 			const protocol::LedgerUpgrade &ledger_upgrade = consensus_value.ledger_upgrade();
@@ -575,14 +536,12 @@ namespace bubi {
 				header->set_version(ledger_upgrade.new_ledger_version());
 			}
 
-			//for validators
-			for (int32_t i = 0; i < ledger_upgrade.add_validators_size(); i++) new_validator.push_back(ledger_upgrade.add_validators(i));
-			for (int32_t i = 0; i < ledger_upgrade.del_validators_size(); i++) {
-				utils::StringVector::iterator iter = std::find(new_validator.begin(), new_validator.end(), ledger_upgrade.del_validators(i));
-				new_validator.erase(iter);
-			}
+			//for hardfork new validator
+			if (ledger_upgrade.new_validator().size() > 0) {
+				new_set.Clear();
+				new_set.add_validators(ledger_upgrade.new_validator());
+			} 
 		}
-		for (size_t i = 0; i < new_validator.size(); i++) new_set.add_validators(new_validator[i]);
 		std::string validators_hash = HashWrapper::Crypto(new_set.SerializeAsString());
 		header->set_validators_hash(validators_hash);//TODO
 		header->set_tx_count(last_closed_ledger_->GetProtoHeader().tx_count() + closing_ledger->ProtoLedger().transaction_envs_size());
@@ -600,15 +559,12 @@ namespace bubi {
 		validators_ = new_set;
 
 		//fee
-		header->set_fees_hash("");
-		if (header->version() > 3300) {
-			protocol::FeeConfig new_fees;
-			if (closing_ledger->GetVotedFee(new_fees)) {
-				FeesConfigSet(account_db_batch, new_fees);
-				fees_ = new_fees;
-			}
-			header->set_fees_hash(HashWrapper::Crypto(fees_.SerializeAsString()));	
+		protocol::FeeConfig new_fees;
+		if (closing_ledger->GetVotedFee(new_fees)) {
+			FeesConfigSet(account_db_batch, new_fees);
+			fees_ = new_fees;
 		}
+		header->set_fees_hash(HashWrapper::Crypto(fees_.SerializeAsString()));
 
 		//proof
 		account_db_batch->Put(bubi::General::LAST_PROOF, proof);

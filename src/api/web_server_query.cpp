@@ -495,6 +495,7 @@ namespace bubi {
 		std::string ledger_seq = request.GetParamValue("seq");
 		std::string with_validator = request.GetParamValue("with_validator");
 		std::string with_consvalue = request.GetParamValue("with_consvalue");
+		std::string with_fee = request.GetParamValue("with_fee");
 
 
 		/// default last closed ledger
@@ -521,6 +522,18 @@ namespace bubi {
 				if (LedgerManager::Instance().GetValidators(seq, set)) {
 					Json::Value validator = Proto2Json(set);
 					result["validators"] = validator["validators"];
+				}
+				else {
+					error_code = protocol::ERRCODE_NOT_EXIST;
+					break;
+				}
+			}
+
+			if (with_fee == "true") {
+				protocol::FeeConfig set;
+				if (LedgerManager::Instance().FeesConfigGet(frm.GetProtoHeader().fees_hash(), set)) {
+					Json::Value fees = Proto2Json(set);
+					result["fees"] = fees;
 				}
 				else {
 					error_code = protocol::ERRCODE_NOT_EXIST;

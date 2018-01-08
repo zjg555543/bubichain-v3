@@ -61,14 +61,7 @@ namespace bubi {
 		peer_node_address_ = priv_key_.GetBase16Address();
 
 		SslParameter ssl_parameter;
-		const SSLConfigure& ssl_configure = Configure::Instance().p2p_configure_.ssl_configure_;
-		std::string strHome = utils::File::GetBinHome();
-		ssl_parameter.cert_password_ = ssl_configure.private_password_;
-		ssl_parameter.chain_file_ = utils::String::Format("%s/%s", strHome.c_str(), ssl_configure.chain_file_.c_str());
-		ssl_parameter.private_key_file_ = utils::String::Format("%s/%s", strHome.c_str(), ssl_configure.private_key_file_.c_str());
-		ssl_parameter.tmp_dh_file_ = utils::String::Format("%s/%s", strHome.c_str(), ssl_configure.dhparam_file_.c_str());
-		ssl_parameter.verify_file_ = utils::String::Format("%s/%s", strHome.c_str(), ssl_configure.verify_file_.c_str());
-		ssl_parameter.enable_ = cert_enabled;
+		ssl_parameter.enable_ = false;
 
 		consensus_network_ = new PeerNetwork(ssl_parameter);
 		if (!consensus_network_->Initialize(peer_node_address_)) {

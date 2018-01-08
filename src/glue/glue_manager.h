@@ -80,9 +80,6 @@ namespace bubi {
 		void UpdateValidators(const protocol::ValidatorSet &validators, const std::string &proof);
 		void LedgerHasUpgrade();
 
-		//called by web server
-		Result ConfValidator(const std::string &add, const std::string &del);
-
 		//ledger upgrade
 		void OnRecvLedgerUpMsg(const protocol::LedgerUpgradeNotify &msg);
 		protocol::Signature SignConsensusData(const std::string &data);

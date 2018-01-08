@@ -369,37 +369,16 @@ class LedgerUpgrade : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::int64 new_ledger_version() const;
   void set_new_ledger_version(::google::protobuf::int64 value);
 
-  // repeated string add_validators = 2;
-  int add_validators_size() const;
-  void clear_add_validators();
-  static const int kAddValidatorsFieldNumber = 2;
-  const ::std::string& add_validators(int index) const;
-  ::std::string* mutable_add_validators(int index);
-  void set_add_validators(int index, const ::std::string& value);
-  void set_add_validators(int index, const char* value);
-  void set_add_validators(int index, const char* value, size_t size);
-  ::std::string* add_add_validators();
-  void add_add_validators(const ::std::string& value);
-  void add_add_validators(const char* value);
-  void add_add_validators(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& add_validators() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_add_validators();
-
-  // repeated string del_validators = 3;
-  int del_validators_size() const;
-  void clear_del_validators();
-  static const int kDelValidatorsFieldNumber = 3;
-  const ::std::string& del_validators(int index) const;
-  ::std::string* mutable_del_validators(int index);
-  void set_del_validators(int index, const ::std::string& value);
-  void set_del_validators(int index, const char* value);
-  void set_del_validators(int index, const char* value, size_t size);
-  ::std::string* add_del_validators();
-  void add_del_validators(const ::std::string& value);
-  void add_del_validators(const char* value);
-  void add_del_validators(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& del_validators() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_del_validators();
+  // optional string new_validator = 2;
+  void clear_new_validator();
+  static const int kNewValidatorFieldNumber = 2;
+  const ::std::string& new_validator() const;
+  void set_new_validator(const ::std::string& value);
+  void set_new_validator(const char* value);
+  void set_new_validator(const char* value, size_t size);
+  ::std::string* mutable_new_validator();
+  ::std::string* release_new_validator();
+  void set_allocated_new_validator(::std::string* new_validator);
 
   // @@protoc_insertion_point(class_scope:protocol.LedgerUpgrade)
  private:
@@ -407,8 +386,7 @@ class LedgerUpgrade : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::int64 new_ledger_version_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> add_validators_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> del_validators_;
+  ::google::protobuf::internal::ArenaStringPtr new_validator_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_common_2eproto();
   friend void protobuf_AssignDesc_common_2eproto();
@@ -909,114 +887,48 @@ inline void LedgerUpgrade::set_new_ledger_version(::google::protobuf::int64 valu
   // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.new_ledger_version)
 }
 
-// repeated string add_validators = 2;
-inline int LedgerUpgrade::add_validators_size() const {
-  return add_validators_.size();
+// optional string new_validator = 2;
+inline void LedgerUpgrade::clear_new_validator() {
+  new_validator_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void LedgerUpgrade::clear_add_validators() {
-  add_validators_.Clear();
+inline const ::std::string& LedgerUpgrade::new_validator() const {
+  // @@protoc_insertion_point(field_get:protocol.LedgerUpgrade.new_validator)
+  return new_validator_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& LedgerUpgrade::add_validators(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.LedgerUpgrade.add_validators)
-  return add_validators_.Get(index);
+inline void LedgerUpgrade::set_new_validator(const ::std::string& value) {
+  
+  new_validator_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.new_validator)
 }
-inline ::std::string* LedgerUpgrade::mutable_add_validators(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.LedgerUpgrade.add_validators)
-  return add_validators_.Mutable(index);
+inline void LedgerUpgrade::set_new_validator(const char* value) {
+  
+  new_validator_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.LedgerUpgrade.new_validator)
 }
-inline void LedgerUpgrade::set_add_validators(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.add_validators)
-  add_validators_.Mutable(index)->assign(value);
+inline void LedgerUpgrade::set_new_validator(const char* value, size_t size) {
+  
+  new_validator_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerUpgrade.new_validator)
 }
-inline void LedgerUpgrade::set_add_validators(int index, const char* value) {
-  add_validators_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.LedgerUpgrade.add_validators)
+inline ::std::string* LedgerUpgrade::mutable_new_validator() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.LedgerUpgrade.new_validator)
+  return new_validator_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void LedgerUpgrade::set_add_validators(int index, const char* value, size_t size) {
-  add_validators_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerUpgrade.add_validators)
+inline ::std::string* LedgerUpgrade::release_new_validator() {
+  // @@protoc_insertion_point(field_release:protocol.LedgerUpgrade.new_validator)
+  
+  return new_validator_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* LedgerUpgrade::add_add_validators() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.LedgerUpgrade.add_validators)
-  return add_validators_.Add();
-}
-inline void LedgerUpgrade::add_add_validators(const ::std::string& value) {
-  add_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.LedgerUpgrade.add_validators)
-}
-inline void LedgerUpgrade::add_add_validators(const char* value) {
-  add_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.LedgerUpgrade.add_validators)
-}
-inline void LedgerUpgrade::add_add_validators(const char* value, size_t size) {
-  add_validators_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.LedgerUpgrade.add_validators)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-LedgerUpgrade::add_validators() const {
-  // @@protoc_insertion_point(field_list:protocol.LedgerUpgrade.add_validators)
-  return add_validators_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-LedgerUpgrade::mutable_add_validators() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.LedgerUpgrade.add_validators)
-  return &add_validators_;
-}
-
-// repeated string del_validators = 3;
-inline int LedgerUpgrade::del_validators_size() const {
-  return del_validators_.size();
-}
-inline void LedgerUpgrade::clear_del_validators() {
-  del_validators_.Clear();
-}
-inline const ::std::string& LedgerUpgrade::del_validators(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.LedgerUpgrade.del_validators)
-  return del_validators_.Get(index);
-}
-inline ::std::string* LedgerUpgrade::mutable_del_validators(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.LedgerUpgrade.del_validators)
-  return del_validators_.Mutable(index);
-}
-inline void LedgerUpgrade::set_del_validators(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.del_validators)
-  del_validators_.Mutable(index)->assign(value);
-}
-inline void LedgerUpgrade::set_del_validators(int index, const char* value) {
-  del_validators_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.LedgerUpgrade.del_validators)
-}
-inline void LedgerUpgrade::set_del_validators(int index, const char* value, size_t size) {
-  del_validators_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerUpgrade.del_validators)
-}
-inline ::std::string* LedgerUpgrade::add_del_validators() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.LedgerUpgrade.del_validators)
-  return del_validators_.Add();
-}
-inline void LedgerUpgrade::add_del_validators(const ::std::string& value) {
-  del_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.LedgerUpgrade.del_validators)
-}
-inline void LedgerUpgrade::add_del_validators(const char* value) {
-  del_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.LedgerUpgrade.del_validators)
-}
-inline void LedgerUpgrade::add_del_validators(const char* value, size_t size) {
-  del_validators_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.LedgerUpgrade.del_validators)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-LedgerUpgrade::del_validators() const {
-  // @@protoc_insertion_point(field_list:protocol.LedgerUpgrade.del_validators)
-  return del_validators_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-LedgerUpgrade::mutable_del_validators() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.LedgerUpgrade.del_validators)
-  return &del_validators_;
+inline void LedgerUpgrade::set_allocated_new_validator(::std::string* new_validator) {
+  if (new_validator != NULL) {
+    
+  } else {
+    
+  }
+  new_validator_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), new_validator);
+  // @@protoc_insertion_point(field_set_allocated:protocol.LedgerUpgrade.new_validator)
 }
 
 // -------------------------------------------------------------------

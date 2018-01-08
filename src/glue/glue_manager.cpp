@@ -124,6 +124,7 @@ namespace bubi {
 			NotifyErrTx(err_txs);
 		} 
 
+		time_start_consenus_ = utils::Timestamp::HighResolution();
 		if (!consensus_->IsLeader()) {
 			LOG_INFO("Start consensus process, but it not leader, just waiting");
 			return true;
@@ -133,8 +134,8 @@ namespace bubi {
 		}
 
 		int64_t next_close_time = utils::Timestamp::Now().timestamp();
-		if (next_close_time <= lcl.close_time()) {
-			next_close_time = lcl.close_time() + utils::MICRO_UNITS_PER_SEC;
+		if (next_close_time < lcl.close_time() + Configure::Instance().validation_configure_.close_interval_) {
+			next_close_time = lcl.close_time() + Configure::Instance().validation_configure_.close_interval_;
 		}
 
 		//get previous block proof
@@ -215,8 +216,6 @@ namespace bubi {
 			txset_raw = txset_raw_next;
 
 		} while (true);
-
-		time_start_consenus_ = utils::Timestamp::HighResolution();
 
 		LOG_INFO("Proposed %d tx(s), lcl hash(%s), removed " FMT_SIZE " tx(s)", propose_value.txset().txs_size(),
 			utils::String::Bin4ToHexString(lcl.hash()).c_str(), 
@@ -345,10 +344,6 @@ namespace bubi {
 		ledger_upgrade_.LedgerHasUpgrade();
 	}
 
-	Result GlueManager::ConfValidator(const std::string &add, const std::string &del) {
-		return ledger_upgrade_.ConfValidator(add, del);
-	}
-
 	void GlueManager::OnRecvLedgerUpMsg(const protocol::LedgerUpgradeNotify &msg) {
 		ledger_upgrade_.Recv(msg);
 	}
@@ -465,14 +460,6 @@ namespace bubi {
 		}
 
 		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
-		//check previous hash
-		if (consensus_value.previous_ledger_hash() != lcl.hash()) {
-			LOG_ERROR("Check value failed, previous ledger(seq:" FMT_I64 ") hash(%s) not equal to consensus message ledger hash(%s)",
-				lcl.seq(),
-				utils::String::Bin4ToHexString(lcl.hash()).c_str(),
-				utils::String::Bin4ToHexString(consensus_value.previous_ledger_hash()).c_str());
-			return Consensus::CHECK_VALUE_MAYVALID;
-		}
 
 		//check previous ledger sequence
 		if (consensus_value.ledger_seq() != lcl.seq() + 1) {
@@ -482,16 +469,29 @@ namespace bubi {
 			return Consensus::CHECK_VALUE_MAYVALID;
 		}
 
+		//check previous hash
+		if (consensus_value.previous_ledger_hash() != lcl.hash()) {
+			LOG_ERROR("Check value failed, previous ledger(seq:" FMT_I64 ") hash(%s) not equal to consensus message ledger hash(%s)",
+				lcl.seq(),
+				utils::String::Bin4ToHexString(lcl.hash()).c_str(),
+				utils::String::Bin4ToHexString(consensus_value.previous_ledger_hash()).c_str());
+			return Consensus::CHECK_VALUE_MAYVALID;
+		}
+
+		//not too closed
+		int64_t now = utils::Timestamp::Now().timestamp();
+		if (!(
+			now > consensus_value.close_time() && 
+			consensus_value.close_time() >= lcl.close_time() + Configure::Instance().validation_configure_.close_interval_)
+			) {
+			LOG_ERROR("Now time(" FMT_I64 ") > Close time(" FMT_I64 ") > lcl time (" FMT_I64 ") + (" FMT_I64")  Not valid", 
+				now / utils::MICRO_UNITS_PER_SEC, consensus_value.close_time() / utils::MICRO_UNITS_PER_SEC,
+				(lcl.close_time() + Configure::Instance().validation_configure_.close_interval_) / utils::MICRO_UNITS_PER_SEC);
+			return Consensus::CHECK_VALUE_MAYVALID;
+		}
+
 		if (consensus_value.has_ledger_upgrade()) {
 			const protocol::LedgerUpgrade &upgrade = consensus_value.ledger_upgrade();
-			//get current validator
-			protocol::ValidatorSet set;
-			if (!LedgerManager::Instance().GetValidators(consensus_value.ledger_seq() - 1, set)) {
-				LOG_ERROR("Check value failed, get validator failed of ledger seq(" FMT_I64 ")",
-					consensus_value.ledger_seq() - 1);
-				return Consensus::CHECK_VALUE_MAYVALID;
-			}
-
 			if (upgrade.new_ledger_version() != 0) {
 				if (lcl.version() >= upgrade.new_ledger_version()) {
 					LOG_ERROR("Check value failed,  new version(" FMT_I64 ") less or equal than lcl ledger version(" FMT_I64 ")",
@@ -507,37 +507,12 @@ namespace bubi {
 				}
 			}
 
-			std::set<std::string> current_validator;
-			for (int32_t i = 0; i < set.validators_size(); i++) current_validator.insert(set.validators(i));
-			//check the del validator set
-			for (int32_t i = 0; i < upgrade.del_validators_size(); i++) {
-				std::string item = upgrade.del_validators(i);
-				if (!PublicKey::IsAddressValid(item)) {
-					LOG_ERROR("Check command failed, the address(%s) not valid", item.c_str());
-					return Consensus::CHECK_VALUE_MAYVALID;
-				}
-
-				if (current_validator.find(item) == current_validator.end()) {
-					LOG_ERROR("Check value failed, the del address (%s) not exist in current validators", item.c_str());
-					return Consensus::CHECK_VALUE_MAYVALID;
-				}
-				current_validator.erase(item);
-			}
-
-			//check the add validator exist
-			for (int32_t i = 0; i < upgrade.add_validators_size(); i++) {
-				std::string item = upgrade.add_validators(i);
-				if (!PublicKey::IsAddressValid(item)) {
-					LOG_ERROR("Check command failed, the address(%s) not valid", item.c_str());
-					return Consensus::CHECK_VALUE_MAYVALID;
-				}
-
-				if (current_validator.find(item) != current_validator.end()) {
-					LOG_ERROR("Check value failed, the address(%s) exist in current validators", item.c_str());
-					return Consensus::CHECK_VALUE_MAYVALID;
-				}
-				current_validator.insert(item);
-			}
+			//normal block should not exit the upgarde
+			bool new_validator_exist = !upgrade.new_validator().empty();
+			std::string consensus_value_hash = HashWrapper::Crypto(consensus_value.SerializeAsString());
+			if (hardfork_points_.end() == hardfork_points_.find(lcl.consensus_value_hash()) && new_validator_exist) {
+				return Consensus::CHECK_VALUE_MAYVALID;
+			} 
 		}
 
 		//check the txset

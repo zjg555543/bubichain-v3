@@ -61,7 +61,6 @@ class Transaction;
 class TransactionEnv;
 class TransactionEnvSet;
 class TransactionEnvStore;
-class TransactionEnvWrapper;
 class Trigger;
 class Trigger_OperationTrigger;
 
@@ -2782,98 +2781,6 @@ class ConsensusValue : public ::google::protobuf::Message /* @@protoc_insertion_
 
   void InitAsDefaultInstance();
   static ConsensusValue* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class TransactionEnvWrapper : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.TransactionEnvWrapper) */ {
- public:
-  TransactionEnvWrapper();
-  virtual ~TransactionEnvWrapper();
-
-  TransactionEnvWrapper(const TransactionEnvWrapper& from);
-
-  inline TransactionEnvWrapper& operator=(const TransactionEnvWrapper& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const TransactionEnvWrapper& default_instance();
-
-  void Swap(TransactionEnvWrapper* other);
-
-  // implements Message ----------------------------------------------
-
-  inline TransactionEnvWrapper* New() const { return New(NULL); }
-
-  TransactionEnvWrapper* New(::google::protobuf::Arena* arena) const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const TransactionEnvWrapper& from);
-  void MergeFrom(const TransactionEnvWrapper& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
-    return InternalSerializeWithCachedSizesToArray(false, output);
-  }
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  void InternalSwap(TransactionEnvWrapper* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return _internal_metadata_.arena();
-  }
-  inline void* MaybeArenaPtr() const {
-    return _internal_metadata_.raw_arena_ptr();
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // optional .protocol.TransactionEnv transaction_env = 1;
-  bool has_transaction_env() const;
-  void clear_transaction_env();
-  static const int kTransactionEnvFieldNumber = 1;
-  const ::protocol::TransactionEnv& transaction_env() const;
-  ::protocol::TransactionEnv* mutable_transaction_env();
-  ::protocol::TransactionEnv* release_transaction_env();
-  void set_allocated_transaction_env(::protocol::TransactionEnv* transaction_env);
-
-  // optional int64 suggest_ledger_seq = 2;
-  void clear_suggest_ledger_seq();
-  static const int kSuggestLedgerSeqFieldNumber = 2;
-  ::google::protobuf::int64 suggest_ledger_seq() const;
-  void set_suggest_ledger_seq(::google::protobuf::int64 value);
-
-  // @@protoc_insertion_point(class_scope:protocol.TransactionEnvWrapper)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  bool _is_default_instance_;
-  ::protocol::TransactionEnv* transaction_env_;
-  ::google::protobuf::int64 suggest_ledger_seq_;
-  mutable int _cached_size_;
-  friend void  protobuf_AddDesc_chain_2eproto();
-  friend void protobuf_AssignDesc_chain_2eproto();
-  friend void protobuf_ShutdownFile_chain_2eproto();
-
-  void InitAsDefaultInstance();
-  static TransactionEnvWrapper* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -5899,62 +5806,6 @@ inline void ConsensusValue::set_allocated_ledger_upgrade(::protocol::LedgerUpgra
 
 // -------------------------------------------------------------------
 
-// TransactionEnvWrapper
-
-// optional .protocol.TransactionEnv transaction_env = 1;
-inline bool TransactionEnvWrapper::has_transaction_env() const {
-  return !_is_default_instance_ && transaction_env_ != NULL;
-}
-inline void TransactionEnvWrapper::clear_transaction_env() {
-  if (GetArenaNoVirtual() == NULL && transaction_env_ != NULL) delete transaction_env_;
-  transaction_env_ = NULL;
-}
-inline const ::protocol::TransactionEnv& TransactionEnvWrapper::transaction_env() const {
-  // @@protoc_insertion_point(field_get:protocol.TransactionEnvWrapper.transaction_env)
-  return transaction_env_ != NULL ? *transaction_env_ : *default_instance_->transaction_env_;
-}
-inline ::protocol::TransactionEnv* TransactionEnvWrapper::mutable_transaction_env() {
-  
-  if (transaction_env_ == NULL) {
-    transaction_env_ = new ::protocol::TransactionEnv;
-  }
-  // @@protoc_insertion_point(field_mutable:protocol.TransactionEnvWrapper.transaction_env)
-  return transaction_env_;
-}
-inline ::protocol::TransactionEnv* TransactionEnvWrapper::release_transaction_env() {
-  // @@protoc_insertion_point(field_release:protocol.TransactionEnvWrapper.transaction_env)
-  
-  ::protocol::TransactionEnv* temp = transaction_env_;
-  transaction_env_ = NULL;
-  return temp;
-}
-inline void TransactionEnvWrapper::set_allocated_transaction_env(::protocol::TransactionEnv* transaction_env) {
-  delete transaction_env_;
-  transaction_env_ = transaction_env;
-  if (transaction_env) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_set_allocated:protocol.TransactionEnvWrapper.transaction_env)
-}
-
-// optional int64 suggest_ledger_seq = 2;
-inline void TransactionEnvWrapper::clear_suggest_ledger_seq() {
-  suggest_ledger_seq_ = GOOGLE_LONGLONG(0);
-}
-inline ::google::protobuf::int64 TransactionEnvWrapper::suggest_ledger_seq() const {
-  // @@protoc_insertion_point(field_get:protocol.TransactionEnvWrapper.suggest_ledger_seq)
-  return suggest_ledger_seq_;
-}
-inline void TransactionEnvWrapper::set_suggest_ledger_seq(::google::protobuf::int64 value) {
-  
-  suggest_ledger_seq_ = value;
-  // @@protoc_insertion_point(field_set:protocol.TransactionEnvWrapper.suggest_ledger_seq)
-}
-
-// -------------------------------------------------------------------
-
 // Contract
 
 // optional .protocol.Contract.ContractType type = 1;
@@ -6304,8 +6155,6 @@ inline void OperationSetMetadata::set_delete_flag(bool value) {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

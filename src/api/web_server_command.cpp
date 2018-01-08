@@ -144,17 +144,6 @@ namespace bubi {
 						signpro->set_public_key(privateKey.GetBase16PublicKey());
 					}
 
-					// add node signature
-					PrivateKey privateKey(bubi::Configure::Instance().p2p_configure_.node_private_key_);
-					if (!privateKey.IsValid()) {
-						result.set_code(protocol::ERRCODE_INVALID_PRIKEY);
-						result.set_desc("signature failed");
-						break;
-					}
-					std::string sign = privateKey.Sign(content);
-					protocol::Signature *signpro = tran_env.add_signatures();
-					signpro->set_sign_data(sign);
-					signpro->set_public_key(privateKey.GetBase16PublicKey());
 					result_item["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
 				}
 
@@ -225,31 +214,6 @@ namespace bubi {
 
 		} while (false);
 		reply_json["error_code"] = error_code;
-		reply = reply_json.toStyledString();
-	}
-
-	void WebServer::ConfValidator(const http::server::request &request, std::string &reply) {
-		std::string error_desc;
-		int32_t error_code = protocol::ERRCODE_SUCCESS;
-		Json::Value reply_json = Json::Value(Json::objectValue);
-
-		do {
-			if (!request.peer_address_.IsLoopback()) {
-				error_code = protocol::ERRCODE_ACCESS_DENIED;
-				error_desc = "This url should be called from local";
-				break;
-			}
-
-			std::string add = request.GetParamValue("add");
-			std::string del = request.GetParamValue("del");
-
-			Result ret = GlueManager::Instance().ConfValidator(add, del);
-			error_code = ret.code();
-			error_desc = ret.desc();
-		} while (false);
-
-		reply_json["error_code"] = error_code;
-		reply_json["error_desc"] = error_desc;
 		reply = reply_json.toStyledString();
 	}
 

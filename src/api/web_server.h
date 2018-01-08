@@ -72,7 +72,6 @@ namespace bubi {
 
 		void MultiQuery(const http::server::request &request, std::string &reply);
 		void SubmitTransaction(const http::server::request &request, std::string &reply);
-		void ConfValidator(const http::server::request &request, std::string &reply);
 
 		void ContractQuery(const http::server::request &request, std::string &reply);
 		void TestContract(const http::server::request &request, std::string &reply);

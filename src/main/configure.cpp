@@ -38,25 +38,7 @@ namespace bubi {
 		Configure::GetValue(value, "node_private_key", node_private_key_);
 		Configure::GetValue(value, "network_id", network_id_);
 		
-		//ca_server_configure_.Load(value["ca_server"]);
-		ssl_configure_.Load(value["ssl"]);
 		consensus_network_configure_.Load(value["consensus_network"]);
-
-		if (value.isMember("transaction_network")) {
-			transaction_network_configure_.Load(value["transaction_network"]);
-		}
-		else {
-			transaction_network_configure_ = consensus_network_configure_;
-			transaction_network_configure_.listen_port_++;
-			for (utils::StringList::iterator iter = transaction_network_configure_.known_peer_list_.begin();
-				iter != transaction_network_configure_.known_peer_list_.end();
-				iter++) {
-				utils::InetAddress temp_addr(*iter);
-				temp_addr.SetPort(temp_addr.GetPort() + 1);
-				*iter = temp_addr.ToIpPort();
-			}
-		}
-
 		node_private_key_ = utils::Aes::HexDecrypto(node_private_key_, GetDataSecuretKey());
 		return true;
 	}

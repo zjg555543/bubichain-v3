@@ -60,12 +60,12 @@ namespace bubi {
 		void OnReceiveLedgers(const protocol::Ledgers &message, int64_t peer_id);
 
 		bool GetValidators(int64_t seq, protocol::ValidatorSet& validators_set);
-
 		const protocol::ValidatorSet& Validators()
 		{
 			return validators_;
 		}
 
+		static bool FeesConfigGet(const std::string& hash, protocol::FeeConfig &fee);
 		bool ConsensusValueFromDB(int64_t seq, protocol::ConsensusValue& request);
 
 		bool DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context);
@@ -100,7 +100,6 @@ namespace bubi {
 		static bool ValidatorsGet(const std::string& hash, protocol::ValidatorSet& vlidators_set);
 
 		static void FeesConfigSet(std::shared_ptr<WRITE_BATCH> batch, const protocol::FeeConfig &fee);
-		static bool FeesConfigGet(const std::string& hash, protocol::FeeConfig &fee);
 		
 		LedgerFrm::pointer last_closed_ledger_;
 		protocol::ValidatorSet validators_;

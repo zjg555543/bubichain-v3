@@ -91,9 +91,6 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* ConsensusValue_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ConsensusValue_reflection_ = NULL;
-const ::google::protobuf::Descriptor* TransactionEnvWrapper_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  TransactionEnvWrapper_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Contract_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Contract_reflection_ = NULL;
@@ -510,23 +507,7 @@ void protobuf_AssignDesc_chain_2eproto() {
       sizeof(ConsensusValue),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ConsensusValue, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ConsensusValue, _is_default_instance_));
-  TransactionEnvWrapper_descriptor_ = file->message_type(21);
-  static const int TransactionEnvWrapper_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TransactionEnvWrapper, transaction_env_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TransactionEnvWrapper, suggest_ledger_seq_),
-  };
-  TransactionEnvWrapper_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      TransactionEnvWrapper_descriptor_,
-      TransactionEnvWrapper::default_instance_,
-      TransactionEnvWrapper_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(TransactionEnvWrapper),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TransactionEnvWrapper, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TransactionEnvWrapper, _is_default_instance_));
-  Contract_descriptor_ = file->message_type(22);
+  Contract_descriptor_ = file->message_type(21);
   static const int Contract_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Contract, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Contract, payload_),
@@ -543,7 +524,7 @@ void protobuf_AssignDesc_chain_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Contract, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Contract, _is_default_instance_));
   Contract_ContractType_descriptor_ = Contract_descriptor_->enum_type(0);
-  OperationCreateAccount_descriptor_ = file->message_type(23);
+  OperationCreateAccount_descriptor_ = file->message_type(22);
   static const int OperationCreateAccount_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationCreateAccount, dest_address_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationCreateAccount, contract_),
@@ -562,7 +543,7 @@ void protobuf_AssignDesc_chain_2eproto() {
       sizeof(OperationCreateAccount),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationCreateAccount, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationCreateAccount, _is_default_instance_));
-  OperationSetMetadata_descriptor_ = file->message_type(24);
+  OperationSetMetadata_descriptor_ = file->message_type(23);
   static const int OperationSetMetadata_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSetMetadata, key_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSetMetadata, value_),
@@ -639,8 +620,6 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       ConsensusValue_descriptor_, &ConsensusValue::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      TransactionEnvWrapper_descriptor_, &TransactionEnvWrapper::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Contract_descriptor_, &Contract::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       OperationCreateAccount_descriptor_, &OperationCreateAccount::default_instance());
@@ -695,8 +674,6 @@ void protobuf_ShutdownFile_chain_2eproto() {
   delete TransactionEnvSet_reflection_;
   delete ConsensusValue::default_instance_;
   delete ConsensusValue_reflection_;
-  delete TransactionEnvWrapper::default_instance_;
-  delete TransactionEnvWrapper_reflection_;
   delete Contract::default_instance_;
   delete Contract_reflection_;
   delete OperationCreateAccount::default_instance_;
@@ -792,21 +769,19 @@ void protobuf_AddDesc_chain_2eproto() {
     "close_time\030\002 \001(\003\022\026\n\016previous_proof\030\003 \001(\014"
     "\022\022\n\nledger_seq\030\004 \001(\003\022\034\n\024previous_ledger_"
     "hash\030\005 \001(\014\022/\n\016ledger_upgrade\030\006 \001(\0132\027.pro"
-    "tocol.LedgerUpgrade\"f\n\025TransactionEnvWra"
-    "pper\0221\n\017transaction_env\030\001 \001(\0132\030.protocol"
-    ".TransactionEnv\022\032\n\022suggest_ledger_seq\030\002 "
-    "\001(\003\"j\n\010Contract\022-\n\004type\030\001 \001(\0162\037.protocol"
-    ".Contract.ContractType\022\017\n\007payload\030\002 \001(\t\""
-    "\036\n\014ContractType\022\016\n\nJAVASCRIPT\020\000\"\272\001\n\026Oper"
-    "ationCreateAccount\022\024\n\014dest_address\030\001 \001(\t"
-    "\022$\n\010contract\030\002 \001(\0132\022.protocol.Contract\022("
-    "\n\004priv\030\003 \001(\0132\032.protocol.AccountPrivilege"
-    "\022$\n\tmetadatas\030\004 \003(\0132\021.protocol.KeyPair\022\024"
-    "\n\014init_balance\030\005 \001(\003\"X\n\024OperationSetMeta"
-    "data\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\017\n\007vers"
-    "ion\030\003 \001(\003\022\023\n\013delete_flag\030\004 \001(\010*#\n\005Limit\022"
-    "\013\n\007UNKNOWN\020\000\022\r\n\tSIGNATURE\020dB\035\n\033cn.bubi.b"
-    "lockchain.adapter3b\006proto3", 3706);
+    "tocol.LedgerUpgrade\"j\n\010Contract\022-\n\004type\030"
+    "\001 \001(\0162\037.protocol.Contract.ContractType\022\017"
+    "\n\007payload\030\002 \001(\t\"\036\n\014ContractType\022\016\n\nJAVAS"
+    "CRIPT\020\000\"\272\001\n\026OperationCreateAccount\022\024\n\014de"
+    "st_address\030\001 \001(\t\022$\n\010contract\030\002 \001(\0132\022.pro"
+    "tocol.Contract\022(\n\004priv\030\003 \001(\0132\032.protocol."
+    "AccountPrivilege\022$\n\tmetadatas\030\004 \003(\0132\021.pr"
+    "otocol.KeyPair\022\024\n\014init_balance\030\005 \001(\003\"X\n\024"
+    "OperationSetMetadata\022\013\n\003key\030\001 \001(\t\022\r\n\005val"
+    "ue\030\002 \001(\t\022\017\n\007version\030\003 \001(\003\022\023\n\013delete_flag"
+    "\030\004 \001(\010*#\n\005Limit\022\013\n\007UNKNOWN\020\000\022\r\n\tSIGNATUR"
+    "E\020dB\035\n\033cn.bubi.blockchain.adapter3b\006prot"
+    "o3", 3602);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "chain.proto", &protobuf_RegisterTypes);
   Account::default_instance_ = new Account();
@@ -831,7 +806,6 @@ void protobuf_AddDesc_chain_2eproto() {
   TransactionEnvStore::default_instance_ = new TransactionEnvStore();
   TransactionEnvSet::default_instance_ = new TransactionEnvSet();
   ConsensusValue::default_instance_ = new ConsensusValue();
-  TransactionEnvWrapper::default_instance_ = new TransactionEnvWrapper();
   Contract::default_instance_ = new Contract();
   OperationCreateAccount::default_instance_ = new OperationCreateAccount();
   OperationSetMetadata::default_instance_ = new OperationSetMetadata();
@@ -857,7 +831,6 @@ void protobuf_AddDesc_chain_2eproto() {
   TransactionEnvStore::default_instance_->InitAsDefaultInstance();
   TransactionEnvSet::default_instance_->InitAsDefaultInstance();
   ConsensusValue::default_instance_->InitAsDefaultInstance();
-  TransactionEnvWrapper::default_instance_->InitAsDefaultInstance();
   Contract::default_instance_->InitAsDefaultInstance();
   OperationCreateAccount::default_instance_->InitAsDefaultInstance();
   OperationSetMetadata::default_instance_->InitAsDefaultInstance();
@@ -11255,325 +11228,6 @@ void ConsensusValue::set_allocated_ledger_upgrade(::protocol::LedgerUpgrade* led
     
   }
   // @@protoc_insertion_point(field_set_allocated:protocol.ConsensusValue.ledger_upgrade)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int TransactionEnvWrapper::kTransactionEnvFieldNumber;
-const int TransactionEnvWrapper::kSuggestLedgerSeqFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-TransactionEnvWrapper::TransactionEnvWrapper()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:protocol.TransactionEnvWrapper)
-}
-
-void TransactionEnvWrapper::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-  transaction_env_ = const_cast< ::protocol::TransactionEnv*>(&::protocol::TransactionEnv::default_instance());
-}
-
-TransactionEnvWrapper::TransactionEnvWrapper(const TransactionEnvWrapper& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:protocol.TransactionEnvWrapper)
-}
-
-void TransactionEnvWrapper::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-  transaction_env_ = NULL;
-  suggest_ledger_seq_ = GOOGLE_LONGLONG(0);
-}
-
-TransactionEnvWrapper::~TransactionEnvWrapper() {
-  // @@protoc_insertion_point(destructor:protocol.TransactionEnvWrapper)
-  SharedDtor();
-}
-
-void TransactionEnvWrapper::SharedDtor() {
-  if (this != default_instance_) {
-    delete transaction_env_;
-  }
-}
-
-void TransactionEnvWrapper::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* TransactionEnvWrapper::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return TransactionEnvWrapper_descriptor_;
-}
-
-const TransactionEnvWrapper& TransactionEnvWrapper::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_chain_2eproto();
-  return *default_instance_;
-}
-
-TransactionEnvWrapper* TransactionEnvWrapper::default_instance_ = NULL;
-
-TransactionEnvWrapper* TransactionEnvWrapper::New(::google::protobuf::Arena* arena) const {
-  TransactionEnvWrapper* n = new TransactionEnvWrapper;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void TransactionEnvWrapper::Clear() {
-// @@protoc_insertion_point(message_clear_start:protocol.TransactionEnvWrapper)
-  if (GetArenaNoVirtual() == NULL && transaction_env_ != NULL) delete transaction_env_;
-  transaction_env_ = NULL;
-  suggest_ledger_seq_ = GOOGLE_LONGLONG(0);
-}
-
-bool TransactionEnvWrapper::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:protocol.TransactionEnvWrapper)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .protocol.TransactionEnv transaction_env = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_transaction_env()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(16)) goto parse_suggest_ledger_seq;
-        break;
-      }
-
-      // optional int64 suggest_ledger_seq = 2;
-      case 2: {
-        if (tag == 16) {
-         parse_suggest_ledger_seq:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 input, &suggest_ledger_seq_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:protocol.TransactionEnvWrapper)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:protocol.TransactionEnvWrapper)
-  return false;
-#undef DO_
-}
-
-void TransactionEnvWrapper::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:protocol.TransactionEnvWrapper)
-  // optional .protocol.TransactionEnv transaction_env = 1;
-  if (this->has_transaction_env()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *this->transaction_env_, output);
-  }
-
-  // optional int64 suggest_ledger_seq = 2;
-  if (this->suggest_ledger_seq() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->suggest_ledger_seq(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:protocol.TransactionEnvWrapper)
-}
-
-::google::protobuf::uint8* TransactionEnvWrapper::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:protocol.TransactionEnvWrapper)
-  // optional .protocol.TransactionEnv transaction_env = 1;
-  if (this->has_transaction_env()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, *this->transaction_env_, false, target);
-  }
-
-  // optional int64 suggest_ledger_seq = 2;
-  if (this->suggest_ledger_seq() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->suggest_ledger_seq(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:protocol.TransactionEnvWrapper)
-  return target;
-}
-
-int TransactionEnvWrapper::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:protocol.TransactionEnvWrapper)
-  int total_size = 0;
-
-  // optional .protocol.TransactionEnv transaction_env = 1;
-  if (this->has_transaction_env()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        *this->transaction_env_);
-  }
-
-  // optional int64 suggest_ledger_seq = 2;
-  if (this->suggest_ledger_seq() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int64Size(
-        this->suggest_ledger_seq());
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void TransactionEnvWrapper::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:protocol.TransactionEnvWrapper)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const TransactionEnvWrapper* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const TransactionEnvWrapper>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.TransactionEnvWrapper)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.TransactionEnvWrapper)
-    MergeFrom(*source);
-  }
-}
-
-void TransactionEnvWrapper::MergeFrom(const TransactionEnvWrapper& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:protocol.TransactionEnvWrapper)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.has_transaction_env()) {
-    mutable_transaction_env()->::protocol::TransactionEnv::MergeFrom(from.transaction_env());
-  }
-  if (from.suggest_ledger_seq() != 0) {
-    set_suggest_ledger_seq(from.suggest_ledger_seq());
-  }
-}
-
-void TransactionEnvWrapper::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:protocol.TransactionEnvWrapper)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void TransactionEnvWrapper::CopyFrom(const TransactionEnvWrapper& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:protocol.TransactionEnvWrapper)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool TransactionEnvWrapper::IsInitialized() const {
-
-  return true;
-}
-
-void TransactionEnvWrapper::Swap(TransactionEnvWrapper* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void TransactionEnvWrapper::InternalSwap(TransactionEnvWrapper* other) {
-  std::swap(transaction_env_, other->transaction_env_);
-  std::swap(suggest_ledger_seq_, other->suggest_ledger_seq_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata TransactionEnvWrapper::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = TransactionEnvWrapper_descriptor_;
-  metadata.reflection = TransactionEnvWrapper_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// TransactionEnvWrapper
-
-// optional .protocol.TransactionEnv transaction_env = 1;
-bool TransactionEnvWrapper::has_transaction_env() const {
-  return !_is_default_instance_ && transaction_env_ != NULL;
-}
-void TransactionEnvWrapper::clear_transaction_env() {
-  if (GetArenaNoVirtual() == NULL && transaction_env_ != NULL) delete transaction_env_;
-  transaction_env_ = NULL;
-}
-const ::protocol::TransactionEnv& TransactionEnvWrapper::transaction_env() const {
-  // @@protoc_insertion_point(field_get:protocol.TransactionEnvWrapper.transaction_env)
-  return transaction_env_ != NULL ? *transaction_env_ : *default_instance_->transaction_env_;
-}
-::protocol::TransactionEnv* TransactionEnvWrapper::mutable_transaction_env() {
-  
-  if (transaction_env_ == NULL) {
-    transaction_env_ = new ::protocol::TransactionEnv;
-  }
-  // @@protoc_insertion_point(field_mutable:protocol.TransactionEnvWrapper.transaction_env)
-  return transaction_env_;
-}
-::protocol::TransactionEnv* TransactionEnvWrapper::release_transaction_env() {
-  // @@protoc_insertion_point(field_release:protocol.TransactionEnvWrapper.transaction_env)
-  
-  ::protocol::TransactionEnv* temp = transaction_env_;
-  transaction_env_ = NULL;
-  return temp;
-}
-void TransactionEnvWrapper::set_allocated_transaction_env(::protocol::TransactionEnv* transaction_env) {
-  delete transaction_env_;
-  transaction_env_ = transaction_env;
-  if (transaction_env) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_set_allocated:protocol.TransactionEnvWrapper.transaction_env)
-}
-
-// optional int64 suggest_ledger_seq = 2;
-void TransactionEnvWrapper::clear_suggest_ledger_seq() {
-  suggest_ledger_seq_ = GOOGLE_LONGLONG(0);
-}
- ::google::protobuf::int64 TransactionEnvWrapper::suggest_ledger_seq() const {
-  // @@protoc_insertion_point(field_get:protocol.TransactionEnvWrapper.suggest_ledger_seq)
-  return suggest_ledger_seq_;
-}
- void TransactionEnvWrapper::set_suggest_ledger_seq(::google::protobuf::int64 value) {
-  
-  suggest_ledger_seq_ = value;
-  // @@protoc_insertion_point(field_set:protocol.TransactionEnvWrapper.suggest_ledger_seq)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

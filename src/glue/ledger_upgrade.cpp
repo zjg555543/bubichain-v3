@@ -60,9 +60,7 @@ namespace bubi {
 		do {
 			utils::MutexGuard guard(lock_);
 			if (current_time - last_send_time_ > 30 * utils::MICRO_UNITS_PER_SEC &&
-				(local_state_.add_validators_size() > 0 ||
-				local_state_.del_validators_size() > 0 ||
-				local_state_.new_ledger_version() > 0)) {
+				local_state_.new_ledger_version() > 0) {
 				
 				notify = new protocol::LedgerUpgradeNotify;
 				notify->set_nonce(current_time);
@@ -142,103 +140,6 @@ namespace bubi {
 		}
 
 		return false;
-	}
-
-	Result LedgerUpgrade::ConfValidator(const std::string &add, const std::string &del) {
-	
-		Result result;
-		std::vector<std::string> add_validator;
-		std::vector<std::string> del_validator;
-		add_validator = utils::String::split(add, ",");
-		del_validator = utils::String::split(del, ","); 
-
-		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
-		protocol::ValidatorSet set;
-		if (!LedgerManager::Instance().GetValidators(lcl.seq(), set)) {
-			result.set_desc(utils::String::Format("Check valid failed, get validator failed of ledger seq(" FMT_I64 ")",
-				lcl.seq()));
-			result.set_code(protocol::ERRCODE_INTERNAL_ERROR);
-			LOG_ERROR("%s", result.desc().c_str());
-			return result;
-		}
-
-		//check the add validator exist
-		std::set<std::string> duplicate_set;
-		std::set<std::string> current_validator;
-		for (int32_t i = 0; i < set.validators_size(); i++) current_validator.insert(set.validators(i));
-		if (!add.empty()){
-			for (size_t i = 0; i < add_validator.size(); i++) {
-				std::string item = add_validator[i];
-				if (!PublicKey::IsAddressValid(item)) {
-					result.set_desc(utils::String::Format("Check command failed, the address(%s) not valid", item.c_str()));
-					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					LOG_ERROR("%s", result.desc().c_str());
-					return result;
-				}
-
-				if (current_validator.find(item) != current_validator.end()) {
-					result.set_desc(utils::String::Format("Check command failed, the address(%s) exist in current validators", item.c_str()));
-					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					LOG_ERROR("%s", result.desc().c_str());
-					return result;
-				}
-
-				if (duplicate_set.find(item) != duplicate_set.end()) {
-					result.set_desc(utils::String::Format("Check command failed, the address(%s) duplicated in upgrade object", item.c_str()));
-					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					LOG_ERROR("%s", result.desc().c_str());
-					return result;
-				}
-				duplicate_set.insert(item);
-			}
-		}
-
-		//check the del validator set
-		if (!del.empty()){
-			for (size_t i = 0; i < del_validator.size(); i++) {
-				std::string item = del_validator[i];
-				if (!PublicKey::IsAddressValid(item)) {
-					result.set_desc(utils::String::Format("Check command failed, the address(%s) not valid", item.c_str()));
-					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					LOG_ERROR("%s", result.desc().c_str());
-					return result;
-				}
-
-				if (current_validator.find(item) == current_validator.end()) {
-					result.set_desc(utils::String::Format("Check command failed, the del address (%s) not exist in current validators", item.c_str()));
-					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					LOG_ERROR("%s", result.desc().c_str());
-					return result;
-				}
-
-				if (duplicate_set.find(item) != duplicate_set.end()) {
-					result.set_desc(utils::String::Format("Check command failed, the del address(%s) duplicated in upgrade object", item.c_str()));
-					result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-					LOG_ERROR("%s", result.desc().c_str());
-					return result;
-				}
-				duplicate_set.insert(item);
-			}
-		} 
-
-		utils::MutexGuard guard(lock_);
-
-		local_state_.clear_add_validators();
-		local_state_.clear_del_validators();
-		if (!add.empty()) {
-			for (size_t i = 0; i < add_validator.size(); i++) {
-				local_state_.add_add_validators(add_validator[i]);
-			}
-		}
-
-		if (!del.empty()) {
-			for (size_t i = 0; i < del_validator.size(); i++) {
-				local_state_.add_del_validators(del_validator[i]);
-			}
-		}
-
-		LOG_INFO("Prepare config validator, add(%s), del(%s)", add.c_str(), del.c_str());
-		return result;
 	}
 
 	bool LedgerUpgrade::ConfNewVersion(int32_t new_version) {

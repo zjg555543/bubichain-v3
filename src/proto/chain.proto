@@ -196,13 +196,6 @@ message ConsensusValue{
 	LedgerUpgrade ledger_upgrade = 6;
 }
 
-message TransactionEnvWrapper {
-		TransactionEnv transaction_env = 1;
-
-		// follow this seggestion to make quick consensus
-		int64	suggest_ledger_seq = 2;
-}
-
 message Contract{
     enum ContractType{
 		JAVASCRIPT = 0;

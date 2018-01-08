@@ -39,7 +39,6 @@ namespace bubi {
 		void OnTimer(int64_t current_time);
 		void Recv(const protocol::LedgerUpgradeNotify &msg);
 		bool GetValid(const protocol::ValidatorSet &validators, size_t quorum_size, protocol::LedgerUpgrade &proto_upgrade);
-		Result ConfValidator(const std::string &add, const std::string &del);
 		bool ConfNewVersion(int32_t new_version);
 		protocol::LedgerUpgrade GetLocalState();
 		void LedgerHasUpgrade();

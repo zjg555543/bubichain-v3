@@ -38,10 +38,7 @@ namespace bubi {
 
 		std::string node_private_key_;
 		int64_t network_id_;
-		//CAServerConfigure ca_server_configure_;
-		SSLConfigure ssl_configure_;
 		P2pNetwork consensus_network_configure_;
-		P2pNetwork transaction_network_configure_;
 
 		bool Load(const Json::Value &value);
 	};

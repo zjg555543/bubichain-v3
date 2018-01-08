@@ -85,10 +85,9 @@ void protobuf_AssignDesc_common_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Signature, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Signature, _is_default_instance_));
   LedgerUpgrade_descriptor_ = file->message_type(2);
-  static const int LedgerUpgrade_offsets_[3] = {
+  static const int LedgerUpgrade_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerUpgrade, new_ledger_version_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerUpgrade, add_validators_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerUpgrade, del_validators_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LedgerUpgrade, new_validator_),
   };
   LedgerUpgrade_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -205,40 +204,39 @@ void protobuf_AddDesc_common_2eproto() {
     "\n\014common.proto\022\010protocol\"6\n\007KeyPair\022\013\n\003k"
     "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\017\n\007version\030\003 \001(\003"
     "\"2\n\tSignature\022\022\n\npublic_key\030\001 \001(\t\022\021\n\tsig"
-    "n_data\030\002 \001(\014\"[\n\rLedgerUpgrade\022\032\n\022new_led"
-    "ger_version\030\001 \001(\003\022\026\n\016add_validators\030\002 \003("
-    "\t\022\026\n\016del_validators\030\003 \003(\t\"J\n\tWsMessage\022\014"
-    "\n\004type\030\001 \001(\003\022\017\n\007request\030\002 \001(\010\022\020\n\010sequenc"
-    "e\030\003 \001(\003\022\014\n\004data\030\004 \001(\014\"\025\n\004Ping\022\r\n\005nonce\030\001"
-    " \001(\003\"\025\n\004Pong\022\r\n\005nonce\030\001 \001(\003*\250\010\n\tERRORCOD"
-    "E\022\023\n\017ERRCODE_SUCCESS\020\000\022\032\n\026ERRCODE_INTERN"
-    "AL_ERROR\020\001\022\035\n\031ERRCODE_INVALID_PARAMETER\020"
-    "\002\022\031\n\025ERRCODE_ALREADY_EXIST\020\003\022\025\n\021ERRCODE_"
-    "NOT_EXIST\020\004\022\026\n\022ERRCODE_TX_TIMEOUT\020\005\022\031\n\025E"
-    "RRCODE_ACCESS_DENIED\020\006\022\'\n#ERRCODE_EXPR_C"
-    "ONDITION_RESULT_FALSE\020\024\022\'\n#ERRCODE_EXPR_"
-    "CONDITION_SYNTAX_ERROR\020\025\022\032\n\026ERRCODE_INVA"
-    "LID_PUBKEY\020Z\022\032\n\026ERRCODE_INVALID_PRIKEY\020["
-    "\022\031\n\025ERRCODE_ASSET_INVALID\020\\\022\035\n\031ERRCODE_I"
-    "NVALID_SIGNATURE\020]\022\033\n\027ERRCODE_INVALID_AD"
-    "DRESS\020^\022\036\n\032ERRCODE_MISSING_OPERATIONS\020a\022"
-    "\030\n\024ERRCODE_BAD_SEQUENCE\020c\022\037\n\033ERRCODE_ACC"
-    "OUNT_LOW_RESERVE\020d\022$\n ERRCODE_ACCOUNT_SO"
-    "URCEDEST_EQUAL\020e\022\036\n\032ERRCODE_ACCOUNT_DEST"
-    "_EXIST\020f\022\035\n\031ERRCODE_ACCOUNT_NOT_EXIST\020g\022"
-    "%\n!ERRCODE_ACCOUNT_ASSET_LOW_RESERVE\020h\022*"
-    "\n&ERRCODE_ACCOUNT_ASSET_AMOUNT_TOO_LARGE"
-    "\020i\022\032\n\026ERRCODE_FEE_NOT_ENOUGH\020o\022\032\n\026ERRCOD"
-    "E_OUT_OF_TXCACHE\020r\022\034\n\030ERRCODE_WEIGHT_NOT"
-    "_VALID\020x\022\037\n\033ERRCODE_THRESHOLD_NOT_VALID\020"
-    "y\022 \n\033ERRCODE_INVALID_DATAVERSION\020\220\001\022\034\n\027E"
-    "RRCODE_TX_SIZE_TOO_BIG\020\222\001\022\"\n\035ERRCODE_CON"
-    "TRACT_EXECUTE_FAIL\020\227\001\022\"\n\035ERRCODE_CONTRAC"
-    "T_SYNTAX_ERROR\020\230\001\022(\n#ERRCODE_CONTRACT_TO"
-    "O_MANY_RECURSION\020\231\001\022+\n&ERRCODE_CONTRACT_"
-    "TOO_MANY_TRANSACTIONS\020\232\001\022\034\n\027ERRCODE_CONT"
-    "EXT_EXPIRED\020\233\001B\035\n\033cn.bubi.blockchain.ada"
-    "pter3b\006proto3", 1453);
+    "n_data\030\002 \001(\014\"B\n\rLedgerUpgrade\022\032\n\022new_led"
+    "ger_version\030\001 \001(\003\022\025\n\rnew_validator\030\002 \001(\t"
+    "\"J\n\tWsMessage\022\014\n\004type\030\001 \001(\003\022\017\n\007request\030\002"
+    " \001(\010\022\020\n\010sequence\030\003 \001(\003\022\014\n\004data\030\004 \001(\014\"\025\n\004"
+    "Ping\022\r\n\005nonce\030\001 \001(\003\"\025\n\004Pong\022\r\n\005nonce\030\001 \001"
+    "(\003*\250\010\n\tERRORCODE\022\023\n\017ERRCODE_SUCCESS\020\000\022\032\n"
+    "\026ERRCODE_INTERNAL_ERROR\020\001\022\035\n\031ERRCODE_INV"
+    "ALID_PARAMETER\020\002\022\031\n\025ERRCODE_ALREADY_EXIS"
+    "T\020\003\022\025\n\021ERRCODE_NOT_EXIST\020\004\022\026\n\022ERRCODE_TX"
+    "_TIMEOUT\020\005\022\031\n\025ERRCODE_ACCESS_DENIED\020\006\022\'\n"
+    "#ERRCODE_EXPR_CONDITION_RESULT_FALSE\020\024\022\'"
+    "\n#ERRCODE_EXPR_CONDITION_SYNTAX_ERROR\020\025\022"
+    "\032\n\026ERRCODE_INVALID_PUBKEY\020Z\022\032\n\026ERRCODE_I"
+    "NVALID_PRIKEY\020[\022\031\n\025ERRCODE_ASSET_INVALID"
+    "\020\\\022\035\n\031ERRCODE_INVALID_SIGNATURE\020]\022\033\n\027ERR"
+    "CODE_INVALID_ADDRESS\020^\022\036\n\032ERRCODE_MISSIN"
+    "G_OPERATIONS\020a\022\030\n\024ERRCODE_BAD_SEQUENCE\020c"
+    "\022\037\n\033ERRCODE_ACCOUNT_LOW_RESERVE\020d\022$\n ERR"
+    "CODE_ACCOUNT_SOURCEDEST_EQUAL\020e\022\036\n\032ERRCO"
+    "DE_ACCOUNT_DEST_EXIST\020f\022\035\n\031ERRCODE_ACCOU"
+    "NT_NOT_EXIST\020g\022%\n!ERRCODE_ACCOUNT_ASSET_"
+    "LOW_RESERVE\020h\022*\n&ERRCODE_ACCOUNT_ASSET_A"
+    "MOUNT_TOO_LARGE\020i\022\032\n\026ERRCODE_FEE_NOT_ENO"
+    "UGH\020o\022\032\n\026ERRCODE_OUT_OF_TXCACHE\020r\022\034\n\030ERR"
+    "CODE_WEIGHT_NOT_VALID\020x\022\037\n\033ERRCODE_THRES"
+    "HOLD_NOT_VALID\020y\022 \n\033ERRCODE_INVALID_DATA"
+    "VERSION\020\220\001\022\034\n\027ERRCODE_TX_SIZE_TOO_BIG\020\222\001"
+    "\022\"\n\035ERRCODE_CONTRACT_EXECUTE_FAIL\020\227\001\022\"\n\035"
+    "ERRCODE_CONTRACT_SYNTAX_ERROR\020\230\001\022(\n#ERRC"
+    "ODE_CONTRACT_TOO_MANY_RECURSION\020\231\001\022+\n&ER"
+    "RCODE_CONTRACT_TOO_MANY_TRANSACTIONS\020\232\001\022"
+    "\034\n\027ERRCODE_CONTEXT_EXPIRED\020\233\001B\035\n\033cn.bubi"
+    ".blockchain.adapter3b\006proto3", 1428);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "common.proto", &protobuf_RegisterTypes);
   KeyPair::default_instance_ = new KeyPair();
@@ -1117,8 +1115,7 @@ void Signature::clear_sign_data() {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int LedgerUpgrade::kNewLedgerVersionFieldNumber;
-const int LedgerUpgrade::kAddValidatorsFieldNumber;
-const int LedgerUpgrade::kDelValidatorsFieldNumber;
+const int LedgerUpgrade::kNewValidatorFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 LedgerUpgrade::LedgerUpgrade()
@@ -1144,6 +1141,7 @@ void LedgerUpgrade::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   new_ledger_version_ = GOOGLE_LONGLONG(0);
+  new_validator_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 LedgerUpgrade::~LedgerUpgrade() {
@@ -1152,6 +1150,7 @@ LedgerUpgrade::~LedgerUpgrade() {
 }
 
 void LedgerUpgrade::SharedDtor() {
+  new_validator_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -1184,8 +1183,7 @@ LedgerUpgrade* LedgerUpgrade::New(::google::protobuf::Arena* arena) const {
 void LedgerUpgrade::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.LedgerUpgrade)
   new_ledger_version_ = GOOGLE_LONGLONG(0);
-  add_validators_.Clear();
-  del_validators_.Clear();
+  new_validator_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 bool LedgerUpgrade::MergePartialFromCodedStream(
@@ -1208,44 +1206,23 @@ bool LedgerUpgrade::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_add_validators;
+        if (input->ExpectTag(18)) goto parse_new_validator;
         break;
       }
 
-      // repeated string add_validators = 2;
+      // optional string new_validator = 2;
       case 2: {
         if (tag == 18) {
-         parse_add_validators:
+         parse_new_validator:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_add_validators()));
+                input, this->mutable_new_validator()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->add_validators(this->add_validators_size() - 1).data(),
-            this->add_validators(this->add_validators_size() - 1).length(),
+            this->new_validator().data(), this->new_validator().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.LedgerUpgrade.add_validators"));
+            "protocol.LedgerUpgrade.new_validator"));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_add_validators;
-        if (input->ExpectTag(26)) goto parse_del_validators;
-        break;
-      }
-
-      // repeated string del_validators = 3;
-      case 3: {
-        if (tag == 26) {
-         parse_del_validators:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_del_validators()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->del_validators(this->del_validators_size() - 1).data(),
-            this->del_validators(this->del_validators_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.LedgerUpgrade.del_validators"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_del_validators;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1279,24 +1256,14 @@ void LedgerUpgrade::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->new_ledger_version(), output);
   }
 
-  // repeated string add_validators = 2;
-  for (int i = 0; i < this->add_validators_size(); i++) {
+  // optional string new_validator = 2;
+  if (this->new_validator().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->add_validators(i).data(), this->add_validators(i).length(),
+      this->new_validator().data(), this->new_validator().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.LedgerUpgrade.add_validators");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->add_validators(i), output);
-  }
-
-  // repeated string del_validators = 3;
-  for (int i = 0; i < this->del_validators_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->del_validators(i).data(), this->del_validators(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.LedgerUpgrade.del_validators");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->del_validators(i), output);
+      "protocol.LedgerUpgrade.new_validator");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->new_validator(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.LedgerUpgrade)
@@ -1310,24 +1277,15 @@ void LedgerUpgrade::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->new_ledger_version(), target);
   }
 
-  // repeated string add_validators = 2;
-  for (int i = 0; i < this->add_validators_size(); i++) {
+  // optional string new_validator = 2;
+  if (this->new_validator().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->add_validators(i).data(), this->add_validators(i).length(),
+      this->new_validator().data(), this->new_validator().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.LedgerUpgrade.add_validators");
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(2, this->add_validators(i), target);
-  }
-
-  // repeated string del_validators = 3;
-  for (int i = 0; i < this->del_validators_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->del_validators(i).data(), this->del_validators(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.LedgerUpgrade.del_validators");
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(3, this->del_validators(i), target);
+      "protocol.LedgerUpgrade.new_validator");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->new_validator(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.LedgerUpgrade)
@@ -1345,18 +1303,11 @@ int LedgerUpgrade::ByteSize() const {
         this->new_ledger_version());
   }
 
-  // repeated string add_validators = 2;
-  total_size += 1 * this->add_validators_size();
-  for (int i = 0; i < this->add_validators_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->add_validators(i));
-  }
-
-  // repeated string del_validators = 3;
-  total_size += 1 * this->del_validators_size();
-  for (int i = 0; i < this->del_validators_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->del_validators(i));
+  // optional string new_validator = 2;
+  if (this->new_validator().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->new_validator());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -1387,10 +1338,12 @@ void LedgerUpgrade::MergeFrom(const LedgerUpgrade& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  add_validators_.MergeFrom(from.add_validators_);
-  del_validators_.MergeFrom(from.del_validators_);
   if (from.new_ledger_version() != 0) {
     set_new_ledger_version(from.new_ledger_version());
+  }
+  if (from.new_validator().size() > 0) {
+
+    new_validator_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.new_validator_);
   }
 }
 
@@ -1419,8 +1372,7 @@ void LedgerUpgrade::Swap(LedgerUpgrade* other) {
 }
 void LedgerUpgrade::InternalSwap(LedgerUpgrade* other) {
   std::swap(new_ledger_version_, other->new_ledger_version_);
-  add_validators_.UnsafeArenaSwap(&other->add_validators_);
-  del_validators_.UnsafeArenaSwap(&other->del_validators_);
+  new_validator_.Swap(&other->new_validator_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -1450,114 +1402,48 @@ void LedgerUpgrade::clear_new_ledger_version() {
   // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.new_ledger_version)
 }
 
-// repeated string add_validators = 2;
-int LedgerUpgrade::add_validators_size() const {
-  return add_validators_.size();
+// optional string new_validator = 2;
+void LedgerUpgrade::clear_new_validator() {
+  new_validator_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-void LedgerUpgrade::clear_add_validators() {
-  add_validators_.Clear();
+ const ::std::string& LedgerUpgrade::new_validator() const {
+  // @@protoc_insertion_point(field_get:protocol.LedgerUpgrade.new_validator)
+  return new_validator_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& LedgerUpgrade::add_validators(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.LedgerUpgrade.add_validators)
-  return add_validators_.Get(index);
+ void LedgerUpgrade::set_new_validator(const ::std::string& value) {
+  
+  new_validator_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.new_validator)
 }
- ::std::string* LedgerUpgrade::mutable_add_validators(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.LedgerUpgrade.add_validators)
-  return add_validators_.Mutable(index);
+ void LedgerUpgrade::set_new_validator(const char* value) {
+  
+  new_validator_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.LedgerUpgrade.new_validator)
 }
- void LedgerUpgrade::set_add_validators(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.add_validators)
-  add_validators_.Mutable(index)->assign(value);
+ void LedgerUpgrade::set_new_validator(const char* value, size_t size) {
+  
+  new_validator_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerUpgrade.new_validator)
 }
- void LedgerUpgrade::set_add_validators(int index, const char* value) {
-  add_validators_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.LedgerUpgrade.add_validators)
+ ::std::string* LedgerUpgrade::mutable_new_validator() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.LedgerUpgrade.new_validator)
+  return new_validator_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void LedgerUpgrade::set_add_validators(int index, const char* value, size_t size) {
-  add_validators_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerUpgrade.add_validators)
+ ::std::string* LedgerUpgrade::release_new_validator() {
+  // @@protoc_insertion_point(field_release:protocol.LedgerUpgrade.new_validator)
+  
+  return new_validator_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* LedgerUpgrade::add_add_validators() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.LedgerUpgrade.add_validators)
-  return add_validators_.Add();
-}
- void LedgerUpgrade::add_add_validators(const ::std::string& value) {
-  add_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.LedgerUpgrade.add_validators)
-}
- void LedgerUpgrade::add_add_validators(const char* value) {
-  add_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.LedgerUpgrade.add_validators)
-}
- void LedgerUpgrade::add_add_validators(const char* value, size_t size) {
-  add_validators_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.LedgerUpgrade.add_validators)
-}
- const ::google::protobuf::RepeatedPtrField< ::std::string>&
-LedgerUpgrade::add_validators() const {
-  // @@protoc_insertion_point(field_list:protocol.LedgerUpgrade.add_validators)
-  return add_validators_;
-}
- ::google::protobuf::RepeatedPtrField< ::std::string>*
-LedgerUpgrade::mutable_add_validators() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.LedgerUpgrade.add_validators)
-  return &add_validators_;
-}
-
-// repeated string del_validators = 3;
-int LedgerUpgrade::del_validators_size() const {
-  return del_validators_.size();
-}
-void LedgerUpgrade::clear_del_validators() {
-  del_validators_.Clear();
-}
- const ::std::string& LedgerUpgrade::del_validators(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.LedgerUpgrade.del_validators)
-  return del_validators_.Get(index);
-}
- ::std::string* LedgerUpgrade::mutable_del_validators(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.LedgerUpgrade.del_validators)
-  return del_validators_.Mutable(index);
-}
- void LedgerUpgrade::set_del_validators(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.LedgerUpgrade.del_validators)
-  del_validators_.Mutable(index)->assign(value);
-}
- void LedgerUpgrade::set_del_validators(int index, const char* value) {
-  del_validators_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.LedgerUpgrade.del_validators)
-}
- void LedgerUpgrade::set_del_validators(int index, const char* value, size_t size) {
-  del_validators_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.LedgerUpgrade.del_validators)
-}
- ::std::string* LedgerUpgrade::add_del_validators() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.LedgerUpgrade.del_validators)
-  return del_validators_.Add();
-}
- void LedgerUpgrade::add_del_validators(const ::std::string& value) {
-  del_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.LedgerUpgrade.del_validators)
-}
- void LedgerUpgrade::add_del_validators(const char* value) {
-  del_validators_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.LedgerUpgrade.del_validators)
-}
- void LedgerUpgrade::add_del_validators(const char* value, size_t size) {
-  del_validators_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.LedgerUpgrade.del_validators)
-}
- const ::google::protobuf::RepeatedPtrField< ::std::string>&
-LedgerUpgrade::del_validators() const {
-  // @@protoc_insertion_point(field_list:protocol.LedgerUpgrade.del_validators)
-  return del_validators_;
-}
- ::google::protobuf::RepeatedPtrField< ::std::string>*
-LedgerUpgrade::mutable_del_validators() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.LedgerUpgrade.del_validators)
-  return &del_validators_;
+ void LedgerUpgrade::set_allocated_new_validator(::std::string* new_validator) {
+  if (new_validator != NULL) {
+    
+  } else {
+    
+  }
+  new_validator_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), new_validator);
+  // @@protoc_insertion_point(field_set_allocated:protocol.LedgerUpgrade.new_validator)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
