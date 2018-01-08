@@ -1788,8 +1788,7 @@ bv.MirrorType=m;
 });
 })
 
-debug
-f
+debugzb
 (function(a,b){
 "use strict";
 var c=a.FrameMirror;
@@ -2391,14 +2390,6 @@ return(void 0);
 s.debuggerFlags=function(){
 return z;
 };
-s.getWasmFunctionOffsetTable=function(au){
-var O=scriptById(au);
-return O?%GetWasmFunctionOffsetTable(O):(void 0);
-}
-s.disassembleWasmFunction=function(au){
-var O=scriptById(au);
-return O?%DisassembleWasmFunction(O):(void 0);
-}
 s.MakeMirror=j;
 function MakeExecutionState(H){
 return new ExecutionState(H);
@@ -9126,7 +9117,7 @@ n.SetValues=SetValues;
 });
 })
 
-promiseÑŽ
+promiseM
 (function(a,b,c){
 "use strict";
 %CheckIsBootstrapping();
@@ -9161,376 +9152,357 @@ p=t.SpeciesConstructor;
 const kPending=0;
 const kFulfilled=+1;
 const kRejected=+2;
-function CreateResolvingFunctions(u,v){
-var w=false;
-var x=value=>{
-if(w===true)return;
-w=true;
-ResolvePromise(u,value);
-};
-var y=reason=>{
-if(w===true)return;
-w=true;
-%PromiseReject(u,reason,v);
-PromiseSet(u,kRejected,reason);
-};
-return{
-__proto__:null,
-resolve:x,
-reject:y
-};
-}
-var z=function Promise(A){
-if(A===m){
-return %_NewObject(z,new.target);
+const kResolveCallback=0;
+const kRejectCallback=1;
+var u=function Promise(v){
+if(v===m){
+return %_NewObject(u,new.target);
 }
 if((new.target===(void 0)))throw %make_type_error(66,this);
-if(!(typeof(A)==='function')){
-throw %make_type_error(128,A);
+if(!(typeof(v)==='function')){
+throw %make_type_error(128,v);
 }
-var u=PromiseInit(%_NewObject(z,new.target));
-var B=CreateResolvingFunctions(u,true);
-var C=(%_DebugIsActive()!=0);
+var w=PromiseInit(%_NewObject(u,new.target));
+var x=%create_resolving_functions(w,true);
+var y=(%_DebugIsActive()!=0);
 try{
-if(C)%DebugPushPromise(u);
-A(B.resolve,B.reject);
+if(y)%DebugPushPromise(w);
+v(x[kResolveCallback],x[kRejectCallback]);
 }%catch(e){
-%_Call(B.reject,(void 0),e);
+%_Call(x[kRejectCallback],(void 0),e);
 }finally{
-if(C)%DebugPopPromise();
+if(y)%DebugPopPromise();
 }
-return u;
+return w;
 }
-function PromiseSet(u,D,E){
-(u[n]=D);
-(u[o]=E);
-(u[j]=(void 0));
-(u[i]=(void 0));
-(u[k]=(void 0));
-return u;
+function PromiseSet(w,z,A){
+(w[n]=z);
+(w[o]=A);
+(w[j]=(void 0));
+(w[i]=(void 0));
+(w[k]=(void 0));
+return w;
 }
-function PromiseCreateAndSet(D,E){
-var u=new z(m);
-if((%_DebugIsActive()!=0))PromiseSet(u,kPending,(void 0));
-return PromiseSet(u,D,E);
+function PromiseCreateAndSet(z,A){
+var w=new u(m);
+if((%_DebugIsActive()!=0))PromiseSet(w,kPending,(void 0));
+return PromiseSet(w,z,A);
 }
-function PromiseInit(u){
-return PromiseSet(u,kPending,(void 0));
+function PromiseInit(w){
+return PromiseSet(w,kPending,(void 0));
 }
-function PromiseHandle(E,F,G){
-var C=(%_DebugIsActive()!=0);
+function PromiseHandle(A,B,C){
+var y=(%_DebugIsActive()!=0);
 try{
-if(C)%DebugPushPromise(G.promise);
-var H=F(E);
-if((G.resolve===(void 0))){
-ResolvePromise(G.promise,H);
+if(y)%DebugPushPromise(C.promise);
+var D=B(A);
+if((C.resolve===(void 0))){
+ResolvePromise(C.promise,D);
 }else{
-%_Call(G.resolve,(void 0),H);
+%_Call(C.resolve,(void 0),D);
 }
 }%catch(exception){
 try{
-if((G.reject===(void 0))){
-%PromiseReject(G.promise,exception,false);
-PromiseSet(G.promise,kRejected,exception);
+if((C.reject===(void 0))){
+%PromiseReject(C.promise,exception,false);
+PromiseSet(C.promise,kRejected,exception);
 }else{
-%_Call(G.reject,(void 0),exception);
+%_Call(C.reject,(void 0),exception);
 }
 }catch(e){}
 }finally{
-if(C)%DebugPopPromise();
+if(y)%DebugPopPromise();
 }
 }
-function PromiseDebugGetInfo(I,D){
-var J,K,L=(%_DebugIsActive()!=0);
-if(L){
-if(!(I===(void 0))&&
-(%_Call(s,I.promise,f))&&
-(%_Call(s,(I.promise[f]),e))){
-J=((I.promise[f])[e]);
-K="async function";
+function PromiseDebugGetInfo(E,z){
+var F,G,H=(%_DebugIsActive()!=0);
+if(H){
+if(!(E===(void 0))&&
+(%_Call(s,E.promise,f))&&
+(%_Call(s,(E.promise[f]),e))){
+F=((E.promise[f])[e]);
+G="async function";
 }else{
-J=%DebugNextMicrotaskId();
-K=D===kFulfilled?"Promise.resolve":"Promise.reject";
-%DebugAsyncTaskEvent("enqueue",J,K);
+F=%DebugNextMicrotaskId();
+G=z===kFulfilled?"Promise.resolve":"Promise.reject";
+%DebugAsyncTaskEvent("enqueue",F,G);
 }
 }
-return[J,K];
+return[F,G];
 }
-function PromiseAttachCallbacks(u,G,M,N){
-var O=
-(u[j]);
-if((O===(void 0))){
-(u[j]=M);
-(u[i]=N);
-(u[k]=G);
-}else if(!(%_IsArray(O))){
-var P=new d();
-var Q=new d();
-var R=(u[k]);
-P.push(
-O,R,M,G);
-Q.push((u[i]),
-R,
+function PromiseAttachCallbacks(w,C,I,J){
+var K=
+(w[j]);
+if((K===(void 0))){
+(w[j]=I);
+(w[i]=J);
+(w[k]=C);
+}else if(!(%_IsArray(K))){
+var L=new d();
+var M=new d();
+var N=(w[k]);
+L.push(
+K,N,I,C);
+M.push((w[i]),
 N,
-G);
-(u[j]=P);
-(u[i]=Q);
-(u[k]=(void 0));
+J,
+C);
+(w[j]=L);
+(w[i]=M);
+(w[k]=(void 0));
 }else{
-O.push(M,G);
-(u[i]).push(N,G);
+K.push(I,C);
+(w[i]).push(J,C);
 }
 }
-function PromiseIdResolveHandler(S){return S;}
-function PromiseIdRejectHandler(T){%_ReThrow(T);}
+function PromiseIdResolveHandler(O){return O;}
+function PromiseIdRejectHandler(P){%_ReThrow(P);}
 (PromiseIdRejectHandler[g]=true);
-function IsPromise(S){
-return(%_IsJSReceiver(S))&&(!(S[n]===(void 0)));
+function IsPromise(O){
+return(%_IsJSReceiver(O))&&(!(O[n]===(void 0)));
 }
 function PromiseCreate(){
-return PromiseInit(new z(m));
+return PromiseInit(new u(m));
 }
-function ResolvePromise(u,U){
-if(U===u){
-var V=%make_type_error(83,U);
-%PromiseReject(u,V,true);
-PromiseSet(u,kRejected,V);
+function ResolvePromise(w,Q){
+if(Q===w){
+var R=%make_type_error(83,Q);
+%PromiseReject(w,R,true);
+PromiseSet(w,kRejected,R);
 return;
 }
-if((%_IsJSReceiver(U))){
+if((%_IsJSReceiver(Q))){
 try{
-var W=U.then;
+var S=Q.then;
 }catch(e){
-%PromiseReject(u,e,true);
-PromiseSet(u,kRejected,e);
+%PromiseReject(w,e,true);
+PromiseSet(w,kRejected,e);
 return;
 }
-if(IsPromise(U)&&W===PromiseThen){
-var X=(U[n]);
-if(X===kFulfilled){
-var Y=(U[o]);
-%PromiseFulfill(u,kFulfilled,Y,
+if(IsPromise(Q)&&S===PromiseThen){
+var T=(Q[n]);
+if(T===kFulfilled){
+var U=(Q[o]);
+%PromiseFulfill(w,kFulfilled,U,
 j);
-PromiseSet(u,kFulfilled,Y);
-(u[h]=true);
+PromiseSet(w,kFulfilled,U);
+(w[h]=true);
 return;
-}else if(X===kRejected){
-var Y=(U[o]);
-if(!(!(U[h]===(void 0)))){
-%PromiseRevokeReject(U);
+}else if(T===kRejected){
+var U=(Q[o]);
+if(!(!(Q[h]===(void 0)))){
+%PromiseRevokeReject(Q);
 }
-%PromiseReject(u,Y,false);
-PromiseSet(u,kRejected,Y);
-(U[h]=true);
-return;
-}
-}
-if((typeof(W)==='function')){
-var B=CreateResolvingFunctions(u,false);
-if((%_DebugIsActive()!=0)&&IsPromise(U)){
-(U[f]=u);
-}
-%EnqueuePromiseResolveThenableJob(
-U,W,B.resolve,B.reject);
+%PromiseReject(w,U,false);
+PromiseSet(w,kRejected,U);
+(Q[h]=true);
 return;
 }
 }
-%PromiseFulfill(u,kFulfilled,U,
+if((typeof(S)==='function')){
+if((%_DebugIsActive()!=0)&&IsPromise(Q)){
+(Q[f]=w);
+}
+%EnqueuePromiseResolveThenableJob(w,Q,S);
+return;
+}
+}
+%PromiseFulfill(w,kFulfilled,Q,
 j);
-PromiseSet(u,kFulfilled,U);
+PromiseSet(w,kFulfilled,Q);
 }
-function RejectPromise(u,Z){
-%PromiseReject(u,Z,false);
-PromiseSet(u,kRejected,Z);
+function RejectPromise(w,V,W){
+%PromiseReject(w,V,W);
+PromiseSet(w,kRejected,V);
 }
-function DoRejectPromise(u,Z){
-%PromiseReject(u,Z,true);
-PromiseSet(u,kRejected,Z);
+function DoRejectPromise(w,V){
+%PromiseReject(w,V,true);
+PromiseSet(w,kRejected,V);
 }
-function NewPromiseCapability(aa,v){
-if(aa===z){
-var u=PromiseCreate();
-var B=CreateResolvingFunctions(u,v);
+function NewPromiseCapability(X,W){
+if(X===u){
+var w=PromiseCreate();
+var x=%create_resolving_functions(w,W);
 return{
-promise:u,
-resolve:B.resolve,
-reject:B.reject
+promise:w,
+resolve:x[kResolveCallback],
+reject:x[kRejectCallback]
 };
 }
-var H={promise:(void 0),resolve:(void 0),reject:(void 0)};
-H.promise=new aa((x,y)=>{
-if(!(H.resolve===(void 0))||!(H.reject===(void 0)))
+var D={promise:(void 0),resolve:(void 0),reject:(void 0)};
+D.promise=new X((resolve,reject)=>{
+if(!(D.resolve===(void 0))||!(D.reject===(void 0)))
 throw %make_type_error(84);
-H.resolve=x;
-H.reject=y;
+D.resolve=resolve;
+D.reject=reject;
 });
-if(!(typeof(H.resolve)==='function')||!(typeof(H.reject)==='function'))
+if(!(typeof(D.resolve)==='function')||!(typeof(D.reject)==='function'))
 throw %make_type_error(85);
-return H;
+return D;
 }
-function PromiseReject(T){
+function PromiseReject(P){
 if(!(%_IsJSReceiver(this))){
 throw %make_type_error(16,PromiseResolve);
 }
-if(this===z){
-var u=PromiseCreateAndSet(kRejected,T);
-%PromiseRejectEventFromStack(u,T);
-return u;
+if(this===u){
+var w=PromiseCreateAndSet(kRejected,P);
+%PromiseRejectEventFromStack(w,P);
+return w;
 }else{
-var ab=NewPromiseCapability(this,true);
-%_Call(ab.reject,(void 0),T);
-return ab.promise;
+var Y=NewPromiseCapability(this,true);
+%_Call(Y.reject,(void 0),P);
+return Y.promise;
 }
 }
-function PerformPromiseThen(u,M,N,ac){
-if(!(typeof(M)==='function'))M=PromiseIdResolveHandler;
-if(!(typeof(N)==='function'))N=PromiseIdRejectHandler;
-var D=(u[n]);
-switch(D){
+function PerformPromiseThen(w,I,J,Z){
+if(!(typeof(I)==='function'))I=PromiseIdResolveHandler;
+if(!(typeof(J)==='function'))J=PromiseIdRejectHandler;
+var z=(w[n]);
+switch(z){
 case kPending:
-PromiseAttachCallbacks(u,ac,M,N);
+PromiseAttachCallbacks(w,Z,I,J);
 break;
 case kFulfilled:
-%EnqueuePromiseReactionJob((u[o]),
-M,ac,kFulfilled);
+%EnqueuePromiseReactionJob((w[o]),
+I,Z,kFulfilled);
 break;
 case kRejected:
-if(!(!(u[h]===(void 0)))){
-%PromiseRevokeReject(u);
+if(!(!(w[h]===(void 0)))){
+%PromiseRevokeReject(w);
 }
-%EnqueuePromiseReactionJob((u[o]),
-N,ac,kRejected);
+%EnqueuePromiseReactionJob((w[o]),
+J,Z,kRejected);
 break;
 }
-(u[h]=true);
-return ac.promise;
+(w[h]=true);
+return Z.promise;
 }
-function PromiseThen(M,N){
-var D=(this[n]);
-if((D===(void 0))){
+function PromiseThen(I,J){
+var z=(this[n]);
+if((z===(void 0))){
 throw %make_type_error(66,this);
 }
-var ad=p(this,z);
-var ac;
-if(ad===z){
-ac={
+var aa=p(this,u);
+var Z;
+if(aa===u){
+Z={
 promise:PromiseCreate(),
 resolve:(void 0),
 reject:(void 0)
 };
 }else{
-ac=NewPromiseCapability(ad,false);
+Z=NewPromiseCapability(aa,false);
 }
-return PerformPromiseThen(this,M,N,ac);
+return PerformPromiseThen(this,I,J,Z);
 }
-function PromiseCatch(N){
-return this.then((void 0),N);
+function PromiseCatch(J){
+return this.then((void 0),J);
 }
-function PromiseResolve(S){
+function PromiseResolve(O){
 if(!(%_IsJSReceiver(this))){
 throw %make_type_error(16,PromiseResolve);
 }
-if(IsPromise(S)&&S.constructor===this)return S;
-if(this===z){
-var u=PromiseCreate();
-ResolvePromise(u,S);
-return u;
+if(IsPromise(O)&&O.constructor===this)return O;
+if(this===u){
+var w=PromiseCreate();
+ResolvePromise(w,O);
+return w;
 }
-var ab=NewPromiseCapability(this,true);
-%_Call(ab.resolve,(void 0),S);
-return ab.promise;
+var Y=NewPromiseCapability(this,true);
+%_Call(Y.resolve,(void 0),O);
+return Y.promise;
 }
-function PromiseAll(ae){
+function PromiseAll(ab){
 if(!(%_IsJSReceiver(this))){
 throw %make_type_error(16,"Promise.all");
 }
-var G=NewPromiseCapability(this,false);
-var af=new d();
-var ag;
-var L=(%_DebugIsActive()!=0);
-if(L){
-(G.reject[g]=true);
+var C=NewPromiseCapability(this,false);
+var ac=new d();
+var ad;
+var H=(%_DebugIsActive()!=0);
+if(H){
+(C.reject[g]=true);
 }
-function CreateResolveElementFunction(ah,ai,ab){
-var aj=false;
-return(S)=>{
-if(aj===true)return;
-aj=true;
-ai[ah]=S;
-if(--ag===0){
-var ak=[];
-%MoveArrayContents(ai,ak);
-%_Call(ab.resolve,(void 0),ak);
+function CreateResolveElementFunction(ae,af,Y){
+var ag=false;
+return(O)=>{
+if(ag===true)return;
+ag=true;
+af[ae]=O;
+if(--ad===0){
+var ah=[];
+%MoveArrayContents(af,ah);
+%_Call(Y.resolve,(void 0),ah);
 }
 };
 }
 try{
-var al=0;
-ag=1;
-for(var E of ae){
-var am=this.resolve(E);
-++ag;
-var an=am.then(
-CreateResolveElementFunction(al,af,G),
-G.reject);
-if(L&&IsPromise(an)){
-(an[f]=G.promise);
+var ai=0;
+ad=1;
+for(var A of ab){
+var aj=this.resolve(A);
+++ad;
+var ak=aj.then(
+CreateResolveElementFunction(ai,ac,C),
+C.reject);
+if(H&&IsPromise(ak)){
+(ak[f]=C.promise);
 }
-++al;
+++ai;
 }
-if(--ag===0){
-var ak=[];
-%MoveArrayContents(af,ak);
-%_Call(G.resolve,(void 0),ak);
+if(--ad===0){
+var ah=[];
+%MoveArrayContents(ac,ah);
+%_Call(C.resolve,(void 0),ah);
 }
 }catch(e){
-%_Call(G.reject,(void 0),e);
+%_Call(C.reject,(void 0),e);
 }
-return G.promise;
+return C.promise;
 }
-function PromiseRace(ae){
+function PromiseRace(ab){
 if(!(%_IsJSReceiver(this))){
 throw %make_type_error(16,PromiseRace);
 }
-var G=NewPromiseCapability(this,false);
-var L=(%_DebugIsActive()!=0);
-if(L){
-(G.reject[g]=true);
+var C=NewPromiseCapability(this,false);
+var H=(%_DebugIsActive()!=0);
+if(H){
+(C.reject[g]=true);
 }
 try{
-for(var E of ae){
-var an=this.resolve(E).then(G.resolve,
-G.reject);
-if(L&&IsPromise(an)){
-(an[f]=G.promise);
+for(var A of ab){
+var ak=this.resolve(A).then(C.resolve,
+C.reject);
+if(H&&IsPromise(ak)){
+(ak[f]=C.promise);
 }
 }
 }catch(e){
-%_Call(G.reject,(void 0),e);
+%_Call(C.reject,(void 0),e);
 }
-return G.promise;
+return C.promise;
 }
-function PromiseHasUserDefinedRejectHandlerCheck(F,G){
-if((F[g])){
-return PromiseHasUserDefinedRejectHandlerRecursive(G.promise);
+function PromiseHasUserDefinedRejectHandlerCheck(B,C){
+if((B[g])){
+return PromiseHasUserDefinedRejectHandlerRecursive(C.promise);
 }
 return true;
 }
-function PromiseHasUserDefinedRejectHandlerRecursive(u){
-if((u[l]))return true;
-var ao=(u[f]);
-if(ao&&
-PromiseHasUserDefinedRejectHandlerRecursive(ao)){
+function PromiseHasUserDefinedRejectHandlerRecursive(w){
+if((w[l]))return true;
+var al=(w[f]);
+if(al&&
+PromiseHasUserDefinedRejectHandlerRecursive(al)){
 return true;
 }
-var ap=(u[i]);
-var G=(u[k]);
-if((ap===(void 0)))return false;
-if(!(%_IsArray(ap))){
-return PromiseHasUserDefinedRejectHandlerCheck(ap,G);
+var am=(w[i]);
+var C=(w[k]);
+if((am===(void 0)))return false;
+if(!(%_IsArray(am))){
+return PromiseHasUserDefinedRejectHandlerCheck(am,C);
 }
-for(var al=0;al<ap.length;al+=2){
-if(PromiseHasUserDefinedRejectHandlerCheck(ap[al],ap[al+1])){
+for(var ai=0;ai<am.length;ai+=2){
+if(PromiseHasUserDefinedRejectHandlerCheck(am[ai],am[ai+1])){
 return true;
 }
 }
@@ -9539,20 +9511,23 @@ return false;
 function PromiseHasUserDefinedRejectHandler(){
 return PromiseHasUserDefinedRejectHandlerRecursive(this);
 };
+function MarkPromiseAsHandled(w){
+(w[h]=true);
+}
 function PromiseSpecies(){
 return this;
 }
-%AddNamedProperty(a,'Promise',z,2);
-%AddNamedProperty(z.prototype,r,"Promise",
+%AddNamedProperty(a,'Promise',u,2);
+%AddNamedProperty(u.prototype,r,"Promise",
 2|1);
-b.InstallFunctions(z,2,[
+b.InstallFunctions(u,2,[
 "reject",PromiseReject,
 "all",PromiseAll,
 "race",PromiseRace,
 "resolve",PromiseResolve
 ]);
-b.InstallGetter(z,q,PromiseSpecies);
-b.InstallFunctions(z.prototype,2,[
+b.InstallGetter(u,q,PromiseSpecies);
+b.InstallFunctions(u.prototype,2,[
 "then",PromiseThen,
 "catch",PromiseCatch
 ]);
@@ -9561,6 +9536,7 @@ b.InstallFunctions(z.prototype,2,[
 "promise_create",PromiseCreate,
 "promise_has_user_defined_reject_handler",PromiseHasUserDefinedRejectHandler,
 "promise_reject",DoRejectPromise,
+"promise_internal_reject",RejectPromise,
 "promise_resolve",ResolvePromise,
 "promise_then",PromiseThen,
 "promise_handle",PromiseHandle,
@@ -9569,17 +9545,18 @@ b.InstallFunctions(z.prototype,2,[
 b.InstallFunctions(c,0,[
 "createPromise",PromiseCreate,
 "resolvePromise",ResolvePromise,
-"rejectPromise",DoRejectPromise
+"rejectPromise",DoRejectPromise,
+"markPromiseAsHandled",MarkPromiseAsHandled
 ]);
-b.Export(function(aq){
-aq.IsPromise=IsPromise;
-aq.PromiseCreate=PromiseCreate;
-aq.PromiseThen=PromiseThen;
-aq.GlobalPromise=z;
-aq.NewPromiseCapability=NewPromiseCapability;
-aq.PerformPromiseThen=PerformPromiseThen;
-aq.ResolvePromise=ResolvePromise;
-aq.RejectPromise=RejectPromise;
+b.Export(function(an){
+an.IsPromise=IsPromise;
+an.PromiseCreate=PromiseCreate;
+an.PromiseThen=PromiseThen;
+an.GlobalPromise=u;
+an.NewPromiseCapability=NewPromiseCapability;
+an.PerformPromiseThen=PerformPromiseThen;
+an.ResolvePromise=ResolvePromise;
+an.RejectPromise=RejectPromise;
 });
 })
 
@@ -9706,7 +9683,7 @@ b.InstallFunctions(c,2,[
 ]);
 })
 
-,async-await¹
+,async-awaitÑ
 (function(a,b,c){
 "use strict";
 %CheckIsBootstrapping();
@@ -9780,7 +9757,7 @@ if((%_DebugIsActive()!=0)&&g(w)){
 AsyncFunctionAwait(v,w,x);
 }
 function RejectPromiseNoDebugEvent(u,B){
-return l(u,B);
+return l(u,B,false);
 }
 function AsyncFunctionPromiseCreate(){
 var u=j();
@@ -13356,7 +13333,7 @@ d(c.prototype,'toLocaleUpperCase',
 h,true);
 })
 
- (test-extra9
+ (test-extraU!
 (function (global, binding, v8) {
   'use strict';
   binding.testExtraShouldReturnFive = function() {
@@ -13403,11 +13380,15 @@ h,true);
     v8.rejectPromise(rejectedPromise, apply(function (arg1, arg2) {
       return (arg1 === arg2 && arg2 === 'x') ? 3 : -1;
     }, null, new v8.InternalPackedArray('x', 'x')));
+    const rejectedButHandledPromise = v8.createPromise();
+    v8.rejectPromise(rejectedButHandledPromise, 4);
+    v8.markPromiseAsHandled(rejectedButHandledPromise);
     return {
       privateSymbol: v8.createPrivateSymbol('sym'),
       fulfilledPromise,
       fulfilledPromise2,
-      rejectedPromise
+      rejectedPromise,
+      rejectedButHandledPromise
     };
   };
 })
