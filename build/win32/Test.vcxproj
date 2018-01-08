@@ -57,7 +57,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)\test.exe</OutputFile>
-      <AdditionalDependencies>leveldb_d.lib;json_d.lib;sqlite3_d.lib;iphlpapi.lib;libprotobuf_d.lib;libeay32.lib;ssleay32.lib;pcre_d.lib;icui18n_d.lib;icuuc_d.lib;v8_base_0_d.lib;v8_base_1_d.lib;v8_base_2_d.lib;v8_base_3_d.lib;v8_external_snapshot_d.lib;v8_libbase_d.lib;v8_libplatform_d.lib;v8_libsampler_d.lib;v8_nosnapshot_d.lib;winmm.lib;gdi32.lib;grpc_d.lib;gpr_d.lib;grpc++_d.lib;zlib1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>leveldb_d.lib;json_d.lib;sqlite3_d.lib;iphlpapi.lib;libprotobuf_d.lib;libeay32.lib;ssleay32.lib;pcre_d.lib;winmm.lib;gdi32.lib;grpc_d.lib;gpr_d.lib;grpc++_d.lib;zlib1.lib;v8.lib;icui18n.lib;v8_libplatform.lib;icuuc.lib;v8_libbase.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../src/3rd/basic/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ProjectReference>
