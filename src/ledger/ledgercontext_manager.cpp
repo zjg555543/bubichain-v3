@@ -280,7 +280,6 @@ namespace bubi {
 	bool LedgerContext::TestTransaction() {
 		//std::shared_ptr<Environment> environment = std::make_shared<Environment>(nullptr);
 
-		//测试交易必须建立在系统中账户的基础上，账号不存在无法顺利完成交易测试
 		protocol::LedgerHeader lcl = LedgerManager::Instance().GetLastClosedLedger();
 		consensus_value_.set_ledger_seq(lcl.seq() + 1);
 		consensus_value_.set_close_time(lcl.close_time() + 1);
