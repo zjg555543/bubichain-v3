@@ -423,26 +423,27 @@ namespace bubi {
 				break;
 			}
 
-			protocol::Account account;
-			
-			if (transaction_->ledger_->GetProtoHeader().version() >= 3300){
-				int64_t base_reserve = (int64_t)LedgerManager::Instance().fees_.base_reserve();
-				if (createaccount.init_balance() < base_reserve) {
-					result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-					result_.set_desc("Dest address balance is low");
-					LOG_ERROR("Dest address balance is low");
-					break;
-				}
-				if (source_account_->GetAccountBalance() - base_reserve < createaccount.init_balance()) {
-					result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-					result_.set_desc("Source address balance is low");
-					LOG_ERROR("Source address(%s) balance is low", source_account_->GetAccountAddress().c_str());
-					break;
-				}
-				source_account_->AddBalance(-1 * createaccount.init_balance());
-				account.set_balance(createaccount.init_balance());
-			}
-			
+
+
+
+            int64_t base_reserve = (int64_t)LedgerManager::Instance().fees_.base_reserve();
+            if (createaccount.init_balance() < base_reserve) {
+                result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+                result_.set_desc("Dest address balance is low");
+                LOG_ERROR("Dest address balance is low");
+                break;
+            }
+            if (source_account_->GetAccountBalance() - base_reserve < createaccount.init_balance()) {
+                result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+                result_.set_desc("Source address balance is low");
+                LOG_ERROR("Source address(%s) balance is low", source_account_->GetAccountAddress().c_str());
+                break;
+            }
+            source_account_->AddBalance(-1 * createaccount.init_balance());
+
+
+            protocol::Account account;
+            account.set_balance(createaccount.init_balance());
 			account.mutable_priv()->CopyFrom(createaccount.priv());
 			account.set_address(createaccount.dest_address());
 			account.mutable_contract()->CopyFrom(createaccount.contract());
