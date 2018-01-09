@@ -81,7 +81,7 @@ namespace bubi{
 		Trie();
 		~Trie();
 		
-		static std::string  BinToHexString(const std::string &value, bool uppercase = false);
+		// static std::string  BinToHexString(const std::string &value, bool uppercase = false);
 
 		//add or set a k/v
 		bool Set(const std::string &key, const std::string &value);

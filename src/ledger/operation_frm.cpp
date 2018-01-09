@@ -423,9 +423,6 @@ namespace bubi {
 				break;
 			}
 
-
-
-
             int64_t base_reserve = (int64_t)LedgerManager::Instance().fees_.base_reserve();
             if (createaccount.init_balance() < base_reserve) {
                 result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
@@ -440,7 +437,6 @@ namespace bubi {
                 break;
             }
             source_account_->AddBalance(-1 * createaccount.init_balance());
-
 
             protocol::Account account;
             account.set_balance(createaccount.init_balance());

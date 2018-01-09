@@ -119,7 +119,7 @@ namespace bubi {
 				result["private_key"] = private_key;
 				result["private_key_aes"] = utils::Aes::CryptoHex(private_key, bubi::GetDataSecuretKey());
 				result["address"] = public_address;
-				result["public_key_raw"] = utils::String::BinToHexString(priv_key.GetRawPublicKey());
+				result["public_key_raw"] = utils::Base58::Encode(priv_key.GetRawPublicKey());
 				result["sign_type"] = GetSignTypeDesc(priv_key.GetSignType());
 				printf("%s\n", result.toStyledString().c_str());
 				return true;

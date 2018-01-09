@@ -178,7 +178,7 @@ namespace bubi {
 	void AccountFrm::GetAllAssets(std::vector<protocol::Asset>& assets){
 		KVTrie trie;
 		auto batch = std::make_shared<WRITE_BATCH>();
-		std::string prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+        std::string prefix = ComposePrefix(General::ASSET_PREFIX, utils::Base58::Decode(account_info_.address()));
 		trie.Init(Storage::Instance().account_db(), batch, prefix, 1);
 		std::vector<std::string> values;
 		trie.GetAll("", values);
@@ -192,7 +192,7 @@ namespace bubi {
 	void AccountFrm::GetAllMetaData(std::vector<protocol::KeyPair>& metadata){
 		KVTrie trie;
 		auto batch = std::make_shared<WRITE_BATCH>();
-		std::string prefix = ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+        std::string prefix = ComposePrefix(General::METADATA_PREFIX, utils::Base58::Decode(account_info_.address()));
 		trie.Init(Storage::Instance().account_db(), batch, prefix, 1);
 		std::vector<std::string> values;
 		trie.GetAll("", values);
@@ -215,7 +215,7 @@ namespace bubi {
 		}
 
 		auto batch = std::make_shared<WRITE_BATCH>();
-		std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+        std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::Base58::Decode(account_info_.address()));
 		KVTrie trie;
 		trie.Init(Storage::Instance().account_db(), batch, asset_prefix, 1);
 
@@ -258,7 +258,7 @@ namespace bubi {
 
 		auto batch = std::make_shared<WRITE_BATCH>();
 		KVTrie trie;
-		std::string prefix =  ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+        std::string prefix = ComposePrefix(General::METADATA_PREFIX, utils::Base58::Decode(account_info_.address()));
 		trie.Init(Storage::Instance().account_db(), batch, prefix, 1);
 
 		std::string buff;
@@ -294,11 +294,11 @@ namespace bubi {
 
 	void AccountFrm::UpdateHash(std::shared_ptr<WRITE_BATCH> batch){
 		KVTrie trie_asset;
-		std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+        std::string asset_prefix = ComposePrefix(General::ASSET_PREFIX, utils::Base58::Decode(account_info_.address()));
 		trie_asset.Init(Storage::Instance().account_db(), batch, asset_prefix, 1);
 
 		KVTrie trie_metadata;
-		std::string meta_prefix = ComposePrefix(General::METADATA_PREFIX, utils::String::HexStringToBin(account_info_.address()));
+		std::string meta_prefix = ComposePrefix(General::METADATA_PREFIX, utils::Base58::Decode(account_info_.address()));
 		trie_metadata.Init(Storage::Instance().account_db(), batch, meta_prefix, 1);
 
 		auto& map = assets_;

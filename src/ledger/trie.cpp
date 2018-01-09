@@ -475,25 +475,25 @@ namespace bubi{
 	//	return NodeToJson(root_).toStyledString();
 	//}
 
-	std::string Trie::BinToHexString(const std::string &value, bool uppercase /* = false */){
+	//std::string Trie::BinToHexString(const std::string &value, bool uppercase /* = false */){
 
-		std::string result;
-		result.resize(value.size() * 2);
-		for (size_t i = 0; i < value.size(); i++){
-			uint8_t item = value[i];
-			uint8_t high = (item >> 4);
-			uint8_t low = (item & 0x0F);
-			if (uppercase) {
-				result[2 * i] = (high >= 0 && high <= 9) ? (high + '0') : (high - 10 + 'A');
-				result[2 * i + 1] = (low >= 0 && low <= 9) ? (low + '0') : (low - 10 + 'A');
-			}
-			else {
-				result[2 * i] = (high >= 0 && high <= 9) ? (high + '0') : (high - 10 + 'a');
-				result[2 * i + 1] = (low >= 0 && low <= 9) ? (low + '0') : (low - 10 + 'a');
-			}
-		}
-		return result;
-	}
+	//	std::string result;
+	//	result.resize(value.size() * 2);
+	//	for (size_t i = 0; i < value.size(); i++){
+	//		uint8_t item = value[i];
+	//		uint8_t high = (item >> 4);
+	//		uint8_t low = (item & 0x0F);
+	//		if (uppercase) {
+	//			result[2 * i] = (high >= 0 && high <= 9) ? (high + '0') : (high - 10 + 'A');
+	//			result[2 * i + 1] = (low >= 0 && low <= 9) ? (low + '0') : (low - 10 + 'A');
+	//		}
+	//		else {
+	//			result[2 * i] = (high >= 0 && high <= 9) ? (high + '0') : (high - 10 + 'a');
+	//			result[2 * i + 1] = (low >= 0 && low <= 9) ? (low + '0') : (low - 10 + 'a');
+	//		}
+	//	}
+	//	return result;
+	//}
 
 	protocol::Node Trie::GetNode(const Location& location)	{
 		Location lc = location;

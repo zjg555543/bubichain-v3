@@ -66,20 +66,20 @@ namespace bubi{
 		std::string buff = node->info_.SerializeAsString();
 		std::string key = Location2DBkey(node->location_, false);
 		batch_->Put(key, buff);
-		LOG_DEBUG("save INNER(%s)", utils::String::BinToHexString(key).c_str());
+		//LOG_DEBUG("save INNER(%s)", utils::String::BinToHexString(key).c_str());
 	}
 
 	void  KVTrie::StorageSaveLeaf(NodeFrm::POINTER node){
 		std::string key = Location2DBkey(node->location_, true);
 		batch_->Put(key, *node->leaf_);
-		LOG_DEBUG("save LEAF(%s)", utils::String::BinToHexString(key).c_str());
+		//LOG_DEBUG("save LEAF(%s)", utils::String::BinToHexString(key).c_str());
 	}
 
 	bool KVTrie::storage_load(const Location& location, protocol::Node& info)  {
 		int64_t t1 = utils::Timestamp::HighResolution();
 		std::string key = Location2DBkey(location, false);
 		std::string buff;
-		LOG_DEBUG("LOAD INNER:%s", utils::String::BinToHexString(key).c_str());
+		//LOG_DEBUG("LOAD INNER:%s", utils::String::BinToHexString(key).c_str());
 		int32_t stat = mdb_->Get(key, buff);
 		int64_t t2 = utils::Timestamp::HighResolution();
 
@@ -98,19 +98,19 @@ namespace bubi{
 
 	void KVTrie::StorageDeleteNode(NodeFrm::POINTER node) {
 		std::string key = Location2DBkey(node->location_, false);
-		LOG_DEBUG("DELETE INNER %s", utils::String::BinToHexString(key).c_str());
+		//LOG_DEBUG("DELETE INNER %s", utils::String::BinToHexString(key).c_str());
 		batch_->Delete(key);
 	}
 
 	void KVTrie::StorageDeleteLeaf(NodeFrm::POINTER node){
 		std::string key = Location2DBkey(node->location_, true);
-		LOG_DEBUG("DELETE LEAF %s", utils::String::BinToHexString(key).c_str());
+		//LOG_DEBUG("DELETE LEAF %s", utils::String::BinToHexString(key).c_str());
 		batch_->Delete(key);
 	}
 
 	bool KVTrie::StorageGetLeaf(const Location& location, std::string& value) {
 		std::string key = Location2DBkey(location, true);
-		LOG_DEBUG("GET LEAF %s", utils::String::BinToHexString(key).c_str());
+		//LOG_DEBUG("GET LEAF %s", utils::String::BinToHexString(key).c_str());
 		int32_t stat = mdb_->Get(key, value);
 		if (stat == 1){
 			return true;

@@ -587,7 +587,7 @@ namespace bubi {
                 result["private_key"] = key.GetBase58PrivateKey();
                 result["address"] = key.GetBase58Address();
 				result["private_raw"] = key.GetRawPrivateKey();
-				result["public_key_raw"] = utils::String::BinToHexString(key.GetRawPublicKey());
+                result["public_key_raw"] = utils::Base58::Encode(key.GetRawPublicKey());
 				result["sign_type"] = GetSignTypeDesc(key.GetSignType());
 			}
 			else {
