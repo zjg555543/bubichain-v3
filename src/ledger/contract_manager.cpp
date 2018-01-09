@@ -226,7 +226,12 @@ namespace bubi{
 				break;
 			}
 		
-			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
+			v8::Local<v8::String> check_time_name(
+				v8::String::NewFromUtf8(context->GetIsolate(), "__enable_check_time__",
+				v8::NewStringType::kNormal).ToLocalChecked());
+			v8::ScriptOrigin origin_check_time_name(check_time_name);
+
+			if (!v8::Script::Compile(context, v8src, &origin_check_time_name).ToLocal(&compiled_script)) {
 				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
 				break;
 			}
@@ -309,7 +314,12 @@ namespace bubi{
 		v8::Local<v8::String> v8src = v8::String::NewFromUtf8(isolate_, parameter_.code_.c_str());
 		v8::Local<v8::Script> compiled_script;
 
-		if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
+		v8::Local<v8::String> check_time_name(
+			v8::String::NewFromUtf8(context->GetIsolate(), "__enable_check_time__",
+			v8::NewStringType::kNormal).ToLocalChecked());
+		v8::ScriptOrigin origin_check_time_name(check_time_name);
+
+		if (!v8::Script::Compile(context, v8src, &origin_check_time_name).ToLocal(&compiled_script)) {
 			error_msg_ = ReportException(isolate_, &try_catch).toFastString();
 			LOG_ERROR("%s", error_msg_.c_str());
 			return false;
@@ -391,7 +401,12 @@ namespace bubi{
 				break;
 			}
 
-			if (!v8::Script::Compile(context, v8src).ToLocal(&compiled_script)) {
+			v8::Local<v8::String> check_time_name(
+				v8::String::NewFromUtf8(context->GetIsolate(), "__enable_check_time__",
+				v8::NewStringType::kNormal).ToLocalChecked());
+			v8::ScriptOrigin origin_check_time_name(check_time_name);
+
+			if (!v8::Script::Compile(context, v8src, &origin_check_time_name).ToLocal(&compiled_script)) {
 				error_desc_f = ReportException(isolate_, &try_catch);
 				break;
 			}
@@ -455,7 +470,13 @@ namespace bubi{
 
 		v8::Local<v8::String> source = v8::String::NewFromUtf8(isolate, js_file.c_str());
 		v8::Local<v8::Script> script;
-		if (!v8::Script::Compile(isolate->GetCurrentContext(), source).ToLocal(&script)) {
+		
+		v8::Local<v8::String> check_time_name(
+			v8::String::NewFromUtf8(isolate->GetCurrentContext()->GetIsolate(), "__enable_check_time__",
+			v8::NewStringType::kNormal).ToLocalChecked());
+		v8::ScriptOrigin origin_check_time_name(check_time_name);
+
+		if (!v8::Script::Compile(isolate->GetCurrentContext(), source, &origin_check_time_name).ToLocal(&script)) {
 			error_msg = ReportException(isolate, &try_catch);
 			return false;
 		}
@@ -543,6 +564,11 @@ namespace bubi{
 			v8::String::NewFromUtf8(isolate, "include", v8::NewStringType::kNormal)
 			.ToLocalChecked(),
 			v8::FunctionTemplate::New(isolate, V8Contract::Include));
+
+		global->Set(
+			v8::String::NewFromUtf8(isolate, "internal_check_time", v8::NewStringType::kNormal)
+			.ToLocalChecked(),
+			v8::FunctionTemplate::New(isolate, V8Contract::InternalCheckTime));
 
 		return v8::Context::New(isolate, NULL, global);
 	}
@@ -711,7 +737,13 @@ namespace bubi{
 
 			v8::Local<v8::String> source = v8::String::NewFromUtf8(args.GetIsolate(), js_file.c_str());
 			v8::Local<v8::Script> script;
-			if (!v8::Script::Compile(args.GetIsolate()->GetCurrentContext(), source).ToLocal(&script)) {
+
+			v8::Local<v8::String> check_time_name(
+				v8::String::NewFromUtf8(args.GetIsolate()->GetCurrentContext()->GetIsolate(), "__enable_check_time__",
+				v8::NewStringType::kNormal).ToLocalChecked());
+			v8::ScriptOrigin origin_check_time_name(check_time_name);
+
+			if (!v8::Script::Compile(args.GetIsolate()->GetCurrentContext(), source, &origin_check_time_name).ToLocal(&script)) {
 				ReportException(args.GetIsolate(), &try_catch);
 				break;
 			}
@@ -722,6 +754,9 @@ namespace bubi{
 			}
 		} while (false);
 		//return v8::Undefined(args.GetIsolate());
+	}
+	void V8Contract::InternalCheckTime(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		LOG_DEBUG("InternalCheckTime");
 	}
 
 	void V8Contract::CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args) {

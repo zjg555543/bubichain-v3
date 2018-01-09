@@ -146,6 +146,7 @@ namespace bubi{
 		static void CallBackGetValidators(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static void CallBackPayCoin(const v8::FunctionCallbackInfo<v8::Value>& args);
 		static void Include(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static void InternalCheckTime(const v8::FunctionCallbackInfo<v8::Value>& args);
 		//get account info from an account
 		static void CallBackGetAccountInfo(const v8::FunctionCallbackInfo<v8::Value>& args);
 		//get a ledger info from a ledger
