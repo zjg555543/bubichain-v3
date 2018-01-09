@@ -12,8 +12,8 @@
 	},
 	"p2p": {
 		"network_id": 12332,
-		"address": "a0021ead9c8f4e30200aed9d3bfe89f7cf8e2300133d09",
-		"node_private_key": "8983f237c4d9c34f29da45d56fa5dc7ffc2eab8d69897bd31d0a5eaa93a7b2f90a3d243e3ee7d743f48deb20e39134b74b761e37fa325522ae54a318cf5e2ba1194a2ed329aeb551084f86ca01536240",
+		"address": "buQii4mkZ4tdfg3VK16v1EgcejNJUFV5H3Lx",
+		"node_private_key": "4f17013b9f686149232ea6bd77569412bf3d66baf2b0edf2f29645707cf32624703d83bef7942c77b4095a59bec9ccdd3f3c1243cc65e3f94093e25e08f79d93",
 		"consensus_network": {
 			"heartbeat_interval": 60,
 			"listen_port": 6333,
@@ -29,8 +29,9 @@
 		"listen_address": "0.0.0.0:7053"
 	},
 	"ledger": {
-       	"genesis_account": "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",//privatekey:c00205ce8de2892b26c3b95caf3404831d6e913c655d85b517f076380ebfcbef47ff8f
-		"election_account": "a00162ec92b31d1d7aab1a6245874ae140b993c54402a0", //privatekey:c00193035fd48629d7a8ce3cdc145036ccd2869320283ab566449ebb13889769e7c5e1
+       	"genesis_account": "buQs9npaCq9mNFZG18qu88ZcmXYqd6bqpTU3",//privatekey:privbvYfqQyG3kZyHE4RX4TYVa32htw8xG4WdpCTrymPUJQ923XkKVbM
+		"election_account": "buQoR4qiEEEB1LQkeQCcpFQLqBEzKYjTXftY", //privatekey:privbzzsiyAFTC5FUr3UsAJPyfoHV1cJPhWk194d4g8ct4LA9XoK2yXJ
+		"fee_voting_account":"buQXmVZcwLprxtPkBSX934byL5uwsMq2tknX", //privatekey:privbz9Yg1Z24iVDcVntDa8mfEB3dF76jXbNPAf3MMrP7BQ6ceoCJ5xY
 		"hash_type": 0, //0: SHA256 1: SM3
 		"max_trans_per_ledger": 1000,
 		"max_trans_per_ledger": 1000,
@@ -48,10 +49,10 @@
 		"expire_days": 10
 	},
 	"validation": {
-		"address": "a0024740b934765287b16113adc6bb285d72c124d9e3c1",
-		"node_private_key": "44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d",
+		"address": "buQdEwCroM2PaMSTWFK4XQ63AVMtKDqRdz3g",
+		"node_private_key": "01ab35a14935d51faf48f51c3bfd1e0478e83d21d378f3bc92332dbbee5b180b9e122475517da2651227ce4a8bb37e2621c4611a889a8d7e45679efe881d56f2",
 		"validators": [
-			"a0024740b934765287b16113adc6bb285d72c124d9e3c1"
+			"buQdEwCroM2PaMSTWFK4XQ63AVMtKDqRdz3g"
 		]
 	}
 }
