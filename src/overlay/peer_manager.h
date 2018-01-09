@@ -51,7 +51,7 @@ namespace bubi {
 			return serial_num_;
 		}
 		std::string GetPeerNodeAddress() {
-			return priv_key_.GetBase16Address();
+            return priv_key_.GetBase58Address();
 		}
 
 		virtual void GetModuleStatus(Json::Value &data);

@@ -368,7 +368,7 @@ namespace bubi {
 
 			//this validator 
 			PrivateKey private_key(Configure::Instance().validation_configure_.node_privatekey_);
-			std::string this_node_address = private_key.GetBase16Address();
+            std::string this_node_address = private_key.GetBase58Address();
 
 			//compose the new ledger
 			protocol::Ledger ledger;

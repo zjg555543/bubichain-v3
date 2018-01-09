@@ -24,26 +24,43 @@ limitations under the License.
 
 namespace bubi {
 
-	bool GetKeyElement(const std::string &base16_pub_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data) {
-		std::string buff = utils::String::HexStringToBin(base16_pub_key);
-		if (buff.size() < 3) {
-			return false;
-		}
+    std::string CalcHash(const std::string &value,const SignatureType &sign_type) {
+        std::string hash;
+        if (sign_type == SIGNTYPE_ED25519) {
+            hash = utils::Sha256::Crypto(value);
+        }
+        else {
+            hash = utils::Sm3::Crypto(value);
+        }
+        return hash;
+    }
 
-		uint8_t a = (uint8_t)buff.at(0);
-		uint8_t b= (uint8_t)buff.at(1);
-		//check sum
-		PrivateKeyPrefix prefix_tmp = (PrivateKeyPrefix)a;
-		SignatureType sign_type_tmp = (SignatureType)b;
-		size_t datalen = buff.size() - 3;
-		uint8_t checksum = (uint8_t)buff.back();
-		uint8_t calc_checksum = utils::Crc8((uint8_t *)buff.c_str(), buff.length() - 1);
-		if (checksum != calc_checksum){
-			return false;
-		}
+    bool GetKeyElement(const std::string &base58_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data) {
+        PrivateKeyPrefix prefix_tmp;
+        SignatureType sign_type_tmp = SIGNTYPE_NONE;
+        std::string buff = utils::Base58::Decode(base58_key);
+        if (base58_key.substr(0,2) == "bu" && buff.size() ==27){// address
+            prefix_tmp = ADDRESS_PREFIX;
+        }
+        else if (base58_key.substr(0,4) == "priv" && buff.size() == 41){//private key
+            prefix_tmp = PRIVATEKEY_PREFIX;
+        }
+        else{//public key
+            uint8_t a = (uint8_t)buff.at(0);
+            PrivateKeyPrefix privprefix = (PrivateKeyPrefix)a;
+            if (privprefix == PUBLICKEY_PREFIX)
+                prefix_tmp = PUBLICKEY_PREFIX;
+            else
+                return false;
+        }     
+		
+       
 
 		bool ret = true;
 		if (prefix_tmp == ADDRESS_PREFIX) {
+            uint8_t a = (uint8_t)buff.at(2); 
+            sign_type_tmp = (SignatureType)a;   
+            size_t datalen = buff.size() - 7;
 			switch (sign_type_tmp) {
 			case SIGNTYPE_ED25519:{
 				ret = (ED25519_ADDRESS_LENGTH == datalen);
@@ -53,17 +70,14 @@ namespace bubi {
 				ret = (SM2_ADDRESS_LENGTH == datalen);
 				break;
 			}
-			case SIGNTYPE_RSA:{
-				break;
-			}
-			case SIGNTYPE_CFCA:{
-				break;
-			}
 			default:
 				ret = false;
 			}
 		}
 		else if (prefix_tmp == PUBLICKEY_PREFIX) {
+            uint8_t a = (uint8_t)buff.at(1);  
+            sign_type_tmp = (SignatureType)a;
+            size_t datalen = buff.size() - 6;
 			switch (sign_type_tmp) {
 			case SIGNTYPE_ED25519:{
 				ret = (ED25519_PUBLICKEY_LENGTH == datalen);
@@ -73,17 +87,14 @@ namespace bubi {
 				ret = (SM2_PUBLICKEY_LENGTH == datalen);
 				break;
 			}
-			case SIGNTYPE_RSA:{
-				break;
-			}
-			case SIGNTYPE_CFCA:{
-				break;
-			}
 			default:
 				ret = false;
 			}
 		}
 		else if (prefix_tmp == PRIVATEKEY_PREFIX) {
+            uint8_t a = (uint8_t)buff.at(3);  
+            sign_type_tmp = (SignatureType)a;
+            size_t datalen = buff.size() - 9;
 			switch (sign_type_tmp) {
 			case SIGNTYPE_ED25519:{
 				ret = (ED25519_PRIVATEKEY_LENGTH == datalen);
@@ -91,12 +102,6 @@ namespace bubi {
 			}
 			case SIGNTYPE_CFCASM2:{
 				ret = (SM2_PRIVATEKEY_LENGTH == datalen);
-				break;
-			}
-			case SIGNTYPE_RSA:{
-				break;
-			}
-			case SIGNTYPE_CFCA:{
 				break;
 			}
 			default:
@@ -108,9 +113,24 @@ namespace bubi {
 		}
 
 		if (ret){
+            //checksum
+            std::string checksum = buff.substr(buff.size() - 4);
+            std::string hash1 = CalcHash(buff.substr(0, buff.size() - 4), sign_type_tmp);
+            std::string hash2 = CalcHash(hash1, sign_type_tmp);
+            if (checksum.compare(hash2.substr(0, 4)))
+                return false;
+
 			prefix = prefix_tmp;
 			sign_type = sign_type_tmp;
-			raw_data = buff.substr(2, buff.size() - 3);
+            if (prefix_tmp == ADDRESS_PREFIX) {
+                raw_data = buff.substr(3, buff.size() - 7);
+            }
+            else if (prefix_tmp == PUBLICKEY_PREFIX) {
+                raw_data = buff.substr(2, buff.size() - 6);
+            }
+            else if (prefix_tmp == PRIVATEKEY_PREFIX) {
+                raw_data = buff.substr(4, buff.size() - 9);
+            }
 		} 
 
 		return ret;
@@ -118,9 +138,7 @@ namespace bubi {
 
 	std::string GetSignTypeDesc(SignatureType type) {
 		switch (type) {
-		case SIGNTYPE_CFCA: return "cfca";
 		case SIGNTYPE_CFCASM2: return "sm2";
-		case SIGNTYPE_RSA: return "rsa";
 		case SIGNTYPE_ED25519: return "ed25519";
 		}
 
@@ -128,31 +146,28 @@ namespace bubi {
 	}
 
 	SignatureType GetSignTypeByDesc(const std::string &desc) {
-		if (desc == "cfca") {
-			return SIGNTYPE_CFCA;
-		}
-		else if (desc == "sm2") {
+		
+		if (desc == "sm2") {
 			return SIGNTYPE_CFCASM2;
-		}
-		else if (desc == "rsa") {
-			return SIGNTYPE_RSA;
 		}
 		else if (desc == "ed25519") {
 			return SIGNTYPE_ED25519;
 		}
-
 		return SIGNTYPE_NONE;
 	}
 
-	PublicKey::PublicKey() :valid_(false), type_(SIGNTYPE_RSA) {}
+    PublicKey::PublicKey() :valid_(false), type_(SIGNTYPE_ED25519) {}
 
 	PublicKey::~PublicKey() {}
 
-	PublicKey::PublicKey(const std::string &base16_pub_key) {
+	PublicKey::PublicKey(const std::string &base58_pub_key) {
 		do {
 			PrivateKeyPrefix prefix;
-			valid_ = GetKeyElement(base16_pub_key, prefix, type_, raw_pub_key_);
-			valid_ = (prefix == PUBLICKEY_PREFIX);
+            //valid_ = GetKeyElement(base58_pub_key, prefix, type_, raw_pub_key_);
+			//valid_ = (prefix == PUBLICKEY_PREFIX);
+            if (GetKeyElement(base58_pub_key, prefix, type_, raw_pub_key_)){
+                valid_ = (prefix == PUBLICKEY_PREFIX);
+            }
 		} while (false);
 	}
 
@@ -160,64 +175,57 @@ namespace bubi {
 		raw_pub_key_ = rawpkey;
 	}
 
-	bool PublicKey::IsAddressValid(const std::string &address_base16) {
-		std::string address = utils::String::HexStringToBin(address_base16, true);
+	bool PublicKey::IsAddressValid(const std::string &address_base58) {
+        std::string address = utils::Base58::Decode(address_base58);
 		do {
-			if (address.size() != 23) {
-				break;
-			}
-
-			if (address.at(0) != (char)ADDRESS_PREFIX) {
-				break;
-			} 
-
-			uint8_t crc = utils::Crc8(address.substr(0, address.size()- 1));
-			if (crc != (uint8_t)address.back()) {
-				break;
-			} 
-
-			return true;
+            PrivateKeyPrefix prefix;
+            SignatureType sign_type;
+            std::string raw_pub_key;
+            if (GetKeyElement(address_base58, prefix, sign_type, raw_pub_key)){
+                return (prefix == ADDRESS_PREFIX);
+            }
 		} while (false);
 
 		return false;
 	}
 
-	std::string PublicKey::CalcHash(const std::string &value) const {
-		std::string hash;
-		if (type_ == SIGNTYPE_CFCASM2) {
-			hash = utils::Sm3::Crypto(raw_pub_key_);
-		}
-		else {
-			hash = utils::Sha256::Crypto(raw_pub_key_);
-		}
-		return hash;
-	}
-
-	std::string PublicKey::GetBase16Address() const {
-		//append prefix
+	std::string PublicKey::GetBase58Address() const {
+		
 		std::string str_result = "";
-		str_result.push_back((char)ADDRESS_PREFIX);
+        //append prefix (bubi)
+        /*str_result.push_back((char)0XE6);
+        str_result.push_back((char)0X9A);
+        str_result.push_back((char)0X73);
+        str_result.push_back((char)0XFF);*/
+        //append prefix (bu)
+        str_result.push_back((char)0X01);
+        str_result.push_back((char)0X56);
 
-		//append version
+		//append version 1byte
 		str_result.push_back((char)type_);
 
-		//append public key
-		std::string hash = CalcHash(raw_pub_key_);
+		//append public key 20byte
+		std::string hash = CalcHash(raw_pub_key_,type_);
 		str_result.append(hash.substr(12));
 
-		//append check sum
-		str_result.push_back((char)utils::Crc8(str_result));
-		return utils::String::BinToHexString(str_result);
+		//append check sum 4byte
+        std::string hash1, hash2;
+        hash1 = CalcHash(str_result, type_);
+        hash2 = CalcHash(hash1, type_);
+
+        str_result.append(hash2.c_str(), 4);
+        return utils::Base58::Encode(str_result);
 	}
 
 	std::string PublicKey::GetRawPublicKey() const {
 		return raw_pub_key_;
 	}
 
-	std::string PublicKey::GetBase16PublicKey() const {
-		//append prefix
+	std::string PublicKey::GetBase58PublicKey() const {
+		
 		std::string str_result = "";
-		str_result.push_back((char)PUBLICKEY_PREFIX);
+        //append PrivateKeyPrefix
+        str_result.push_back((char)PUBLICKEY_PREFIX);
 
 		//append version
 		str_result.push_back((char)type_);
@@ -225,15 +233,19 @@ namespace bubi {
 		//append public key
 		str_result.append(raw_pub_key_);
 
-		str_result.push_back((char)utils::Crc8(str_result));
-		return utils::String::BinToHexString(str_result);
-	}
+        std::string hash1, hash2;
+        hash1 = CalcHash(str_result, type_);
+        hash2 = CalcHash(hash1, type_);
 
-	bool PublicKey::Verify(const std::string &data, const std::string &signature, const std::string &public_key_base16) {
+        str_result.append(hash2.c_str(), 4);
+        return utils::Base58::Encode(str_result);
+	}
+    //not modify
+    bool PublicKey::Verify(const std::string &data, const std::string &signature, const std::string &public_key_base58) {
 		PrivateKeyPrefix prefix;
 		SignatureType sign_type;
 		std::string raw_pubkey;
-		bool valid = GetKeyElement(public_key_base16, prefix, sign_type, raw_pubkey);
+        bool valid = GetKeyElement(public_key_base58, prefix, sign_type, raw_pubkey);
 		if (!valid || prefix != PUBLICKEY_PREFIX) {
 			return false;
 		} 
@@ -244,38 +256,15 @@ namespace bubi {
 		else if (sign_type == SIGNTYPE_CFCASM2) {
 			return utils::EccSm2::verify(utils::EccSm2::GetCFCAGroup(), raw_pubkey, "1234567812345678", data, signature) == 1;
 		}
-		else if (sign_type == SIGNTYPE_RSA) {
-			bool result = false;
-			const unsigned char *key_cstr = (const unsigned char *)raw_pubkey.c_str();
-			int key_len = raw_pubkey.length();
-			//RSA* p_rsa = d2i_RSAPublicKey(NULL, &key_cstr, tmp.length());
-			RSA* p_rsa = d2i_RSA_PUBKEY(NULL, &key_cstr, raw_pubkey.length());
-
-			if (p_rsa != NULL) {
-				const char *cstr = data.c_str();
-				unsigned char hash[SHA_DIGEST_LENGTH] = { 0 };
-				SHA1((unsigned char *)cstr, data.length(), hash);
-				unsigned char sign_cstr[256] = { 0 };
-				memcpy(sign_cstr, signature.c_str(), signature.length());
-				int len = signature.length();
-				int r = RSA_verify(NID_sha1, hash, SHA_DIGEST_LENGTH, (unsigned char *)sign_cstr, len, p_rsa);
-				if (r > 0) {
-					result = true;
-				}
-			}
-
-			RSA_free(p_rsa);
-			return result;
-		}
-		else if (sign_type == SIGNTYPE_CFCA) {
-			return cfca::CFCA::Instance().Verify(data, signature, raw_pubkey);
-		}
+        else{
+            LOG_ERROR("Unknown signature type(%d)", sign_type);
+        }
 		return false;
 	}
 
 	//地址是否合法
 	PrivateKey::PrivateKey(SignatureType type) {
-		std::string tmp = "";
+        std::string raw_pub_key = "";
 		type_ = type;
 		if (type_ == SIGNTYPE_ED25519) {
 			utils::MutexGuard guard_(lock_);
@@ -283,52 +272,34 @@ namespace bubi {
 			raw_priv_key_.resize(32);
 			ed25519_randombytes_unsafe((void*)raw_priv_key_.c_str(), 32);
 
-			tmp.resize(32);
-			ed25519_publickey((const unsigned char*)raw_priv_key_.c_str(), (unsigned char*)tmp.c_str());
+            raw_pub_key.resize(32);
+            ed25519_publickey((const unsigned char*)raw_priv_key_.c_str(), (unsigned char*)raw_pub_key.c_str());
 		}
 		else if (type_ == SIGNTYPE_CFCASM2) {
 			utils::EccSm2 key(utils::EccSm2::GetCFCAGroup());
 			key.NewRandom();
 			raw_priv_key_ = key.getSkeyBin();
-			tmp = key.GetPublicKey();
+            raw_pub_key = key.GetPublicKey();
 		}
-		else if (type_ == SIGNTYPE_RSA) {
-			RSA *rsa = RSA_new();
-			BIGNUM* e = BN_new();
-			BN_rand(e, 1022, 1, 1);
-			if (!RSA_generate_key_ex(rsa, 1024, e, NULL)) {
-				assert(false);
-			}
-			unsigned char* out = NULL;
-			int nLen = i2d_RSAPrivateKey(rsa, &out);
-			raw_priv_key_.append((const char*)out, nLen);
-			OPENSSL_free(out);
-
-			unsigned char *pkeys = NULL;
-			//int plen = i2d_RSAPublicKey(rsa, &pkeys);
-			int plen = i2d_RSA_PUBKEY(rsa, &pkeys);
-			tmp.append((char*)pkeys, plen);
-			OPENSSL_free(pkeys);
-
-			BN_free(e);
-			RSA_free(rsa);
-		}
-		pub_key_.Init(tmp);
+        else{
+            LOG_ERROR("Unknown signature type(%d)", type_);
+        }
+        pub_key_.Init(raw_pub_key);
 		pub_key_.type_ = type_;
 		pub_key_.valid_ = true;
 		valid_ = true;
 	}
 
 	PrivateKey::~PrivateKey() {}
-
-	bool PrivateKey::From(const std::string &base16_private_key) {
+    //not modify
+    bool PrivateKey::From(const std::string &bas58_private_key) {
 		valid_ = false;
 		std::string tmp;
 
 		do {
 			PrivateKeyPrefix prefix;
 			std::string raw_pubkey;
-			valid_ = GetKeyElement(base16_private_key, prefix, type_, raw_priv_key_);
+            valid_ = GetKeyElement(bas58_private_key, prefix, type_, raw_priv_key_);
 			if (!valid_ || prefix != PRIVATEKEY_PREFIX) {
 				return false;
 			}
@@ -342,18 +313,9 @@ namespace bubi {
 				skey.From(raw_priv_key_);
 				tmp = skey.GetPublicKey();
 			}
-			else if (type_ == SIGNTYPE_RSA) {
-				RSA* rsa = NULL;
-				const unsigned char* buff = (const unsigned char*)raw_priv_key_.c_str();
-				d2i_RSAPrivateKey(&rsa, &buff, raw_priv_key_.length());
-
-				unsigned char* out = NULL;
-				//int outlen = i2d_RSAPublicKey(rsa, &out);
-				int outlen = i2d_RSA_PUBKEY(rsa, &out);
-				tmp.append((const char*)out, outlen);
-				OPENSSL_free(out);
-				RSA_free(rsa);
-			}
+            else{
+                LOG_ERROR("Unknown signature type(%d)", type_);
+            }
 			//ToBase58();
 			pub_key_.type_ = type_;
 			pub_key_.Init(tmp);
@@ -368,17 +330,8 @@ namespace bubi {
 		From(base58_private_key);
 	}
 
-	std::string PrivateKey::CalcHash(const std::string &value) const {
-		std::string hash;
-		if (type_ == SIGNTYPE_ED25519) {
-			hash = utils::Sha256::Crypto(value);
-		}
-		else {
-			hash = utils::Sm3::Crypto(value);
-		}
-		return hash;
-	}
-
+	
+    //not modify
 	std::string PrivateKey::Sign(const std::string &input) const {
 		unsigned char sig[10240];
 		unsigned int sig_len = 0;
@@ -394,48 +347,45 @@ namespace bubi {
 			std::string r, s;
 			return key.Sign("1234567812345678", input);
 		}
-		else if (type_ == SIGNTYPE_RSA) {
-			const unsigned char *key_cstr = (const unsigned char *)raw_priv_key_.c_str();
-			int key_len = raw_priv_key_.length();
-
-			RSA *p_rsa = d2i_RSAPrivateKey(NULL, &key_cstr, key_len);
-
-			if (p_rsa != NULL) {
-
-				const char *cstr = input.c_str();
-				unsigned char hash[SHA_DIGEST_LENGTH] = { 0 };
-				SHA1((unsigned char *)cstr, input.length(), hash);
-				int r = RSA_sign(NID_sha1, hash, SHA_DIGEST_LENGTH, sig, &sig_len, p_rsa);
-			}
-
-			RSA_free(p_rsa);
-		}
+        else{
+            LOG_ERROR("Unknown signature type(%d)", type_);
+        }
 		std::string output;
 		output.append((const char *)sig, sig_len);
 		return output;
 	}
 
-	std::string PrivateKey::GetBase16PrivateKey() const {
-		//append prefix
-		std::string str_result;
-		str_result.push_back((char)PRIVATEKEY_PREFIX);
+    std::string PrivateKey::GetBase58PrivateKey() const {
+        std::string str_result;
+        //append prefix(priv)
+        str_result.push_back((char)0XDA);
+        str_result.push_back((char)0X37);
+        str_result.push_back((char)0X9F);
 
-		//append version
+		//append version 1
 		str_result.push_back((char)type_);
 
-		//append private key
+		//append private key 32
 		str_result.append(raw_priv_key_);
 
-		str_result.push_back((char)utils::Crc8(str_result));
-		return utils::String::BinToHexString(str_result);
+        //压缩标志
+        str_result.push_back(0X00);
+
+        //bitcoin use 4 byte hash check.
+        std::string hash1, hash2;
+        hash1 = CalcHash(str_result, type_);
+        hash2 = CalcHash(hash1, type_);
+
+        str_result.append(hash2.c_str(),4);
+        return utils::Base58::Encode(str_result);
 	}
 
-	std::string PrivateKey::GetBase16Address() const {
-		return pub_key_.GetBase16Address();
+	std::string PrivateKey::GetBase58Address() const {
+		return pub_key_.GetBase58Address();
 	}
 
-	std::string PrivateKey::GetBase16PublicKey() const {
-		return pub_key_.GetBase16PublicKey();
+	std::string PrivateKey::GetBase58PublicKey() const {
+		return pub_key_.GetBase58PublicKey();
 	}
 
 	std::string PrivateKey::GetRawPublicKey() const {

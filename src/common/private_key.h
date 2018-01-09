@@ -25,31 +25,30 @@ namespace bubi {
 		SIGNTYPE_NONE,
 		SIGNTYPE_ED25519 = 1,
 		SIGNTYPE_CFCASM2 = 2,
-		SIGNTYPE_RSA = 3,
-		SIGNTYPE_CFCA = 4
-	};
+    };
 
-	enum PrivateKeyPrefix {
-		ADDRESS_PREFIX = 0xa0, //0xa0
-		PUBLICKEY_PREFIX = 0xb0, //0xb0
-		PRIVATEKEY_PREFIX = 0xc0  //0xc0
-	};
+    enum PrivateKeyPrefix {
+        ADDRESS_PREFIX = 0xa0, //0xa0
+        PUBLICKEY_PREFIX = 0xb0, //0xb0
+        PRIVATEKEY_PREFIX = 0xc0  //0xc0
+    };
 
-	enum Ed25519KeyLength {
-		ED25519_ADDRESS_LENGTH = 20, // 1+1+20+1
-		ED25519_PUBLICKEY_LENGTH = 32, //1+1+32+1
-		ED25519_PRIVATEKEY_LENGTH = 32, //1+1+32+1
-	};
+    enum Ed25519KeyLength {
+        ED25519_ADDRESS_LENGTH = 20, // 2+1+20+4
+        ED25519_PUBLICKEY_LENGTH = 32, //1+1+32+4
+        ED25519_PRIVATEKEY_LENGTH = 32, //3+1+32+1+4
+    };
 
-	enum Sm2KeyLength {
-		SM2_ADDRESS_LENGTH = 20, //1+1+20+1
-		SM2_PUBLICKEY_LENGTH = 65, //1+1+65+1
-		SM2_PRIVATEKEY_LENGTH = 32 //1+1+32+1
-	};
+    enum Sm2KeyLength {
+        SM2_ADDRESS_LENGTH = 20, //2+1+20+4
+        SM2_PUBLICKEY_LENGTH = 65, //1+1+65+4
+        SM2_PRIVATEKEY_LENGTH = 32 //3+1+32+1+4
+    };
 
-	bool GetKeyElement(const std::string &base16_pub_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data);
+	bool GetKeyElement(const std::string &base58_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data);
 	std::string GetSignTypeDesc(SignatureType type);
 	SignatureType GetSignTypeByDesc(const std::string &desc);
+    std::string CalcHash(const std::string &value,const SignatureType &sign_type);
 
 	class PublicKey {
 		DISALLOW_COPY_AND_ASSIGN(PublicKey);
@@ -57,26 +56,25 @@ namespace bubi {
 
 	public:
 		PublicKey();
-		PublicKey(const std::string &base16_pub_key);
+		PublicKey(const std::string &base58_pub_key);
 		~PublicKey();
 
 		void Init(std::string rawpkey);
 
 		//返回base58编码之后的地址
-		std::string GetBase16Address() const;
+		std::string GetBase58Address() const;
 
 		//返回公钥的base58编码
-		std::string GetBase16PublicKey() const;
+		std::string GetBase58PublicKey() const;
 
 		std::string GetRawPublicKey() const;
 
 		bool IsValid() const { return valid_; }
 
 		SignatureType GetSignType() { return type_; };
-		std::string CalcHash(const std::string &value) const;
 
-		static bool Verify(const std::string &data, const std::string &signature, const std::string &public_key_base16);
-		static bool IsAddressValid(const std::string &public_key_base16);
+		static bool Verify(const std::string &data, const std::string &signature, const std::string &public_key_base58);
+		static bool IsAddressValid(const std::string &public_key_base58);
 	private:
 		std::string raw_pub_key_;
 		bool valid_;
@@ -87,22 +85,22 @@ namespace bubi {
 		DISALLOW_COPY_AND_ASSIGN(PrivateKey);
 	public:
 		PrivateKey(SignatureType type);
-		PrivateKey(const std::string &base16_private_key);
-		bool From(const std::string &base16_private_key);
+		PrivateKey(const std::string &base58_private_key);
+		bool From(const std::string &bas58_private_key);
 		~PrivateKey();
 
 
 		std::string	Sign(const std::string &input) const;
-		std::string GetBase16PrivateKey() const;
-		std::string GetBase16Address() const;
-		std::string GetBase16PublicKey() const;
+		std::string GetBase58PrivateKey() const;
+		std::string GetBase58Address() const;
+		std::string GetBase58PublicKey() const;
 		std::string GetRawPublicKey() const;
 		bool IsValid() const { return valid_; }
 		std::string GetRawPrivateKey() {
 			return utils::String::BinToHexString(raw_priv_key_);
 		}
 		SignatureType GetSignType() { return type_; };
-		std::string CalcHash(const std::string &value) const;
+		
 
 	private:
 		std::string raw_priv_key_;

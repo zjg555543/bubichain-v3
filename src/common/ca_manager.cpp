@@ -182,7 +182,7 @@ namespace bubi {
 			}
 			if (strcmp(node_id, "*") != 0) {
 				bubi::PrivateKey priv_key(node_private_key);
-				std::string node_address = priv_key.GetBase16Address();
+				std::string node_address = priv_key.GetBase58Address();
 				if (node_address.compare(node_id) != 0) {
 					sprintf(out_msg, "this user certificate is invalid in this node");
 					break;

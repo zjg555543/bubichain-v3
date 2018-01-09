@@ -565,9 +565,9 @@ namespace bubi {
 		PublicKey public_key(sig.public_key());
 
 		//check the node id if exist in the validator' list
-		int64_t should_replica_id = GetValidatorIndex(public_key.GetBase16Address(), validators);
+		int64_t should_replica_id = GetValidatorIndex(public_key.GetBase58Address(), validators);
 		if (should_replica_id < 0) {
-			LOG_ERROR("Cann't find the validator(%s) in list", public_key.GetBase16Address().c_str());
+			LOG_ERROR("Cann't find the validator(%s) in list", public_key.GetBase58Address().c_str());
 			return false;
 		}
 
@@ -1571,7 +1571,7 @@ namespace bubi {
 		preprepare->set_value_digest(HashWrapper::Crypto(value));
 
 		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 		return env;
 	}
@@ -1585,7 +1585,7 @@ namespace bubi {
 		*pbft->mutable_pre_prepare() = pre_prepare;
 
 		protocol::Signature *sig = env.mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 		return env;
 	}
@@ -1604,7 +1604,7 @@ namespace bubi {
 		prepare->set_value_digest(pre_prepare.value_digest());
 
 		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 		return env;
 	}
@@ -1623,7 +1623,7 @@ namespace bubi {
 		preprepare->set_value_digest(prepare.value_digest());
 
 		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 		return env;
 	}
@@ -1659,7 +1659,7 @@ namespace bubi {
 		}
 
 		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 
 		return env;
@@ -1686,7 +1686,7 @@ namespace bubi {
 		}
 
 		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 		return env;
 	}
@@ -1698,7 +1698,7 @@ namespace bubi {
 		pbft->set_round_number(round_number);
 
 		protocol::Signature *sig = env->mutable_signature();
-		sig->set_public_key(private_key_.GetBase16PublicKey());
+		sig->set_public_key(private_key_.GetBase58PublicKey());
 		sig->set_sign_data(private_key_.Sign(pbft->SerializeAsString()));
 
 		return env;
@@ -1753,7 +1753,7 @@ namespace bubi {
 
 	std::string Pbft::GetNodeAddress(const protocol::PbftEnv &pbft_env) {
 		PublicKey public_key(pbft_env.signature().public_key());
-		return public_key.GetBase16Address();
+		return public_key.GetBase58Address();
 	}
 
 	int64_t Pbft::GetSeq(const protocol::PbftEnv &pbft_env) {
@@ -2105,7 +2105,7 @@ namespace bubi {
 
 			const protocol::Signature &sign = env.signature();
 			PublicKey pub_key(sign.public_key());
-			std::string address = pub_key.GetBase16Address();
+			std::string address = pub_key.GetBase58Address();
 			if (temp_vs.find(address) == temp_vs.end()) {
 				LOG_ERROR("Check proof failed, address(%s) not found or duplicated", address.c_str());
 				return false;

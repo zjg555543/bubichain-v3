@@ -99,7 +99,7 @@ namespace bubi {
 						}
 
 						signpro->set_sign_data(decodesig);
-						signpro->set_public_key(pubkey.GetBase16PublicKey());
+						signpro->set_public_key(pubkey.GetBase58PublicKey());
 					}
 
 					// add node signature
@@ -113,7 +113,7 @@ namespace bubi {
 					std::string sign = privateKey.Sign(content);
 					protocol::Signature *signpro = tran_env.add_signatures();
 					signpro->set_sign_data(sign);
-					signpro->set_public_key(privateKey.GetBase16PublicKey());
+					signpro->set_public_key(privateKey.GetBase58PublicKey());
 					result_item["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
 				}
 				else {
@@ -141,7 +141,7 @@ namespace bubi {
 						std::string sign = privateKey.Sign(content);
 						protocol::Signature *signpro = tran_env.add_signatures();
 						signpro->set_sign_data(sign);
-						signpro->set_public_key(privateKey.GetBase16PublicKey());
+						signpro->set_public_key(privateKey.GetBase58PublicKey());
 					}
 
 					result_item["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
@@ -198,9 +198,9 @@ namespace bubi {
 			}
 
 			PrivateKey priv_key(sign_type);
-			std::string public_key = priv_key.GetBase16PublicKey();
-			std::string private_key = priv_key.GetBase16PrivateKey();
-			std::string public_address = priv_key.GetBase16Address();
+            std::string public_key = priv_key.GetBase58PublicKey();
+            std::string private_key = priv_key.GetBase58PrivateKey();
+            std::string public_address = priv_key.GetBase58Address();
 
 			LOG_TRACE("Creating account address:%s", public_address.c_str());
 
@@ -371,7 +371,7 @@ namespace bubi {
 						}
 
 						signpro->set_sign_data(decodesig);
-						signpro->set_public_key(pubkey.GetBase16PublicKey());
+                        signpro->set_public_key(pubkey.GetBase58PublicKey());
 					}
 
 					// add node signature
@@ -385,7 +385,7 @@ namespace bubi {
 					std::string sign = privateKey.Sign(content);
 					protocol::Signature *signpro = tran_env.add_signatures();
 					signpro->set_sign_data(sign);
-					signpro->set_public_key(privateKey.GetBase16PublicKey());
+                    signpro->set_public_key(privateKey.GetBase58PublicKey());
 					result_json["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
 				}
 				else {
@@ -413,7 +413,7 @@ namespace bubi {
 						std::string sign = privateKey.Sign(content);
 						protocol::Signature *signpro = tran_env.add_signatures();
 						signpro->set_sign_data(sign);
-						signpro->set_public_key(privateKey.GetBase16PublicKey());
+                        signpro->set_public_key(privateKey.GetBase58PublicKey());
 					}
 
 					// add node signature
@@ -426,7 +426,7 @@ namespace bubi {
 					std::string sign = privateKey.Sign(content);
 					protocol::Signature *signpro = tran_env.add_signatures();
 					signpro->set_sign_data(sign);
-					signpro->set_public_key(privateKey.GetBase16PublicKey());
+                    signpro->set_public_key(privateKey.GetBase58PublicKey());
 					result_json["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
 				}
 

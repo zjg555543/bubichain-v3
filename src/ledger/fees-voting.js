@@ -278,16 +278,16 @@ function query(input) {
 
   var para = JSON.parse(input);
   if (para.query_voting) {
-    query_voting();
+    return query_voting();
   }
   else if (para.query_enroll) {
-    query_enroll();
+    return query_enroll();
   }
   else if (para.query_statistic) {
-    query_statistic();
+    return query_statistic();
   }
   else if (para.query_victors) {
-    query_victors();
+    return query_victors();
   }
   else {
     throw 'query input para error';

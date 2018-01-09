@@ -109,9 +109,9 @@ namespace bubi {
 				} 
 
 				PrivateKey priv_key(type);
-				std::string public_key = priv_key.GetBase16PublicKey();
-				std::string private_key = priv_key.GetBase16PrivateKey();
-				std::string public_address = priv_key.GetBase16Address();
+				std::string public_key = priv_key.GetBase58PublicKey();
+				std::string private_key = priv_key.GetBase58PrivateKey();
+				std::string public_address = priv_key.GetBase58Address();
 
 				LOG_TRACE("Creating account address:%s", public_address.c_str());
 				Json::Value result = Json::Value(Json::objectValue);
@@ -211,7 +211,7 @@ namespace bubi {
 
 		bubi::PrivateKey private_key(utils::Aes::HexDecrypto(argv[2], bubi::GetDataSecuretKey()));
 
-		printf("local peer address (%s)\n", private_key.GetBase16Address().c_str());
+		printf("local peer address (%s)\n", private_key.GetBase58Address().c_str());
 	}
 
 	void Argument::ShowHardwareAddress() {

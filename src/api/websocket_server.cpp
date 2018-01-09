@@ -155,7 +155,7 @@ namespace bubi {
 			std::string sign = privateKey.Sign(content);
 			protocol::Signature *signpro = tran_env.add_signatures();
 			signpro->set_sign_data(sign);
-			signpro->set_public_key(privateKey.GetBase16PublicKey());
+            signpro->set_public_key(privateKey.GetBase58PublicKey());
 
 			TransactionFrm::pointer ptr = std::make_shared<TransactionFrm>(tran_env);
 			GlueManager::Instance().OnTransaction(ptr, result);

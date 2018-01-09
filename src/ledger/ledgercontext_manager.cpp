@@ -113,7 +113,7 @@ namespace bubi {
 			PrivateKey priv_key(SIGNTYPE_ED25519);
 			Json::Value account_json = Json::Value(Json::objectValue);
 			protocol::Account account;
-			account.set_address(priv_key.GetBase16Address());
+            account.set_address(priv_key.GetBase58Address());
 			account.mutable_contract()->set_payload(parameter_.code_);
 			account.mutable_contract()->set_type((protocol::Contract_ContractType)type_);
 			parameter_.contract_address_ = account.address();
@@ -129,7 +129,7 @@ namespace bubi {
 		if (!Environment::AccountFromDB(parameter_.source_address_, null_acc)) {
 			if (!PublicKey::IsAddressValid(parameter_.source_address_)) {
 				PrivateKey priv_key(SIGNTYPE_ED25519);
-				parameter_.source_address_ = priv_key.GetBase16Address();
+                parameter_.source_address_ = priv_key.GetBase58Address();
 			}
 			//create a tempory source address
 			protocol::Account account;

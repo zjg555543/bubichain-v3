@@ -52,7 +52,7 @@ namespace bubi {
 		validators_.clear();
 
 		is_validator_ = false;
-		std::string node_address = private_key_.GetBase16Address();
+		std::string node_address = private_key_.GetBase58Address();
 		int64_t counter = 0;
 		for (int32_t i = 0; i < validators.validators_size(); i++) {
 			validators_.insert(std::make_pair(validators.validators(i), counter++));
@@ -92,7 +92,7 @@ namespace bubi {
 	protocol::Signature Consensus::SignData(const std::string &data) {
 		protocol::Signature sig;
 		sig.set_sign_data(private_key_.Sign(data));
-		sig.set_public_key(private_key_.GetBase16PublicKey());
+		sig.set_public_key(private_key_.GetBase58PublicKey());
 		return sig;
 	}
 
@@ -148,7 +148,7 @@ namespace bubi {
 	}
 
 	std::string Consensus::GetNodeAddress() {
-		return private_key_.GetBase16Address();
+		return private_key_.GetBase58Address();
 	}
 
 	bool Consensus::SaveValue(const std::string &name, const std::string &value) {
