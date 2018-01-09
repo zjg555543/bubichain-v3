@@ -404,7 +404,7 @@ void TestSignature(){
 		std::string sign_data = private_key.Sign(data);
 		int64_t s3 = utils::Timestamp::HighResolution();
 
-		bool ret = bubi::PublicKey::Verify(data, sign_data, private_key.GetBase16PublicKey());
+		bool ret = bubi::PublicKey::Verify(data, sign_data, private_key.GetBase58PublicKey());
 		int64_t s4 = utils::Timestamp::HighResolution();
 
 		t1 += s2 - s1;
