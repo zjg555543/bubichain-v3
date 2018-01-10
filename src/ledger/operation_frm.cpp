@@ -679,24 +679,29 @@ namespace bubi {
 		std::string address = ope.dest_address();
 		std::shared_ptr<AccountFrm> dest_account_ptr = nullptr;
 		do {
-			if (!environment->GetEntry(address, dest_account_ptr)) {
-				result_.set_code(protocol::ERRCODE_ACCOUNT_NOT_EXIST);
-				result_.set_desc(utils::String::Format("Account(%s) not exist", address.c_str()));
-				break;
-			}
+            protocol::Account& proto_source_account = source_account_->GetProtoAccount();
+            if (proto_source_account.balance() < ope.amount()){
+                result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+                result_.set_desc(utils::String::Format("Account(%s) balance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
+                    address.c_str(),
+                    proto_source_account.balance(),
+                    ope.amount()
+                    ));
+                break;
+            }
 
-			protocol::Account& proto_source_account = source_account_->GetProtoAccount();
+			if (!environment->GetEntry(address, dest_account_ptr)) {
+                protocol::Account account;
+                account.set_balance(0);
+                account.mutable_priv()->set_master_weight(1);
+                account.mutable_priv()->mutable_thresholds()->set_tx_threshold(1);
+                account.set_address(ope.dest_address());
+                dest_account_ptr = std::make_shared<AccountFrm>(account);
+                environment->AddEntry(ope.dest_address(), dest_account_ptr);
+			}			
 			protocol::Account& proto_dest_account = dest_account_ptr->GetProtoAccount();
 
-			if (proto_source_account.balance() < ope.amount()){
-				result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-				result_.set_desc(utils::String::Format("Account(%s) balance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
-					address.c_str(), 
-					proto_source_account.balance(),
-					ope.amount()
-					));
-				break;
-			}
+			
 			int64_t new_balance = proto_source_account.balance() - ope.amount();
 			proto_source_account.set_balance(new_balance);
 			proto_dest_account.set_balance(proto_dest_account.balance() + ope.amount());
