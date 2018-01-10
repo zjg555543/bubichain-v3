@@ -235,9 +235,9 @@ namespace bubi {
 				break;
 			}
 
-			if (set_metadata.value().size() == 0 || set_metadata.value().size() > General::METADATA_MAX_VALUE_SIZE) {
+			if (set_metadata.value().size() > General::METADATA_MAX_VALUE_SIZE) {
 				result.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-				result.set_desc(utils::String::Format("Length of the value should be between [1, %d]. key=%s,value.length=%d",
+				result.set_desc(utils::String::Format("Length of the value should be between [0, %d]. key=%s,value.length=%d",
 					General::METADATA_MAX_VALUE_SIZE, trim.c_str(), set_metadata.value().length()));
 				break;
 			}
