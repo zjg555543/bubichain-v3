@@ -68,7 +68,7 @@ namespace bubi {
 		static bool FeesConfigGet(const std::string& hash, protocol::FeeConfig &fee);
 		bool ConsensusValueFromDB(int64_t seq, protocol::ConsensusValue& request);
 
-		bool DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context);
+		int32_t DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context);
 
 		void UpdateValidatorset(const std::set<std::string>& newSet);
 

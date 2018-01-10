@@ -71,7 +71,7 @@ namespace bubi {
 		int64_t tx_timeout_;
 
 		LedgerFrm::pointer closing_ledger_;
-		std::stack<std::shared_ptr<TransactionFrm>> transaction_stack_;
+		std::vector<std::shared_ptr<TransactionFrm>> transaction_stack_;
 		
 		//result
 		bool exe_result_;
@@ -100,6 +100,7 @@ namespace bubi {
 		int32_t GetTxTimeoutIndex();
 
 		void PushLog();
+		std::shared_ptr<TransactionFrm> GetBottomTx();
 	};
 
 	typedef std::multimap<std::string, LedgerContext *> LedgerContextMultiMap;

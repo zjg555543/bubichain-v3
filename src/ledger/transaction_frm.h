@@ -90,6 +90,9 @@ namespace bubi {
 		int64_t GetRealFee() const;
 		void AddRealFee(int64_t fee);
 
+		void SetMaxEndTime(int64_t end_time);
+		int64_t GetMaxEndTime();
+
 		uint64_t apply_time_;
 		int64_t ledger_seq_;
 		Result result_;	
@@ -106,6 +109,9 @@ namespace bubi {
 		
 		int64_t incoming_time_;
 		int64_t real_fee_;
+
+		//flow the top tx
+		int64_t max_end_time_;
 	};
 };
 

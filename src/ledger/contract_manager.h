@@ -40,6 +40,7 @@ namespace bubi{
 		std::string consensus_value_;
 		LedgerContext *ledger_context_;
 		int64_t pay_coin_amount_;
+		int64_t max_end_time_;
 	};
 
 	class TestParameter{

@@ -915,9 +915,9 @@ namespace bubi {
 		return environment_;
 	}
 
-	bool LedgerManager::DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context) {
+	int32_t LedgerManager::DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context) {
 
-		auto back = ledger_context->transaction_stack_.top();
+		TransactionFrm::pointer back = ledger_context->transaction_stack_.back();
 		std::shared_ptr<AccountFrm> source_account;
 		back->environment_->GetEntry(env.transaction().source_address(), source_account);
 		env.mutable_transaction()->set_nonce(source_account->GetAccountNonce() + 1);
@@ -925,7 +925,7 @@ namespace bubi {
 		//auto header = std::make_shared<protocol::LedgerHeader>(LedgerManager::Instance().closing_ledger_->GetProtoHeader());
 		auto header = std::make_shared<protocol::LedgerHeader>(ledger_context->closing_ledger_->GetProtoHeader());
 
-		auto txfrm = std::make_shared<bubi::TransactionFrm >(env);
+		TransactionFrm::pointer txfrm = std::make_shared<bubi::TransactionFrm >(env);
 
 		do {
 			if (ledger_context->transaction_stack_.size() > General::CONTRACT_MAX_RECURSIVE_DEPTH) {
@@ -941,18 +941,32 @@ namespace bubi {
 					//txfrm->result_.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS);
 					//break;
 					LOG_ERROR("Too many transaction called by transaction(hash:%s)", contract->GetParameter().sender_.c_str());
-					return false;
+					return -1;
 				}
 			}
 
-			ledger_context->transaction_stack_.push(txfrm);
+			ledger_context->transaction_stack_.push_back(txfrm);
+			txfrm->SetMaxEndTime(back->GetMaxEndTime());
 			txfrm->NonceIncrease(ledger_context->closing_ledger_.get(), back->environment_);
 			if (txfrm->ValidForParameter()) {
 				txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
 			}
+
+			TransactionFrm::pointer bottom_tx = ledger_context->GetBottomTx();
+			//throw the contract
+			if (txfrm->GetResult().code() == protocol::ERRCODE_FEE_NOT_ENOUGH) {
+				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) Fee not enough",
+					utils::String::BinToHexString(bottom_tx->GetContentHash()).c_str(), bottom_tx->processing_operation_);
+				return -1;
+			}
 	
-			//caculate byte fee
-			back->AddRealFee(txfrm->GetRealFee());
+			//throw the contract
+			bottom_tx->AddRealFee(txfrm->GetRealFee());
+			if (bottom_tx->GetRealFee() > bottom_tx->GetFee()) {
+				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) Fee not enough",
+					utils::String::BinToHexString(bottom_tx->GetContentHash()).c_str(), bottom_tx->processing_operation_);
+				return -1;
+			}
 
 			protocol::TransactionEnvStore tx_store;
 			tx_store.mutable_transaction_env()->CopyFrom(txfrm->GetProtoTxEnv());
@@ -968,9 +982,9 @@ namespace bubi {
 			tx_store.set_error_code(txfrm->GetResult().code());
 			tx_store.set_error_desc(txfrm->GetResult().desc());
 			back->instructions_.push_back(tx_store);
-			ledger_context->transaction_stack_.pop();
+			ledger_context->transaction_stack_.pop_back();
 
-			return txfrm->GetResult().code() == protocol::ERRCODE_SUCCESS;
+			return txfrm->GetResult().code() == protocol::ERRCODE_SUCCESS ? 1 : 0;
 		} while (false);
 
 		//caculate byte fee

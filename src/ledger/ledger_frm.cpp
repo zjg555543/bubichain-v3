@@ -142,7 +142,7 @@ namespace bubi {
 		enabled_ = true;
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
-		total_fee_=0;
+		total_fee_= 0;
 		total_real_fee_ = 0;
 		environment_ = std::make_shared<Environment>(nullptr);
 
@@ -162,9 +162,12 @@ namespace bubi {
 				continue;
 			}
 
-			ledger_context->transaction_stack_.push(tx_frm);
+			ledger_context->transaction_stack_.push_back(tx_frm);
 			tx_frm->NonceIncrease(this, environment_);
+
 			int64_t time_start = utils::Timestamp::HighResolution();
+			tx_frm->SetMaxEndTime(time_start + tx_time_out);
+
 			bool ret = tx_frm->Apply(this, environment_);
 			int64_t time_use = utils::Timestamp::HighResolution() - time_start;
 
@@ -189,7 +192,7 @@ namespace bubi {
 			total_real_fee_ += tx_frm->GetRealFee();
 			apply_tx_frms_.push_back(tx_frm);			
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
-			ledger_context->transaction_stack_.pop();
+			ledger_context->transaction_stack_.pop_back();
 		}
 		AllocateFee();
 		apply_time_ = utils::Timestamp::HighResolution() - start_time;

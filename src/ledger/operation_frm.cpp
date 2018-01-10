@@ -20,12 +20,16 @@ limitations under the License.
 
 namespace bubi {
 	OperationFrm::OperationFrm(const protocol::Operation &operation, TransactionFrm* tran, int32_t index) :
-		operation_(operation), transaction_(tran), index_(index) {}
+		operation_(operation), transaction_(tran), index_(index), ope_fee_(0){}
 
 	OperationFrm::~OperationFrm() {}
 
 	Result OperationFrm::GetResult() const {
 		return result_;
+	}
+
+	int64_t OperationFrm::GetOpeFee() const {
+		return ope_fee_;
 	}
 
 	Result OperationFrm::CheckValid(const protocol::Operation& operation, const std::string &source_address) {
@@ -423,30 +427,30 @@ namespace bubi {
 				break;
 			}
 
-            int64_t base_reserve = (int64_t)LedgerManager::Instance().fees_.base_reserve();
-            if (createaccount.init_balance() < base_reserve) {
-                result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-                result_.set_desc("Dest address balance is low");
-                LOG_ERROR("Dest address balance is low");
-                break;
-            }
-            if (source_account_->GetAccountBalance() - base_reserve < createaccount.init_balance()) {
-                result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-                result_.set_desc("Source address balance is low");
-                LOG_ERROR("Source address(%s) balance is low", source_account_->GetAccountAddress().c_str());
-                break;
-            }
-            source_account_->AddBalance(-1 * createaccount.init_balance());
+			int64_t base_reserve = LedgerManager::Instance().fees_.base_reserve();
+			if (createaccount.init_balance() < base_reserve) {
+				result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+				result_.set_desc("Dest address balance is low");
+				LOG_ERROR("Dest address balance is low");
+				break;
+			}
+			if (source_account_->GetAccountBalance() - base_reserve < createaccount.init_balance()) {
+				result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+				result_.set_desc("Source address balance is low");
+				LOG_ERROR("Source address(%s) balance is low", source_account_->GetAccountAddress().c_str());
+				break;
+			}
+			source_account_->AddBalance(-1 * createaccount.init_balance());
 
-            protocol::Account account;
-            account.set_balance(createaccount.init_balance());
+			protocol::Account account;
+			account.set_balance(createaccount.init_balance());
 			account.mutable_priv()->CopyFrom(createaccount.priv());
 			account.set_address(createaccount.dest_address());
 			account.mutable_contract()->CopyFrom(createaccount.contract());
 			dest_account = std::make_shared<AccountFrm>(account);
 
 			bool success = true;
-			for (int i = 0; i < createaccount.metadatas_size(); i++){
+			for (int i = 0; i < createaccount.metadatas_size(); i++) {
 				protocol::KeyPair kp;
 				kp.CopyFrom(createaccount.metadatas(i));
 				if (kp.version() != 0 && kp.version() != 1){
@@ -559,6 +563,7 @@ namespace bubi {
 				parameter.ope_index_ = index_;
 				parameter.consensus_value_ = Proto2Json(*(transaction_->ledger_->value_)).toFastString();
 				parameter.ledger_context_ = transaction_->ledger_->lpledger_context_;
+				parameter.max_end_time_ = transaction_->GetMaxEndTime();
 
 				std::string err_msg;
 				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
@@ -678,36 +683,46 @@ namespace bubi {
 		auto ope = operation_.pay_coin();
 		std::string address = ope.dest_address();
 		std::shared_ptr<AccountFrm> dest_account_ptr = nullptr;
+		int64_t reserve_coin = LedgerManager::Instance().fees_.base_reserve();
 		do {
-            protocol::Account& proto_source_account = source_account_->GetProtoAccount();
-            if (proto_source_account.balance() < ope.amount()){
-                result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-                result_.set_desc(utils::String::Format("Account(%s) balance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
-                    address.c_str(),
-                    proto_source_account.balance(),
-                    ope.amount()
-                    ));
-                break;
-            }
+			protocol::Account& proto_source_account = source_account_->GetProtoAccount();
+			if (proto_source_account.balance() < ope.amount() + reserve_coin) {
+				result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+				result_.set_desc(utils::String::Format("Account(%s) balance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
+					address.c_str(),
+					proto_source_account.balance(),
+					ope.amount()
+					));
+				break;
+			}
 
 			if (!environment->GetEntry(address, dest_account_ptr)) {
-                protocol::Account account;
-                account.set_balance(0);
-                account.mutable_priv()->set_master_weight(1);
-                account.mutable_priv()->mutable_thresholds()->set_tx_threshold(1);
-                account.set_address(ope.dest_address());
-                dest_account_ptr = std::make_shared<AccountFrm>(account);
-                environment->AddEntry(ope.dest_address(), dest_account_ptr);
-			}			
+				if (ope.amount() < reserve_coin) {
+					result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
+					result_.set_desc(utils::String::Format("Account(%s) init balance(" FMT_I64 ") not enough, reserve(" FMT_I64 ")",
+						address.c_str(),
+						ope.amount(),
+						reserve_coin
+						));
+					break;
+				}
+
+				protocol::Account account;
+				account.set_balance(0);
+				account.mutable_priv()->set_master_weight(1);
+				account.mutable_priv()->mutable_thresholds()->set_tx_threshold(1);
+				account.set_address(ope.dest_address());
+				dest_account_ptr = std::make_shared<AccountFrm>(account);
+				environment->AddEntry(ope.dest_address(), dest_account_ptr);
+			}
 			protocol::Account& proto_dest_account = dest_account_ptr->GetProtoAccount();
 
-			
 			int64_t new_balance = proto_source_account.balance() - ope.amount();
 			proto_source_account.set_balance(new_balance);
 			proto_dest_account.set_balance(proto_dest_account.balance() + ope.amount());
 
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
-			if (!javascript.empty()){
+			if (!javascript.empty()) {
 
 				ContractParameter parameter;
 				parameter.code_ = javascript;
@@ -719,6 +734,7 @@ namespace bubi {
 				parameter.consensus_value_ = Proto2Json(*(transaction_->ledger_->value_)).toFastString();
 				parameter.ledger_context_ = transaction_->ledger_->lpledger_context_;
 				parameter.pay_coin_amount_ = ope.amount();
+				parameter.max_end_time_ = transaction_->GetMaxEndTime();
 
 				std::string err_msg;
 				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
@@ -739,25 +755,25 @@ namespace bubi {
 		case protocol::Operation_Type_UNKNOWN:
 			break;
 		case protocol::Operation_Type_CREATE_ACCOUNT:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.create_account_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.create_account_fee();
 			break;
 		case protocol::Operation_Type_PAYMENT:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.pay_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.pay_fee();
 			break;
 		case protocol::Operation_Type_ISSUE_ASSET:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.issue_asset_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.issue_asset_fee();
 			break;
 		case protocol::Operation_Type_SET_METADATA:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.set_metadata_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.set_metadata_fee();
 			break;
 		case protocol::Operation_Type_SET_SIGNER_WEIGHT:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.set_sigure_weight_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.set_sigure_weight_fee();
 			break;
 		case protocol::Operation_Type_SET_THRESHOLD:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.set_threshold_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.set_threshold_fee();
 			break;
 		case protocol::Operation_Type_PAY_COIN:
-			transaction_->AddRealFee(LedgerManager::Instance().fees_.pay_coin_fee());
+			ope_fee_ = LedgerManager::Instance().fees_.pay_coin_fee();
 			break;
 		case protocol::Operation_Type_Operation_Type_INT_MIN_SENTINEL_DO_NOT_USE_:
 			break;

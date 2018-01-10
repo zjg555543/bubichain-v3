@@ -129,7 +129,7 @@ namespace bubi {
 		if (!Environment::AccountFromDB(parameter_.source_address_, null_acc)) {
 			if (!PublicKey::IsAddressValid(parameter_.source_address_)) {
 				PrivateKey priv_key(SIGNTYPE_ED25519);
-                parameter_.source_address_ = priv_key.GetEncAddress();
+				parameter_.source_address_ = priv_key.GetEncAddress();
 			}
 			//create a tempory source address
 			protocol::Account account;
@@ -160,14 +160,15 @@ namespace bubi {
 			payment->set_input(parameter_.input_);
 
 			TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(env);
+			//tx_frm->SetMaxEndTime(utils::Timestamp::HighResolution() + utils::MICRO_UNITS_PER_SEC);
 			tx_frm->environment_ = environment;
-			transaction_stack_.push(tx_frm);
+			transaction_stack_.push_back(tx_frm);
 			closing_ledger_->apply_tx_frms_.push_back(tx_frm);
 
 			closing_ledger_->value_ = std::make_shared<protocol::ConsensusValue>(consensus_value_);
 			closing_ledger_->lpledger_context_ = this;
 
-			return LedgerManager::Instance().DoTransaction(env, this);
+			return LedgerManager::Instance().DoTransaction(env, this) > 0;
 		} else{
 			do {
 				if (parameter_.code_.empty()) {
@@ -204,6 +205,7 @@ namespace bubi {
 			parameter.trigger_tx_ = "{}";
 			parameter.consensus_value_ = Proto2Json(consensus_value_).toFastString();
 			parameter.ledger_context_ = this;
+			//parameter.max_end_time_ = utils::Timestamp::HighResolution() + utils::MICRO_UNITS_PER_SEC / 2;
 			//do query
 
 			Json::Value query_result;
@@ -236,6 +238,10 @@ namespace bubi {
 		for (utils::StringList::const_iterator iter = logs.begin(); iter != logs.end(); iter++) {
 			item[item.size()] = *iter;
 		}
+	}
+
+	std::shared_ptr<TransactionFrm> LedgerContext::GetBottomTx() {
+		return transaction_stack_[0];
 	}
 
 	void LedgerContext::GetLogs(Json::Value &logs) {

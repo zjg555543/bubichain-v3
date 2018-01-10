@@ -20,7 +20,7 @@ limitations under the License.
     
 namespace bubi{
 
-	ContractParameter::ContractParameter() : ope_index_(-1), ledger_context_(NULL), pay_coin_amount_(0){}
+	ContractParameter::ContractParameter() : ope_index_(-1), ledger_context_(NULL), pay_coin_amount_(0), max_end_time_(0){}
 
 	ContractParameter::~ContractParameter() {}
 
@@ -756,10 +756,21 @@ namespace bubi{
 		//return v8::Undefined(args.GetIsolate());
 	}
 	void V8Contract::InternalCheckTime(const v8::FunctionCallbackInfo<v8::Value>& args) {
-		LOG_DEBUG("InternalCheckTime");
+		bubi::AccountFrm::pointer account_frm = nullptr;
+		V8Contract *v8_contract = GetContractFrom(args.GetIsolate());
+		if (v8_contract && 
+			v8_contract->GetParameter().max_end_time_ != 0 &&
+			utils::Timestamp::HighResolution() > v8_contract->GetParameter().max_end_time_ ) {
+
+			args.GetIsolate()->ThrowException(
+				v8::String::NewFromUtf8(args.GetIsolate(), "Time expire",
+				v8::NewStringType::kNormal).ToLocalChecked());
+			LOG_INFO("Check time out");
+		}
 	}
 
 	void V8Contract::CallBackLog(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		InternalCheckTime(args);
 		LOG_INFO("CallBackLog");
 
 		if (args.Length() < 1) {
@@ -774,7 +785,7 @@ namespace bubi{
 		if (args[0]->IsObject()) {
 			v8::Local<v8::Object> obj = args[0]->ToObject(args.GetIsolate());
 			str = v8::JSON::Stringify(args.GetIsolate()->GetCurrentContext(), obj).ToLocalChecked();
-		}
+		} 
 		else {
 			str = args[0]->ToString();
 		}
@@ -802,6 +813,8 @@ namespace bubi{
 	}
 
 	void V8Contract::CallBackGetAccountAsset(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		InternalCheckTime(args);
+
 		if (args.Length() != 2) {
 			LOG_ERROR("parameter error");
 			args.GetReturnValue().Set(false);
@@ -839,7 +852,7 @@ namespace bubi{
 			if (v8_contract && v8_contract->GetParameter().ledger_context_) {
 				LedgerContext *ledger_context = v8_contract->GetParameter().ledger_context_;
 				if (!ledger_context->transaction_stack_.empty()) {
-					auto environment = ledger_context->transaction_stack_.top()->environment_;
+					auto environment = ledger_context->transaction_stack_.back()->environment_;
 					if (!environment->GetEntry(address, account_frm)) {
 						LOG_ERROR("not found account");
 						break;
@@ -873,6 +886,7 @@ namespace bubi{
 	}
 
 	void V8Contract::CallBackGetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		InternalCheckTime(args);
 		do {
 			if (args.Length() != 2) {
 				LOG_ERROR("parameter error");
@@ -902,7 +916,7 @@ namespace bubi{
 			if (v8_contract && v8_contract->GetParameter().ledger_context_) {
 				LedgerContext *ledger_context = v8_contract->GetParameter().ledger_context_;
 				if (!ledger_context->transaction_stack_.empty()) {
-					auto environment = ledger_context->transaction_stack_.top()->environment_;
+					auto environment = ledger_context->transaction_stack_.back()->environment_;
 					if (!environment->GetEntry(address, account_frm)) {
 						LOG_ERROR("not found account");
 						break;
@@ -938,6 +952,7 @@ namespace bubi{
 
 
 	void V8Contract::CallBackSetAccountMetaData(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		InternalCheckTime(args);
 		do {
 			if (args.Length() != 1) {
 				LOG_ERROR("parameter error");
@@ -986,12 +1001,16 @@ namespace bubi{
 				break;
 			}
 
-			if (!LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_)) {
+			int32_t ret = LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
+			if (ret < 0) {
 				LOG_ERROR("Do transaction failed");
+				args.GetIsolate()->ThrowException(
+					v8::String::NewFromUtf8(args.GetIsolate(), "Do tx failed",
+					v8::NewStringType::kNormal).ToLocalChecked());
 				break;
 			}
 		
-			args.GetReturnValue().Set(true);
+			args.GetReturnValue().Set(ret > 0);
 			return;
 		} while (false);
 		args.GetReturnValue().Set(false);
@@ -999,6 +1018,7 @@ namespace bubi{
 
 	//
 	void V8Contract::CallBackGetAccountInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		InternalCheckTime(args);
 		do {
 			if (args.Length() != 1) {
 				LOG_ERROR("parameter error");
@@ -1022,7 +1042,7 @@ namespace bubi{
 			if (v8_contract && v8_contract->GetParameter().ledger_context_) {
 				LedgerContext *ledger_context = v8_contract->GetParameter().ledger_context_;
 				if (!ledger_context->transaction_stack_.empty()) {
-					auto environment = ledger_context->transaction_stack_.top()->environment_;
+					auto environment = ledger_context->transaction_stack_.back()->environment_;
 					if (!environment->GetEntry(address, account_frm)) {
 						LOG_ERROR("not found account");
 						break;
@@ -1051,6 +1071,7 @@ namespace bubi{
 	}
 
 	void V8Contract::CallBackGetLedgerInfo(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		InternalCheckTime(args);
 		if (args.Length() != 1) {
 			LOG_ERROR("parameter error");
 			args.GetReturnValue().Set(false);
@@ -1084,7 +1105,7 @@ namespace bubi{
 	}
 
 	void V8Contract::CallBackContractQuery(const v8::FunctionCallbackInfo<v8::Value>& args) {
-
+		InternalCheckTime(args);
 		v8::HandleScope handle_scope(args.GetIsolate());
 		v8::Local<v8::Object> obj = v8::Object::New(args.GetIsolate());
 		v8::Local<v8::Boolean> flag_false = v8::Boolean::New(args.GetIsolate(), false);
@@ -1117,7 +1138,7 @@ namespace bubi{
 			if (v8_contract && v8_contract->GetParameter().ledger_context_) {
 				LedgerContext *ledger_context = v8_contract->GetParameter().ledger_context_;
 				if (!ledger_context->transaction_stack_.empty()) {
-					auto environment = ledger_context->transaction_stack_.top()->environment_;
+					auto environment = ledger_context->transaction_stack_.back()->environment_;
 					if (!environment->GetEntry(address, account_frm)) {
 						LOG_ERROR("not found account");
 						break;
@@ -1153,6 +1174,7 @@ namespace bubi{
 			ContractParameter parameter;
 			parameter.code_ = contract.payload();
 			parameter.sender_ = v8_contract->GetParameter().this_address_;
+			parameter.max_end_time_ = v8_contract->GetParameter().max_end_time_;
 			parameter.this_address_ = address;
 			parameter.input_ = input;
 			parameter.ope_index_ = 0;
@@ -1240,12 +1262,16 @@ namespace bubi{
 				break;
 			}
 
-			if (!LedgerManager::Instance().DoTransaction(env, v8_contract->parameter_.ledger_context_)) {
+			int32_t ret = LedgerManager::Instance().DoTransaction(env, v8_contract->parameter_.ledger_context_);
+			if (ret < 0) {
 				LOG_ERROR("Do transaction failed");
+				args.GetIsolate()->ThrowException(
+					v8::String::NewFromUtf8(args.GetIsolate(), "Do tx failed",
+					v8::NewStringType::kNormal).ToLocalChecked());
 				break;
 			}
 
-			args.GetReturnValue().Set(true);
+			args.GetReturnValue().Set(ret > 0);
 			return;
 		} while (false);
 
@@ -1390,12 +1416,16 @@ namespace bubi{
 				break;
 			}
 
-			if (!LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_)) {
+			int32_t ret = LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
+			if (ret < 0) {
 				LOG_ERROR("Do transaction failed");
+				args.GetIsolate()->ThrowException(
+					v8::String::NewFromUtf8(args.GetIsolate(), "Do tx failed",
+					v8::NewStringType::kNormal).ToLocalChecked());
 				break;
 			}
 
-			args.GetReturnValue().Set(true);
+			args.GetReturnValue().Set(ret > 0);
 			return;
 		} while (false);
 		args.GetReturnValue().Set(false);

@@ -31,6 +31,7 @@ namespace bubi{
 		int32_t	index_;
 		Result result_;
 		std::shared_ptr<AccountFrm> source_account_;
+		int64_t ope_fee_;
 	public:
 
 		OperationFrm(const protocol::Operation &operation, TransactionFrm* tran, int32_t index = 0);
@@ -41,6 +42,7 @@ namespace bubi{
 		bool CheckSignature(std::shared_ptr<Environment> txenvironment);
 
 		Result GetResult() const;
+		int64_t GetOpeFee() const;
 
 		static Result CheckValid(const protocol::Operation& ope, const std::string &source_address);
 	protected:

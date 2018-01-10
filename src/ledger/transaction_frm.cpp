@@ -35,6 +35,7 @@ namespace bubi {
 		ledger_(),
 		processing_operation_(0),
 		real_fee_(0),
+		max_end_time_(0),
 		incoming_time_(utils::Timestamp::HighResolution())
 		{
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -50,6 +51,7 @@ namespace bubi {
 		ledger_(),
 		processing_operation_(0),
 		real_fee_(0),
+		max_end_time_(0),
 		incoming_time_(utils::Timestamp::HighResolution()){
 		Initialize();
 		utils::AtomicInc(&bubi::General::tx_new_count);
@@ -126,6 +128,14 @@ namespace bubi {
 
 	void TransactionFrm::AddRealFee(int64_t fee) {
 		real_fee_ += fee;
+	}
+
+	void TransactionFrm::SetMaxEndTime(int64_t end_time) {
+		max_end_time_ = end_time;
+	}
+
+	int64_t TransactionFrm::GetMaxEndTime() {
+		return max_end_time_;
 	}
 
 	bool TransactionFrm::PayFee(std::shared_ptr<Environment> environment,int64_t &total_fee){
@@ -566,8 +576,9 @@ namespace bubi {
 			return bSucess;
 		}
 
-		real_fee_ += GetSelfByteFee();
-		if (real_fee_ > GetFee()) {
+		std::shared_ptr<TransactionFrm> bottom_tx = ledger_frm->lpledger_context_->GetBottomTx();
+		bottom_tx->AddRealFee(GetSelfByteFee());
+		if (bottom_tx->GetRealFee() > bottom_tx->GetFee()) {
 			result_.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
 			LOG_ERROR_ERRNO("Transaction(%s) Fee not enough",
 				utils::String::BinToHexString(hash_).c_str());
@@ -613,7 +624,8 @@ namespace bubi {
 				break;
 			}
 
-			if (real_fee_ > GetFee()) {
+			bottom_tx->AddRealFee(opt->GetOpeFee());
+			if (bottom_tx->GetRealFee() > bottom_tx->GetFee()) {
 				result_.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
 				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) Fee not enough",
 					utils::String::BinToHexString(hash_).c_str(), processing_operation_);
