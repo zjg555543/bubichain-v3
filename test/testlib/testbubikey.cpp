@@ -5,7 +5,7 @@ void test_bubikey(){
 
 
     bubi::PrivateKey skey(bubi::SIGNTYPE_ED25519);
-	std::string strpkey = skey.GetBase58PublicKey();
+	std::string strpkey = skey.GetEncPublicKey();
 	for (int i = 0; i < 10000; i++)
 	{
 		//bubi::PublicKey pkey(strpkey);
