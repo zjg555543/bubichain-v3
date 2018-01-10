@@ -15,8 +15,7 @@ message Signature {
 
 message LedgerUpgrade{
 	int64 new_ledger_version = 1; //will be process as required at verion 2.1.0.0
-	repeated string add_validators = 2;  //validators will be added
-	repeated string del_validators = 3;  //validators will be deled
+	string new_validator = 2; //for hardfork
 }
 
 message WsMessage {

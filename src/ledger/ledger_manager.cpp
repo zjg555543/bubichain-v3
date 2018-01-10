@@ -280,7 +280,7 @@ namespace bubi {
 		header->set_tx_count(0);
 		header->set_account_tree_hash(tree_->GetRootHash());
 
-
+		//for validators
 		const utils::StringList &list = Configure::Instance().validation_configure_.validators_;
 		for (utils::StringList::const_iterator iter = list.begin(); iter != list.end(); iter++) {
 			validators_.add_validators(*iter);
@@ -288,7 +288,8 @@ namespace bubi {
 		std::string validators_hash = HashWrapper::Crypto(validators_.SerializeAsString());
 		header->set_validators_hash(validators_hash);
 
-		/*fees_.set_byte_fee(Configure::Instance().ledger_configure_.fees_.byte_fee_);
+		//for fee
+		fees_.set_byte_fee(Configure::Instance().ledger_configure_.fees_.byte_fee_);
 		fees_.set_base_reserve(Configure::Instance().ledger_configure_.fees_.base_reserve_);
 		fees_.set_create_account_fee(Configure::Instance().ledger_configure_.fees_.create_account_fee_);
 		fees_.set_pay_fee(Configure::Instance().ledger_configure_.fees_.pay_fee_);
@@ -297,7 +298,7 @@ namespace bubi {
 		fees_.set_set_sigure_weight_fee(Configure::Instance().ledger_configure_.fees_.set_sigure_weight_fee_);
 		fees_.set_set_threshold_fee(Configure::Instance().ledger_configure_.fees_.set_threshold_fee_);
 		fees_.set_pay_coin_fee(Configure::Instance().ledger_configure_.fees_.pay_coin_fee_);
-		std::string fees_hash = HashWrapper::Crypto(fees_.SerializeAsString());*/
+		std::string fees_hash = HashWrapper::Crypto(fees_.SerializeAsString());
 		header->set_fees_hash(HashWrapper::Crypto(fees_.SerializeAsString()));
 
 		header->set_hash("");

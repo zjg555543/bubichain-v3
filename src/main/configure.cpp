@@ -108,6 +108,7 @@ namespace bubi {
 		max_ledger_per_message_ = 5;
 		max_apply_ledger_per_round_ = 3;
 		test_model_ = false;
+		memset(&fees_, 0, sizeof(fees_));
 	}
 
 	LedgerConfigure::~LedgerConfigure() {}
@@ -127,20 +128,16 @@ namespace bubi {
 		Configure::GetValue(value, "hardfork_points", hardfork_points_);
 		Configure::GetValue(value, "fees_vote_account", fees_vote_account_);
 
-		if (!value.isMember("fees")) {
-			memset(&fees_,0,sizeof(fees_));
-		}
-		else{
-			Configure::GetValue(value["fees"], "byte_fee", fees_.byte_fee_);
-			Configure::GetValue(value["fees"], "base_reserve", fees_.base_reserve_);
-			Configure::GetValue(value["fees"], "create_account_fee", fees_.create_account_fee_);
-			Configure::GetValue(value["fees"], "pay_fee", fees_.pay_fee_);
-			Configure::GetValue(value["fees"], "issue_asset_fee", fees_.issue_asset_fee_);
-			Configure::GetValue(value["fees"], "set_metadata_fee", fees_.set_metadata_fee_);
-			Configure::GetValue(value["fees"], "set_sigure_weight_fee", fees_.set_sigure_weight_fee_);
-			Configure::GetValue(value["fees"], "set_threshold_fee", fees_.set_threshold_fee_);
-			Configure::GetValue(value["fees"], "pay_coin_fee", fees_.pay_coin_fee_);
-		}
+		//for fee
+		Configure::GetValue(value["fees"], "byte_fee", fees_.byte_fee_);
+		Configure::GetValue(value["fees"], "base_reserve", fees_.base_reserve_);
+		Configure::GetValue(value["fees"], "create_account_fee", fees_.create_account_fee_);
+		Configure::GetValue(value["fees"], "pay_fee", fees_.pay_fee_);
+		Configure::GetValue(value["fees"], "issue_asset_fee", fees_.issue_asset_fee_);
+		Configure::GetValue(value["fees"], "set_metadata_fee", fees_.set_metadata_fee_);
+		Configure::GetValue(value["fees"], "set_sigure_weight_fee", fees_.set_sigure_weight_fee_);
+		Configure::GetValue(value["fees"], "set_threshold_fee", fees_.set_threshold_fee_);
+		Configure::GetValue(value["fees"], "pay_coin_fee", fees_.pay_coin_fee_);
 
 		if (max_apply_ledger_per_round_ == 0
 			|| max_trans_in_memory_ / max_apply_ledger_per_round_ == 0) {
