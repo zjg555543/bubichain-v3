@@ -596,9 +596,9 @@ namespace bubi {
 							break;
 						}
 					}
-					if (!ope.value().empty() || key.empty()){
+					if (key.empty()){
 						result_.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-						result_.set_desc(utils::String::Format("Delete data value must be empty,key(%s)", key.c_str()));
+						result_.set_desc(utils::String::Format("Data key is empty,key(%s)", key.c_str()));
 						break;
 					}
 					source_account_->DeleteMetaData(keypair_e);
