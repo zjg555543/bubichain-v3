@@ -87,7 +87,7 @@ namespace bubi {
 				LOG_ERROR("Invalid signature data(%s)", utils::String::BinToHexString(signature.SerializeAsString()).c_str());
 				continue;
 			}
-            valid_signature_.insert(pubkey.GetBase58Address());
+            valid_signature_.insert(pubkey.GetEncAddress());
 		}
 	}
 

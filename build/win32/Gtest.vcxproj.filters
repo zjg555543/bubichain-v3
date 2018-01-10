@@ -38,6 +38,12 @@
     <ClCompile Include="..\..\src\common\cfca.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\test\gtest\test\privatekey_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\common\data_secret_key.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\gtest\common\http_client.h">
@@ -47,6 +53,12 @@
       <Filter>monitor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\common\cfca.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\data_secret_key.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\private_key.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

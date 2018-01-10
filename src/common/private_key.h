@@ -44,11 +44,21 @@ namespace bubi {
         SM2_PUBLICKEY_LENGTH = 65, //1+1+65+4
         SM2_PRIVATEKEY_LENGTH = 32 //3+1+32+1+4
     };
+    
+    std::string EncodeAddress(const std::string& address);
+    std::string DecodeAddress(const std::string& address);
+    std::string EncodePublicKey(const std::string& key);
+    std::string DecodePublicKey(const std::string& key);
+    std::string EncodePrivateKey(const std::string& key);
+    std::string DecodePrivateKey(const std::string& key);
 
-	bool GetKeyElement(const std::string &base58_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data);
+
+    std::string CalcHash(const std::string &value, const SignatureType &sign_type);
+    bool GetPublicKeyElement(const std::string &encode_pub_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data);
+	bool GetKeyElement(const std::string &encode_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data);
 	std::string GetSignTypeDesc(SignatureType type);
 	SignatureType GetSignTypeByDesc(const std::string &desc);
-    std::string CalcHash(const std::string &value,const SignatureType &sign_type);
+    
 
 	class PublicKey {
 		DISALLOW_COPY_AND_ASSIGN(PublicKey);
@@ -56,16 +66,14 @@ namespace bubi {
 
 	public:
 		PublicKey();
-		PublicKey(const std::string &base58_pub_key);
+        PublicKey(const std::string &encode_pub_key);
 		~PublicKey();
 
 		void Init(std::string rawpkey);
 
-		//返回base58编码之后的地址
-		std::string GetBase58Address() const;
+		std::string GetEncAddress() const;
 
-		//返回公钥的base58编码
-		std::string GetBase58PublicKey() const;
+		std::string GetEncPublicKey() const;
 
 		std::string GetRawPublicKey() const;
 
@@ -73,8 +81,8 @@ namespace bubi {
 
 		SignatureType GetSignType() { return type_; };
 
-		static bool Verify(const std::string &data, const std::string &signature, const std::string &public_key_base58);
-		static bool IsAddressValid(const std::string &public_key_base58);
+		static bool Verify(const std::string &data, const std::string &signature, const std::string &encode_public_key);
+		static bool IsAddressValid(const std::string &encode_address);
 	private:
 		std::string raw_pub_key_;
 		bool valid_;
@@ -85,15 +93,15 @@ namespace bubi {
 		DISALLOW_COPY_AND_ASSIGN(PrivateKey);
 	public:
 		PrivateKey(SignatureType type);
-		PrivateKey(const std::string &base58_private_key);
-		bool From(const std::string &bas58_private_key);
+		PrivateKey(const std::string &encode_private_key);
+		bool From(const std::string &encode_private_key);
 		~PrivateKey();
 
 
 		std::string	Sign(const std::string &input) const;
-		std::string GetBase58PrivateKey() const;
-		std::string GetBase58Address() const;
-		std::string GetBase58PublicKey() const;
+		std::string GetEncPrivateKey() const;
+        std::string GetEncAddress() const;
+        std::string GetEncPublicKey() const;
 		std::string GetRawPublicKey() const;
 		bool IsValid() const { return valid_; }
 		std::string GetRawPrivateKey() {

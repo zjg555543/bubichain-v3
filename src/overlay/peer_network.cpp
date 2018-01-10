@@ -319,8 +319,8 @@ namespace bubi {
 		//pre filter
 		const protocol::Signature &sig = notify.signature();
 		PublicKey pub_key(sig.public_key());
-        if (ConsensusManager::Instance().GetConsensus()->GetValidatorIndex(pub_key.GetBase58Address()) < 0) {
-            LOG_TRACE("Cann't find the validator(%s) in list", pub_key.GetBase58Address().c_str());
+        if (ConsensusManager::Instance().GetConsensus()->GetValidatorIndex(pub_key.GetEncAddress()) < 0) {
+            LOG_TRACE("Cann't find the validator(%s) in list", pub_key.GetEncAddress().c_str());
 			return true;
 		}
 

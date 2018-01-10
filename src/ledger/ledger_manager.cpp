@@ -263,7 +263,7 @@ namespace bubi {
 		acc_frm->SetProtoMasterWeight(1);
 		acc_frm->SetProtoTxThreshold(1);
 
-        tree_->Set(utils::Base58::Decode(acc.address()), acc_frm->Serializer());
+        tree_->Set(DecodeAddress(acc.address()), acc_frm->Serializer());
 		tree_->UpdateHash();
 		protocol::Ledger ledger;
 		protocol::LedgerHeader *header = ledger.mutable_header();
@@ -369,7 +369,7 @@ namespace bubi {
 
 			//this validator 
 			PrivateKey private_key(Configure::Instance().validation_configure_.node_privatekey_);
-            std::string this_node_address = private_key.GetBase58Address();
+            std::string this_node_address = private_key.GetEncAddress();
 
 			//compose the new ledger
 			protocol::Ledger ledger;

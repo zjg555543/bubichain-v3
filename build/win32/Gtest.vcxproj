@@ -90,12 +90,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\common\cfca.cpp" />
+    <ClCompile Include="..\..\src\common\data_secret_key.cpp" />
     <ClCompile Include="..\..\src\common\general.cpp" />
     <ClCompile Include="..\..\src\common\private_key.cpp" />
     <ClCompile Include="..\..\test\gtest\common\http_client.cpp" />
     <ClCompile Include="..\..\test\gtest\common\websocket_test.cpp" />
     <ClCompile Include="..\..\test\gtest\common\web_socket_server.cpp" />
     <ClCompile Include="..\..\test\gtest\main.cpp" />
+    <ClCompile Include="..\..\test\gtest\test\privatekey_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Ed25519-donna.vcxproj">
@@ -107,6 +109,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\common\cfca.h" />
+    <ClInclude Include="..\..\src\common\data_secret_key.h" />
+    <ClInclude Include="..\..\src\common\private_key.h" />
     <ClInclude Include="..\..\test\gtest\common\http_client.h" />
     <ClInclude Include="..\..\test\gtest\common\web_socket_server.h" />
   </ItemGroup>

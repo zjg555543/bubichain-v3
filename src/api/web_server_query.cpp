@@ -583,11 +583,11 @@ namespace bubi {
 			if (key.IsValid()) {
 				reply_json["error_code"] = protocol::ERRCODE_SUCCESS;
 				Json::Value &result = reply_json["result"];
-                result["public_key"] = key.GetBase58PublicKey();
-                result["private_key"] = key.GetBase58PrivateKey();
-                result["address"] = key.GetBase58Address();
+                result["public_key"] = key.GetEncPublicKey();
+                result["private_key"] = key.GetEncPrivateKey();
+                result["address"] = key.GetEncAddress();
 				result["private_raw"] = key.GetRawPrivateKey();
-                result["public_key_raw"] = utils::Base58::Encode(key.GetRawPublicKey());
+                result["public_key_raw"] = EncodePublicKey(key.GetRawPublicKey());
 				result["sign_type"] = GetSignTypeDesc(key.GetSignType());
 			}
 			else {
@@ -599,8 +599,8 @@ namespace bubi {
 			if (key.IsValid()) {
 				reply_json["error_code"] = protocol::ERRCODE_SUCCESS;
 				Json::Value &result = reply_json["result"];
-                result["public_key"] = key.GetBase58PublicKey();
-                result["address"] = key.GetBase58Address();
+                result["public_key"] = key.GetEncPublicKey();
+                result["address"] = key.GetEncAddress();
 				result["sign_type"] = GetSignTypeDesc(key.GetSignType());
 			}
 			else {
@@ -623,7 +623,7 @@ namespace bubi {
 
 		bubi::PrivateKey priv_key(bubi::Configure::Instance().p2p_configure_.node_private_key_);
 		if (priv_key.IsValid()) {
-            reply = utils::String::Format("%s", priv_key.GetBase58Address().c_str());
+            reply = utils::String::Format("%s", priv_key.GetEncAddress().c_str());
 		}
 		else {
 			reply = "address not exist";

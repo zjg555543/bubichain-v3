@@ -94,7 +94,7 @@ namespace bubi {
 
 		PublicKey pub(sig.public_key());
 		LedgerUpgradeFrm frm;
-        frm.address_ = pub.GetBase58Address();
+        frm.address_ = pub.GetEncAddress();
 		frm.recv_time_ = utils::Timestamp::HighResolution();
 		frm.msg_ = msg;
 

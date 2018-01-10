@@ -58,7 +58,7 @@ namespace bubi {
 			LOG_ERROR("Initialize node private key failed");
 			return false;
 		}
-        peer_node_address_ = priv_key_.GetBase58Address();
+        peer_node_address_ = priv_key_.GetEncAddress();
 
 		SslParameter ssl_parameter;
 		ssl_parameter.enable_ = false;

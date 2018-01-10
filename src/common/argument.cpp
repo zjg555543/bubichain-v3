@@ -109,9 +109,9 @@ namespace bubi {
 				} 
 
 				PrivateKey priv_key(type);
-				std::string public_key = priv_key.GetBase58PublicKey();
-				std::string private_key = priv_key.GetBase58PrivateKey();
-				std::string public_address = priv_key.GetBase58Address();
+                std::string public_key = priv_key.GetEncPublicKey();
+                std::string private_key = priv_key.GetEncPrivateKey();
+                std::string public_address = priv_key.GetEncAddress();
 
 				LOG_TRACE("Creating account address:%s", public_address.c_str());
 				Json::Value result = Json::Value(Json::objectValue);
@@ -119,7 +119,7 @@ namespace bubi {
 				result["private_key"] = private_key;
 				result["private_key_aes"] = utils::Aes::CryptoHex(private_key, bubi::GetDataSecuretKey());
 				result["address"] = public_address;
-				result["public_key_raw"] = utils::Base58::Encode(priv_key.GetRawPublicKey());
+				result["public_key_raw"] = EncodePublicKey(priv_key.GetRawPublicKey());
 				result["sign_type"] = GetSignTypeDesc(priv_key.GetSignType());
 				printf("%s\n", result.toStyledString().c_str());
 				return true;
@@ -211,7 +211,7 @@ namespace bubi {
 
 		bubi::PrivateKey private_key(utils::Aes::HexDecrypto(argv[2], bubi::GetDataSecuretKey()));
 
-		printf("local peer address (%s)\n", private_key.GetBase58Address().c_str());
+        printf("local peer address (%s)\n", private_key.GetEncAddress().c_str());
 	}
 
 	void Argument::ShowHardwareAddress() {

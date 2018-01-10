@@ -214,7 +214,7 @@ namespace bubi {
 			std::shared_ptr<AccountFrm> account = it->second;
 			account->UpdateHash(batch);
 			std::string ss = account->Serializer();
-            std::string index = utils::Base58::Decode(it->first);
+            std::string index = DecodeAddress(it->first);
 			bool is_new = trie->Set(index, ss);
 			if (is_new){
 				new_count++;

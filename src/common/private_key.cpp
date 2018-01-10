@@ -24,6 +24,25 @@ limitations under the License.
 
 namespace bubi {
 
+    std::string EncodeAddress(const std::string& address){
+        return utils::Base58::Encode(address);
+    }
+    std::string DecodeAddress(const std::string& address){
+        return utils::Base58::Decode(address);
+    }
+    std::string EncodePublicKey(const std::string& key){
+        return utils::String::BinToHexString(key);
+    }
+    std::string DecodePublicKey(const std::string& key){
+        return utils::String::HexStringToBin(key);
+    }
+    std::string EncodePrivateKey(const std::string& key){
+        return utils::Base58::Encode(key);
+    }
+    std::string DecodePrivateKey(const std::string& key){
+        return utils::Base58::Decode(key);
+    }
+
     std::string CalcHash(const std::string &value,const SignatureType &sign_type) {
         std::string hash;
         if (sign_type == SIGNTYPE_ED25519) {
@@ -35,23 +54,62 @@ namespace bubi {
         return hash;
     }
 
-    bool GetKeyElement(const std::string &base58_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data) {
+    bool GetPublicKeyElement(const std::string &encode_pub_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data){
+        std::string buff = DecodePublicKey(encode_pub_key);
+        if (buff.size() < 6)
+            return false;
+
+        uint8_t a = (uint8_t)buff.at(0);
+        uint8_t b = (uint8_t)buff.at(1);
+        
+        PrivateKeyPrefix prefix_tmp = (PrivateKeyPrefix)a;
+        if (prefix_tmp != PUBLICKEY_PREFIX)
+            return false;
+
+        SignatureType sign_type_tmp = (SignatureType)b;
+        size_t datalen = buff.size() - 6;
+
+        bool ret = true;
+        switch (sign_type_tmp) {
+        case SIGNTYPE_ED25519:{
+            ret = (ED25519_PUBLICKEY_LENGTH == datalen);
+            break;
+        }
+        case SIGNTYPE_CFCASM2:{
+            ret = (SM2_PUBLICKEY_LENGTH == datalen);
+            break;
+        }
+        default:
+            ret = false;
+        }
+
+        if (ret){
+            //check sum
+            std::string checksum = buff.substr(buff.size() - 4);
+            std::string hash1 = CalcHash(buff.substr(0, buff.size() - 4), sign_type_tmp);
+            std::string hash2 = CalcHash(hash1, sign_type_tmp);
+            if (checksum.compare(hash2.substr(0, 4)))
+                return false;
+
+            prefix = prefix_tmp;
+            sign_type = sign_type_tmp;
+            raw_data = buff.substr(2, buff.size() - 6);
+        }
+        return ret;
+    }
+
+    bool GetKeyElement(const std::string &encode_key, PrivateKeyPrefix &prefix, SignatureType &sign_type, std::string &raw_data) {
         PrivateKeyPrefix prefix_tmp;
         SignatureType sign_type_tmp = SIGNTYPE_NONE;
-        std::string buff = utils::Base58::Decode(base58_key);
-        if (base58_key.substr(0,2) == "bu" && buff.size() ==27){// address
+        std::string buff = DecodeAddress(encode_key);
+        if (buff.size() == 27 && (uint8_t)buff.at(0) == 0X01 && (uint8_t)buff.at(1) == 0X56){// address
             prefix_tmp = ADDRESS_PREFIX;
         }
-        else if (base58_key.substr(0,4) == "priv" && buff.size() == 41){//private key
+        else if (buff.size() == 41 && (uint8_t)buff.at(0) == 0XDA && (uint8_t)buff.at(1) == 0X37 && (uint8_t)buff.at(2) == 0X9F){//private key
             prefix_tmp = PRIVATEKEY_PREFIX;
         }
-        else{//public key
-            uint8_t a = (uint8_t)buff.at(0);
-            PrivateKeyPrefix privprefix = (PrivateKeyPrefix)a;
-            if (privprefix == PUBLICKEY_PREFIX)
-                prefix_tmp = PUBLICKEY_PREFIX;
-            else
-                return false;
+        else{
+            return false;
         }     
 		
        
@@ -68,23 +126,6 @@ namespace bubi {
 			}
 			case SIGNTYPE_CFCASM2:{
 				ret = (SM2_ADDRESS_LENGTH == datalen);
-				break;
-			}
-			default:
-				ret = false;
-			}
-		}
-		else if (prefix_tmp == PUBLICKEY_PREFIX) {
-            uint8_t a = (uint8_t)buff.at(1);  
-            sign_type_tmp = (SignatureType)a;
-            size_t datalen = buff.size() - 6;
-			switch (sign_type_tmp) {
-			case SIGNTYPE_ED25519:{
-				ret = (ED25519_PUBLICKEY_LENGTH == datalen);
-				break;
-			}
-			case SIGNTYPE_CFCASM2:{
-				ret = (SM2_PUBLICKEY_LENGTH == datalen);
 				break;
 			}
 			default:
@@ -125,9 +166,6 @@ namespace bubi {
             if (prefix_tmp == ADDRESS_PREFIX) {
                 raw_data = buff.substr(3, buff.size() - 7);
             }
-            else if (prefix_tmp == PUBLICKEY_PREFIX) {
-                raw_data = buff.substr(2, buff.size() - 6);
-            }
             else if (prefix_tmp == PRIVATEKEY_PREFIX) {
                 raw_data = buff.substr(4, buff.size() - 9);
             }
@@ -160,12 +198,10 @@ namespace bubi {
 
 	PublicKey::~PublicKey() {}
 
-	PublicKey::PublicKey(const std::string &base58_pub_key) {
+	PublicKey::PublicKey(const std::string &encode_pub_key) {
 		do {
 			PrivateKeyPrefix prefix;
-            //valid_ = GetKeyElement(base58_pub_key, prefix, type_, raw_pub_key_);
-			//valid_ = (prefix == PUBLICKEY_PREFIX);
-            if (GetKeyElement(base58_pub_key, prefix, type_, raw_pub_key_)){
+            if (GetPublicKeyElement(encode_pub_key, prefix, type_, raw_pub_key_)){
                 valid_ = (prefix == PUBLICKEY_PREFIX);
             }
 		} while (false);
@@ -175,13 +211,12 @@ namespace bubi {
 		raw_pub_key_ = rawpkey;
 	}
 
-	bool PublicKey::IsAddressValid(const std::string &address_base58) {
-        std::string address = utils::Base58::Decode(address_base58);
+    bool PublicKey::IsAddressValid(const std::string &encode_address) {
 		do {
             PrivateKeyPrefix prefix;
             SignatureType sign_type;
             std::string raw_pub_key;
-            if (GetKeyElement(address_base58, prefix, sign_type, raw_pub_key)){
+            if (GetKeyElement(encode_address, prefix, sign_type, raw_pub_key)){
                 return (prefix == ADDRESS_PREFIX);
             }
 		} while (false);
@@ -189,14 +224,10 @@ namespace bubi {
 		return false;
 	}
 
-	std::string PublicKey::GetBase58Address() const {
+	std::string PublicKey::GetEncAddress() const {
 		
 		std::string str_result = "";
-        //append prefix (bubi)
-        /*str_result.push_back((char)0XE6);
-        str_result.push_back((char)0X9A);
-        str_result.push_back((char)0X73);
-        str_result.push_back((char)0XFF);*/
+        //append prefix (bubi 0XE6 0X9A 0X73 0XFF)
         //append prefix (bu)
         str_result.push_back((char)0X01);
         str_result.push_back((char)0X56);
@@ -214,14 +245,14 @@ namespace bubi {
         hash2 = CalcHash(hash1, type_);
 
         str_result.append(hash2.c_str(), 4);
-        return utils::Base58::Encode(str_result);
+        return EncodeAddress(str_result);
 	}
 
 	std::string PublicKey::GetRawPublicKey() const {
 		return raw_pub_key_;
 	}
 
-	std::string PublicKey::GetBase58PublicKey() const {
+    std::string PublicKey::GetEncPublicKey() const {
 		
 		std::string str_result = "";
         //append PrivateKeyPrefix
@@ -238,14 +269,14 @@ namespace bubi {
         hash2 = CalcHash(hash1, type_);
 
         str_result.append(hash2.c_str(), 4);
-        return utils::Base58::Encode(str_result);
+        return EncodePublicKey(str_result);
 	}
     //not modify
-    bool PublicKey::Verify(const std::string &data, const std::string &signature, const std::string &public_key_base58) {
+    bool PublicKey::Verify(const std::string &data, const std::string &signature, const std::string &encode_public_key) {
 		PrivateKeyPrefix prefix;
 		SignatureType sign_type;
 		std::string raw_pubkey;
-        bool valid = GetKeyElement(public_key_base58, prefix, sign_type, raw_pubkey);
+        bool valid = GetPublicKeyElement(encode_public_key, prefix, sign_type, raw_pubkey);
 		if (!valid || prefix != PUBLICKEY_PREFIX) {
 			return false;
 		} 
@@ -292,14 +323,14 @@ namespace bubi {
 
 	PrivateKey::~PrivateKey() {}
     //not modify
-    bool PrivateKey::From(const std::string &bas58_private_key) {
+    bool PrivateKey::From(const std::string &encode_private_key) {
 		valid_ = false;
 		std::string tmp;
 
 		do {
 			PrivateKeyPrefix prefix;
 			std::string raw_pubkey;
-            valid_ = GetKeyElement(bas58_private_key, prefix, type_, raw_priv_key_);
+            valid_ = GetKeyElement(encode_private_key, prefix, type_, raw_priv_key_);
 			if (!valid_ || prefix != PRIVATEKEY_PREFIX) {
 				return false;
 			}
@@ -326,8 +357,8 @@ namespace bubi {
 		return valid_;
 	}
 
-	PrivateKey::PrivateKey(const std::string &base58_private_key) {
-		From(base58_private_key);
+    PrivateKey::PrivateKey(const std::string &encode_private_key) {
+        From(encode_private_key );
 	}
 
 	
@@ -355,7 +386,7 @@ namespace bubi {
 		return output;
 	}
 
-    std::string PrivateKey::GetBase58PrivateKey() const {
+    std::string PrivateKey::GetEncPrivateKey() const {
         std::string str_result;
         //append prefix(priv)
         str_result.push_back((char)0XDA);
@@ -377,15 +408,15 @@ namespace bubi {
         hash2 = CalcHash(hash1, type_);
 
         str_result.append(hash2.c_str(),4);
-        return utils::Base58::Encode(str_result);
+        return EncodePrivateKey(str_result);
 	}
 
-	std::string PrivateKey::GetBase58Address() const {
-		return pub_key_.GetBase58Address();
+    std::string PrivateKey::GetEncAddress() const {
+        return pub_key_.GetEncAddress();
 	}
 
-	std::string PrivateKey::GetBase58PublicKey() const {
-		return pub_key_.GetBase58PublicKey();
+    std::string PrivateKey::GetEncPublicKey() const {
+        return pub_key_.GetEncPublicKey();
 	}
 
 	std::string PrivateKey::GetRawPublicKey() const {
