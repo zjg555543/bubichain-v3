@@ -148,10 +148,7 @@ namespace bubi {
 				std::string err_msg;
 				std::string src = create_account.contract().payload();
 
-				if (!ContractManager::Instance().SourceCodeCheck(Contract::TYPE_V8, src, err_msg)) {
-					result.set_code(protocol::ERRCODE_CONTRACT_SYNTAX_ERROR);
-					result.set_desc(err_msg);
-				}
+				result = ContractManager::Instance().SourceCodeCheck(Contract::TYPE_V8, src);
 			}
 
 			for (int32_t i = 0; i < create_account.metadatas_size(); i++){
@@ -565,16 +562,7 @@ namespace bubi {
 				parameter.ledger_context_ = transaction_->ledger_->lpledger_context_;
 				parameter.max_end_time_ = transaction_->GetMaxEndTime();
 
-				std::string err_msg;
-				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
-					parameter,
-					err_msg
-					))
-				{
-					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
-					result_.set_desc(err_msg);
-					break;
-				}
+				result_ = ContractManager::Instance().Execute(Contract::TYPE_V8, parameter);
 			}
 		} while (false);
 	}
@@ -737,15 +725,7 @@ namespace bubi {
 				parameter.max_end_time_ = transaction_->GetMaxEndTime();
 
 				std::string err_msg;
-				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
-					parameter,
-					err_msg
-					))
-				{
-					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
-					result_.set_desc(err_msg);
-					break;
-				}
+				result_ = ContractManager::Instance().Execute(Contract::TYPE_V8, parameter);
 			}
 		} while (false);
 	}

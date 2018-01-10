@@ -56,6 +56,7 @@ namespace bubi{
 		std::string code_;
 		std::string input_;
 		std::string source_address_;
+		int64_t fee_;
 	};
 
 	class TransactionTestParameter :public TestParameter{
@@ -73,7 +74,9 @@ namespace bubi{
 		int64_t id_;
 		ContractParameter parameter_;
 
-		std::string error_msg_;
+		Result result_;
+		//int32_t error_code_;  //enum 0, FEE_NO_ENOUGH, MAX_TX
+		//std::string error_msg_;
 		int32_t tx_do_count_;  //transactions trigger by one contract
 		utils::StringList logs_;
 	public:
@@ -94,7 +97,8 @@ namespace bubi{
 		bool IsReadonly();
 		const utils::StringList &GetLogs();
 		void AddLog(const std::string &log);
-		std::string GetErrorMsg();
+		void SetResult(Result &result);
+		Result &GetResult();
 		static utils::Mutex contract_id_seed_lock_;
 		static int64_t contract_id_seed_;
 
@@ -211,10 +215,10 @@ namespace bubi{
 		bool Initialize(int argc, char** argv);
 		bool Exit();
 
-		bool Execute(int32_t type, const ContractParameter &paramter, std::string &error_msg);
+		Result Execute(int32_t type, const ContractParameter &paramter);
 		bool Query(int32_t type, const ContractParameter &paramter, Json::Value &result);
 		bool Cancel(int64_t contract_id);
-		bool SourceCodeCheck(int32_t type, const std::string &code, std::string &error_msg);
+		Result SourceCodeCheck(int32_t type, const std::string &code);
 		//bool Test(int32_t type, const ContractTestParameter &paramter, Json::Value& jsResult);
 		Contract *GetContract(int64_t contract_id);
 	};

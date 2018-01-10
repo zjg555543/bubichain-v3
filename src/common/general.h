@@ -79,6 +79,8 @@ namespace bubi {
 		const static char *ASSET_PREFIX;
 		const static char *METADATA_PREFIX;
 
+		const static char *CHECK_TIME_FUNCTION;
+
 		const static int32_t TRANSACTION_LIMIT_SIZE;
 		const static int32_t TXSET_LIMIT_SIZE;
 		const static int32_t ACCOUNT_LIMIT_SIZE;

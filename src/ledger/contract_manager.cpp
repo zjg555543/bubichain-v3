@@ -24,7 +24,7 @@ namespace bubi{
 
 	ContractParameter::~ContractParameter() {}
 
-	ContractTestParameter::ContractTestParameter() : exe_or_query_(true) {}
+	ContractTestParameter::ContractTestParameter() : exe_or_query_(true), fee_(0){}
 
 	ContractTestParameter::~ContractTestParameter() {}
 
@@ -96,8 +96,12 @@ namespace bubi{
 		if (logs_.size() > 100) logs_.pop_front();
 	}
 
-	std::string Contract::GetErrorMsg() {
-		return error_msg_;
+	Result &Contract::GetResult() {
+		return result_;
+	}
+
+	void Contract::SetResult(Result &result) {
+		result_ = result;
 	}
 
 	std::map<std::string, std::string> V8Contract::jslib_sources;
@@ -222,7 +226,7 @@ namespace bubi{
 		do {
 			Json::Value error_random;
 			if (!RemoveRandom(isolate_, error_random)) {
-				error_msg_ = error_random.toFastString();
+				result_.set_desc(error_random.toFastString());
 				break;
 			}
 		
@@ -232,13 +236,13 @@ namespace bubi{
 			v8::ScriptOrigin origin_check_time_name(check_time_name);
 
 			if (!v8::Script::Compile(context, v8src, &origin_check_time_name).ToLocal(&compiled_script)) {
-				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
+				result_.set_desc(ReportException(isolate_, &try_catch).toFastString());
 				break;
 			}
 
 			v8::Local<v8::Value> result;
 			if (!compiled_script->Run(context).ToLocal(&result)) {
-				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
+				result_.set_desc(ReportException(isolate_, &try_catch).toFastString());
 				break;
 			}
 
@@ -263,7 +267,10 @@ namespace bubi{
 
 			v8::Local<v8::Value> callresult;
 			if (!process->Call(context, context->Global(), argc, argv).ToLocal(&callresult)) {
-				error_msg_ = ReportException(isolate_, &try_catch).toFastString();
+				if (result_.code() == 0) {
+					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
+					result_.set_desc(ReportException(isolate_, &try_catch).toFastString());
+				}
 				break;
 			}
 
@@ -278,6 +285,10 @@ namespace bubi{
 	}
 
 	bool V8Contract::SourceCodeCheck() {
+		if (parameter_.code_.find(General::CHECK_TIME_FUNCTION) != std::string::npos) {
+			LOG_ERROR("Source code should not include function(%s)", General::CHECK_TIME_FUNCTION);
+			return false;
+		}
 
 		v8::Isolate::Scope isolate_scope(isolate_);
 		v8::HandleScope handle_scope(isolate_);
@@ -320,8 +331,9 @@ namespace bubi{
 		v8::ScriptOrigin origin_check_time_name(check_time_name);
 
 		if (!v8::Script::Compile(context, v8src, &origin_check_time_name).ToLocal(&compiled_script)) {
-			error_msg_ = ReportException(isolate_, &try_catch).toFastString();
-			LOG_ERROR("%s", error_msg_.c_str());
+			result_.set_code(protocol::ERRCODE_CONTRACT_SYNTAX_ERROR);
+			result_.set_desc(ReportException(isolate_, &try_catch).toFastString());
+			LOG_ERROR("%s", result_.desc().c_str());
 			return false;
 		}
 
@@ -566,7 +578,7 @@ namespace bubi{
 			v8::FunctionTemplate::New(isolate, V8Contract::Include));
 
 		global->Set(
-			v8::String::NewFromUtf8(isolate, "internal_check_time", v8::NewStringType::kNormal)
+			v8::String::NewFromUtf8(isolate, General::CHECK_TIME_FUNCTION, v8::NewStringType::kNormal)
 			.ToLocalChecked(),
 			v8::FunctionTemplate::New(isolate, V8Contract::InternalCheckTime));
 
@@ -1001,16 +1013,17 @@ namespace bubi{
 				break;
 			}
 
-			int32_t ret = LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
-			if (ret < 0) {
+			Result tmp_result = LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
+			if (tmp_result.code() > 0) {
+				v8_contract->SetResult(tmp_result);
 				LOG_ERROR("Do transaction failed");
 				args.GetIsolate()->ThrowException(
 					v8::String::NewFromUtf8(args.GetIsolate(), "Do tx failed",
 					v8::NewStringType::kNormal).ToLocalChecked());
 				break;
 			}
-		
-			args.GetReturnValue().Set(ret > 0);
+
+			args.GetReturnValue().Set(tmp_result.code() == 0);
 			return;
 		} while (false);
 		args.GetReturnValue().Set(false);
@@ -1262,8 +1275,9 @@ namespace bubi{
 				break;
 			}
 
-			int32_t ret = LedgerManager::Instance().DoTransaction(env, v8_contract->parameter_.ledger_context_);
-			if (ret < 0) {
+			Result tmp_result = LedgerManager::Instance().DoTransaction(env, v8_contract->parameter_.ledger_context_);
+			if (tmp_result.code() > 0) {
+				v8_contract->SetResult(tmp_result);
 				LOG_ERROR("Do transaction failed");
 				args.GetIsolate()->ThrowException(
 					v8::String::NewFromUtf8(args.GetIsolate(), "Do tx failed",
@@ -1271,7 +1285,7 @@ namespace bubi{
 				break;
 			}
 
-			args.GetReturnValue().Set(ret > 0);
+			args.GetReturnValue().Set(tmp_result.code() == 0);
 			return;
 		} while (false);
 
@@ -1416,8 +1430,9 @@ namespace bubi{
 				break;
 			}
 
-			int32_t ret = LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
-			if (ret < 0) {
+			Result tmp_result = LedgerManager::Instance().DoTransaction(txenv, v8_contract->parameter_.ledger_context_);
+			if (tmp_result.code() > 0) {
+				v8_contract->SetResult(tmp_result);
 				LOG_ERROR("Do transaction failed");
 				args.GetIsolate()->ThrowException(
 					v8::String::NewFromUtf8(args.GetIsolate(), "Do tx failed",
@@ -1425,7 +1440,7 @@ namespace bubi{
 				break;
 			}
 
-			args.GetReturnValue().Set(ret > 0);
+			args.GetReturnValue().Set(tmp_result.code() == 0);
 			return;
 		} while (false);
 		args.GetReturnValue().Set(false);
@@ -1514,26 +1529,29 @@ namespace bubi{
 		return true;
 	}
 
-	bool ContractManager::SourceCodeCheck(int32_t type, const std::string &code, std::string &error_msg) {
+	Result ContractManager::SourceCodeCheck(int32_t type, const std::string &code) {
 		ContractParameter parameter;
 		parameter.code_ = code;
 		Contract *contract = NULL;
+		Result tmp_result;
 		if (type == Contract::TYPE_V8) {
 			contract = new V8Contract(false, parameter);
 		}
 		else {
-			error_msg = utils::String::Format("Contract type(%d) not support", type);
-			LOG_ERROR("%s", error_msg.c_str());
-			return false;
+			tmp_result.set_code(protocol::ERRCODE_CONTRACT_SYNTAX_ERROR);
+			tmp_result.set_desc(utils::String::Format("Contract type(%d) not support", type));
+			LOG_ERROR("%s", tmp_result.desc().c_str());
+			return tmp_result;
 		}
 
 		bool ret = contract->SourceCodeCheck();
-		error_msg = contract->GetErrorMsg();
+		tmp_result = contract->GetResult();
 		delete contract;
-		return ret;
+		return tmp_result;
 	}
 
-	bool ContractManager::Execute(int32_t type, const ContractParameter &paramter, std::string &error_msg) {
+	Result ContractManager::Execute(int32_t type, const ContractParameter &paramter) {
+		Result ret;
 		do {
 			Contract *contract;
 			if (type == Contract::TYPE_V8) {
@@ -1545,25 +1563,25 @@ namespace bubi{
 				contracts_[contract->GetId()] = contract;
 			}
 			else {
+				ret.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 				LOG_ERROR("Contract type(%d) not support", type);
 				break;
 			}
 
 			LedgerContext *ledger_context = contract->GetParameter().ledger_context_;
 			ledger_context->PushContractId(contract->GetId());
-			bool ret = contract->Execute();
+			contract->Execute();
+			ret = contract->GetResult();
 			ledger_context->PopContractId();
 			ledger_context->PushLog(contract->GetParameter().this_address_, contract->GetLogs());
-			error_msg = contract->GetErrorMsg();
 			do {
 				//delete the contract from map
 				contracts_.erase(contract->GetId());
 				delete contract;
 			} while (false);
 
-			return ret;
 		} while (false);
-		return false;
+		return ret;
 	}
 
 	bool ContractManager::Query(int32_t type, const ContractParameter &paramter, Json::Value &result) {

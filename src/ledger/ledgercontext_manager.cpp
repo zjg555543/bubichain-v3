@@ -113,7 +113,7 @@ namespace bubi {
 			PrivateKey priv_key(SIGNTYPE_ED25519);
 			Json::Value account_json = Json::Value(Json::objectValue);
 			protocol::Account account;
-            account.set_address(priv_key.GetEncAddress());
+			account.set_address(priv_key.GetEncAddress());
 			account.mutable_contract()->set_payload(parameter_.code_);
 			account.mutable_contract()->set_type((protocol::Contract_ContractType)type_);
 			parameter_.contract_address_ = account.address();
@@ -153,6 +153,7 @@ namespace bubi {
 			protocol::TransactionEnv env;
 			protocol::Transaction *tx = env.mutable_transaction();
 			tx->set_source_address(parameter_.source_address_);
+			tx->set_fee(parameter_.fee_);
 			protocol::Operation *ope = tx->add_operations();
 			ope->set_type(protocol::Operation_Type_PAYMENT);
 			protocol::OperationPayment *payment = ope->mutable_payment();
@@ -168,7 +169,7 @@ namespace bubi {
 			closing_ledger_->value_ = std::make_shared<protocol::ConsensusValue>(consensus_value_);
 			closing_ledger_->lpledger_context_ = this;
 
-			return LedgerManager::Instance().DoTransaction(env, this) > 0;
+			return LedgerManager::Instance().DoTransaction(env, this).code() == 0;
 		} else{
 			do {
 				if (parameter_.code_.empty()) {
@@ -205,7 +206,7 @@ namespace bubi {
 			parameter.trigger_tx_ = "{}";
 			parameter.consensus_value_ = Proto2Json(consensus_value_).toFastString();
 			parameter.ledger_context_ = this;
-			//parameter.max_end_time_ = utils::Timestamp::HighResolution() + utils::MICRO_UNITS_PER_SEC / 2;
+			parameter.max_end_time_ = utils::Timestamp::HighResolution() + 5 * utils::MICRO_UNITS_PER_SEC;
 			//do query
 
 			Json::Value query_result;

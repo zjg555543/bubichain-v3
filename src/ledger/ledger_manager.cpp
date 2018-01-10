@@ -915,8 +915,9 @@ namespace bubi {
 		return environment_;
 	}
 
-	int32_t LedgerManager::DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context) {
+	Result LedgerManager::DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context) {
 
+		Result result;
 		TransactionFrm::pointer back = ledger_context->transaction_stack_.back();
 		std::shared_ptr<AccountFrm> source_account;
 		back->environment_->GetEntry(env.transaction().source_address(), source_account);
@@ -940,8 +941,10 @@ namespace bubi {
 				if (contract->GetTxDoCount() > General::CONTRACT_TRANSACTION_LIMIT) {
 					//txfrm->result_.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS);
 					//break;
+					result.set_code(protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS);
+					result.set_desc("Too many transaction");
 					LOG_ERROR("Too many transaction called by transaction(hash:%s)", contract->GetParameter().sender_.c_str());
-					return -1;
+					return result;
 				}
 			}
 
@@ -954,18 +957,20 @@ namespace bubi {
 
 			TransactionFrm::pointer bottom_tx = ledger_context->GetBottomTx();
 			//throw the contract
-			if (txfrm->GetResult().code() == protocol::ERRCODE_FEE_NOT_ENOUGH) {
-				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) Fee not enough",
-					utils::String::BinToHexString(bottom_tx->GetContentHash()).c_str(), bottom_tx->processing_operation_);
-				return -1;
+			if (txfrm->GetResult().code() == protocol::ERRCODE_FEE_NOT_ENOUGH ||
+				txfrm->GetResult().code() == protocol::ERRCODE_CONTRACT_TOO_MANY_TRANSACTIONS) {
+				result = txfrm->GetResult();
+				LOG_ERROR("%s", txfrm->GetResult().desc().c_str());
+				return result;
 			}
 	
 			//throw the contract
 			bottom_tx->AddRealFee(txfrm->GetRealFee());
 			if (bottom_tx->GetRealFee() > bottom_tx->GetFee()) {
-				LOG_ERROR_ERRNO("Transaction(%s) operation(%d) Fee not enough",
-					utils::String::BinToHexString(bottom_tx->GetContentHash()).c_str(), bottom_tx->processing_operation_);
-				return -1;
+				result.set_code(protocol::ERRCODE_FEE_NOT_ENOUGH);
+				result.set_desc("Fee not enough");
+				LOG_ERROR_ERRNO("Transaction(%s) Fee not enough", utils::String::BinToHexString(bottom_tx->GetContentHash()).c_str());
+				return result;
 			}
 
 			protocol::TransactionEnvStore tx_store;
@@ -984,7 +989,8 @@ namespace bubi {
 			back->instructions_.push_back(tx_store);
 			ledger_context->transaction_stack_.pop_back();
 
-			return txfrm->GetResult().code() == protocol::ERRCODE_SUCCESS ? 1 : 0;
+			result.set_code(-1);
+			return result;
 		} while (false);
 
 		//caculate byte fee
@@ -998,7 +1004,8 @@ namespace bubi {
 		trigger->mutable_transaction()->set_hash(back->GetContentHash());
 		trigger->mutable_transaction()->set_index(back->processing_operation_);
 		back->instructions_.push_back(tx_store);
-		//
-		return false;
+		
+		result.set_code(-1);
+		return result;
 	}
 }
