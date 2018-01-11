@@ -1,18 +1,17 @@
 var validatorSetsSize       = 5;
 var numberOfVotesPassed     = 0.5;
-var effectiveVotingInterval = 24 * 60 * 60 * 1000 * 1000; //3 min
+var effectiveVotingInterval = 24 * 60 * 60 * 1000 * 1000; //1 day
 
-var proposalVar    = 'proposal';
-var proofVar       = 'proof';
+var applicantsVar    = 'validator_applicants';
+var proposalVar      = 'voting_proposal';
+var abolishReasonVar = 'abolish_reason';
 var ballotVar      = 'ballot';
-var abolishVar     = 'abolishValidator';
-var nothingVar     = 'none';
-var startTimeVar   = 'votingStartTime';
-var expiredTimeVar = 'votingExpiredTime';
-var initiatorVar   = 'votingInitiator';
-
-var equitiesVar    = 'equityStructure';
-var currentSetsVar = 'currentSets';
+var abolishVar     = 'abolish_validator';
+var startTimeVar   = 'voting_start_time';
+var expiredTimeVar = 'voting_expired_time';
+var initiatorVar   = 'voting_initiator';
+var equitiesVar    = 'equity_structure';
+var auditAddress   = 'a00141213640ec3b86a61baecba33326acfc6e21db5b59';
 
 function main(input_str)
 {
@@ -21,26 +20,30 @@ function main(input_str)
     switch(input.type)
     {
         case 1://pledgor applys to become validator
-	    	callBackLog(sender + ' apply to become validator. ');
+	    	callBackLog(sender + ' apply to become validator.');
 	    	result = ApplyAsValidator();
             break;
-        case 2://validator applys to exit validators sets
+        case 2:
+	    	callBackLog(sender + ' audits the applicant want to become validator.');
+	    	result = AuditApplicant(input.arg1); //arg1-{'addr1': true, 'addr2':true, 'addr3':false, ...}
+            break;
+        case 3://validator applys to exit validators sets
 	    	callBackLog(sender + ' quit validator identity. ');
 	    	result = QuitValidatorIdentity();
             break;
-        case 3://someone applys to abolish certain validator
+        case 4://someone applys to abolish certain validator
 	    	callBackLog(sender + ' apply to abolish validator: ' + input.arg1);
 	    	result = AbolishValidator(input.arg1, input.arg2); //arg1-address, arg2-proof
             break;
-        case 4://quit abolish certain validator
+        case 5://quit abolish certain validator
 	    	callBackLog(sender + ' quit to abolish validator.');
 	    	result = QuitAbolishValidator();
             break;
-        case 5://vote for cancelCertainValidator or quitCancelCertainValidator
+        case 6://vote for cancelCertainValidator or quitCancelCertainValidator
 	    	callBackLog(sender + ' votes for abolish validator: ' + input.arg1);
 	    	result = VoteAbolishValidator(input.arg1);//agreeOrReject
             break;
-        case 6: //query interface
+        case 7: //query interface
 	    	callBackLog(sender + ' query the info of ' + input.arg1);
             result = Query(input.arg1);
             break;
@@ -54,21 +57,76 @@ function main(input_str)
 
 function ApplyAsValidator()
 {
-    var currentSets = callBackGetValidators();
-    if(currentSets === false)
+    var pledgors = GetPledgors();
+    if (pledgors[sender] === undefined)
     {
-        callBackLog('Get current validators failed.');
+        var applicants = {};
+        var applicantsData = callBackGetAccountMetaData(thisAddress, applicantsVar);
+        if(applicantsData != false)
+            applicants = JSON.parse(applicantsData.value); 
+
+        if(applicants[sender] === undefined)
+            applicants[sender] = payCoinAmount;
+        else
+            applicants[sender] += payCoinAmount;
+
+        return SetMetaData(applicantsVar, applicants);
+    }
+    else
+    {
+        pledgors[sender] += payCoinAmount;
+        if(false === SetMetaData(equitiesVar, pledgors))
+            return false;
+
+        return SetValidatorSets(pledgors);
+    }
+}
+
+function AuditApplicant(auditResults)
+{
+    if(typeof auditResults != 'object')
+    {
+        callBackLog('Args type error, it must be an object.'); 
         return false;
     }
 
-    var pledgors = GetPledgors(currentSets);
+    if(sender != auditAddress)
+    {
+        callBackLog(sender + ' has no permission to audit.'); 
+        return false;
+    }
 
-    if (pledgors[sender] === undefined)
-        pledgors[sender] = payCoinAmount;
-    else
-        pledgors[sender] += payCoinAmount;
+    var applicantsData = callBackGetAccountMetaData(thisAddress, applicantsVar);
+    if(applicantsData === false)
+    {
+        callBackLog('No applicant to be audited.'); 
+        return false;
+    }
 
-    if(false === SetEquityStructure(pledgors))
+    var applicants = JSON.parse(applicantsData.value);
+    var pledgors   = GetPledgors();
+    for(audited in auditResults)
+    {
+        if((typeof audited != 'string') ||(applicants[audited] === undefined))
+            continue;
+
+        if(auditResults[audited] === true)
+        {
+            pledgors[audited] = applicants[audited];
+        }
+        else if(auditResults[audited] === false)
+        {
+            if(PayCoin(audited, applicants[audited]) === false)
+                return false;
+        }
+
+        delete applicants[audited];
+    }
+
+    if(false === SetMetaData(applicantsVar, applicants))
+        return false;
+
+    if(false === SetMetaData(equitiesVar, pledgors))
         return false;
 
     return SetValidatorSets(pledgors);
@@ -86,22 +144,15 @@ function QuitValidatorIdentity()
     if(currentValidators.includes(sender) === false)
     {
         callBackLog('current validator sets has no ' + sender); 
-        return false;
+        return true;
     }
 
     var pledgors = GetPledgors(currentValidators);
-    if(pledgors[sender] != 0) 
-    {
-        var result = callBackPayCoin(sender, pledgors[sender]);
-        if(result === false)
-        {
-            callBackLog('Return all pledge coin(' + pledgors[sender] + ') to ' + sender + ' failed.');
-            return false;
-        }
-    }
+    if(false === PayCoin(sender, pledgors[sender]))
+        return false;
 
     delete pledgors[sender];
-    if(false === SetEquityStructure(pledgors))
+    if(false === SetMetaData(equitiesVar, pledgors))
         return false;
 
     return SetValidatorSets(pledgors);
@@ -109,6 +160,12 @@ function QuitValidatorIdentity()
 
 function AbolishValidator(nodeAddr, proof)
 {
+    if((typeof nodeAddr != 'string') || (typeof proof != 'string'))
+    {
+        callBackLog('Args type error, the two of them must be string.'); 
+        return false;
+    }
+
     var currentValidators = callBackGetValidators();
     if(currentValidators === false)
     {
@@ -119,62 +176,46 @@ function AbolishValidator(nodeAddr, proof)
     if(currentValidators.includes(nodeAddr) === false)
     {
         callBackLog('current validator sets has no ' + nodeAddr); 
-        return false;
+        return true;
     }
 
     var proposal = callBackGetAccountMetaData(thisAddress, proposalVar);
     if(proposal != false)
     {
-        if(proposal.value != nothingVar)
-        {
-            proposalContent = JSON.parse(proposal.value);
-            var expiredTime = proposalContent[expiredTimeVar];
-            var now         = consensusValue.close_time;
+        proposalContent = JSON.parse(proposal.value);
+        var expiredTime = proposalContent[expiredTimeVar];
+        var now         = consensusValue.close_time;
 
-            if(now <= expiredTime)
-            {
-                callBackLog('There is unfinished vote proposal, please submit after that.'); 
-                return false;
-            }
+        if(now <= expiredTime)
+        {
+            callBackLog('There is unfinished vote proposal, please submit after that.'); 
+            return false;
         }
     }
 
     var votingStartTime = consensusValue.close_time;
-
     var newProposal = {};
-    newProposal[abolishVar]     = nodeAddr;
-    newProposal[proofVar]       = proof;
+
+    newProposal[abolishVar]       = nodeAddr;
+    newProposal[abolishReasonVar] = proof;
     newProposal[startTimeVar]   = votingStartTime;
     newProposal[expiredTimeVar] = votingStartTime + effectiveVotingInterval;
     newProposal[initiatorVar]   = sender;
 
-    var proposalStr = JSON.stringify(newProposal);
-    var proposalObj = {'key': proposalVar, 'value': proposalStr};
-
-    var ret = callBackSetAccountMetaData(proposalObj);
-    if(ret === false)
-        callBackLog('Set proposal that to be voted in metadata( ' + proposalStr + ') failed.');
-
-    return ret;
+    return SetMetaData(proposalVar, newProposal);
 }
 
 function QuitAbolishValidator()
 {
-    var proposal = callBackGetAccountMetaData(thisAddress, proposalVar);
-    if(proposal === false)
+    var proposalData = callBackGetAccountMetaData(thisAddress, proposalVar);
+    if(proposalData === false)
     {
-        callBackLog('Get proposal failed, maybe no one had applied to ablish validator.'); 
+        callBackLog('Get proposal failed, maybe no one abolished validator or it be finished or quitted.'); 
         return true;
     }
 
-    if(proposal.value === nothingVar)
-    {
-        callBackLog('Proposal is none, it should be finished or quit already.'); 
-        return true;
-    }
-
-    var proposalContent = JSON.parse(proposal.value);
-    if(sender != proposalContent[initiatorVar])
+    var proposal = JSON.parse(proposalData.value);
+    if(sender != proposal[initiatorVar])
     {
         callBackLog(sender + 'is not initiator, has no permission to quit the proposal.');
         return false; 
@@ -183,26 +224,23 @@ function QuitAbolishValidator()
     return ClearAllProposalContent();
 }
 
-function VoteAbolishValidator(voteChoice) //voteChoice: agree-1 or disagree-any number
+function VoteAbolishValidator(voteChoice) //voteChoice: agree-true or disagree-false
 {
-    if(false === checkEffectiveVotingTime())
+    if(typeof voteChoice != 'boolean')
+    {
+        callBackLog('Args type error, it must be a boolean.'); 
         return false;
+    }
 
-    var AbolishAddr = GetTobeAbolishedValidator();
-    if(AbolishAddr === false || AbolishAddr === true) //else return valid address to be abolished
-        return AbolishAddr;
+    var abolishAddr = CheckAndGetAbolisdAddr();
+    if(abolishAddr === true)
+        return abolishAddr;
 
     var currentSets = callBackGetValidators();
     if(currentSets === false)
     {
         callBackLog('Get current validator sets failed.'); 
         return false;
-    }
-
-    if(currentSets.includes(AbolishAddr) === false)
-    {
-        callBackLog('Tere is no ' + AbolishAddr + ' in current validator sets.'); 
-        return true;
     }
 
     if(currentSets.includes(sender) === false)
@@ -214,30 +252,31 @@ function VoteAbolishValidator(voteChoice) //voteChoice: agree-1 or disagree-any 
     var voteResult = VoteProcess(currentSets, voteChoice);
     callBackLog('voteResult: ' + voteResult); 
 
-    if(voteResult === false)
-        return false;
-
     if(voteResult === 'unfinished')
         return true;
+    else if(voteResult === 'through')
+        return ExecuteProposal(currentSets, abolishAddr);
+    else if(voteResult === 'rejected')
+        return ClearAllProposalContent();
+    else
+        return false;
+}
 
-    if(voteResult === 'through')
-    {
-        var pledgors = GetPledgors(currentSets);
-        var result = callBackPayCoin(AbolishAddr, pledgors[AbolishAddr]);
-        if(result === false)
-        {
-            callBackLog('Return all pledge coin(' + pledgors[AbolishAddr] + ') to ' + AbolishAddr + ' failed.');
-            return false;
-        }
+function ExecuteProposal(currentSets, validator)
+{
+    callBackLog('Enter ExecuteProposal.');
+    var pledgors = GetPledgors(currentSets);
+    if(false === PayCoin(validator, pledgors[validator]))
+        return false;
 
-        delete pledgors[AbolishAddr];
-        if(false === SetEquityStructure(pledgors))
-            return false;
+    delete pledgors[validator];
+    if(false === SetMetaData(equitiesVar, pledgors))
+        return false;
 
-        SetValidatorSets(pledgors);
-    }
+    if(false === ClearAllProposalContent())
+        return false;
 
-    return ClearAllProposalContent();
+    return SetValidatorSets(pledgors);
 }
 
 function Query(arg)
@@ -258,12 +297,15 @@ function query(arg)
             result['Current_validators_sets'] = currentSets;
             break;
         case 2:
-            GetEquityStructure(result);
+            GetValidatorApplicants(result);
             break;
         case 3:
-            GetProposalContent(result);
+            GetEquityStructure(result);
             break;
         case 4:
+            GetProposalContent(result);
+            break;
+        case 5:
             GetBallotContent(result);
             break;
         default:
@@ -286,22 +328,18 @@ function GetProposalContent(result)
     var proposalData = callBackGetAccountMetaData(thisAddress, proposalVar);
     if(proposalData != false)
     {
-        var proposal = {};
-        if(proposalData.value != nothingVar)
-        {
-            var proposalContent = JSON.parse(proposalData.value);
-            proposal['Initiator']                 = proposalContent[initiatorVar];
-            proposal['Ablish_reason']             = proposalContent[proofVar];
-            proposal['Voting_start_time']         = proposalContent[startTimeVar];
-            proposal['Voting_expired_time']       = proposalContent[expiredTimeVar];
-            proposal['To_be_abolished_validator'] = proposalContent[abolishVar];
-        }
-        else
-        {
-            proposal = nothingVar;
-        }
-
+        var proposal = JSON.parse(proposalData.value);
         result['Proposal_content_about_ablish_validator'] = proposal;
+    }
+}
+
+function GetValidatorApplicants(result)
+{
+    var applicantsData = callBackGetAccountMetaData(thisAddress, applicantsVar);
+    if(applicantsData != false)
+    {
+        var applicants = JSON.parse(applicantsData.value);
+        result['applicants_want_to_become_validator'] = applicants;
     }
 }
 
@@ -310,22 +348,8 @@ function GetBallotContent(result)
     var ballotData = callBackGetAccountMetaData(thisAddress, ballotVar);
     if(ballotData != false)
     {
-        ballot = {};
-        if(ballotData.value != nothingVar)
-        {
-            ballotContent = JSON.parse(ballotData.value);
-            for(vote in ballotContent)
-            {
-                if(ballotContent[vote] === 1)
-                    ballot[vote] = 'Agree';
-                else
-                    ballot[vote] = 'Disagree';
-            }
-        }
-        else
-            var ballot = nothingVar;
-
-       result['Current_voting_result'] = ballot;
+        var ballot = JSON.parse(ballotData.value);
+        result['Current_voting_result'] = ballot;
     }
 }
 
@@ -346,15 +370,14 @@ function VoteProcess(currentSets, voteChoice)
 
     var ballot = callBackGetAccountMetaData(thisAddress, ballotVar);
     if(ballot != false)
-        if(ballot.value != nothingVar)
-            ballotDict = JSON.parse(ballot.value);
+        ballotDict = JSON.parse(ballot.value);
 
     ballotDict[sender] = voteChoice;
 
     agreeCnt = 0;
     for(vote in ballotDict)
     {
-        if(ballotDict[vote] === 1)
+        if(ballotDict[vote] === true)
             agreeCnt++;
     }
 
@@ -369,14 +392,8 @@ function VoteProcess(currentSets, voteChoice)
 
     if((agreeCnt / currentCnt < numberOfVotesPassed) && (voteCnt - agreeCnt) / currentCnt <= (1 - numberOfVotesPassed))
     {
-        var voteDictStr = JSON.stringify(ballotDict);
-        var newBallot   = {'key': ballotVar, 'value': voteDictStr};
-        var ret = callBackSetAccountMetaData(newBallot);
-        if(ret === false)
-        {
-            callBackLog('Set ballot(' + voteDictStr + ') failed.'); 
+        if(false === SetMetaData(ballotVar, ballotDict))
             return false;
-        }
 
         return 'unfinished';
     }
@@ -384,11 +401,21 @@ function VoteProcess(currentSets, voteChoice)
 
 function GetPledgors(currentSets)
 {
+    if(currentSets === undefined)
+    {
+        currentSets = callBackGetValidators();
+        if(currentSets === false)
+        {
+            callBackLog('Get current validators failed.');
+            return false;
+        }
+    }
+
     var pledgors = {};
     var equities = callBackGetAccountMetaData(thisAddress, equitiesVar);
+
     if(equities === false)
     {
-        callBackLog('Get ' + equitiesVar + ' from metadata failed, then set it.'); 
         for(index in currentSets)
             pledgors[currentSets[index]] = 0;
     }
@@ -400,19 +427,6 @@ function GetPledgors(currentSets)
     return pledgors;
 }
 
-function SetEquityStructure(pledgors)
-{
-    var newEquities = {};
-    var pledgorsStr = JSON.stringify(pledgors);
-    var newEquities = {'key': equitiesVar, 'value': pledgorsStr};
-
-    var result = callBackSetAccountMetaData(newEquities);
-    if(result === false)
-        callBackLog('Set ' + equitiesVar + ' in metadata failed.');
-
-    return result;
-}
-
 function SetValidatorSets(pledgors)
 {
     var sortedPledgors = SortDictionary(pledgors);
@@ -420,79 +434,94 @@ function SetValidatorSets(pledgors)
     var setsStr = JSON.stringify(newSets);
 
     result = callBackSetValidators(setsStr);
-    if(result === false)
-        callBackLog('Set validator sets failed.');
+    callBackLog('Set validator sets succeed: ' + result);
 
     return result;
 }
 
-function GetTobeAbolishedValidator()
+function CheckAndGetAbolisdAddr()
 {
     var proposal = callBackGetAccountMetaData(thisAddress, proposalVar);
     if(proposal === false)
     {
-        callBackLog('Get proposal that to be voted failed.'); 
-        return false;
-    }
-
-    if(proposal.value === nothingVar)
-    {
-        callBackLog('Vote maybe finished or proposal was quit.'); 
-        return true;
-    }
-
-    var proposalContent = JSON.parse(proposal.value);
-    var AbolishAddr     = proposalContent[abolishVar];
-    if(AbolishAddr === undefined)
-    {
-        callBackLog('There is no validator that to be abolished in proposal.'); 
-        return false;
-    }
-
-    return AbolishAddr;
-}
-
-function checkEffectiveVotingTime()
-{
-    var proposal = callBackGetAccountMetaData(thisAddress, proposalVar);
-    if(proposal === false)
-    {
-        callBackLog('Get proposal failed.');
-        return false;
-    }
-
-    if(proposal.value === nothingVar)
-    {
-        callBackLog('Vote maybe finished or proposal was quit.'); 
+        callBackLog('Get proposal that to be voted failed, maybe it was finished or quitted.'); 
         return true;
     }
 
     var proposalContent   = JSON.parse(proposal.value);
     var votingExpiredTime = proposalContent[expiredTimeVar];
     var now               = consensusValue.close_time;
-
     if(now > votingExpiredTime)
     {
         callBackLog('Voting time expired.'); 
         ClearAllProposalContent();
-        return false;
+        return true;
     }
     
-    return true;
+    var abolishAddr = proposalContent[abolishVar];
+    return abolishAddr;
 }
 
 function ClearAllProposalContent()
 {
-    //clear proposal and ballot
-    var noneProposal = {'key': proposalVar, 'value': nothingVar};
-    proposalRet = callBackSetAccountMetaData(noneProposal);
-    callBackLog('Set proposal none: ' + proposalRet);
-    
-    var noneBallot = {'key': ballotVar, 'value': nothingVar};
-    ballotRet = callBackSetAccountMetaData(noneBallot);
-    callBackLog('Set ballot none: ' + ballotRet);
+    ballotRet   = SetMetaData(ballotVar, {});
+    proposalRet = SetMetaData(proposalVar, {});
 
     return proposalRet && ballotRet;
+}
+
+function PayCoin(dest, amount)
+{
+    if((typeof dest != 'string') || (typeof amount != 'number'))
+    {
+        callBackLog('Args type error. dest(' + dest + ') must be a string, and amount(' + amount + ') must be a number.');
+        return false;
+    }
+
+    if(amount === 0)
+    {
+        return true;
+    }
+    else if(amount < 0)
+    {
+        callBackLog('Coin amount must > 0.');
+        return false;
+    }
+
+    var result = callBackPayCoin(dest, amount);
+    if(result === false)
+    {
+        callBackLog('Pay coin( ' + amount + ') to dest account(' + dest + ') failed.');
+        return false;
+    }
+
+    callBackLog('Pay coin( ' + amount + ') to dest account(' + dest + ') succeed.');
+    return true;
+}
+
+function SetMetaData(key, value)
+{
+    if((typeof key != 'string') || (typeof value != 'object'))
+    {
+        callBackLog('Args type error. key must be a string, and value must be an object.');
+        return false;
+    }
+
+    var metadata = {};
+    if(Object.keys(value).length === 0)
+        metadata = {'key': key, 'value': 'any', 'delete_flag': true};
+    else
+        metadata = {'key': key, 'value': JSON.stringify(value)};
+
+    var ret = callBackSetAccountMetaData(metadata);
+    if(ret === false)
+    {
+        callBackLog('Set ' + key + ' in metadata failed.');
+        return false;
+    }
+
+    callBackLog('Set key:(' + key + '), value:(' + JSON.stringify(value) + ') in metadata succeed.');
+    return true;
 }
 
 function by(name, minor)
