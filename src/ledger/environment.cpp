@@ -19,12 +19,17 @@ namespace bubi{
 	//int64_t Environment::time_ = 0;
 
 	Environment::Environment(Environment* parent){
+		utils::AtomicInc(&bubi::General::env_new_count);
 		parent_ = parent;
 		if (parent_){
 			for (auto it = parent_->entries_.begin(); it != parent_->entries_.end(); it++){
 				entries_[it->first] = std::make_shared<AccountFrm>(it->second);
 			}
 		}
+	}
+	
+	Environment::~Environment() {
+		utils::AtomicInc(&bubi::General::env_delete_count);
 	}
 
 	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm){

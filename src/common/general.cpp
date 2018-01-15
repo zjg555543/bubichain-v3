@@ -57,6 +57,8 @@ namespace bubi {
 	volatile long General::account_delete_count = 0;
 	volatile long General::trans_low_new_count = 0;
 	volatile long General::trans_low_delete_count = 0;
+	volatile long General::env_new_count = 0;
+	volatile long General::env_delete_count = 0;
 
 	const char *General::STATISTICS = "statistics";
 	const char *General::KEY_LEDGER_SEQ = "max_seq";

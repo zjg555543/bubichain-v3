@@ -69,6 +69,7 @@ namespace bubi {
 		Environment& operator=(Environment const&) = delete;
 
 		Environment(Environment *parent);
+		~Environment();
 		bool GetEntry(const std::string& key, AccountFrm::pointer &frm);
 		bool AddEntry(const std::string& key, AccountFrm::pointer frm);
 		void Commit();
