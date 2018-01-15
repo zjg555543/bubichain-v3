@@ -42,9 +42,9 @@ namespace bubi {
 		uint32_t success_count = 0;
 
 		int64_t begin_time = utils::Timestamp::HighResolution();
-		const Json::Value &json_items = body["items"];
+		Json::Value &json_items = body["items"];
 		for (size_t j = 0; j < json_items.size() && running; j++) {
-			const Json::Value &json_item = json_items[j];
+			Json::Value &json_item = json_items[j];
 			Json::Value &result_item = results[results.size()];
 
 			int64_t active_time = utils::Timestamp::HighResolution();
@@ -119,6 +119,20 @@ namespace bubi {
 					result_item["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
 				}
 				else {
+
+
+					//debug
+					Json::Value &item = json_item["transaction_json"];
+					Json::Value &operations = item["operations"];
+					Json::Value &ope_item = operations[uint32_t(0)];
+					if (ope_item["type"] == "CREATE_ACCOUNT") {
+						Json::Value &create_account = ope_item["create_account"];
+						if (create_account["dest_address"].asString().empty()) {
+							PrivateKey p(bubi::SIGNTYPE_ED25519);
+							create_account["dest_address"] = p.GetBase16Address();
+						}
+					}
+
 					protocol::Transaction *tran = tran_env.mutable_transaction();
 					std::string error_msg;
 					if (!Json2Proto(json_item["transaction_json"], *tran, error_msg)){
