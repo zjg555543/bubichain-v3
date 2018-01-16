@@ -23,6 +23,9 @@ namespace bubi {
 
 	class Environment: public AtomMap<std::string, AccountFrm>{
 	public:
+		Environment() = default;
+		Environment(AtomMap<std::string, AccountFrm>::mapKV* data);
+
 		bool GetEntry(const std::string& key, AccountFrm::pointer &frm);
 		bool AddEntry(const std::string& key, AccountFrm::pointer frm);
 		virtual bool GetFromDB(const std::string& key, AccountFrm::pointer& val);

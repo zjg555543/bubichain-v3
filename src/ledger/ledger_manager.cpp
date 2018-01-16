@@ -933,7 +933,9 @@ namespace bubi {
 
 			ledger_context->transaction_stack_.push(txfrm);
 			if (txfrm->ValidForParameter()){
-				txfrm->Apply(ledger_context->closing_ledger_.get(), back->environment_, true);
+				AtomMap<std::string, AccountFrm>::mapKV& data = back->environment_->GetActionBuf();
+				std::shared_ptr<Environment> contractCallEnv = std::make_shared<Environment>(&data);
+				txfrm->Apply(ledger_context->closing_ledger_.get(), contractCallEnv, true);
 			}
 
 			protocol::TransactionEnvStore tx_store;
@@ -957,6 +959,7 @@ namespace bubi {
 
 
 		//
+		txfrm->environment_->ClearChange();
 		protocol::TransactionEnvStore tx_store;
 		tx_store.set_error_code(txfrm->GetResult().code());
 		tx_store.set_error_desc(txfrm->GetResult().desc());

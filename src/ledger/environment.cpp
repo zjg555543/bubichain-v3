@@ -13,6 +13,7 @@ limitations under the License.
 
 #include <common/storage.h>
 #include "ledger_manager.h"
+#include "environment.h"
 
 namespace bubi{
 
@@ -26,6 +27,9 @@ namespace bubi{
 	//		}
 	//	}
 	//}
+
+	Environment::Environment(AtomMap<std::string, AccountFrm>::mapKV* data) :
+		AtomMap<std::string, AccountFrm>(data){}
 
 	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm){
 		return Get(key, frm);

@@ -35,19 +35,30 @@ namespace bubi
         typedef std::map<KEY, ActValue, COMPARE> mapKV;
 
 	protected:
-		bool  isRevertCommit_;
-        mapKV actionBuf_;
-        mapKV revertBuf_;
-        mapKV dataCopy_;
-        mapKV data_;
+		bool   isRevertCommit_;
+        mapKV  actionBuf_;
+        mapKV  revertBuf_;
+		mapKV  standby_;
+        mapKV* data_;
 
 	public:
-		AtomMap(bool revertCommit = false) : isRevertCommit_(revertCommit){}
+		AtomMap(bool revertCommit = false) : isRevertCommit_(revertCommit)
+		{
+			data_ = &standby_; //avoid manual memory management
+		}
+
+		AtomMap(mapKV* data, bool revertCommit = false) : isRevertCommit_(revertCommit)
+		{
+			if (data)
+				data_ = data;
+			else
+				data_ = &standby_; //avoid manual memory management
+		}
 
 	private:
 		void DistinguishSetValue(const KEY& key, const pointer& val)
 		{
-			if (data_.find(key) == data_.end())
+			if (data_->find(key) == data_->end())
 				actionBuf_[key] = ActValue(val, ADD);
 			else
 				actionBuf_[key] = ActValue(val, MOD);
@@ -73,8 +84,8 @@ namespace bubi
 			}
 			else
 			{
-				auto itData = data_.find(key);
-				if (itData != data_.end())
+				auto itData = data_->find(key);
+				if (itData != data_->end())
 				{
 					if (itData->second.type_ != DEL)
 					{
@@ -106,7 +117,12 @@ namespace bubi
     public:
 		const mapKV& GetData()
 		{
-			return data_;
+			return *data_;
+		}
+
+		mapKV& GetActionBuf()
+		{
+			return actionBuf_;
 		}
 
 		bool Set(const KEY& key, const pointer& val)
@@ -166,9 +182,9 @@ namespace bubi
 					if(act.second.type_ == ADD)
 						revertBuf_[act.first] = ActValue(REV); //if type_ == REV when UnCommit, data_.erase(key)
 					else
-						revertBuf_[act.first] = data_[act.first];
+						revertBuf_[act.first] = (*data_)[act.first];
 
-					data_[act.first] = act.second; //include type_ == DEL(UpdateToDB will use DEL and key)
+					(*data_)[act.first] = act.second; //include type_ == DEL(UpdateToDB will use DEL and key)
 				}
             }
             catch(std::exception& e)
@@ -198,9 +214,9 @@ namespace bubi
 				for (auto rev : revertBuf_)
 				{
 					if (rev.second.type_ == REV)
-						data_.erase(rev.first);
+						data_->erase(rev.first);
 					else
-						data_[rev.first] = rev.second;
+						(*data_)[rev.first] = rev.second;
 				}
 			}
             catch(std::exception& e)
@@ -214,30 +230,24 @@ namespace bubi
 
         bool CopyCommit()
         {
+			mapKV copyBuf = *data_;
             try
             {
-                dataCopy_ = data_;
 				for (auto act : actionBuf_)
-				{
-					dataCopy_[act.first] = act.second;
-				}
+					copyBuf[act.first] = act.second;
             }
 			catch (std::exception& e)
 			{
 				LOG_ERROR("copy commit exception, detail: %s", e.what());
 				actionBuf_.clear();
-				dataCopy_.clear();
-
 				return false;
 			}
 
-			data_.swap(dataCopy_);
+			data_->swap(copyBuf);
 
 			//CAUTION: now the pointers in actionBuf_ and dataCopy_ are overlapped with data_,
 			//so must be clear, otherwise the later modification to them will aslo directly act on data_.
 			actionBuf_.clear(); 
-			dataCopy_.clear();
-
             return true;
         }
 
@@ -259,7 +269,6 @@ namespace bubi
 		{
 			actionBuf_.clear();
 			revertBuf_.clear();
-			dataCopy_.clear();
 		}
 
         virtual bool GetFromDB(const KEY& key, pointer& val){ return false; }
