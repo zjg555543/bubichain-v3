@@ -38,6 +38,7 @@
 	"ledger": {
 		"genesis_account": "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",//privatekey:c00205ce8de2892b26c3b95caf3404831d6e913c655d85b517f076380ebfcbef47ff8f
 		"hash_type": 0, //0: SHA2561: SM3"
+		"use_atom_map": true,
 		"max_trans_per_ledger": 1000,
 		"max_ledger_per_message": 5,
 		"max_trans_in_memory": 2000,
@@ -58,9 +59,7 @@
 		"node_private_key": "44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d",
 		"close_interval": 3,
 		"validators": [
-			"a0024740b934765287b16113adc6bb285d72c124d9e3c1",
-			"a0019b7ef40a5f3b2aca4ed1919f45e96061c3f96c7f59"
-
+			"a0024740b934765287b16113adc6bb285d72c124d9e3c1"
 		]
 	}
 }

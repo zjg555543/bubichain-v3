@@ -139,6 +139,7 @@ namespace bubi {
 		Configure::GetValue(value, "max_apply_ledger_per_round", max_apply_ledger_per_round_);
 		Configure::GetValue(value, "max_trans_in_memory", max_trans_in_memory_);
 		Configure::GetValue(value, "test_model", test_model_);
+		Configure::GetValue(value, "use_atom_map", use_atom_map_);
 		Configure::GetValue(value, "genesis_account", genesis_account_);
 		Configure::GetValue(value, "hardfork_points", hardfork_points_);
 

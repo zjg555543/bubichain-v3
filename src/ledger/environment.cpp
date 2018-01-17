@@ -16,9 +16,21 @@ limitations under the License.
 
 namespace bubi{
 
-	//int64_t Environment::time_ = 0;
+	Environment::Environment(mapKV* data, bool dummy) : AtomMap<std::string, AccountFrm>(data)
+	{
+		useAtomMap_ = Configure::Instance().ledger_configure_.use_atom_map_;
+		parent_ = nullptr;
+	}
 
 	Environment::Environment(Environment* parent){
+
+		useAtomMap_ = Configure::Instance().ledger_configure_.use_atom_map_;
+		if (useAtomMap_)
+		{
+			parent_ = nullptr;
+			return;
+		}
+
 		parent_ = parent;
 		if (parent_){
 			for (auto it = parent_->entries_.begin(); it != parent_->entries_.end(); it++){
@@ -28,6 +40,9 @@ namespace bubi{
 	}
 
 	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm){
+		if (useAtomMap_)
+			return Get(key, frm);
+
 		if (entries_.find(key) == entries_.end()){
 			if (AccountFromDB(key, frm)){
 				entries_[key] = frm;
@@ -43,13 +58,25 @@ namespace bubi{
 		}
 	}
 
-	void Environment::Commit(){
+	bool Environment::Commit(){
+		if (useAtomMap_)
+			return AtomMap<std::string, AccountFrm>::Commit();
+
 		parent_->entries_ = entries_;
+		return true;
 	}
 
 	bool Environment::AddEntry(const std::string& key, AccountFrm::pointer frm){
+		if (useAtomMap_ == true)
+			return Set(key, frm);
+
 		entries_[key] = frm;
 		return true;
+	}
+
+	bool Environment::GetFromDB(const std::string &address, AccountFrm::pointer &account_ptr)
+	{
+		return AccountFromDB(address, account_ptr);
 	}
 
 	bool Environment::AccountFromDB(const std::string &address, AccountFrm::pointer &account_ptr){

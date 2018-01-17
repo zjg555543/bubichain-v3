@@ -931,7 +931,15 @@ namespace bubi {
 			if (LedgerManager::Instance().closing_ledger_->GetProtoHeader().version() >= 3001){
 				txfrm->NonceIncrease(LedgerManager::Instance().closing_ledger_.get(), back->environment_);
 				if (txfrm->ValidForParameter()){
-					txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+					//txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
+					if (back->environment_->useAtomMap_)
+					{
+						Environment::mapKV& data = back->environment_->GetActionBuf();
+						std::shared_ptr<Environment> cacheEnv = std::make_shared<Environment>(&data, true);
+						txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), cacheEnv, true);
+					}
+					else
+						txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
 				}
 			}
 			else{
@@ -941,7 +949,6 @@ namespace bubi {
 					txfrm->Apply(LedgerManager::Instance().closing_ledger_.get(), back->environment_, true);
 				}
 			}
-
 
 			protocol::TransactionEnvStore tx_store;
 			tx_store.mutable_transaction_env()->CopyFrom(txfrm->GetProtoTxEnv());
@@ -954,6 +961,8 @@ namespace bubi {
 				back->instructions_.insert(back->instructions_.end(), txfrm->instructions_.begin(), txfrm->instructions_.end());
 				txfrm->environment_->Commit();
 			}
+
+			txfrm->environment_->ClearChangeBuf();
 			tx_store.set_error_code(txfrm->GetResult().code());
 			tx_store.set_error_desc(txfrm->GetResult().desc());
 			back->instructions_.push_back(tx_store);

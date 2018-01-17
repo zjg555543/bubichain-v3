@@ -88,6 +88,7 @@ namespace bubi {
 		uint32_t max_trans_in_memory_;
 		uint32_t max_apply_ledger_per_round_;
 		bool test_model_;
+		bool use_atom_map_;
 		std::string genesis_account_;
 		utils::StringList hardfork_points_;
 		bool Load(const Json::Value &value);
