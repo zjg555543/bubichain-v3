@@ -28,8 +28,7 @@ namespace bubi{
 	//	}
 	//}
 
-	Environment::Environment(AtomMap<std::string, AccountFrm>::mapKV* data) :
-		AtomMap<std::string, AccountFrm>(data){}
+	Environment::Environment(mapKV* data) : AtomMap<std::string, AccountFrm>(data){}
 
 	bool Environment::GetEntry(const std::string &key, AccountFrm::pointer &frm){
 		return Get(key, frm);
