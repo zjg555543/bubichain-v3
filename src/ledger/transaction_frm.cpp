@@ -37,6 +37,7 @@ namespace bubi {
 		incoming_time_(utils::Timestamp::HighResolution())
 		{
 		utils::AtomicInc(&bubi::General::tx_new_count);
+		trans_value = NULL;
 	}
 
 
@@ -51,10 +52,14 @@ namespace bubi {
 		incoming_time_(utils::Timestamp::HighResolution()){
 		Initialize();
 		utils::AtomicInc(&bubi::General::tx_new_count);
+		trans_value = NULL;
 	}
 
 	TransactionFrm::~TransactionFrm() {
 		utils::AtomicInc(&bubi::General::tx_delete_count);
+		if (trans_value) {
+			delete trans_value;
+		} 
 	}
 
 	void TransactionFrm::ToJson(Json::Value &result) {
@@ -511,6 +516,15 @@ namespace bubi {
 			}
 		}
 		return bSucess;
+	}
+
+	std::string &TransactionFrm::GetTransactionString() {
+		if (trans_value == NULL) {
+			trans_value = new std::string;
+			*trans_value = Proto2Json(transaction_env_).toFastString();
+		} 
+
+		return *trans_value;
 	}
 }
 

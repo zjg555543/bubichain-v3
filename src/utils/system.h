@@ -111,6 +111,8 @@ namespace utils {
 
 		uint64_t GetTotalTime();
 		uint64_t GetUsageTime();
+		uint64_t GetCurrentUsageTime();
+
 
 		size_t core_count_;
 		std::string cpu_type_;
@@ -122,6 +124,13 @@ namespace utils {
 		int64_t irq_time_;
 		int64_t soft_irq_time_;
 		double  usage_percent_;
+
+		int64_t utime_;
+		int64_t stime_;
+		int64_t cutime_;
+		int64_t cstime_;
+		double    usage_current_percent_;
+
 	};
 
 	class System {

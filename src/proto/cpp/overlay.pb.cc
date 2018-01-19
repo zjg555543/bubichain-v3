@@ -62,6 +62,9 @@ const ::google::protobuf::Descriptor* ChainTxStatus_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ChainTxStatus_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* ChainTxStatus_TxStatus_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* ChainContractLog_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  ChainContractLog_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* OVERLAY_MESSAGE_TYPE_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* ChainMessageType_descriptor_ = NULL;
 
@@ -307,6 +310,23 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainTxStatus, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainTxStatus, _is_default_instance_));
   ChainTxStatus_TxStatus_descriptor_ = ChainTxStatus_descriptor_->enum_type(0);
+  ChainContractLog_descriptor_ = file->message_type(13);
+  static const int ChainContractLog_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, sender_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, data_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, timestamp_),
+  };
+  ChainContractLog_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      ChainContractLog_descriptor_,
+      ChainContractLog::default_instance_,
+      ChainContractLog_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(ChainContractLog),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, _is_default_instance_));
   OVERLAY_MESSAGE_TYPE_descriptor_ = file->enum_type(0);
   ChainMessageType_descriptor_ = file->enum_type(1);
 }
@@ -348,6 +368,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
       ChainPeerMessage_descriptor_, &ChainPeerMessage::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       ChainTxStatus_descriptor_, &ChainTxStatus::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      ChainContractLog_descriptor_, &ChainContractLog::default_instance());
 }
 
 }  // namespace
@@ -379,6 +401,8 @@ void protobuf_ShutdownFile_overlay_2eproto() {
   delete ChainPeerMessage_reflection_;
   delete ChainTxStatus::default_instance_;
   delete ChainTxStatus_reflection_;
+  delete ChainContractLog::default_instance_;
+  delete ChainContractLog_reflection_;
 }
 
 void protobuf_AddDesc_overlay_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -430,19 +454,22 @@ void protobuf_AddDesc_overlay_2eproto() {
     "RCODE\022\022\n\nerror_desc\030\010 \001(\t\022\021\n\ttimestamp\030\t"
     " \001(\003\"P\n\010TxStatus\022\r\n\tUNDEFINED\020\000\022\r\n\tCONFI"
     "RMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010COMPLETE\020\003\022\013\n\007FAI"
-    "LURE\020\004*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024OVERL"
-    "AY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_PIN"
-    "G\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OVERLA"
-    "Y_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRA"
-    "NSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022"
-    "\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSG"
-    "TYPE_LEDGER_UPGRADE_NOTIFY\020\007*\312\001\n\020ChainMe"
-    "ssageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_"
-    "HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PE"
-    "ER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022C"
-    "HAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANS"
-    "ACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020B\035\n\033cn."
-    "bubi.blockchain.adapter3b\006proto3", 2072);
+    "LURE\020\004\"C\n\020ChainContractLog\022\016\n\006sender\030\001 \001"
+    "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003*\203\002\n\024"
+    "OVERLAY_MESSAGE_TYPE\022\030\n\024OVERLAY_MSGTYPE_"
+    "NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_PING\020\001\022\031\n\025OVER"
+    "LAY_MSGTYPE_HELLO\020\002\022\031\n\025OVERLAY_MSGTYPE_P"
+    "EERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRANSACTION\020\004\022"
+    "\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022\030\n\024OVERLAY_"
+    "MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSGTYPE_LEDGER"
+    "_UPGRADE_NOTIFY\020\007*\342\001\n\020ChainMessageType\022\023"
+    "\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017"
+    "CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PEER_ONLINE\020\014"
+    "\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022CHAIN_PEER_M"
+    "ESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANSACTION\020\017\022\027\n"
+    "\023CHAIN_LEDGER_HEADER\020\020\022\026\n\022CHAIN_CONTRACT"
+    "_LOG\020\021B\035\n\033cn.bubi.blockchain.adapter3b\006p"
+    "roto3", 2165);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -458,6 +485,7 @@ void protobuf_AddDesc_overlay_2eproto() {
   ChainStatus::default_instance_ = new ChainStatus();
   ChainPeerMessage::default_instance_ = new ChainPeerMessage();
   ChainTxStatus::default_instance_ = new ChainTxStatus();
+  ChainContractLog::default_instance_ = new ChainContractLog();
   Hello::default_instance_->InitAsDefaultInstance();
   HelloResponse::default_instance_->InitAsDefaultInstance();
   Peer::default_instance_->InitAsDefaultInstance();
@@ -471,6 +499,7 @@ void protobuf_AddDesc_overlay_2eproto() {
   ChainStatus::default_instance_->InitAsDefaultInstance();
   ChainPeerMessage::default_instance_->InitAsDefaultInstance();
   ChainTxStatus::default_instance_->InitAsDefaultInstance();
+  ChainContractLog::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_overlay_2eproto);
 }
 
@@ -514,6 +543,7 @@ bool ChainMessageType_IsValid(int value) {
     case 14:
     case 15:
     case 16:
+    case 17:
       return true;
     default:
       return false;
@@ -6458,6 +6488,441 @@ void ChainTxStatus::clear_timestamp() {
   
   timestamp_ = value;
   // @@protoc_insertion_point(field_set:protocol.ChainTxStatus.timestamp)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ChainContractLog::kSenderFieldNumber;
+const int ChainContractLog::kDataFieldNumber;
+const int ChainContractLog::kTimestampFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ChainContractLog::ChainContractLog()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.ChainContractLog)
+}
+
+void ChainContractLog::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+ChainContractLog::ChainContractLog(const ChainContractLog& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.ChainContractLog)
+}
+
+void ChainContractLog::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  sender_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  timestamp_ = GOOGLE_LONGLONG(0);
+}
+
+ChainContractLog::~ChainContractLog() {
+  // @@protoc_insertion_point(destructor:protocol.ChainContractLog)
+  SharedDtor();
+}
+
+void ChainContractLog::SharedDtor() {
+  sender_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void ChainContractLog::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* ChainContractLog::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ChainContractLog_descriptor_;
+}
+
+const ChainContractLog& ChainContractLog::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+ChainContractLog* ChainContractLog::default_instance_ = NULL;
+
+ChainContractLog* ChainContractLog::New(::google::protobuf::Arena* arena) const {
+  ChainContractLog* n = new ChainContractLog;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ChainContractLog::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.ChainContractLog)
+  sender_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  timestamp_ = GOOGLE_LONGLONG(0);
+}
+
+bool ChainContractLog::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.ChainContractLog)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string sender = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_sender()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->sender().data(), this->sender().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.ChainContractLog.sender"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_data;
+        break;
+      }
+
+      // optional string data = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_data:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_data()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->data().data(), this->data().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.ChainContractLog.data"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_timestamp;
+        break;
+      }
+
+      // optional int64 timestamp = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_timestamp:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &timestamp_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.ChainContractLog)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.ChainContractLog)
+  return false;
+#undef DO_
+}
+
+void ChainContractLog::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.ChainContractLog)
+  // optional string sender = 1;
+  if (this->sender().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->sender().data(), this->sender().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.ChainContractLog.sender");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->sender(), output);
+  }
+
+  // optional string data = 2;
+  if (this->data().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->data().data(), this->data().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.ChainContractLog.data");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->data(), output);
+  }
+
+  // optional int64 timestamp = 3;
+  if (this->timestamp() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->timestamp(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.ChainContractLog)
+}
+
+::google::protobuf::uint8* ChainContractLog::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.ChainContractLog)
+  // optional string sender = 1;
+  if (this->sender().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->sender().data(), this->sender().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.ChainContractLog.sender");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->sender(), target);
+  }
+
+  // optional string data = 2;
+  if (this->data().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->data().data(), this->data().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.ChainContractLog.data");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->data(), target);
+  }
+
+  // optional int64 timestamp = 3;
+  if (this->timestamp() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->timestamp(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.ChainContractLog)
+  return target;
+}
+
+int ChainContractLog::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.ChainContractLog)
+  int total_size = 0;
+
+  // optional string sender = 1;
+  if (this->sender().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->sender());
+  }
+
+  // optional string data = 2;
+  if (this->data().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->data());
+  }
+
+  // optional int64 timestamp = 3;
+  if (this->timestamp() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->timestamp());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ChainContractLog::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.ChainContractLog)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const ChainContractLog* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const ChainContractLog>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.ChainContractLog)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.ChainContractLog)
+    MergeFrom(*source);
+  }
+}
+
+void ChainContractLog::MergeFrom(const ChainContractLog& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.ChainContractLog)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.sender().size() > 0) {
+
+    sender_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.sender_);
+  }
+  if (from.data().size() > 0) {
+
+    data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.data_);
+  }
+  if (from.timestamp() != 0) {
+    set_timestamp(from.timestamp());
+  }
+}
+
+void ChainContractLog::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.ChainContractLog)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ChainContractLog::CopyFrom(const ChainContractLog& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.ChainContractLog)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ChainContractLog::IsInitialized() const {
+
+  return true;
+}
+
+void ChainContractLog::Swap(ChainContractLog* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ChainContractLog::InternalSwap(ChainContractLog* other) {
+  sender_.Swap(&other->sender_);
+  data_.Swap(&other->data_);
+  std::swap(timestamp_, other->timestamp_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata ChainContractLog::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = ChainContractLog_descriptor_;
+  metadata.reflection = ChainContractLog_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ChainContractLog
+
+// optional string sender = 1;
+void ChainContractLog::clear_sender() {
+  sender_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& ChainContractLog::sender() const {
+  // @@protoc_insertion_point(field_get:protocol.ChainContractLog.sender)
+  return sender_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ChainContractLog::set_sender(const ::std::string& value) {
+  
+  sender_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.ChainContractLog.sender)
+}
+ void ChainContractLog::set_sender(const char* value) {
+  
+  sender_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.ChainContractLog.sender)
+}
+ void ChainContractLog::set_sender(const char* value, size_t size) {
+  
+  sender_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.ChainContractLog.sender)
+}
+ ::std::string* ChainContractLog::mutable_sender() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.ChainContractLog.sender)
+  return sender_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* ChainContractLog::release_sender() {
+  // @@protoc_insertion_point(field_release:protocol.ChainContractLog.sender)
+  
+  return sender_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ChainContractLog::set_allocated_sender(::std::string* sender) {
+  if (sender != NULL) {
+    
+  } else {
+    
+  }
+  sender_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sender);
+  // @@protoc_insertion_point(field_set_allocated:protocol.ChainContractLog.sender)
+}
+
+// optional string data = 2;
+void ChainContractLog::clear_data() {
+  data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& ChainContractLog::data() const {
+  // @@protoc_insertion_point(field_get:protocol.ChainContractLog.data)
+  return data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ChainContractLog::set_data(const ::std::string& value) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.ChainContractLog.data)
+}
+ void ChainContractLog::set_data(const char* value) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.ChainContractLog.data)
+}
+ void ChainContractLog::set_data(const char* value, size_t size) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.ChainContractLog.data)
+}
+ ::std::string* ChainContractLog::mutable_data() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.ChainContractLog.data)
+  return data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* ChainContractLog::release_data() {
+  // @@protoc_insertion_point(field_release:protocol.ChainContractLog.data)
+  
+  return data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ChainContractLog::set_allocated_data(::std::string* data) {
+  if (data != NULL) {
+    
+  } else {
+    
+  }
+  data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
+  // @@protoc_insertion_point(field_set_allocated:protocol.ChainContractLog.data)
+}
+
+// optional int64 timestamp = 3;
+void ChainContractLog::clear_timestamp() {
+  timestamp_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 ChainContractLog::timestamp() const {
+  // @@protoc_insertion_point(field_get:protocol.ChainContractLog.timestamp)
+  return timestamp_;
+}
+ void ChainContractLog::set_timestamp(::google::protobuf::int64 value) {
+  
+  timestamp_ = value;
+  // @@protoc_insertion_point(field_set:protocol.ChainContractLog.timestamp)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

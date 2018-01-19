@@ -23,7 +23,7 @@ limitations under the License.
 #include "websocket_server.h"
 
 namespace bubi {
-	WebSocketServer::WebSocketServer() : Network(SslParameter()) {
+	WebSocketServer::WebSocketServer() : Network(SslParameter()), log_size_limit_(64 * 1024){
 		connect_interval_ = 120 * utils::MICRO_UNITS_PER_SEC;
 		last_connect_time_ = 0;
 
@@ -37,6 +37,7 @@ namespace bubi {
 	WebSocketServer::~WebSocketServer() {
 		if (thread_ptr_){
 			delete thread_ptr_;
+			thread_ptr_ = NULL;
 		} 
 	}
 
@@ -45,7 +46,6 @@ namespace bubi {
 		if (!thread_ptr_->Start("websocket")) {
 			return false;
 		}
-
 		StatusModule::RegisterModule(this);
 		LOG_INFO("Websocket server initialized");
 		return true;

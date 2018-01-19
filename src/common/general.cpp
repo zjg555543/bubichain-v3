@@ -23,7 +23,7 @@ namespace bubi {
 	const uint32_t General::LEDGER_VERSION = 3002;
 	const uint32_t General::LEDGER_MIN_VERSION = 3000;
 	const uint32_t General::MONITOR_VERSION = 3000;
-	const char *General::BUBI_VERSION = "3.2.0.0";
+	const char *General::BUBI_VERSION = "3.1.0.1";
 
 #ifdef WIN32
 	const char *General::DEFAULT_KEYVALUE_DB_PATH = "data/keyvalue.db";
@@ -57,6 +57,8 @@ namespace bubi {
 	volatile long General::account_delete_count = 0;
 	volatile long General::trans_low_new_count = 0;
 	volatile long General::trans_low_delete_count = 0;
+	volatile long General::env_new_count = 0;
+	volatile long General::env_delete_count = 0;
 
 	const char *General::STATISTICS = "statistics";
 	const char *General::KEY_LEDGER_SEQ = "max_seq";

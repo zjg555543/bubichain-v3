@@ -607,6 +607,20 @@ namespace bubi {
 		system_json["current_time"] = utils::Timestamp::Now().ToFormatString(false);
 		 
 		ledger_upgrade_.GetModuleStatus(data["ledger_upgrade"]);
+
+		Json::Value &counter_json = data["counter"];
+		counter_json["tx_new"] = General::tx_new_count;
+		counter_json["tx_delete"] = General::tx_delete_count;
+		counter_json["txset_new"] = General::txset_new_count;
+		counter_json["txset_delete"] = General::txset_delete_count;
+		counter_json["peermsg_new"] = General::peermsg_new_count;
+		counter_json["peermsg_delete"] = General::peermsg_delete_count;
+		counter_json["account_new"] = General::account_new_count;
+		counter_json["account_delete"] = General::account_delete_count;
+		counter_json["trans_low_new"] = General::trans_low_new_count;
+		counter_json["trans_low_delete"] = General::trans_low_delete_count;
+		counter_json["env_low_new"] = General::env_new_count;
+		counter_json["env_low_delete"] = General::env_delete_count;
 	}
 
 	int64_t GlueManager::GetIntervalTime(bool empty_block) {

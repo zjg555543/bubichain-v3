@@ -833,7 +833,6 @@ namespace bubi {
 				low_water_mark_ = sequence_ / ckp_count_ * ckp_count_;
 
 				ValueSaver saver;
-			//	saver.SaveValue(PbftDesc::LOW_WATER_MRAK_NAME, low_water_mark_);
 				saver.SaveValue(PbftDesc::VIEW_ACTIVE, view_active_? 1 : 0);
 
 				//clear the view change instance
@@ -1344,7 +1343,6 @@ namespace bubi {
 			return ret;
 		}
 
-		SaveViewChange(saver);
 		return true;
 	}
 
@@ -1713,8 +1711,31 @@ namespace bubi {
 			}
 		}
 
-		ValueSaver saver;
-		//SaveInstance(saver);
+
+		//new instance
+		bool need_notify = true;
+		for (std::map<int64_t, protocol::PbftEnv>::iterator iter_pre = pre_prepares.begin();
+			iter_pre != pre_prepares.end();
+			iter_pre++) {
+
+			const protocol::PbftEnv &pre_prepare_env = iter_pre->second;
+			const protocol::PbftPrePrepare &pre_prepare = pre_prepare_env.pbft().pre_prepare();
+			PbftInstanceIndex index(pre_prepare.view_number(), pre_prepare.sequence());
+
+			if (pre_prepare.sequence() <= last_exe_seq_) {
+				continue;
+			}
+
+			//add new
+			PbftInstance pinstance;
+			pinstance.pre_prepare_msg_ = pre_prepare_env;
+			pinstance.phase_ = PBFT_PHASE_PREPREPARED;
+			pinstance.pre_prepare_ = pre_prepare;
+			pinstance.msg_buf_[pre_prepare_env.pbft().type()].push_back(pre_prepare_env);
+			pinstance.check_value_result_ = CheckValue(pinstance.pre_prepare_.value());
+			instances_.insert(std::make_pair(index, pinstance));
+			need_notify = false;
+		}
 
 		//get max sequence
 		int64_t max_seq = last_exe_seq_;
@@ -1730,14 +1751,13 @@ namespace bubi {
 		if (max_seq > 0) {
 			//save the sequence
 			sequence_ = max_seq + 1;
-			//saver.SaveValue(PbftDesc::SEQUENCE_NAME, sequence_);
 		}
-		saver.Commit();
 
 		//try to move new watermark
 		TryMoveWaterMark();
 
 		//enter to new view
+		ValueSaver saver;
 		view_number_ = vc_instance.view_number_;
 		view_active_ = true;
 		saver.SaveValue(PbftDesc::VIEW_ACTIVE, view_active_ ? 1 : 0);
@@ -1760,10 +1780,12 @@ namespace bubi {
 				iter_vc++;
 			}
 		}
+
 		SaveViewChange(saver);
 		saver.Commit();
 
-		OnViewChanged();
+		notify_->OnResetCloseTimer();
+		if(need_notify) OnViewChanged();
 
 		return true;
 	}
@@ -2263,6 +2285,7 @@ namespace bubi {
 			item["start_time"] = utils::Timestamp(vc_instance.start_time_).ToFormatString(true);
 			item["last_propose_time"] = utils::Timestamp(vc_instance.last_propose_time_).ToFormatString(true);
 			item["end_time"] = utils::Timestamp(vc_instance.end_time_).ToFormatString(true);
+			item["newview_init"] = vc_instance.newview_.IsInitialized();
 
 			Json::Value &vc = item["viewchange"];
 			for (PbftViewChangeMap::const_iterator iter_vc = vc_instance.viewchanges_.begin(); iter_vc != vc_instance.viewchanges_.end(); iter_vc++) {
@@ -2386,6 +2409,7 @@ namespace bubi {
 				validators_.size(), fault_number_, replica_id_, view_number_ % validators_.size() == replica_id_ ? "is" : "isnot");
 			
 			ClearNotCommitedInstance();
+			notify_->OnResetCloseTimer();
 		} 
 		
 		if (new_seq > 0) {
