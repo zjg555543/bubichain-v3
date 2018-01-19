@@ -102,6 +102,7 @@ enum ChainMessageType {
 	CHAIN_PEER_MESSAGE = 14;
 	CHAIN_SUBMITTRANSACTION = 15;
 	CHAIN_LEDGER_HEADER = 16; //bubi notify the client ledger(protocol::LedgerHeader) when closed
+	CHAIN_CONTRACT_LOG = 17; // smart contract log
 }
 
 //register notification events
@@ -145,5 +146,11 @@ message ChainTxStatus {
 	ERRORCODE	error_code = 7;			//use it if FAIL
 	string		error_desc = 8	;			//error desc
 	int64		timestamp = 9;			
+}
+
+message ChainContractLog {
+	string sender = 1;
+	string data = 2;
+	int64 timestamp = 3;
 }
 

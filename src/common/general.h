@@ -98,6 +98,8 @@ namespace bubi {
 		volatile static long account_delete_count;
 		volatile static long trans_low_new_count;
 		volatile static long trans_low_delete_count;
+		volatile static long env_new_count;
+		volatile static long env_delete_count;
 	};
 
 	class Result {

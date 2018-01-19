@@ -15,8 +15,10 @@ limitations under the License.
 #define WEBSOCKET_SERVER_H_
 
 #include <proto/cpp/chain.pb.h>
+#include <proto/cpp/overlay.pb.h>
 #include <common/network.h>
 #include <monitor/system_manager.h>
+#include <main/configure.h>
 
 namespace bubi {
 	class WebSocketServer :public utils::Singleton<WebSocketServer>,
@@ -28,10 +30,7 @@ namespace bubi {
 		WebSocketServer();
 		~WebSocketServer();
 
-		
-		//virtual bool Send(const ZMQTaskType type, const std::string& buf);
-
-		bool Initialize(WsServerConfigure & ws_server_configure);
+		bool Initialize(WsServerConfigure &ws_server_configure);
 		bool Exit();
 
 		// Handlers
@@ -51,6 +50,8 @@ namespace bubi {
 
 		uint64_t last_connect_time_;
 		uint64_t connect_interval_;
+		
+		const uint64_t log_size_limit_;
 	};
 }
 

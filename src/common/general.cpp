@@ -23,7 +23,7 @@ namespace bubi {
 	const uint32_t General::LEDGER_VERSION = 3001;
 	const uint32_t General::LEDGER_MIN_VERSION = 3000;
 	const uint32_t General::MONITOR_VERSION = 3000;
-	const char *General::BUBI_VERSION = "3.1.0.1";
+	const char *General::BUBI_VERSION = "3.1.0.2";
 
 #ifdef WIN32
 	const char *General::DEFAULT_KEYVALUE_DB_PATH = "data/keyvalue.db";
@@ -57,6 +57,8 @@ namespace bubi {
 	volatile long General::account_delete_count = 0;
 	volatile long General::trans_low_new_count = 0;
 	volatile long General::trans_low_delete_count = 0;
+	volatile long General::env_new_count = 0;
+	volatile long General::env_delete_count = 0;
 
 	const char *General::STATISTICS = "statistics";
 	const char *General::KEY_LEDGER_SEQ = "max_seq";
@@ -175,8 +177,8 @@ namespace bubi {
 			for (auto item : TimerNotify::notifys_){
 				item->SlowTimerWrapper(utils::Timestamp::HighResolution());
 
-				if (item->IsSlowExpire(5 * utils::MICRO_UNITS_PER_SEC)){
-					LOG_WARN("The timer(%s) execute time(" FMT_I64 " us) is expire than 5s", item->GetTimerName().c_str(), item->GetSlowLastExecuteTime());
+				if (item->IsSlowExpire(2 * utils::MICRO_UNITS_PER_SEC)){
+					LOG_WARN("The slow timer(%s) execute time(" FMT_I64 " us) is expire than 2s", item->GetTimerName().c_str(), item->GetSlowLastExecuteTime());
 				}
 			}
 

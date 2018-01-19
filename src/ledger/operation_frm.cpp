@@ -309,13 +309,13 @@ namespace bubi {
 				result.set_desc(utils::String::Format("Amount should be bigger than 0"));
 			}
 
-			if (source_address == payment.dest_address()) {
+			if (source_address == pay_coin.dest_address()) {
 				result.set_code(protocol::ERRCODE_ACCOUNT_SOURCEDEST_EQUAL);
 				result.set_desc(utils::String::Format("Source address(%s) equal to dest address", source_address.c_str()));
 				break;
 			}
 
-			if (!bubi::PublicKey::IsAddressValid(payment.dest_address())) {
+			if (!bubi::PublicKey::IsAddressValid(pay_coin.dest_address())) {
 				result.set_code(protocol::ERRCODE_ASSET_INVALID);
 				result.set_desc(utils::String::Format("Dest address should be a valid account address"));
 				break;
@@ -395,7 +395,7 @@ namespace bubi {
 			SetThreshold(environment);
 			break;
 		case protocol::Operation_Type_PAY_COIN:
-
+			//PayCoin(environment);
 			break;
 		case protocol::Operation_Type_Operation_Type_INT_MIN_SENTINEL_DO_NOT_USE_:
 			break;
@@ -531,18 +531,22 @@ namespace bubi {
 			}
 			
 			std::string javascript = dest_account->GetProtoAccount().contract().payload();
+			Json::Value cons_value;
+			cons_value["close_time"] = transaction_->ledger_->value_->close_time();
+			cons_value["ledger_seq"] = transaction_->ledger_->value_->ledger_seq();
+			cons_value["previous_ledger_hash"] = transaction_->ledger_->value_->previous_ledger_hash();
+
 			if (!javascript.empty()){
 				ContractManager manager;
 	
-				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
 				std::string err_msg;
 				if (!manager.Execute(javascript,
 					payment.input(),
 					payment.dest_address(),
 					source_account_->GetAccountAddress(),
-					trigger_str,
+					transaction_->GetTransactionString(),
 					index_,
-					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
+					cons_value.toFastString(),
 					err_msg
 					))
 				{
@@ -653,19 +657,22 @@ namespace bubi {
 			proto_dest_account.set_balance(proto_dest_account.balance() + ope.amount());
 			
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
-			if (!javascript.empty()){
+			if (!javascript.empty()) {
 				ContractManager manager;
-				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
+				Json::Value cons_value;
+				cons_value["close_time"] = transaction_->ledger_->value_->close_time();
+				cons_value["ledger_seq"] = transaction_->ledger_->value_->ledger_seq();
+				cons_value["previous_ledger_hash"] = transaction_->ledger_->value_->previous_ledger_hash();
+
 				std::string err_msg;
 				if (!manager.Execute(javascript,
 					ope.input(),
 					ope.dest_address(),
 					source_account_->GetAccountAddress(),
-					trigger_str,
+					transaction_->GetTransactionString(),
 					index_,
-					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
-					err_msg))
-				{
+					cons_value.toFastString(),
+					err_msg)) {
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
 					break;

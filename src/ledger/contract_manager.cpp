@@ -13,6 +13,7 @@ limitations under the License.
 
 #include <utils/logger.h>
 #include <common/pb2json.h>
+#include <api/websocket_server.h>
 #include "contract_manager.h"
 #include "ledger_frm.h"
 #include "ledger_manager.h"
@@ -676,7 +677,9 @@ namespace bubi{
 
 		//
 		v8::String::Utf8Value utf8value(str);
-		LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), ToCString(utf8_sender), ToCString(utf8value));
+		const char* sender_addr = ToCString(utf8_sender);
+		const char* log_data = ToCString(utf8value);
+		LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), sender_addr, log_data);
 		args.GetReturnValue().Set(true);
 	}
 
