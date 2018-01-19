@@ -30,7 +30,8 @@ namespace bubi {
 		utils::AtomicInc(&bubi::General::account_new_count);
 	}
 
-	AccountFrm::AccountFrm(std::shared_ptr<AccountFrm> account){
+	AccountFrm::AccountFrm(std::shared_ptr<AccountFrm> account) {
+		utils::AtomicInc(&bubi::General::account_new_count);
 		account_info_.CopyFrom(account->ProtocolAccount());
 		assets_ = account->assets_;
 		metadata_ = account->metadata_;

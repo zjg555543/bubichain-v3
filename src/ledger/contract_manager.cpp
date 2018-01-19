@@ -681,9 +681,6 @@ namespace bubi{
 		const char* log_data = ToCString(utf8value);
 		LOG_INFO("LogCallBack[%s:%s]\n%s", ToCString(token), sender_addr, log_data);
 		args.GetReturnValue().Set(true);
-		
-		// send log to app
-		WebSocketServer::Instance().SendContractLog(sender_addr, log_data, strlen(log_data));
 	}
 
 	//
