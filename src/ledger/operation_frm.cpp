@@ -531,10 +531,6 @@ namespace bubi {
 			}
 			
 			std::string javascript = dest_account->GetProtoAccount().contract().payload();
-			Json::Value cons_value;
-			cons_value["close_time"] = transaction_->ledger_->value_->close_time();
-			cons_value["ledger_seq"] = transaction_->ledger_->value_->ledger_seq();
-			cons_value["previous_ledger_hash"] = transaction_->ledger_->value_->previous_ledger_hash();
 
 			if (!javascript.empty()){
 				ContractManager manager;
@@ -546,7 +542,7 @@ namespace bubi {
 					source_account_->GetAccountAddress(),
 					transaction_->GetTransactionString(),
 					index_,
-					cons_value.toFastString(),
+					transaction_->ledger_->GetConsensusValueString(),
 					err_msg
 					))
 				{
@@ -659,10 +655,6 @@ namespace bubi {
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
 			if (!javascript.empty()) {
 				ContractManager manager;
-				Json::Value cons_value;
-				cons_value["close_time"] = transaction_->ledger_->value_->close_time();
-				cons_value["ledger_seq"] = transaction_->ledger_->value_->ledger_seq();
-				cons_value["previous_ledger_hash"] = transaction_->ledger_->value_->previous_ledger_hash();
 
 				std::string err_msg;
 				if (!manager.Execute(javascript,
@@ -671,7 +663,7 @@ namespace bubi {
 					source_account_->GetAccountAddress(),
 					transaction_->GetTransactionString(),
 					index_,
-					cons_value.toFastString(),
+					transaction_->ledger_->GetConsensusValueString(),
 					err_msg)) {
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
