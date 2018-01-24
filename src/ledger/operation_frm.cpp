@@ -531,27 +531,18 @@ namespace bubi {
 			}
 			
 			std::string javascript = dest_account->GetProtoAccount().contract().payload();
-			Json::Value cons_value;
-			cons_value["close_time"] = transaction_->ledger_->value_->close_time();
-			cons_value["ledger_seq"] = transaction_->ledger_->value_->ledger_seq();
-			cons_value["previous_ledger_hash"] = transaction_->ledger_->value_->previous_ledger_hash();
 
 			if (!javascript.empty()){
-				ContractParameter parameter;
-				parameter.code_ = javascript;
-				parameter.input_ = payment.input();
-				parameter.this_address_ = payment.dest_address();
-				parameter.sender_ = source_account_->GetAccountAddress();
-				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
-				parameter.ope_index_ = index_;
-				parameter.consensus_value_ = Proto2Json(*(transaction_->ledger_->value_)).toFastString();
-				parameter.ledger_context_ = transaction_->ledger_->lpledger_context_;
-
+				ContractManager manager;
+	
 				std::string err_msg;
-				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
-					parameter,
-					trigger_str,
-					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
+				if (!manager.Execute(javascript,
+					payment.input(),
+					payment.dest_address(),
+					source_account_->GetAccountAddress(),
+					transaction_->GetTransactionString(),
+					index_,
+					transaction_->ledger_->GetConsensusValueString(),
 					err_msg
 					))
 				{
@@ -692,22 +683,17 @@ namespace bubi {
 			
 			std::string javascript = dest_account_ptr->GetProtoAccount().contract().payload();
 			if (!javascript.empty()) {
-
-				ContractParameter parameter;
-				parameter.input_ = ope.input();
-				parameter.this_address_ = ope.dest_address();
-				cons_value["ledger_seq"] = transaction_->ledger_->value_->ledger_seq();
-				cons_value["previous_ledger_hash"] = transaction_->ledger_->value_->previous_ledger_hash();
-				std::string trigger_str = Proto2Json(transaction_->GetTransactionEnv()).toStyledString();
-				parameter.ope_index_ = index_;
-				parameter.consensus_value_ = Proto2Json(*(transaction_->ledger_->value_)).toFastString();
+				ContractManager manager;
 
 				std::string err_msg;
-				if (!ContractManager::Instance().Execute(Contract::TYPE_V8,
-					trigger_str,
-					Proto2Json(*(transaction_->ledger_->value_)).toFastString(),
-					err_msg))
-					))
+				if (!manager.Execute(javascript,
+					ope.input(),
+					ope.dest_address(),
+					source_account_->GetAccountAddress(),
+					transaction_->GetTransactionString(),
+					index_,
+					transaction_->ledger_->GetConsensusValueString(),
+					err_msg)) {
 					result_.set_code(protocol::ERRCODE_CONTRACT_EXECUTE_FAIL);
 					result_.set_desc(err_msg);
 					break;

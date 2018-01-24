@@ -67,6 +67,8 @@ namespace bubi {
 		Json::Value ToJson();
 
 		bool Commit(KVTrie* trie, int64_t& new_count, int64_t& change_count);
+
+		std::string &GetConsensusValueString();
 	private:
 		protocol::Ledger ledger_;
 	public:
@@ -76,6 +78,7 @@ namespace bubi {
 		std::string sql_;
 		std::shared_ptr<Environment> environment_;
 		LedgerContext *lpledger_context_;
+		std::string consensus_value_string_;
 		int64_t apply_time_;
 		bool enabled_;
 	};

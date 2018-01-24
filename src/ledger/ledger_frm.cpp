@@ -25,6 +25,7 @@ limitations under the License.
 namespace bubi {
 #define COUNT_PER_PARTITION 1000000
 	LedgerFrm::LedgerFrm() {
+		value_ = NULL;
 		lpledger_context_ = NULL;
 		enabled_ = false;
 		apply_time_ = -1;
@@ -211,5 +212,13 @@ namespace bubi {
 			}
 		}
 		return true;
+	}
+
+	std::string &LedgerFrm::GetConsensusValueString() {
+		if (value_ != NULL &&  consensus_value_string_.empty()) {
+			consensus_value_string_ = Proto2Json(*value_).toFastString();
+		} 
+
+		return consensus_value_string_;
 	}
 }
