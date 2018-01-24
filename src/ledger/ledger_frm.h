@@ -63,6 +63,8 @@ namespace bubi {
 		Json::Value ToJson();
 
 		bool Commit(KVTrie* trie, int64_t& new_count, int64_t& change_count);
+
+		std::string &GetConsensusValueString();
 	private:
 		protocol::Ledger ledger_;
 	public:
@@ -71,6 +73,8 @@ namespace bubi {
 		std::vector<TransactionFrm::pointer> dropped_tx_frms_;
 		std::string sql_;
 		std::shared_ptr<Environment> environment_;
+
+		std::string consensus_value_string_;
 	};
 }
 #endif //end of ifndef
