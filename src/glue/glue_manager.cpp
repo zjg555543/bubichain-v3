@@ -22,7 +22,7 @@ limitations under the License.
 namespace bubi {
 
 	int64_t const  MAX_LEDGER_TIMESPAN_SECONDS = 60 * utils::MICRO_UNITS_PER_SEC;
-	int64_t const QUEUE_TRANSACTION_TIMEOUT = 90 * utils::MICRO_UNITS_PER_SEC;
+	int64_t const QUEUE_TRANSACTION_TIMEOUT = 30 * utils::MICRO_UNITS_PER_SEC;
 	GlueManager::GlueManager() {
 		time_start_consenus_ = 0;
 		ledgerclose_check_timer_ = 0;
@@ -242,9 +242,10 @@ namespace bubi {
 
 			TransactionMap::iterator iter = topic_caches_.find(key);
 			if (iter != topic_caches_.end())  {
-				err.set_code(protocol::ERRCODE_ALREADY_EXIST);
-				err.set_desc(utils::String::Format("Receive duplicate transaction, source address(%s) hash(%s)", address.c_str(), utils::String::Bin4ToHexString(hash_value).c_str()));
-				LOG_ERROR("Receive duplicate transaction, source address(%s) hash(%s)", address.c_str(), utils::String::Bin4ToHexString(hash_value).c_str());
+				//dont't reply the tx, then break;
+				//err.set_code(protocol::ERRCODE_ALREADY_EXIST);
+				//err.set_desc(utils::String::Format("Receive duplicate transaction, source address(%s) hash(%s)", address.c_str(), utils::String::Bin4ToHexString(hash_value).c_str()));
+				LOG_INFO("Receive duplicate transaction, source address(%s) hash(%s)", address.c_str(), utils::String::Bin4ToHexString(hash_value).c_str());
 				break;
 			}
 
@@ -273,10 +274,8 @@ namespace bubi {
 				}
 			}
 
-		} while (false);
+		} while (false); 
 
-		WebSocketServer::Instance().BroadcastChainTxMsg(hash_value, address, err, err.code() == protocol::ERRCODE_SUCCESS ? 
-			protocol::ChainTxStatus_TxStatus_PENDING : protocol::ChainTxStatus_TxStatus_FAILURE);
 		return err.code() == protocol::ERRCODE_SUCCESS;
 	}
 
@@ -331,9 +330,10 @@ namespace bubi {
 			iter != txs.end();
 			iter++) {
 
-			TransactionFrm::pointer tx = *iter;
-			WebSocketServer::Instance().BroadcastChainTxMsg(tx->GetContentHash(), tx->GetSourceAddress(), 
-				tx->GetResult(), tx->GetResult().code() == protocol::ERRCODE_SUCCESS ? protocol::ChainTxStatus_TxStatus_COMPLETE : protocol::ChainTxStatus_TxStatus_FAILURE);
+			//don't send the undeterminate message
+// 			TransactionFrm::pointer tx = *iter;
+// 			WebSocketServer::Instance().BroadcastChainTxMsg(tx->GetContentHash(), tx->GetSourceAddress(), 
+// 				tx->GetResult(), tx->GetResult().code() == protocol::ERRCODE_SUCCESS ? protocol::ChainTxStatus_TxStatus_COMPLETE : protocol::ChainTxStatus_TxStatus_FAILURE);
 		}
 	}
 
