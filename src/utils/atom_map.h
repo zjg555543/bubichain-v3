@@ -52,7 +52,7 @@ namespace bubi
 			if (data)
 				data_ = data;
 			else
-				data_ = &standby_; //avoid manual memory management
+				data_ = &standby_;
 		}
 
 	private:
