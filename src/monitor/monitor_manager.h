@@ -71,6 +71,9 @@ namespace bubi {
 		uint64_t check_alert_interval_;
 		uint64_t last_alert_time_;
 
+		uint64_t percent_interval_;
+		uint64_t last_percent_time_;
+
 		SystemManager system_manager_;
 	};
 }
