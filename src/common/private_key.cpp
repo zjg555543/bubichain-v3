@@ -368,16 +368,16 @@ namespace bubi {
 		From(base58_private_key);
 	}
 
-	std::string PrivateKey::CalcHash(const std::string &value) const {
-		std::string hash;
-		if (type_ == SIGNTYPE_ED25519) {
-			hash = utils::Sha256::Crypto(value);
-		}
-		else {
-			hash = utils::Sm3::Crypto(value);
-		}
-		return hash;
-	}
+// 	std::string PrivateKey::CalcHash(const std::string &value) const {
+// 		std::string hash;
+// 		if (type_ == SIGNTYPE_ED25519) {
+// 			hash = utils::Sha256::Crypto(value);
+// 		}
+// 		else {
+// 			hash = utils::Sm3::Crypto(value);
+// 		}
+// 		return hash;
+// 	}
 
 	std::string PrivateKey::Sign(const std::string &input) const {
 		unsigned char sig[10240];
