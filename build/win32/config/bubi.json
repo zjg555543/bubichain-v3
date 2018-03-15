@@ -55,6 +55,7 @@
 	},
 	"validation": {
 		"type": "pbft",
+		"validation_code":"bubi2018",
 		"address": "a0024740b934765287b16113adc6bb285d72c124d9e3c1",
 		"node_private_key": "44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d",
 		"close_interval": 3,

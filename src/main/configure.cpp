@@ -160,6 +160,7 @@ namespace bubi {
 	bool ValidationConfigure::Load(const Json::Value &value) {
 
 		Configure::GetValue(value, "type", type_);
+		Configure::GetValue(value, "code", code_);
 		Configure::GetValue(value, "is_validator", is_validator_);
 		Configure::GetValue(value, "node_private_key", node_privatekey_);
 		Configure::GetValue(value, "validators", validators_);
@@ -169,6 +170,7 @@ namespace bubi {
 			|| validators_.empty()) {
 			return false;
 		}
+		code_ = utils::Aes::HexDecrypto(code_, GetDataSecuretKey());
 		node_privatekey_ = utils::Aes::HexDecrypto(node_privatekey_, GetDataSecuretKey());
 		close_interval_ = close_interval_ * utils::MICRO_UNITS_PER_SEC; //micro second
 		return true;

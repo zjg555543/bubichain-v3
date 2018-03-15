@@ -99,6 +99,7 @@ namespace bubi {
 		~ValidationConfigure();
 
 		std::string type_;
+		std::string code_;
 		bool is_validator_;
 		std::string node_privatekey_;
 		utils::StringList validators_;
