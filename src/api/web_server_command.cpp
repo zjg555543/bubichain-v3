@@ -234,7 +234,24 @@ namespace bubi {
 		Json::Value reply_json = Json::Value(Json::objectValue);
 
 		do {
-			if (!request.peer_address_.IsLoopback()) {
+			// if validation code is empty, limit local url, otherwise limit validation code
+			if (!Configure::Instance().validation_configure_.code_.empty()) {
+				std::string validation_code = request.GetParamValue("validation_code");
+				std::string timestamp = request.GetParamValue("timestamp");
+				if (validation_code.empty()) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The code cannot be empty";
+					break;
+				}
+				std::string code_time = Configure::Instance().validation_configure_.code_ + timestamp;
+				std::string code_hash = utils::Sha256::Crypto(code_time);
+				if (code_hash.compare(validation_code) != 0) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "This code should be right ,please check";
+					break;
+				}
+			}
+			else if (!request.peer_address_.IsLoopback()) {
 				error_code = protocol::ERRCODE_ACCESS_DENIED;
 				error_desc = "This url should be called from local";
 				break;
