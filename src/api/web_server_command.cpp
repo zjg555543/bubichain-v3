@@ -234,20 +234,43 @@ namespace bubi {
 		Json::Value reply_json = Json::Value(Json::objectValue);
 
 		do {
-			// if conf_validator_key is empty, limit local url, otherwise limit conf_validator_key
-			if (!Configure::Instance().webserver_configure_.conf_validator_key_.empty()) {
-				std::string conf_validator_key = request.GetParamValue("conf_validator_key");
-				std::string timestamp = request.GetParamValue("timestamp");
-				if (conf_validator_key.empty()) {
+			// if validator_conf_key is empty, limit local url, otherwise limit validator_conf_key
+			if (!request.body.empty()) {
+				Json::Value body;
+				if (!body.fromString(request.body)) {
+					LOG_ERROR("Parse request body json failed");
 					error_code = protocol::ERRCODE_ACCESS_DENIED;
-					error_desc = "The conf_validator_key cannot be empty";
+					error_desc = "request must being json format";
 					break;
 				}
-				std::string code_time = Configure::Instance().webserver_configure_.conf_validator_key_ + timestamp;
-				std::string code_hash = utils::Sha256::Crypto(code_time);
-				if (code_hash.compare(conf_validator_key) != 0) {
+				std::string validator_conf_key = body.fromString(request.body) ? body["validator_conf_key"].asString() : "";
+				int64_t timestamp = body.isMember("timestamp") ? (body["timestamp"].isString() ? -2 : body["timestamp"].asUInt64()) : -1;
+				if (validator_conf_key.empty()) {
 					error_code = protocol::ERRCODE_ACCESS_DENIED;
-					error_desc = "This conf_validator_key should be right ,please check";
+					error_desc = "The validator_conf_key cannot be empty";
+					break;
+				}
+				if (-2 == timestamp) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The timestamp must be number";
+					break;
+				}
+				else if (-1 == timestamp) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The timestamp cannot be empty";
+					break;
+				}
+				else if (timestamp * 1000 < (utils::Timestamp::HighResolution() - utils::SECOND_UNITS_PER_DAY * utils::MICRO_UNITS_PER_MILLI)) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The timestamp was wrong, please check";
+					break;
+				}
+
+				std::string code_time = Configure::Instance().webserver_configure_.validator_conf_key + utils::String::Format("%lld", timestamp);
+				std::string code_hash = utils::String::BinToHexString(utils::Sha256::Crypto(code_time));
+				if (code_hash.compare(validator_conf_key) != 0) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "This validator_conf_key was wrong ,please check!";
 					break;
 				}
 			}

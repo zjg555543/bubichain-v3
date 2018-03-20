@@ -113,7 +113,7 @@ namespace bubi {
 		for (size_t i = 0; i < address_array.size(); i++) {
 			listen_addresses_.push_back(utils::InetAddress(address_array[i]));
 		}
-		ConfigureBase::GetValue(value, "conf_validator_key", conf_validator_key_);
+		ConfigureBase::GetValue(value, "validator_conf_key", validator_conf_key);
 		ConfigureBase::GetValue(value, "index_name", index_name_);
 		ConfigureBase::GetValue(value, "directory", directory_);
 		ConfigureBase::GetValue(value, "ssl_enable", ssl_enable_);

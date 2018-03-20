@@ -64,7 +64,7 @@ namespace bubi {
 		~WebServerConfigure();
 
 		utils::InetAddressList listen_addresses_;
-		std::string conf_validator_key_;
+		std::string validator_conf_key;
 
 		std::string directory_;
 		std::string index_name_;
