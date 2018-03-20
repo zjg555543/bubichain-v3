@@ -234,20 +234,20 @@ namespace bubi {
 		Json::Value reply_json = Json::Value(Json::objectValue);
 
 		do {
-			// if validation code is empty, limit local url, otherwise limit validation code
-			if (!Configure::Instance().validation_configure_.code_.empty()) {
-				std::string validation_code = request.GetParamValue("validation_code");
+			// if conf_validator_key is empty, limit local url, otherwise limit conf_validator_key
+			if (!Configure::Instance().webserver_configure_.conf_validator_key_.empty()) {
+				std::string conf_validator_key = request.GetParamValue("conf_validator_key");
 				std::string timestamp = request.GetParamValue("timestamp");
-				if (validation_code.empty()) {
+				if (conf_validator_key.empty()) {
 					error_code = protocol::ERRCODE_ACCESS_DENIED;
-					error_desc = "The code cannot be empty";
+					error_desc = "The conf_validator_key cannot be empty";
 					break;
 				}
-				std::string code_time = Configure::Instance().validation_configure_.code_ + timestamp;
+				std::string code_time = Configure::Instance().webserver_configure_.conf_validator_key_ + timestamp;
 				std::string code_hash = utils::Sha256::Crypto(code_time);
-				if (code_hash.compare(validation_code) != 0) {
+				if (code_hash.compare(conf_validator_key) != 0) {
 					error_code = protocol::ERRCODE_ACCESS_DENIED;
-					error_desc = "This code should be right ,please check";
+					error_desc = "This conf_validator_key should be right ,please check";
 					break;
 				}
 			}

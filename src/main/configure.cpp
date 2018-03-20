@@ -86,9 +86,9 @@ namespace bubi {
 	bool WsServerConfigure::Load(const Json::Value &value) {
 		std::string address;
 		Configure::GetValue(value, "listen_address", address);
-		listen_address_ = utils::InetAddress(address);
 		Configure::GetValue(value, "listen_tx_status", listen_tx_status_);
 
+		listen_address_ = utils::InetAddress(address);
 		return true;
 	}
 
@@ -113,6 +113,7 @@ namespace bubi {
 		for (size_t i = 0; i < address_array.size(); i++) {
 			listen_addresses_.push_back(utils::InetAddress(address_array[i]));
 		}
+		ConfigureBase::GetValue(value, "conf_validator_key", conf_validator_key_);
 		ConfigureBase::GetValue(value, "index_name", index_name_);
 		ConfigureBase::GetValue(value, "directory", directory_);
 		ConfigureBase::GetValue(value, "ssl_enable", ssl_enable_);
@@ -166,7 +167,6 @@ namespace bubi {
 	bool ValidationConfigure::Load(const Json::Value &value) {
 
 		Configure::GetValue(value, "type", type_);
-		Configure::GetValue(value, "code", code_);
 		Configure::GetValue(value, "is_validator", is_validator_);
 		Configure::GetValue(value, "node_private_key", node_privatekey_);
 		Configure::GetValue(value, "validators", validators_);
@@ -177,7 +177,7 @@ namespace bubi {
 			return false;
 		}
 
-		code_ = utils::Aes::HexDecrypto(code_, GetDataSecuretKey());
+		
 		node_privatekey_ = utils::Aes::HexDecrypto(node_privatekey_, GetDataSecuretKey());
 		close_interval_ = close_interval_ * utils::MICRO_UNITS_PER_SEC; //micro second
 		return true;

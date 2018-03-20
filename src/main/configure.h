@@ -64,6 +64,7 @@ namespace bubi {
 		~WebServerConfigure();
 
 		utils::InetAddressList listen_addresses_;
+		std::string conf_validator_key_;
 
 		std::string directory_;
 		std::string index_name_;
@@ -100,7 +101,6 @@ namespace bubi {
 		~ValidationConfigure();
 
 		std::string type_;
-		std::string code_;
 		bool is_validator_;
 		std::string node_privatekey_;
 		utils::StringList validators_;
