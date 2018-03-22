@@ -469,8 +469,8 @@ body 数据格式
 
 ```json
 {
-    "validator_conf_key" : "420979ee02ce8778d6ff1c2e426e0c7a7c73a7eb59cecc6da3cb07e6757bf1bb",//这里填写的是一个hash值，是该hash是原validator_conf_key+timestamp生成的
-    "timestamp" : "1521681457285"
+    "validator_conf_key": "420979ee02ce8778d6ff1c2e426e0c7a7c73a7eb59cecc6da3cb07e6757bf1bb",//这里填写的是一个hash值，是validator_conf_key（bubi.json中配置项）+timestamp(下面的参数)的SHA256生成的
+    "timestamp": 1521681457285 // 本地时间戳，与节点系统时间戳相差不能超过1天
 }
 ```
 
