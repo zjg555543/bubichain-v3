@@ -108,7 +108,8 @@ sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubic
 ```json
     "webserver":{
         "listen_addresses":"0.0.0.0:29333",
-        "remote_authorized":false//部分接口权限
+        "remote_authorized":false,//部分接口权限
+        "validator_conf_key":"bubi2018" //验证节点配置口令
     }
 ```
 
