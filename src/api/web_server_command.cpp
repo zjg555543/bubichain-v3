@@ -260,7 +260,8 @@ namespace bubi {
 					error_desc = "The timestamp cannot be empty";
 					break;
 				}
-				else if (timestamp * 1000 < (utils::Timestamp::HighResolution() - utils::SECOND_UNITS_PER_DAY * utils::MICRO_UNITS_PER_MILLI)) {
+				else if (utils::Timestamp::HighResolution() - timestamp * 1000 > utils::SECOND_UNITS_PER_DAY * utils::MICRO_UNITS_PER_SEC ||
+					timestamp - utils::Timestamp::HighResolution() > utils::SECOND_UNITS_PER_DAY * utils::MICRO_UNITS_PER_SEC) {
 					error_code = protocol::ERRCODE_ACCESS_DENIED;
 					error_desc = "The timestamp was wrong, please check";
 					break;
