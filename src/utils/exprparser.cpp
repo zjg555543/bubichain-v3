@@ -252,31 +252,30 @@ namespace utils {
 #define STD_FUNCTION(arg) OneArgumentFunctions [#arg] = arg
 
 	static int LoadOneArgumentFunctions(){
-		OneArgumentFunctions["abs"] = fabs;
-		STD_FUNCTION(acos);
-		STD_FUNCTION(asin);
-		STD_FUNCTION(atan);
-#ifndef WIN32   // doesn't seem to exist under Visual C++ 6
-		STD_FUNCTION(atanh);
-#endif
-		STD_FUNCTION(ceil);
-		STD_FUNCTION(cos);
-		STD_FUNCTION(cosh);
-		STD_FUNCTION(exp);
-		STD_FUNCTION(exp);
-		STD_FUNCTION(floor);
-		STD_FUNCTION(log);
-		STD_FUNCTION(log10);
-		STD_FUNCTION(sin);
-		STD_FUNCTION(sinh);
-		STD_FUNCTION(sqrt);
-		STD_FUNCTION(tan);
-		STD_FUNCTION(tanh);
+// 		OneArgumentFunctions["abs"] = fabs;
+// 		STD_FUNCTION(acos);
+// 		STD_FUNCTION(asin);
+// 		STD_FUNCTION(atan);
+// #ifndef WIN32   // doesn't seem to exist under Visual C++ 6
+// 		STD_FUNCTION(atanh);
+// #endif
+// 		STD_FUNCTION(ceil);
+// 		STD_FUNCTION(cos);
+// 		STD_FUNCTION(cosh);
+// 		STD_FUNCTION(exp);
+// 		STD_FUNCTION(exp);
+// 		STD_FUNCTION(floor);
+// 		STD_FUNCTION(log);
+// 		STD_FUNCTION(log10);
+// 		STD_FUNCTION(sin);
+// 		STD_FUNCTION(sinh);
+// 		STD_FUNCTION(sqrt);
+// 		STD_FUNCTION(tan);
+// 		STD_FUNCTION(tanh);
 
-		OneArgumentFunctions["int"] = DoInt;
-		OneArgumentFunctions["rand"] = DoRandom;
-		OneArgumentFunctions["rand"] = DoRandom;
-		OneArgumentFunctions["percent"] = DoPercent;
+//		OneArgumentFunctions["int"] = DoInt;
+//		OneArgumentFunctions["rand"] = DoRandom;
+//		OneArgumentFunctions["percent"] = DoPercent;
 		return 0;
 	} // end of LoadOneArgumentFunctions
 
@@ -287,9 +286,9 @@ namespace utils {
 	static int LoadTwoArgumentFunctions(){
 		TwoArgumentFunctions["min"] = DoMin;
 		TwoArgumentFunctions["max"] = DoMax;
-		TwoArgumentFunctions["mod"] = DoFmod;
-		TwoArgumentFunctions["pow"] = DoPow;     //   x to the power y
-		TwoArgumentFunctions["roll"] = DoRoll;   // dice roll
+//		TwoArgumentFunctions["mod"] = DoFmod;
+//		TwoArgumentFunctions["pow"] = DoPow;     //   x to the power y
+//		TwoArgumentFunctions["roll"] = DoRoll;   // dice roll
 		return 0;
 	} // end of LoadTwoArgumentFunctions
 

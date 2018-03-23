@@ -102,7 +102,7 @@ namespace bubi {
 			return utils::String::BinToHexString(raw_priv_key_);
 		}
 		SignatureType GetSignType() { return type_; };
-		std::string CalcHash(const std::string &value) const;
+	//	std::string CalcHash(const std::string &value) const;
 
 	private:
 		std::string raw_priv_key_;
