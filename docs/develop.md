@@ -465,12 +465,23 @@ POST /getTransactionBlob
 POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027fb6fd8e8ffbf64cf10efebd9278735d5e39a6325e
 ```
 
+body 数据格式
+
+```json
+{
+    "validator_conf_key": "420979ee02ce8778d6ff1c2e426e0c7a7c73a7eb59cecc6da3cb07e6757bf1bb",//这里填写的是一个hash值，是validator_conf_key（bubi.json中配置项）+timestamp(下面的参数)的SHA256生成的
+    "timestamp": 1521681457285 // 本地时间戳，与节点系统时间戳相差不能超过1天
+}
+```
+
 |参数|描述
 |:--- | --- 
 |add |逗号分隔的需要添加的验证节点列表
 |del |逗号分隔的需要删除的验证节点列表
 
-注：1. 本操作必须由本机回环地址提交。 2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
+注：1. 当body不为空时，验证validator_conf_key; 当body为空时，本操作必须由本机回环地址提交。 
+
+   2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
 
 
 ## 定义交易
@@ -990,7 +1001,7 @@ jsonpath(account("bubiV8i6mtcDN5a1X7PbRPuaZuo63QRrHxHGr98s"), ".priv.master_weig
 | jsonpath(json_string, path)     | 获取json对象的属性值                 |
 | LEDGER_SEQ                      | 内置变量，代表最新的区块高度         |
 | LEDGER_TIME                     | 内置变量，代表最新的区块生成时间     |
-| `( )` `=`                       | 嵌套括号，函数调用如sqrt(x)          |
+| `( )` `=`                       | 嵌套括号                             |
 | `*` `/`                         | 乘法、除法                           |
 | `+` `-`                         | 加法、减法                           |
 | `<` `<=`  `>`  `>=`  `==`  `!=` | 比较运算                             |

@@ -36,7 +36,8 @@ cd bubichain-v3
 make install
 ```
 
-将 libSADK_Standard.so.3.4.0.3 库文件拷贝到 /usr/local/bubichain/bin/ 目录下，并创建软链接:
+- 如果需要用到 cfca 证书创建用户，则要进行下面的链接库操作，否则请忽略。
+    - 将 libSADK_Standard.so.3.4.0.3 库文件拷贝到 /usr/local/bubichain/bin/ 目录下，并创建软链接:
 ```bash
 sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubichain/bin/libSADK_Standard.so
 ```
