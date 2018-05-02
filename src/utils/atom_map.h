@@ -13,7 +13,7 @@ namespace bubi
     class AtomMap
     {
     public:
-		typedef std::shared_ptr<VALUE> pointer;
+	typedef std::shared_ptr<VALUE> pointer;
 
         enum actType
         {
