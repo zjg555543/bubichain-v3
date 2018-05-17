@@ -275,9 +275,18 @@ local hardware address (0bc9143ba7ccc951cf257948af2d02ff)
 | hardware_address | 绑定硬件地址（由上一步获取）
 | node_id | 绑定节点id，可不填
 
-注意: hardware_address需要设置为*的话，需要输入\*，如下：
+注意: 
+(1) hardware_address需要设置为*的话，需要输入\*，如下：
 ```bash
 ./bin/bubi --request-cert /usr/local/bubichain/config node bubi bubi@bubi.cn bubitest \*
+```
+(2) note_id不设置，默认是*，如果需要设置，需要经过以下操作：
+
+a. 读取bubi.json中的p2p下的node_private_key的值
+
+b. 通过以下命令行操作获取
+```bash
+./bin/bubi --peer-address 44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d
 ```
 
 - 具体操作如下 ：
