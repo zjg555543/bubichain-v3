@@ -288,7 +288,7 @@ local hardware address (0bc9143ba7ccc951cf257948af2d02ff)
 [root@localhost bubichain]# ./bin/bubi --request-cert
 error: missing parameter, need 6 parameters (filepath, common_name, organization, email, private_password, hardware_address, node_id(when ignore, it's *)
 
-[root@localhost bubichain]# ./bin/bubi --request-cert /usr/local/bubichain/config node bubi bubi@bubi.cn bubitest 0bc9143ba7ccc951cf257948af2d02ff  
+[root@localhost bubichain]# ./bin/bubi --request-cert /usr/local/bubichain/config node bubi bubi@bubi.cn bubi 0bc9143ba7ccc951cf257948af2d02ff  
 
 request file : 
     /usr/local/bubichain/config/node_bubi.csr 
