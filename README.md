@@ -39,4 +39,4 @@
 参见[布比区块链开发文档](docs/develop.md "") 
 
 ## __License__
-bubichain is under the Apache 2.0 license.
+bubichain is under the Bubichain license.
