@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #ifndef PEER_NETWORK_H_
 #define PEER_NETWORK_H_
@@ -39,7 +27,7 @@ namespace bubi {
 		bool cert_is_valid_;
 
 		//Peer cach list
-		Json::Value db_peer_cache_;
+		protocol::Peers db_peer_cache_;
 
 		//peers infomation received
 		utils::Mutex peer_lock_;
@@ -53,6 +41,7 @@ namespace bubi {
 		std::string peer_node_address_;
 		std::string node_rand_;
 		int64_t network_id_;
+		int32_t total_peers_count_;
 
 		std::error_code last_ec_;
 
@@ -60,6 +49,7 @@ namespace bubi {
 
  		bool ResolveSeeds(const utils::StringList &address_list, int32_t rank);
 		bool ConnectToPeers(size_t max);
+		void CleanNotActivePeers();
 		bool LoadSeed();
 		bool LoadHardcode();
 
@@ -94,7 +84,6 @@ namespace bubi {
 		bool Initialize(const std::string &node_address);
 		bool Exit();
 
-		Json::Value GetPeersCache();
 		void AddReceivedPeers(const utils::StringMap &item);
 		void BroadcastMsg(int64_t type, const std::string &data);
 		bool ReceiveBroadcastMsg(int64_t type, const std::string &data, int64_t peer_id);

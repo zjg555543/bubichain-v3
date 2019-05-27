@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #include <utils/headers.h>
 #include <common/private_key.h>
@@ -17,8 +5,6 @@ limitations under the License.
 #include <main/configure.h>
 #include <overlay/peer_manager.h>
 #include <glue/glue_manager.h>
-#include <ledger/ledger_manager.h>
-#include <ledger/contract_manager.h>
 #include "web_server.h"
 
 namespace bubi {
@@ -119,6 +105,21 @@ namespace bubi {
 					result_item["hash"] = utils::String::BinToHexString(HashWrapper::Crypto(content));
 				}
 				else {
+
+
+					//debug
+					/*
+					Json::Value &item = json_item["transaction_json"];
+					Json::Value &operations = item["operations"];
+					Json::Value &ope_item = operations[uint32_t(0)];
+					if (ope_item["type"] == "CREATE_ACCOUNT") {
+						Json::Value &create_account = ope_item["create_account"];
+						if (create_account["dest_address"].asString().empty()) {
+							PrivateKey p(bubi::SIGNTYPE_ED25519);
+							create_account["dest_address"] = p.GetBase16Address();
+						}
+					}*/
+
 					protocol::Transaction *tran = tran_env.mutable_transaction();
 					std::string error_msg;
 					if (!Json2Proto(json_item["transaction_json"], *tran, error_msg)){
@@ -236,7 +237,48 @@ namespace bubi {
 		Json::Value reply_json = Json::Value(Json::objectValue);
 
 		do {
-			if (!request.peer_address_.IsLoopback()) {
+			// if validator_conf_key is empty, limit local url, otherwise limit validator_conf_key
+			if (!request.body.empty()) {
+				Json::Value body;
+				if (!body.fromString(request.body)) {
+					LOG_ERROR("Parse request body json failed");
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "request must being json format";
+					break;
+				}
+				std::string validator_conf_key = body.fromString(request.body) ? body["validator_conf_key"].asString() : "";
+				int64_t timestamp = body.isMember("timestamp") ? (body["timestamp"].isString() ? -2 : body["timestamp"].asUInt64()) : -1;
+				if (validator_conf_key.empty()) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The validator_conf_key cannot be empty";
+					break;
+				}
+				if (-2 == timestamp) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The timestamp must be number";
+					break;
+				}
+				else if (-1 == timestamp) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The timestamp cannot be empty";
+					break;
+				}
+				else if (utils::Timestamp::HighResolution() - timestamp * 1000 > utils::SECOND_UNITS_PER_DAY * utils::MICRO_UNITS_PER_SEC ||
+					timestamp * 1000 - utils::Timestamp::HighResolution() > utils::SECOND_UNITS_PER_DAY * utils::MICRO_UNITS_PER_SEC) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "The timestamp was wrong, please check";
+					break;
+				}
+
+				std::string code_time = Configure::Instance().webserver_configure_.validator_conf_key + utils::String::Format("%lld", timestamp);
+				std::string code_hash = utils::String::BinToHexString(utils::Sha256::Crypto(code_time));
+				if (code_hash.compare(validator_conf_key) != 0) {
+					error_code = protocol::ERRCODE_ACCESS_DENIED;
+					error_desc = "This validator_conf_key was wrong ,please check!";
+					break;
+				}
+			}
+			else if (!request.peer_address_.IsLoopback()) {
 				error_code = protocol::ERRCODE_ACCESS_DENIED;
 				error_desc = "This url should be called from local";
 				break;
@@ -248,69 +290,6 @@ namespace bubi {
 			Result ret = GlueManager::Instance().ConfValidator(add, del);
 			error_code = ret.code();
 			error_desc = ret.desc();
-		} while (false);
-
-		reply_json["error_code"] = error_code;
-		reply_json["error_desc"] = error_desc;
-		reply = reply_json.toStyledString();
-	}
-
-	void WebServer::TestContract(const http::server::request &request, std::string &reply) {
-		
-		Json::Value body;
-		if (!body.fromString(request.body)) {
-			LOG_ERROR("Parse request body json failed");
-			Json::Value reply_json;
-			reply_json["results"][Json::UInt(0)]["error_code"] = protocol::ERRCODE_INVALID_PARAMETER;
-			reply_json["results"][Json::UInt(0)]["error_desc"] = "request must being json format";
-			reply_json["success_count"] = Json::UInt(0);
-			reply = reply_json.toStyledString();
-			return;
-		}
-
-		ContractTestParameter test_parameter;
-		test_parameter.code_ = body["code"].asString();
-		test_parameter.input_ = body["input"].asString();
-		test_parameter.exe_or_query_ = body["exe_or_query"].asBool();
-		test_parameter.contract_address_ = body["contract_address"].asString();
-		test_parameter.source_address_ = body["source_address"].asString();
-
-		int32_t error_code = protocol::ERRCODE_SUCCESS;
-		std::string error_desc;
-		AccountFrm::pointer acc = NULL;
-
-		Json::Value reply_json = Json::Value(Json::objectValue);
-		Json::Value &result = reply_json["result"];
-
-		do {
-			if (!test_parameter.contract_address_.empty()) {
-				if (!Environment::AccountFromDB(test_parameter.contract_address_, acc)) {
-					error_code = protocol::ERRCODE_NOT_EXIST;
-					error_desc = utils::String::Format("Account(%s) not exist", test_parameter.contract_address_.c_str());
-					LOG_ERROR("%s", error_desc.c_str());
-					break;
-				}
-
-				std::string code = acc->GetProtoAccount().contract().payload();
-				if (code.empty()) {
-					error_code = protocol::ERRCODE_NOT_EXIST;
-					error_desc = utils::String::Format("Account(%s) has no contract code", test_parameter.contract_address_.c_str());
-					LOG_ERROR("%s", error_desc.c_str());
-					break;
-				}
-			} 
-
-			Result exe_result;
-			if (!LedgerManager::Instance().context_manager_.SyncTestProcess(Contract::TYPE_V8, 
-				test_parameter, 
-				utils::MICRO_UNITS_PER_SEC, 
-				exe_result, result["logs"], result["txs"], result["rets"])) {
-				error_code = exe_result.code();
-				error_desc = exe_result.desc();
-				LOG_ERROR("%s", error_desc.c_str());
-				break;
-			}
-
 		} while (false);
 
 		reply_json["error_code"] = error_code;

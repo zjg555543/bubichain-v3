@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #include <utils/headers.h>
 #include "system_manager.h"
@@ -36,7 +24,10 @@ namespace bubi {
 			last_check_time_ = current_time;
 		}
 		cpu_used_percent_ = processor.usage_percent_;
+		current_cpu_used_percent_ = processor.usage_current_percent_;
 	}
+
+
 
 	bool SystemManager::GetSystemMonitor(std::string paths, monitor::SystemStatus* &system_status) {
 
@@ -124,4 +115,18 @@ namespace bubi {
 
 		return true;
 	}
+
+	bool SystemManager::GetCurrentMonitor(double &current_cpu_percent, double &current_memory_percent) {
+		current_cpu_percent = current_cpu_used_percent_;
+		utils::PhysicalMemory physical_memory;
+		if (false == system_.GetPhysicalMemory(physical_memory)) {
+			LOG_STD_ERR("Common::SystemManager , Get physical memory status failed");
+		}
+		else {
+			current_memory_percent = physical_memory.current_usage_percent_;
+		}
+
+		return true;
+	}
+
 }

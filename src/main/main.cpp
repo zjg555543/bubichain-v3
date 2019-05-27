@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #include <utils/headers.h>
 #include <common/ca_manager.h>
 #include <common/general.h>
@@ -49,7 +37,7 @@ int main(int argc, char *argv[]){
 	bubi::WebSocketServer::InitInstance();
 	bubi::WebServer::InitInstance();
 	bubi::MonitorManager::InitInstance();
-	bubi::ContractManager::InitInstance();
+	//bubi::ContractManager::InitInstance();
 
 	bubi::Argument arg;
 	if (arg.Parse(argc, argv)){
@@ -237,13 +225,14 @@ int main(int argc, char *argv[]){
 		bubiAtExit.Push(std::bind(&bubi::MonitorManager::Exit, &monitor_manager));
 		LOG_INFO("Initialize monitor manager successful");
 
-		bubi::ContractManager &contract_manager = bubi::ContractManager::Instance();
-		if (!contract_manager.Initialize(argc, argv)){
-			LOG_ERROR("Initialize contract manager failed");
-			break;
-		}
-		bubiAtExit.Push(std::bind(&bubi::ContractManager::Exit, &contract_manager));
-		LOG_INFO("Initialize contract manager successful");
+		bubi::ContractManager::Initialize(argc, argv);
+		//bubi::ContractManager &contract_manager = bubi::LedgerManager::Instance().contract_manager_;
+		//if (!contract_manager.Initialize(argc, argv)){
+		//	LOG_ERROR("Initialize contract manager failed");
+		//	break;
+		//}
+		//bubiAtExit.Push(std::bind(&bubi::ContractManager::Exit, &contract_manager));
+		//LOG_INFO("Initialize contract manager successful");
 
 		RunLoop();
 

@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #include <utils/timestamp.h>
 #include <utils/logger.h>
 #include "general.h"
@@ -398,11 +386,11 @@ namespace bubi {
 			MessageConnPoc proc;
 			if (message.request()) {
 				MessageConnPocMap::iterator iter = request_methods_.find(message.type());
-				if (iter == request_methods_.end()) { LOG_TRACE("Type(" FMT_I64 ") not found", message.type()); break; } // methond not found, break;
+				if (iter == request_methods_.end()) break; // methond not found, break;
 				proc = iter->second;
 			} else{
 				MessageConnPocMap::iterator iter = response_methods_.find(message.type());
-				if (iter == response_methods_.end()) { LOG_TRACE("Type(" FMT_I64 ") not found", message.type()); break; } // methond not found, break;
+				if (iter == response_methods_.end()) break; // methond not found, break;
 				proc = iter->second;
 			}
 
@@ -664,7 +652,7 @@ namespace bubi {
 			// Mozilla Intermediate suggests 1024 as the minimum size to use
 			// Mozilla Modern suggests 2048 as the minimum size to use.
 			ctx->use_tmp_dh_file(ssl_parameter_.tmp_dh_file_);
-			ctx->set_verify_mode(asio::ssl::verify_peer | asio::ssl::verify_fail_if_no_peer_cert);
+			ctx->set_verify_mode(asio::ssl::context::verify_peer | asio::ssl::context::verify_fail_if_no_peer_cert);
 
 			std::string ciphers;
 

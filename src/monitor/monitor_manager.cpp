@@ -1,15 +1,3 @@
-///*
-//Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//http://www.apache.org/licenses/LICENSE-2.0
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-//*/
 //
 #include <utils/headers.h>
 #include <common/general.h>
@@ -26,7 +14,8 @@ namespace bubi {
 	MonitorManager::MonitorManager() : Network(SslParameter()) {
 		connect_interval_ = 120 * utils::MICRO_UNITS_PER_SEC;
 		check_alert_interval_ = 5 * utils::MICRO_UNITS_PER_SEC;
-		last_alert_time_ = utils::Timestamp::HighResolution();
+		percent_interval_ = 5 * 60 * utils::MICRO_UNITS_PER_SEC;
+		last_alert_time_ = last_percent_time_ = utils::Timestamp::HighResolution();
 		last_connect_time_ = 0;
 
 		request_methods_[monitor::MONITOR_MSGTYPE_HELLO] = std::bind(&MonitorManager::OnMonitorHello, this, std::placeholders::_1, std::placeholders::_2);
@@ -281,6 +270,15 @@ namespace bubi {
 			}
 
 			last_alert_time_ = current_time;
+		}
+
+		// log for current process cpu and memory
+		if (current_time - last_percent_time_ > percent_interval_) {
+			double current_cpu_percent = 0;
+			double current_memory_percent = 0;
+			system_manager_.GetCurrentMonitor(current_cpu_percent, current_memory_percent);
+			LOG_INFO("bubi cpu (%.2lf%%) memory (%.2lf%%)", current_cpu_percent, current_memory_percent);
+			last_percent_time_ = current_time;
 		}
 	}
 

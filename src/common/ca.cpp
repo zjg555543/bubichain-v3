@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #include "ca.h"
 #include "general.h"
@@ -1269,12 +1257,23 @@ bool CA::mkRoot(stuSUBJECT *rootInfo, X509 **x509p, RSA **rsa, EVP_PKEY **ppkey,
 
 		X509_set_version(x, 2);
 		ASN1_INTEGER_set(X509_get_serialNumber(x), 1);
-		X509_gmtime_adj(X509_get_notBefore(x), 0);
-		X509_gmtime_adj(X509_get_notAfter(x), (long)SECS_PER_DAY * days);
+		ASN1_TIME* not_before_time = X509_gmtime_adj(X509_get_notBefore(x), 0);
+		struct tm tm_not_before;
 		char not_before[20] = { 0 };
+		if (asn1_time_to_tm(&tm_not_before, not_before_time) == 1) {
+			int hour = (1 == tm_not_before.tm_isdst) ? (tm_not_before.tm_hour + 7 >= 24 ? (tm_not_before.tm_hour - 17) : (tm_not_before.tm_hour + 7))
+				: (tm_not_before.tm_hour + 8 >= 24 ? (tm_not_before.tm_hour - 16) : (tm_not_before.tm_hour + 8));
+			sprintf(not_before, "%04d%02d%02d%02d%02d%02d", tm_not_before.tm_year + 1900, tm_not_before.tm_mon + 1, tm_not_before.tm_mday,
+				hour, tm_not_before.tm_min, tm_not_before.tm_sec);
+		}
+		ASN1_TIME* not_after_time = X509_gmtime_adj(X509_get_notAfter(x), (long)SECS_PER_DAY * days);
+		struct tm tm_not_after;
 		char not_after[20] = { 0 };
-		if (!CheckCertValidity(x, not_before, not_after, out_msg)) {
-			break;
+		if (asn1_time_to_tm(&tm_not_after, not_after_time) == 1) {
+			int hour = (1 == tm_not_after.tm_isdst) ? (tm_not_after.tm_hour + 7 >= 24 ? (tm_not_after.tm_hour - 17) : (tm_not_after.tm_hour + 7))
+				: (tm_not_after.tm_hour + 8 >= 24 ? (tm_not_after.tm_hour - 16) : (tm_not_after.tm_hour + 8));
+			sprintf(not_after, "%04d%02d%02d%02d%02d%02d", tm_not_after.tm_year + 1900, tm_not_after.tm_mon + 1, tm_not_after.tm_mday,
+				hour, tm_not_after.tm_min, tm_not_after.tm_sec);
 		}
 
 		X509_set_pubkey(x, pk);
@@ -1741,7 +1740,7 @@ bool CA::CheckCertValidity(X509 *x509, char *not_before, char *not_after, char *
 		}
 
 		ASN1_TIME* not_before_time = X509_get_notBefore(x509);
-		if (X509_cmp_current_time(not_before_time) >= 0) {
+		if (X509_cmp_current_time(not_before_time) > 0) {
 			sprintf(out_msg, "the begin time of the certificate can not later than the current time");
 			break;
 		}
@@ -1753,14 +1752,12 @@ bool CA::CheckCertValidity(X509 *x509, char *not_before, char *not_after, char *
 		}
 
 		struct tm tm_not_before;
-		memset(&tm_not_before, 0, sizeof(tm_not_before));
 		if (asn1_time_to_tm(&tm_not_before, not_before_time) != 1) {
 			sprintf(out_msg, "parse begin time failed, maybe the certificate is broken");
 			break;
 		}
 
 		struct tm tm_not_after;
-		memset(&tm_not_after, 0, sizeof(tm_not_after));
 		if (asn1_time_to_tm(&tm_not_after, not_after_time) != 1) {
 			sprintf(out_msg, "parse end time failed, maybe the certificate is broken");
 			break;

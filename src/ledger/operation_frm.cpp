@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #include <ledger/ledger_manager.h>
 #include "transaction_frm.h"
 #include "operation_frm.h"
@@ -142,8 +130,8 @@ namespace bubi {
 			if (create_account.contract().payload() != ""){
 				std::string err_msg;
 				std::string src = create_account.contract().payload();
-
-				if (!ContractManager::Instance().SourceCodeCheck(Contract::TYPE_V8, src, err_msg)) {
+				ContractManager a;
+				if (!a.SourceCodeCheck(src, err_msg)){
 					result.set_code(protocol::ERRCODE_CONTRACT_SYNTAX_ERROR);
 					result.set_desc(err_msg);
 				}
@@ -561,58 +549,34 @@ namespace bubi {
 			std::string key = ope.key();
 			protocol::KeyPair keypair_e ;
 			int64_t version = ope.version();
-			bool delete_flag = ope.delete_flag();
-			if (delete_flag){
-				if (source_account_->GetMetaData(key, keypair_e)){
-					if (version != 0) {
-						if (keypair_e.version() != version) {
-							result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
-							result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
-							break;
-						}
-					}
-					if (!ope.value().empty() || key.empty()){
-						result_.set_code(protocol::ERRCODE_INVALID_PARAMETER);
-						result_.set_desc(utils::String::Format("Delete data value must be empty,key(%s)", key.c_str()));
-						break;
-					}
-					source_account_->DeleteMetaData(keypair_e);
-				}
-				else{
-					result_.set_code(protocol::ERRCODE_NOT_EXIST);
-					result_.set_desc(utils::String::Format("DeleteMetaData not exist key(%s)", key.c_str()));
-					break;
-				}
-			}
-			else{
-				if (source_account_->GetMetaData(key, keypair_e)) {
 
-					if (version != 0) {
-						if (keypair_e.version() + 1 != version) {
-							result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
-							result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
-							break;
-						}
-					}
+			if (source_account_->GetMetaData(key, keypair_e)) {
 
-					keypair_e.set_version(keypair_e.version() + 1);
-					keypair_e.set_value(ope.value());
-					source_account_->SetMetaData(keypair_e);
-
-				}
-				else {
-					if (version != 1 && version != 0) {
+				if (version != 0) {
+					if (keypair_e.version() + 1 != version) {
 						result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
 						result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
 						break;
 					}
-					protocol::KeyPair keypair;
-					keypair.set_value(ope.value());
-					keypair.set_key(ope.key());
-					keypair.set_version(1);
-					source_account_->SetMetaData(keypair);
 				}
-			}			
+
+				keypair_e.set_version(keypair_e.version() + 1);
+				keypair_e.set_value(ope.value());
+				source_account_->SetMetaData(keypair_e);
+
+			}
+			else {
+				if (version != 1 && version != 0) {
+					result_.set_code(protocol::ERRCODE_INVALID_DATAVERSION);
+					result_.set_desc(utils::String::Format("Data version(" FMT_I64 ") not valid", version));
+					break;
+				}
+				protocol::KeyPair keypair;
+				keypair.set_value(ope.value());
+				keypair.set_key(ope.key());
+				keypair.set_version(1);
+				source_account_->SetMetaData(keypair);
+			}
 		} while (false);
 
 	}
@@ -621,18 +585,13 @@ namespace bubi {
 		const protocol::OperationSetSignerWeight &ope = operation_.set_signer_weight();
 		do {
 
+
 			if (ope.master_weight() >= 0) {
 				source_account_->SetProtoMasterWeight(ope.master_weight());
 			}
 
 			for (int32_t i = 0; i < ope.signers_size(); i++) {
-
-				//fix the bug for version < 3001
-				int64_t weight = ope.signers(i).weight();
-				if (transaction_->ledger_->GetProtoHeader().version() < 3001) {
-					weight = weight & UINT8_MAX;
-				}
-				source_account_->UpdateSigner(ope.signers(i).address(), weight);
+				source_account_->UpdateSigner(ope.signers(i).address(), ope.signers(i).weight());
 			}
 
 		} while (false);
@@ -670,7 +629,7 @@ namespace bubi {
 
 			if (proto_source_account.balance() < ope.amount()){
 				result_.set_code(protocol::ERRCODE_ACCOUNT_LOW_RESERVE);
-				result_.set_desc(utils::String::Format("Account(%s) balance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
+				result_.set_desc(utils::String::Format("Account(%s) ballance(" FMT_I64 ") not enough to pay (" FMT_I64 ")",
 					address.c_str(), 
 					proto_source_account.balance(),
 					ope.amount()

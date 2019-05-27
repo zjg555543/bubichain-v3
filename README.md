@@ -1,6 +1,6 @@
 ![](docs/image/logo.png)
 
-[![Build Status](https://travis-ci.org/bubicn/bubichain-v3.svg?branch=develop)](https://travis-ci.org/bubicn/bubichain-v3)[![Build status](https://ci.appveyor.com/api/projects/status/120hwj7689qr3duh?svg=true)](https://ci.appveyor.com/project/bubicn/bubichain-v3)
+[![Build Status](https://travis-ci.org/bubicn/bubichain-v3.svg?branch=master)](https://travis-ci.org/bubicn/bubichain-v3)[![Build status](https://ci.appveyor.com/api/projects/status/120hwj7689qr3duh?svg=true)](https://ci.appveyor.com/project/bubicn/bubichain-v3)
  
 ## __简介__
 
@@ -39,4 +39,4 @@
 参见[布比区块链开发文档](docs/develop.md "") 
 
 ## __License__
-bubichain is under the Apache 2.0 license.
+bubichain is under the Bubichain license.

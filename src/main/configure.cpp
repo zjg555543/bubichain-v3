@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #include <utils/utils.h>
 #include <utils/file.h>
@@ -21,7 +9,8 @@ limitations under the License.
 namespace bubi {
 
 	P2pNetwork::P2pNetwork() :
-		target_peer_connection_(50),
+		target_peer_connection_(10),
+		max_connection_(2000),
 		connect_timeout_(5),// second
 		heartbeat_interval_(1800) {// second
 			listen_port_ = General::CONSENSUS_PORT;
@@ -62,9 +51,14 @@ namespace bubi {
 	}
 
 	bool P2pNetwork::Load(const Json::Value &value) {
-		int32_t temp;
+		int32_t temp = (int32_t)target_peer_connection_;
 		Configure::GetValue(value, "target_peer_connection", temp);
 		target_peer_connection_ = temp;
+
+		temp = (int32_t)max_connection_;
+		Configure::GetValue(value, "max_connection", temp);
+		max_connection_ = temp;
+
 		Configure::GetValue(value, "known_peers", known_peer_list_);
 		Configure::GetValue(value, "connect_timeout", connect_timeout_);
 		Configure::GetValue(value, "heartbeat_interval", heartbeat_interval_);
@@ -80,9 +74,9 @@ namespace bubi {
 	bool WsServerConfigure::Load(const Json::Value &value) {
 		std::string address;
 		Configure::GetValue(value, "listen_address", address);
-		listen_address_ = utils::InetAddress(address);
 		Configure::GetValue(value, "listen_tx_status", listen_tx_status_);
 
+		listen_address_ = utils::InetAddress(address);
 		return true;
 	}
 
@@ -107,6 +101,7 @@ namespace bubi {
 		for (size_t i = 0; i < address_array.size(); i++) {
 			listen_addresses_.push_back(utils::InetAddress(address_array[i]));
 		}
+		ConfigureBase::GetValue(value, "validator_conf_key", validator_conf_key);
 		ConfigureBase::GetValue(value, "index_name", index_name_);
 		ConfigureBase::GetValue(value, "directory", directory_);
 		ConfigureBase::GetValue(value, "ssl_enable", ssl_enable_);
@@ -169,6 +164,8 @@ namespace bubi {
 			|| validators_.empty()) {
 			return false;
 		}
+
+		
 		node_privatekey_ = utils::Aes::HexDecrypto(node_privatekey_, GetDataSecuretKey());
 		close_interval_ = close_interval_ * utils::MICRO_UNITS_PER_SEC; //micro second
 		return true;

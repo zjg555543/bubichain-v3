@@ -194,7 +194,6 @@ GET /getTransactionHistory?hash=ad545bfc26c440e324076fbbe1d8affbd8a2277858dc3592
 | :--------- | ------------------------ |
 | hash       | 用交易的唯一标识hash查询 |
 | ledger_seq | 查询指定区块中的所有交易 |
-
 上述两个参数产生的约束条件是逻辑与的关系，如果您同时指定两个参数，系统将在指定的区块中查询指定的交易
 
 返回示例
@@ -466,12 +465,23 @@ POST /getTransactionBlob
 POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027fb6fd8e8ffbf64cf10efebd9278735d5e39a6325e
 ```
 
+body 数据格式
+
+```json
+{
+    "validator_conf_key": "420979ee02ce8778d6ff1c2e426e0c7a7c73a7eb59cecc6da3cb07e6757bf1bb",//这里填写的是一个hash值，是validator_conf_key（bubi.json中配置项）+timestamp(下面的参数)的SHA256生成的
+    "timestamp": 1521681457285 // 本地时间戳，与节点系统时间戳相差不能超过1天
+}
+```
+
 |参数|描述
 |:--- | --- 
 |add |逗号分隔的需要添加的验证节点列表
 |del |逗号分隔的需要删除的验证节点列表
 
-注：1. 本操作必须由本机回环地址提交。 2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
+注：1. 当body不为空时，验证validator_conf_key; 当body为空时，本操作必须由本机回环地址提交。 
+
+   2. 需要大部分的（三分之二以上）验证节点都执行添加/删除操作，且共识成功后才能添加/删除成功。
 
 
 ## 定义交易
@@ -583,6 +593,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
   - 各项参数合法
   - 要创建的账号不存在
 - json格式
+
 
 ```json
     {
@@ -733,7 +744,7 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
 |payment.input|  触发合约调用的入参
 
 - 功能
-  操作源账号将一笔资产转给目标账号。若目标账号没有合约代码，则只进行转移资产操作。
+  操作源账号将一笔资产转给目标账号
 - 成功条件
   - 各项参数合法
   - 源账号该类型的资产数量足够
@@ -786,7 +797,6 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
     - input: 本次转移触发接收方的合约，合约的执行入参就是input
 
 #### 设置metadata
-
 |参数|描述
 |:--- | --- 
 | set_metadata.key  |required，length:(0, 256]
@@ -824,7 +834,6 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
     - version: 版本号，可以不填写。若您想使用这个高级功能，参见[版本化控制](#版本化控制)
 
 #### 设置权重
-
 |参数|描述
 |:--- | --- 
 |master_weight |optional，default 0， -1 ： 不设置该值，0：设置master权重值为0， >0 && <= MAX(UINT32)：设置权重值为该值，其他：非法
@@ -873,7 +882,6 @@ POST /confValidator?add=a00252641e461a28e0f2d19e01fa9ce4ba89af24d5f0c6&del=a0027
     ```
 
 #### 设置门限
-
 |参数|描述
 |:--- | --- 
 |tx_threshold |optional，default 0, 表示该账号的最低权限，-1: 表示不设置该值，>0 && <= MAX(INT64)：设置权重值为该值，其他：非法
@@ -993,7 +1001,7 @@ jsonpath(account("bubiV8i6mtcDN5a1X7PbRPuaZuo63QRrHxHGr98s"), ".priv.master_weig
 | jsonpath(json_string, path)     | 获取json对象的属性值                 |
 | LEDGER_SEQ                      | 内置变量，代表最新的区块高度         |
 | LEDGER_TIME                     | 内置变量，代表最新的区块生成时间     |
-| `( )` `=`                       | 嵌套括号，函数调用如sqrt(x)          |
+| `( )` `=`                       | 嵌套括号                             |
 | `*` `/`                         | 乘法、除法                           |
 | `+` `-`                         | 加法、减法                           |
 | `<` `<=`  `>`  `>=`  `==`  `!=` | 比较运算                             |

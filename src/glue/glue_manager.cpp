@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #include <utils/headers.h>
 #include <common/general.h>
 #include <main/configure.h>
@@ -124,14 +112,6 @@ namespace bubi {
 			NotifyErrTx(err_txs);
 		} 
 
-		if (!consensus_->IsLeader()) {
-			LOG_INFO("Start consensus process, but it not leader, just waiting");
-			return true;
-		} 
-		else {
-			LOG_INFO("Start consensus process, it is leader, just continue");
-		}
-
 		int64_t next_close_time = utils::Timestamp::Now().timestamp();
 		if (next_close_time <= lcl.close_time()) {
 			next_close_time = lcl.close_time() + utils::MICRO_UNITS_PER_SEC;
@@ -141,84 +121,32 @@ namespace bubi {
 		std::string proof;
 		Storage::Instance().account_db()->Get(General::LAST_PROOF, proof);
 
-		protocol::TransactionEnvSet txset_raw = txset.GetRaw();
 		protocol::ConsensusValue propose_value;
-		do {
-			*propose_value.mutable_txset() = txset_raw;
-			propose_value.set_close_time(next_close_time);
-			propose_value.set_ledger_seq(lcl.seq() + 1);
-			propose_value.set_previous_ledger_hash(lcl.hash());
-			propose_value.set_previous_proof(proof);
+		*propose_value.mutable_txset() = txset.GetRaw();
+		propose_value.set_close_time(next_close_time);
+		propose_value.set_ledger_seq(lcl.seq() + 1);
+		propose_value.set_previous_ledger_hash(lcl.hash());
+		propose_value.set_previous_proof(proof);
 
-			//judge if we need upgrade the ledger
-			protocol::ValidatorSet validator_set;
-			size_t quorum_size = 0;
-			consensus_->GetValidation(validator_set, quorum_size);
-			protocol::LedgerUpgrade up;
-			if (ledger_upgrade_.GetValid(validator_set, quorum_size + 1, up)) {
-				LOG_INFO("Get valid upgrade value(%s)", Proto2Json(up).toFastString().c_str());
-				*propose_value.mutable_ledger_upgrade() = up;
+		//judge if we need upgrade the ledger
+		protocol::ValidatorSet validator_set;
+		size_t quorum_size = 0;
+		consensus_->GetValidation(validator_set, quorum_size);
+		protocol::LedgerUpgrade up;
+		if (ledger_upgrade_.GetValid(validator_set, quorum_size + 1, up)) {
+			LOG_INFO("Get valid upgrade value(%s)", Proto2Json(up).toFastString().c_str());
+			*propose_value.mutable_ledger_upgrade() = up;
 
-				if (CheckValueHelper(propose_value) != Consensus::CHECK_VALUE_VALID) {
-					//not propose the upgrade value
-					LOG_ERROR("Not propose the invalid upgrade value");
-					propose_value.clear_ledger_upgrade();
-				}
+			if (CheckValueHelper(propose_value) != Consensus::CHECK_VALUE_VALID) {
+				//not propose the upgrade value
+				LOG_ERROR("Not propose the invalid upgrade value");
+				propose_value.clear_ledger_upgrade();
 			}
-
-			int32_t timeout_tx_index = -1;
-			if (LedgerManager::Instance().context_manager_.SyncPreProcess(propose_value, 5 * utils::MICRO_UNITS_PER_SEC, timeout_tx_index)) {
-				break;
-			}
-
-			if(timeout_tx_index < 0) break;
-
-			const protocol::TransactionEnv &tx_env = txset_raw.txs(timeout_tx_index);
-			TransactionFrm frm(tx_env);
-			LOG_ERROR("Pre processor detect tx(%s) source(%s) nonce(" FMT_I64 ") nostop", 
-				utils::String::Bin4ToHexString(frm.GetContentHash()).c_str(),
-				frm.GetSourceAddress().c_str(),
-				frm.GetNonce());
-
-			//remove the tx from cache
-			std::vector<TransactionFrm::pointer> err_txs;
-			do {
-				utils::MutexGuard guard(lock_);
-				for (TransactionMap::iterator iter = topic_caches_.begin();
-					iter != topic_caches_.end(); iter++) {
-					if (iter->first.GetTopic() == frm.GetSourceAddress() && iter->second->GetNonce() == frm.GetNonce()) {
-						err_txs.push_back(iter->second);
-						topic_caches_.erase(iter);
-						break;
-					}
-				}
-			} while (false);
-
-			//notice
-			if (err_txs.size() > 0) {
-				NotifyErrTx(err_txs);
-			}
-
-			//erase the tx, than continue check
-			protocol::TransactionEnvSet txset_raw_next;
-
-			for (int32_t i = 0; i < txset_raw.txs_size(); i++) {
-				const protocol::TransactionEnv &tmp = txset_raw.txs(i);
-				const protocol::Transaction &tmp_tx = tmp.transaction();
-				if (tmp_tx.source_address() == frm.GetSourceAddress() && tmp_tx.nonce() >= frm.GetNonce()) {
-					continue;
-				} else{
-					*txset_raw_next.add_txs() = tmp;
-				}
-			}
-
-			txset_raw = txset_raw_next;
-
-		} while (true);
+		}
 
 		time_start_consenus_ = utils::Timestamp::HighResolution();
 
-		LOG_INFO("Proposed %d tx(s), lcl hash(%s), removed " FMT_SIZE " tx(s)", propose_value.txset().txs_size(),
+		LOG_INFO("Proposed %d tx(s), lcl hash(%s), removed " FMT_SIZE " tx(s)", txset.Size(), 
 			utils::String::Bin4ToHexString(lcl.hash()).c_str(), 
 			del_size);
 		consensus_->Request(propose_value.SerializeAsString());
@@ -440,20 +368,7 @@ namespace bubi {
 			}
 		}
 
-		int32_t check_helper_ret = CheckValueHelper(consensus_value);
-		if (check_helper_ret > 0) {
-			return check_helper_ret;
-		}
-
-		int32_t timeout_index;
-		if (!LedgerManager::Instance().context_manager_.SyncPreProcess(consensus_value,
-			5 * utils::MICRO_UNITS_PER_SEC,
-			timeout_index)) {
-			LOG_ERROR("Pre process consvalue failed");
-			return Consensus::CHECK_VALUE_MAYVALID;
-		}
-
-		return Consensus::CHECK_VALUE_VALID;
+		return CheckValueHelper(consensus_value);
 	}
 
 	int32_t GlueManager::CheckValueHelper(const protocol::ConsensusValue &consensus_value) {

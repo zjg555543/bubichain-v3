@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #include <sstream>
 
 #include <utils/utils.h>
@@ -19,21 +7,21 @@ limitations under the License.
 #include <glue/glue_manager.h>
 #include "ledger_manager.h"
 #include "ledger_frm.h"
-#include "ledgercontext_manager.h"
-#include "contract_manager.h"
 
 namespace bubi {
 #define COUNT_PER_PARTITION 1000000
 	LedgerFrm::LedgerFrm() {
 		value_ = NULL;
-		lpledger_context_ = NULL;
-		enabled_ = false;
-		apply_time_ = -1;
 	}
 
 	
 	LedgerFrm::~LedgerFrm() {
 	}
+
+
+	//bool LedgerFrm::LoadFromDb(int64_t ledger_seq, protocol::Ledger &ledger) {
+	//	return true;
+	//}
 
 	bool LedgerFrm::LoadFromDb(int64_t ledger_seq) {
 
@@ -126,24 +114,13 @@ namespace bubi {
 		return true;
 	}
 
-	bool LedgerFrm::Cancel() {
-		enabled_ = false;
-		return true;
-	}
-
-	bool LedgerFrm::Apply(const protocol::ConsensusValue& request,
-		LedgerContext *ledger_context,
-		int64_t tx_time_out,
-		int32_t &tx_time_out_index) {
-
-		int64_t start_time = utils::Timestamp::HighResolution();
-		lpledger_context_ = ledger_context;
-		enabled_ = true;
+	bool LedgerFrm::Apply(const protocol::ConsensusValue& request)
+	{
 		value_ = std::make_shared<protocol::ConsensusValue>(request);
 		uint32_t success_count = 0;
 		environment_ = std::make_shared<Environment>(nullptr);
 
-		for (int i = 0; i < request.txset().txs_size() && enabled_; i++) {
+		for (int i = 0; i < request.txset().txs_size(); i++) {
 			auto txproto = request.txset().txs(i);
 			
 			TransactionFrm::pointer tx_frm = std::make_shared<TransactionFrm>(txproto);
@@ -153,34 +130,20 @@ namespace bubi {
 				continue;
 			}
 
-			ledger_context->transaction_stack_.push(tx_frm);
+			LedgerManager::Instance().transaction_stack_.push(tx_frm);
 			tx_frm->NonceIncrease(this, environment_);
-			int64_t time_start = utils::Timestamp::HighResolution();
-			bool ret = tx_frm->Apply(this, environment_);
-			int64_t time_use = utils::Timestamp::HighResolution() - time_start;
-
-			if (tx_time_out > 0 && time_use > tx_time_out ) { //special treatment, return false
-				LOG_ERROR("transaction(%s) apply failed. %s, time out(" FMT_I64 "ms > " FMT_I64 "ms)",
-					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str(),
-					time_use / utils::MICRO_UNITS_PER_MILLI, tx_time_out / utils::MICRO_UNITS_PER_MILLI);
-				tx_time_out_index = i;
-				return false;
-			} else{
-				if (!ret) {
-					LOG_ERROR("transaction(%s) apply failed. %s",
-						utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
-					tx_time_out_index = i;
-				}
-				else {
-					tx_frm->environment_->Commit();
-				}
+			if (!tx_frm->Apply(this, environment_)){
+				LOG_ERROR("transaction(%s) apply failed. %s",
+					utils::String::BinToHexString(tx_frm->GetContentHash()).c_str(), tx_frm->GetResult().desc().c_str());
 			}
-
+			else{
+				tx_frm->environment_->Commit();
+			}
 			apply_tx_frms_.push_back(tx_frm);
 			ledger_.add_transaction_envs()->CopyFrom(txproto);
-			ledger_context->transaction_stack_.pop();
+			LedgerManager::Instance().transaction_stack_.pop();
 		}
-		apply_time_ = utils::Timestamp::HighResolution() - start_time;
+
 		return true;
 	}
 

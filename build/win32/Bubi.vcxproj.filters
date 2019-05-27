@@ -123,9 +123,6 @@
     <ClCompile Include="..\..\src\monitor\monitor_manager.cpp">
       <Filter>monitor</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ledger\ledgercontext_manager.cpp">
-      <Filter>ledger</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\overlay\peer_manager.h">
@@ -191,6 +188,9 @@
     <ClInclude Include="..\..\src\ledger\operation_frm.h">
       <Filter>ledger</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\api\websocket_server.h">
+      <Filter>api</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\main\configure.h">
       <Filter>main</Filter>
     </ClInclude>
@@ -211,12 +211,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\monitor\monitor_manager.h">
       <Filter>monitor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ledger\ledgercontext_manager.h">
-      <Filter>ledger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\api\websocket_server.h">
-      <Filter>api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

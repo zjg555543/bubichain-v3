@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #ifndef PBFT_H_
 #define PBFT_H_
@@ -28,7 +16,6 @@ namespace bubi {
 		int64_t view_number_;
 		int64_t sequence_;
 
-		int64_t ckp_count_; //checkpoint number, such as 5
 		int64_t ckp_interval_;
 		int64_t last_exe_seq_;
 
@@ -36,8 +23,6 @@ namespace bubi {
 
 		size_t fault_number_;
 
-		//for checkpoint
-		PbftCkpInstanceMap ckp_instances_;
 		bool view_active_;
 
 		//for view change 
@@ -62,7 +47,6 @@ namespace bubi {
 		bool OnPrePrepare(const protocol::Pbft &pre_prepare, PbftInstance &pinstance, int32_t check_value_ret);
 		bool OnPrepare(const protocol::Pbft &prepare, PbftInstance &pinstance);
 		bool OnCommit(const protocol::Pbft &commit, PbftInstance &pinstance);
-		bool OnCheckPoint(const protocol::PbftEnv &pbft);
 		bool OnViewChange(const protocol::PbftEnv &pbft);
 		bool OnNewView(const protocol::PbftEnv &pbft);
 
@@ -73,7 +57,6 @@ namespace bubi {
 		PbftInstance *CreateInstanceIfNotExist(const protocol::PbftEnv &env);
 		bool InWaterMark(int64_t seq);
 		bool TryExecuteValue();
-		bool TryMoveWaterMark();
 		bool CheckMessageItem(const protocol::PbftEnv &env);
 		static bool CheckMessageItem(const protocol::PbftEnv &env, const ValidatorMap &validators);
 		bool TraceOutPbftCommit(const protocol::PbftEnv &env);
@@ -83,10 +66,6 @@ namespace bubi {
 		void ClearNotCommitedInstance();
 
 		void LoadValues();
-		int32_t LoadCheckPoint();
-		bool SaveCheckPoint(ValueSaver &saver);
-		int32_t LoadInstance();
-		bool SaveInstance(ValueSaver &saver);
 		int32_t LoadVcInstance();
 		int32_t LoadValidators();
 		bool SaveValidators(ValueSaver &saver);

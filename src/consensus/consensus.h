@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #ifndef CONSENSUS_H_
 #define CONSENSUS_H_
@@ -22,7 +10,6 @@ limitations under the License.
 #include "consensus_msg.h"
 
 namespace bubi {
-	typedef std::function< void(bool check_result)> CheckValueFunction;
 	class IConsensusNotify {
 	public:
 		IConsensusNotify() {};
@@ -30,7 +17,6 @@ namespace bubi {
 
 		virtual std::string OnValueCommited(int64_t request_seq, const std::string &value, const std::string &proof, bool calculate_total) = 0;
 		virtual void OnViewChanged() = 0;
-		//virtual int32_t AsyncCheckValue(const std::string &value, CheckValueFunction check_func) = 0;
 		virtual int32_t CheckValue(const std::string &value) = 0;
 		virtual void SendConsensusMessage(const std::string &message) = 0;
 		virtual std::string FetchNullMsg() = 0;
@@ -55,7 +41,6 @@ namespace bubi {
 		IConsensusNotify *notify_;
 
 		int32_t CheckValue(const std::string &value);
-		int32_t AsyncCheckValue(const std::string &value, CheckValueFunction check_func);
 		bool SendMessage(const std::string &message);
 		std::string OnValueCommited(int64_t request_seq, const std::string &value, const std::string &proof, bool calculate_total);
 		void OnViewChanged();

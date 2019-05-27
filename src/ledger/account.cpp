@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #include <common/storage.h>
 #include <common/pb2json.h>
 #include <ledger/ledger_manager.h>
@@ -60,6 +48,12 @@ namespace bubi {
 
 	
 	bool AccountFrm::UpdateSigner(const std::string &signer, int64_t weight) {
+
+		//fit the bug for version < 3001
+		if (LedgerManager::Instance().closing_ledger_->GetProtoHeader().version() < 3001) {
+			weight = weight & UINT8_MAX;
+		}
+
 		if (weight > 0) {
 			bool found = false;
 			for (int32_t i = 0; i < account_info_.mutable_priv()->signers_size(); i++) {
@@ -276,11 +270,27 @@ namespace bubi {
 		metadata_[dataptr.key()] = Rec;
 	}
 
-	bool AccountFrm::DeleteMetaData(const protocol::KeyPair& dataptr){		
+	bool AccountFrm::DeleteMetaData(const std::string key){
+		auto it = metadata_.find(key);
+		if (it != metadata_.end()){
+			if (it->second.action_ == utils::DEL){
+				return false;
+			}
+			it->second.action_ = utils::DEL;
+			return true;
+		}
+
+		std::string dbkey = account_info_.address();
+		dbkey += "S";
+		dbkey += key;
+		auto db = Storage::Instance().account_db();
+		std::string buff;
+		if (!db->Get(key, buff)){
+			return false;
+		}
 		DataCache<protocol::KeyPair> Rec;
 		Rec.action_ = utils::DEL;
-		Rec.data_.CopyFrom(dataptr);
-		metadata_[dataptr.key()] = Rec;
+		metadata_.insert({ key, Rec });
 		return true;
 	}
 

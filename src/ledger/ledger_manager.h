@@ -1,16 +1,4 @@
-﻿/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+﻿
 #ifndef LEDGER_MANAGER_H_
 #define LEDGER_MANAGER_H_
 
@@ -23,7 +11,6 @@ limitations under the License.
 #include <main/configure.h>
 #include <overlay/peer.h>
 #include "ledger/ledger_frm.h"
-#include "ledgercontext_manager.h"
 #include "environment.h"
 #include "kv_trie.h"
 #include "proto/cpp/consensus.pb.h"
@@ -63,20 +50,21 @@ namespace bubi {
 
 		bool ConsensusValueFromDB(int64_t seq, protocol::ConsensusValue& request);
 
-		bool DoTransaction(protocol::TransactionEnv& env, LedgerContext *ledger_context);
+		bool DoTransaction(protocol::TransactionEnv& env);
 
 		virtual void OnTimer(int64_t current_time) override;
 		virtual void OnSlowTimer(int64_t current_time) override;
 		virtual void GetModuleStatus(Json::Value &data);
 
 		static void CreateHardforkLedger();
+
 	public:
 		utils::Mutex gmutex_;
 		Json::Value statistics_;
+		LedgerFrm::pointer closing_ledger_;
+		//std::shared_ptr<TransactionFrm> execute_transaction_;
+		std::stack<std::shared_ptr<TransactionFrm>> transaction_stack_;
 		KVTrie* tree_;
-
-		LedgerContextManager context_manager_;
-
 	private:
 		LedgerManager();
 		~LedgerManager();

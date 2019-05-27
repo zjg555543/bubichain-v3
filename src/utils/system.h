@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #ifndef UTILS_SYSTEM_H_
 #define UTILS_SYSTEM_H_
@@ -51,6 +39,10 @@ namespace utils {
 		uint64_t available_bytes_;
 		double	 usage_percent_;
 
+		uint64_t physical_memory_size_;
+		uint64_t virtual_memory_size_;
+		double   current_usage_percent_;
+
 		PhysicalMemory() {
 			total_bytes_ = 0;
 			free_bytes_ = 0;
@@ -58,6 +50,10 @@ namespace utils {
 			cached_bytes_ = 0;
 			available_bytes_ = 0;
 			usage_percent_ = 0;
+
+			physical_memory_size_ = 0;
+			virtual_memory_size_ = 0;
+			current_usage_percent_ = 0;
 		}
 	};
 
@@ -113,7 +109,6 @@ namespace utils {
 		uint64_t GetUsageTime();
 		uint64_t GetCurrentUsageTime();
 
-
 		size_t core_count_;
 		std::string cpu_type_;
 		int64_t user_time_;
@@ -129,8 +124,7 @@ namespace utils {
 		int64_t stime_;
 		int64_t cutime_;
 		int64_t cstime_;
-		double    usage_current_percent_;
-
+		double	usage_current_percent_;
 	};
 
 	class System {

@@ -1,15 +1,3 @@
-/*
-Copyright Bubi Technologies Co., Ltd. 2017 All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 
 #include "system.h"
 
@@ -37,7 +25,6 @@ namespace utils{
 		cutime_ = 0;
 		cstime_ = 0;
 		usage_current_percent_ = 0;
-
 	}
 	SystemProcessor::~SystemProcessor() {
 
@@ -158,7 +145,6 @@ namespace utils{
 			processor_.stime_ = ((uint64_t)nKernelTime.dwHighDateTime) << 32 | nKernelTime.dwLowDateTime;
 		}
 		CloseHandle(hprocess);
-
 #else
 		File proce_file;
 
@@ -202,14 +188,18 @@ namespace utils{
 
 		uint32_t process_id = getpid();
 		std::string stat_name = utils::String::Format("/proc/%d/stat", process_id);
+
+		if (!proce_file.Open(stat_name, File::FILE_M_READ))
+			return false;
+
 		strline = "";
 		if (!proce_file.ReadLine(strline, 1024)){
 			proce_file.Close();
 			return false;
 		}
 
+		values.clear();
 		values = String::split(strline, " ");
-		printf("\n");
 		if (values.size() < 44){
 			proce_file.Close();
 			return false;
@@ -220,8 +210,6 @@ namespace utils{
 		processor_.cutime_ = String::Stoi64(values[15]);
 		processor_.cstime_ = String::Stoi64(values[16]);
 		proce_file.Close();
-
-
 #endif
 		if (nold_processer.system_time_ > 0) {
 			int64_t total_time1 = nold_processer.GetTotalTime();
@@ -293,6 +281,16 @@ namespace utils{
 		memory.available_bytes_ = status.ullTotalPhys - status.ullAvailPhys;
 		memory.cached_bytes_ = 0;
 		memory.buffers_bytes_ = 0;
+
+		HANDLE hprocess = GetCurrentProcess();
+		PROCESS_MEMORY_COUNTERS nMemoryInfo = { 0 };
+		nMemoryInfo.cb = sizeof(nMemoryInfo);
+		if (GetProcessMemoryInfo(hprocess, &nMemoryInfo, sizeof(nMemoryInfo))) {
+			memory.physical_memory_size_ = nMemoryInfo.PeakWorkingSetSize;
+			memory.virtual_memory_size_ = nMemoryInfo.WorkingSetSize;
+		}
+
+		CloseHandle(hprocess);
 #else
 		File proc_file;
 
@@ -323,10 +321,36 @@ namespace utils{
 		}
 		proc_file.Close();
 
-		memory.available_bytes_ = memory.free_bytes_ + memory.buffers_bytes_ + memory.cached_bytes_;
+		uint32_t process_id = getpid();
+
+		std::string stat_name = utils::String::Format("/proc/%d/statm", process_id);
+		if (!proc_file.Open(stat_name, File::FILE_M_READ))
+			return false;
+
+		strline = "";
+		if (!proc_file.ReadLine(strline, 1024)){
+			proc_file.Close();
+			return false;
+		}
+		StringVector values = String::split(strline, " ");
+		if (values.size() < 2){
+			proc_file.Close();
+			return false;
+		}
+
+		proc_file.Close();
+
+		memory.virtual_memory_size_ = String::Stoi64(values[0]) * 4 * 1024;
+		memory.physical_memory_size_ = String::Stoi64(values[1]) * 4 * 1024;
 #endif
+		memory.available_bytes_ = memory.free_bytes_ + memory.buffers_bytes_ + memory.cached_bytes_;
+
 		if (memory.total_bytes_ > memory.available_bytes_) {
 			memory.usage_percent_ = double(memory.total_bytes_ - memory.available_bytes_) / double(memory.total_bytes_) * (double)100.0;
+		}
+
+		if (memory.total_bytes_ > memory.physical_memory_size_) {
+			memory.current_usage_percent_ = double(memory.physical_memory_size_) / double(memory.total_bytes_) * (double)100.0;
 		}
 
 		return true;
@@ -922,5 +946,4 @@ namespace utils{
 
 		return true;
 	}
-
 }

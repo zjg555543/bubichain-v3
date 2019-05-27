@@ -1,8 +1,5 @@
 # __布比区块链使用文档__
 
-[TOC]
-
-
 ## __编译__
 ### Linux
 支持 Ubuntu、Centos 等大多数操作系统编译，下面编译步骤以 Ubuntu 14.04 示例
@@ -39,7 +36,8 @@ cd bubichain-v3
 make install
 ```
 
-将 libSADK_Standard.so.3.4.0.3 库文件拷贝到 /usr/local/bubichain/bin/ 目录下，并创建软链接:
+- 如果需要用到 cfca 证书创建用户，则要进行下面的链接库操作，否则请忽略。
+    - 将 libSADK_Standard.so.3.4.0.3 库文件拷贝到 /usr/local/bubichain/bin/ 目录下，并创建软链接:
 ```bash
 sudo ln -s /usr/local/bubichain/bin/libSADK_Standard.so.3.4.0.3 /usr/local/bubichain/bin/libSADK_Standard.so
 ```
@@ -277,9 +275,18 @@ local hardware address (0bc9143ba7ccc951cf257948af2d02ff)
 | hardware_address | 绑定硬件地址（由上一步获取）
 | node_id | 绑定节点id，可不填
 
-注意: hardware_address需要设置为*的话，需要输入\*，如下：
+注意: 
+(1) hardware_address需要设置为*的话，需要输入\*，如下：
 ```bash
 ./bin/bubi --request-cert /usr/local/bubichain/config node bubi bubi@bubi.cn bubitest \*
+```
+(2) note_id不设置，默认是*，如果需要设置，需要经过以下操作：
+
+a. 读取bubi.json中的p2p下的node_private_key的值
+
+b. 通过以下命令行操作获取
+```bash
+./bin/bubi --peer-address 44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d
 ```
 
 - 具体操作如下 ：
@@ -288,7 +295,7 @@ local hardware address (0bc9143ba7ccc951cf257948af2d02ff)
 [root@localhost bubichain]# ./bin/bubi --request-cert
 error: missing parameter, need 6 parameters (filepath, common_name, organization, email, private_password, hardware_address, node_id(when ignore, it's *)
 
-[root@localhost bubichain]# ./bin/bubi --request-cert /usr/local/bubichain/config node bubi bubi@bubi.cn bubitest 0bc9143ba7ccc951cf257948af2d02ff  
+[root@localhost bubichain]# ./bin/bubi --request-cert /usr/local/bubichain/config node bubi bubi@bubi.cn bubi 0bc9143ba7ccc951cf257948af2d02ff  
 
 request file : 
     /usr/local/bubichain/config/node_bubi.csr 
