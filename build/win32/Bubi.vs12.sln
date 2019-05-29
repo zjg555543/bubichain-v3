@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CA", "CA.vcxproj", "{FD09DDD0-A02E-4391-B26A-2818DB31E66E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bubi", "Notary.vcxproj", "{4F4FBC17-02BE-4E12-9742-6C502A369940}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,10 @@ Global
 		{FD09DDD0-A02E-4391-B26A-2818DB31E66E}.Debug|Win32.Build.0 = Debug|Win32
 		{FD09DDD0-A02E-4391-B26A-2818DB31E66E}.Release|Win32.ActiveCfg = Release|Win32
 		{FD09DDD0-A02E-4391-B26A-2818DB31E66E}.Release|Win32.Build.0 = Release|Win32
+		{4F4FBC17-02BE-4E12-9742-6C502A369940}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F4FBC17-02BE-4E12-9742-6C502A369940}.Debug|Win32.Build.0 = Debug|Win32
+		{4F4FBC17-02BE-4E12-9742-6C502A369940}.Release|Win32.ActiveCfg = Release|Win32
+		{4F4FBC17-02BE-4E12-9742-6C502A369940}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

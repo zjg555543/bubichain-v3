@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\ledger\account.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\overlay\broadcast.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\proto\cpp\chain.pb.cc">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\proto\cpp\common.pb.cc">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ledger\environment.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ledger\kv_trie.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\proto\cpp\overlay.pb.cc">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\overlay\peer.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ledger\trie.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\notary\main.cpp" />
+    <ClCompile Include="..\..\src\proto\cpp\merkeltrie.pb.cc">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\notary\configure.cpp" />
+    <ClCompile Include="..\..\src\cross\message_channel.cpp">
+      <Filter>bubi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\notary\notary_mgr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\ledger\account.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\overlay\broadcast.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\proto\cpp\chain.pb.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\proto\cpp\common.pb.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ledger\environment.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ledger\kv_trie.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\proto\cpp\overlay.pb.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\proto\pb2json.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\overlay\peer.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ledger\trie.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\proto\cpp\merkeltrie.pb.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\notary\configure.h" />
+    <ClInclude Include="..\..\src\cross\message_channel.h">
+      <Filter>bubi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\notary\notary_mgr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\proto\chain.proto">
+      <Filter>bubi</Filter>
+    </None>
+    <None Include="..\..\src\proto\common.proto">
+      <Filter>bubi</Filter>
+    </None>
+    <None Include="..\..\src\proto\overlay.proto">
+      <Filter>bubi</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="bubi">
+      <UniqueIdentifier>{0c6ef18c-fb8c-4901-8c26-8d3819283f3c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

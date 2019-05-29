@@ -15,6 +15,7 @@
 #include <api/websocket_server.h>
 #include <ledger/contract_manager.h>
 #include <monitor/monitor_manager.h>
+#include <cross/cross_chain_mgr.h>
 #include "configure.h"
 
 void RunLoop();
@@ -37,6 +38,7 @@ int main(int argc, char *argv[]){
 	bubi::WebSocketServer::InitInstance();
 	bubi::WebServer::InitInstance();
 	bubi::MonitorManager::InitInstance();
+	bubi::CrossChainMgr::InitInstance();
 	//bubi::ContractManager::InitInstance();
 
 	bubi::Argument arg;
@@ -225,6 +227,14 @@ int main(int argc, char *argv[]){
 		bubiAtExit.Push(std::bind(&bubi::MonitorManager::Exit, &monitor_manager));
 		LOG_INFO("Initialize monitor manager successful");
 
+		bubi::CrossChainMgr &cross_mgr = bubi::CrossChainMgr::Instance();
+		if (!bubi::g_enable_ || !cross_mgr.Initialize()) {
+			LOG_ERROR("Initialize cross manager failed");
+			break;
+		}
+		bubiAtExit.Push(std::bind(&bubi::CrossChainMgr::Exit, &cross_mgr));
+		LOG_INFO("Initialize cross manager successful");
+
 		bubi::ContractManager::Initialize(argc, argv);
 		//bubi::ContractManager &contract_manager = bubi::LedgerManager::Instance().contract_manager_;
 		//if (!contract_manager.Initialize(argc, argv)){
@@ -249,6 +259,7 @@ int main(int argc, char *argv[]){
 	bubi::WebSocketServer::ExitInstance();
 	bubi::WebServer::ExitInstance();
 	bubi::MonitorManager::ExitInstance();
+	bubi::CrossChainMgr::ExitInstance();
 	cfca::CFCA::ExitInstance();
 	bubi::Configure::ExitInstance();
 	bubi::Global::ExitInstance();

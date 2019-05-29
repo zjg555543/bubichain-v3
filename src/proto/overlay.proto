@@ -154,3 +154,36 @@ message ChainContractLog {
 	int64 timestamp = 3;
 }
 
+//for cross
+enum CROSS_MESSAGE_TYPE{
+	CROSS_MSGTYPE_NONE = 0;
+	CROSS_MSGTYPE_HELLO = 10001;
+	CROSS_MSGTYPE_PROPOSAL  = 10002;
+	CROSS_MSGTYPE_CHAIN_INFO  = 10003;
+}
+
+message CrossHello {
+    string chain_unique = 1;
+}
+
+message CrossHelloResponse {
+	 ERRORCODE error_code = 1;
+	 string error_desc = 2;
+}
+
+message CrossProposal {
+	string src_chain_unique = 1;
+	string dst_chain_unique = 2;
+    string proposal_id = 3;
+	string proposal_body = 4;
+}
+
+message CrossGetChainInfo {
+}
+
+message CrossChainInfoResponse {
+    string chain_unique = 1;
+	string target_chain_unique = 2;
+	string comm_contract = 3;
+	string target_comm_contract = 4;
+}

@@ -62,5 +62,12 @@
 			"a0019b7ef40a5f3b2aca4ed1919f45e96061c3f96c7f59"
 
 		]
+	},
+	"cross": {
+		"chain_unique": "CHAIN_20190528_A",
+		"target_chain_unique": "CHAIN_20190528_B",
+		"notary_addr": "127.0.0.1:30000",
+		"comm_contract": "a001c3bbfce78bba8bfcb37113a84e95a3fd441a5622e3",
+		"enabled" : true
 	}
 }

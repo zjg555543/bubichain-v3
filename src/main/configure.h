@@ -109,6 +109,19 @@ namespace bubi {
 		bool Load(const Json::Value &value);
 	};
 
+	class CrossConfigure {
+	public:
+		CrossConfigure();
+		~CrossConfigure();
+
+		std::string chain_unique_;
+		std::string target_chain_unique_;
+		utils::InetAddress notary_addr_;
+		std::string comm_contract_;
+		bool enabled_;
+		bool Load(const Json::Value &value);
+	};
+
 	class Configure : public ConfigureBase, public utils::Singleton<Configure> {
 		friend class utils::Singleton<Configure>;
 		Configure();
@@ -126,6 +139,7 @@ namespace bubi {
 		ValidationConfigure validation_configure_;
 
 		MonitorConfigure monitor_configure_;
+		CrossConfigure cross_configure_;
 		//MqServerConfigure		mqserver_configure_;
 
 		virtual bool LoadFromJson(const Json::Value &values);

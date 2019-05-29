@@ -23,6 +23,7 @@ namespace bubi {
 	const char *General::MONITOR_CONFIG_FILE = "config/monitor.json";
 	const char *General::CA_CONFIG_FILE = "config/ca.json";
 	const char *General::LOGGER_FILE = "log/bubi.log";
+	const char *General::CONFIG_NOTARY_FILE = "config/notary.json";
 
 #else
 	const char *General::DEFAULT_KEYVALUE_DB_PATH = "data/keyvalue.db";
@@ -33,6 +34,7 @@ namespace bubi {
 	const char *General::CONFIG_FILE = "config/bubi.json";
 	const char *General::CA_CONFIG_FILE = "config/ca.json";
 	const char *General::LOGGER_FILE = "log/bubi.log";
+	const char *General::CONFIG_NOTARY_FILE = "config/notary.json";
 #endif
 
 	volatile long General::tx_new_count = 0;

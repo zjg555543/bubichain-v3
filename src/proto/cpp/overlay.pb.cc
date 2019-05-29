@@ -65,8 +65,24 @@ const ::google::protobuf::EnumDescriptor* ChainTxStatus_TxStatus_descriptor_ = N
 const ::google::protobuf::Descriptor* ChainContractLog_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ChainContractLog_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossHello_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossHello_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossHelloResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossHelloResponse_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossProposal_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossProposal_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossGetChainInfo_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossGetChainInfo_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossChainInfoResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossChainInfoResponse_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* OVERLAY_MESSAGE_TYPE_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* ChainMessageType_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* CROSS_MESSAGE_TYPE_descriptor_ = NULL;
 
 }  // namespace
 
@@ -327,8 +343,90 @@ void protobuf_AssignDesc_overlay_2eproto() {
       sizeof(ChainContractLog),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, _is_default_instance_));
+  CrossHello_descriptor_ = file->message_type(14);
+  static const int CrossHello_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHello, chain_unique_),
+  };
+  CrossHello_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossHello_descriptor_,
+      CrossHello::default_instance_,
+      CrossHello_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossHello),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHello, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHello, _is_default_instance_));
+  CrossHelloResponse_descriptor_ = file->message_type(15);
+  static const int CrossHelloResponse_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, error_code_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, error_desc_),
+  };
+  CrossHelloResponse_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossHelloResponse_descriptor_,
+      CrossHelloResponse::default_instance_,
+      CrossHelloResponse_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossHelloResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _is_default_instance_));
+  CrossProposal_descriptor_ = file->message_type(16);
+  static const int CrossProposal_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, src_chain_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, dst_chain_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, proposal_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, proposal_body_),
+  };
+  CrossProposal_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossProposal_descriptor_,
+      CrossProposal::default_instance_,
+      CrossProposal_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossProposal),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, _is_default_instance_));
+  CrossGetChainInfo_descriptor_ = file->message_type(17);
+  static const int CrossGetChainInfo_offsets_[1] = {
+  };
+  CrossGetChainInfo_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossGetChainInfo_descriptor_,
+      CrossGetChainInfo::default_instance_,
+      CrossGetChainInfo_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossGetChainInfo),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossGetChainInfo, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossGetChainInfo, _is_default_instance_));
+  CrossChainInfoResponse_descriptor_ = file->message_type(18);
+  static const int CrossChainInfoResponse_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, chain_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, target_chain_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, comm_contract_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, target_comm_contract_),
+  };
+  CrossChainInfoResponse_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossChainInfoResponse_descriptor_,
+      CrossChainInfoResponse::default_instance_,
+      CrossChainInfoResponse_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossChainInfoResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, _is_default_instance_));
   OVERLAY_MESSAGE_TYPE_descriptor_ = file->enum_type(0);
   ChainMessageType_descriptor_ = file->enum_type(1);
+  CROSS_MESSAGE_TYPE_descriptor_ = file->enum_type(2);
 }
 
 namespace {
@@ -370,6 +468,16 @@ void protobuf_RegisterTypes(const ::std::string&) {
       ChainTxStatus_descriptor_, &ChainTxStatus::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       ChainContractLog_descriptor_, &ChainContractLog::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossHello_descriptor_, &CrossHello::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossHelloResponse_descriptor_, &CrossHelloResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossProposal_descriptor_, &CrossProposal::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossGetChainInfo_descriptor_, &CrossGetChainInfo::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossChainInfoResponse_descriptor_, &CrossChainInfoResponse::default_instance());
 }
 
 }  // namespace
@@ -403,6 +511,16 @@ void protobuf_ShutdownFile_overlay_2eproto() {
   delete ChainTxStatus_reflection_;
   delete ChainContractLog::default_instance_;
   delete ChainContractLog_reflection_;
+  delete CrossHello::default_instance_;
+  delete CrossHello_reflection_;
+  delete CrossHelloResponse::default_instance_;
+  delete CrossHelloResponse_reflection_;
+  delete CrossProposal::default_instance_;
+  delete CrossProposal_reflection_;
+  delete CrossGetChainInfo::default_instance_;
+  delete CrossGetChainInfo_reflection_;
+  delete CrossChainInfoResponse::default_instance_;
+  delete CrossChainInfoResponse_reflection_;
 }
 
 void protobuf_AddDesc_overlay_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -455,21 +573,34 @@ void protobuf_AddDesc_overlay_2eproto() {
     " \001(\003\"P\n\010TxStatus\022\r\n\tUNDEFINED\020\000\022\r\n\tCONFI"
     "RMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010COMPLETE\020\003\022\013\n\007FAI"
     "LURE\020\004\"C\n\020ChainContractLog\022\016\n\006sender\030\001 \001"
-    "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003*\203\002\n\024"
-    "OVERLAY_MESSAGE_TYPE\022\030\n\024OVERLAY_MSGTYPE_"
-    "NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_PING\020\001\022\031\n\025OVER"
-    "LAY_MSGTYPE_HELLO\020\002\022\031\n\025OVERLAY_MSGTYPE_P"
-    "EERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRANSACTION\020\004\022"
-    "\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022\030\n\024OVERLAY_"
-    "MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSGTYPE_LEDGER"
-    "_UPGRADE_NOTIFY\020\007*\342\001\n\020ChainMessageType\022\023"
-    "\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017"
-    "CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PEER_ONLINE\020\014"
-    "\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022CHAIN_PEER_M"
-    "ESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANSACTION\020\017\022\027\n"
-    "\023CHAIN_LEDGER_HEADER\020\020\022\026\n\022CHAIN_CONTRACT"
-    "_LOG\020\021B\035\n\033cn.bubi.blockchain.adapter3b\006p"
-    "roto3", 2165);
+    "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"\"\n\nC"
+    "rossHello\022\024\n\014chain_unique\030\001 \001(\t\"Q\n\022Cross"
+    "HelloResponse\022\'\n\nerror_code\030\001 \001(\0162\023.prot"
+    "ocol.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"o\n\rCr"
+    "ossProposal\022\030\n\020src_chain_unique\030\001 \001(\t\022\030\n"
+    "\020dst_chain_unique\030\002 \001(\t\022\023\n\013proposal_id\030\003"
+    " \001(\t\022\025\n\rproposal_body\030\004 \001(\t\"\023\n\021CrossGetC"
+    "hainInfo\"\200\001\n\026CrossChainInfoResponse\022\024\n\014c"
+    "hain_unique\030\001 \001(\t\022\033\n\023target_chain_unique"
+    "\030\002 \001(\t\022\025\n\rcomm_contract\030\003 \001(\t\022\034\n\024target_"
+    "comm_contract\030\004 \001(\t*\203\002\n\024OVERLAY_MESSAGE_"
+    "TYPE\022\030\n\024OVERLAY_MSGTYPE_NONE\020\000\022\030\n\024OVERLA"
+    "Y_MSGTYPE_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_HELL"
+    "O\020\002\022\031\n\025OVERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OVERLA"
+    "Y_MSGTYPE_TRANSACTION\020\004\022\033\n\027OVERLAY_MSGTY"
+    "PE_LEDGERS\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)"
+    "\n%OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOTIFY\020"
+    "\007*\342\001\n\020ChainMessageType\022\023\n\017CHAIN_TYPE_NON"
+    "E\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020"
+    "\013\022\025\n\021CHAIN_PEER_ONLINE\020\014\022\026\n\022CHAIN_PEER_O"
+    "FFLINE\020\r\022\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027CHAI"
+    "N_SUBMITTRANSACTION\020\017\022\027\n\023CHAIN_LEDGER_HE"
+    "ADER\020\020\022\026\n\022CHAIN_CONTRACT_LOG\020\021*\202\001\n\022CROSS"
+    "_MESSAGE_TYPE\022\026\n\022CROSS_MSGTYPE_NONE\020\000\022\030\n"
+    "\023CROSS_MSGTYPE_HELLO\020\221N\022\033\n\026CROSS_MSGTYPE"
+    "_PROPOSAL\020\222N\022\035\n\030CROSS_MSGTYPE_CHAIN_INFO"
+    "\020\223NB\035\n\033cn.bubi.blockchain.adapter3b\006prot"
+    "o3", 2682);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -486,6 +617,11 @@ void protobuf_AddDesc_overlay_2eproto() {
   ChainPeerMessage::default_instance_ = new ChainPeerMessage();
   ChainTxStatus::default_instance_ = new ChainTxStatus();
   ChainContractLog::default_instance_ = new ChainContractLog();
+  CrossHello::default_instance_ = new CrossHello();
+  CrossHelloResponse::default_instance_ = new CrossHelloResponse();
+  CrossProposal::default_instance_ = new CrossProposal();
+  CrossGetChainInfo::default_instance_ = new CrossGetChainInfo();
+  CrossChainInfoResponse::default_instance_ = new CrossChainInfoResponse();
   Hello::default_instance_->InitAsDefaultInstance();
   HelloResponse::default_instance_->InitAsDefaultInstance();
   Peer::default_instance_->InitAsDefaultInstance();
@@ -500,6 +636,11 @@ void protobuf_AddDesc_overlay_2eproto() {
   ChainPeerMessage::default_instance_->InitAsDefaultInstance();
   ChainTxStatus::default_instance_->InitAsDefaultInstance();
   ChainContractLog::default_instance_->InitAsDefaultInstance();
+  CrossHello::default_instance_->InitAsDefaultInstance();
+  CrossHelloResponse::default_instance_->InitAsDefaultInstance();
+  CrossProposal::default_instance_->InitAsDefaultInstance();
+  CrossGetChainInfo::default_instance_->InitAsDefaultInstance();
+  CrossChainInfoResponse::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_overlay_2eproto);
 }
 
@@ -544,6 +685,22 @@ bool ChainMessageType_IsValid(int value) {
     case 15:
     case 16:
     case 17:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* CROSS_MESSAGE_TYPE_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CROSS_MESSAGE_TYPE_descriptor_;
+}
+bool CROSS_MESSAGE_TYPE_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 10001:
+    case 10002:
+    case 10003:
       return true;
     default:
       return false;
@@ -6923,6 +7080,1966 @@ void ChainContractLog::clear_timestamp() {
   
   timestamp_ = value;
   // @@protoc_insertion_point(field_set:protocol.ChainContractLog.timestamp)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossHello::kChainUniqueFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossHello::CrossHello()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossHello)
+}
+
+void CrossHello::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossHello::CrossHello(const CrossHello& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossHello)
+}
+
+void CrossHello::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossHello::~CrossHello() {
+  // @@protoc_insertion_point(destructor:protocol.CrossHello)
+  SharedDtor();
+}
+
+void CrossHello::SharedDtor() {
+  chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossHello::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossHello::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossHello_descriptor_;
+}
+
+const CrossHello& CrossHello::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossHello* CrossHello::default_instance_ = NULL;
+
+CrossHello* CrossHello::New(::google::protobuf::Arena* arena) const {
+  CrossHello* n = new CrossHello;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossHello::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossHello)
+  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossHello::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossHello)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string chain_unique = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_chain_unique()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->chain_unique().data(), this->chain_unique().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossHello.chain_unique"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossHello)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossHello)
+  return false;
+#undef DO_
+}
+
+void CrossHello::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossHello)
+  // optional string chain_unique = 1;
+  if (this->chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->chain_unique().data(), this->chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossHello.chain_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->chain_unique(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossHello)
+}
+
+::google::protobuf::uint8* CrossHello::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossHello)
+  // optional string chain_unique = 1;
+  if (this->chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->chain_unique().data(), this->chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossHello.chain_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->chain_unique(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossHello)
+  return target;
+}
+
+int CrossHello::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossHello)
+  int total_size = 0;
+
+  // optional string chain_unique = 1;
+  if (this->chain_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->chain_unique());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossHello::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossHello)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossHello* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossHello>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossHello)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossHello)
+    MergeFrom(*source);
+  }
+}
+
+void CrossHello::MergeFrom(const CrossHello& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossHello)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.chain_unique().size() > 0) {
+
+    chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.chain_unique_);
+  }
+}
+
+void CrossHello::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossHello)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossHello::CopyFrom(const CrossHello& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossHello)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossHello::IsInitialized() const {
+
+  return true;
+}
+
+void CrossHello::Swap(CrossHello* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossHello::InternalSwap(CrossHello* other) {
+  chain_unique_.Swap(&other->chain_unique_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossHello::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossHello_descriptor_;
+  metadata.reflection = CrossHello_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossHello
+
+// optional string chain_unique = 1;
+void CrossHello::clear_chain_unique() {
+  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossHello::chain_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossHello.chain_unique)
+  return chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossHello::set_chain_unique(const ::std::string& value) {
+  
+  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossHello.chain_unique)
+}
+ void CrossHello::set_chain_unique(const char* value) {
+  
+  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossHello.chain_unique)
+}
+ void CrossHello::set_chain_unique(const char* value, size_t size) {
+  
+  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossHello.chain_unique)
+}
+ ::std::string* CrossHello::mutable_chain_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossHello.chain_unique)
+  return chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossHello::release_chain_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossHello.chain_unique)
+  
+  return chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossHello::set_allocated_chain_unique(::std::string* chain_unique) {
+  if (chain_unique != NULL) {
+    
+  } else {
+    
+  }
+  chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), chain_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossHello.chain_unique)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossHelloResponse::kErrorCodeFieldNumber;
+const int CrossHelloResponse::kErrorDescFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossHelloResponse::CrossHelloResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossHelloResponse)
+}
+
+void CrossHelloResponse::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossHelloResponse::CrossHelloResponse(const CrossHelloResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossHelloResponse)
+}
+
+void CrossHelloResponse::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  error_code_ = 0;
+  error_desc_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossHelloResponse::~CrossHelloResponse() {
+  // @@protoc_insertion_point(destructor:protocol.CrossHelloResponse)
+  SharedDtor();
+}
+
+void CrossHelloResponse::SharedDtor() {
+  error_desc_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossHelloResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossHelloResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossHelloResponse_descriptor_;
+}
+
+const CrossHelloResponse& CrossHelloResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossHelloResponse* CrossHelloResponse::default_instance_ = NULL;
+
+CrossHelloResponse* CrossHelloResponse::New(::google::protobuf::Arena* arena) const {
+  CrossHelloResponse* n = new CrossHelloResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossHelloResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossHelloResponse)
+  error_code_ = 0;
+  error_desc_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossHelloResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossHelloResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional .protocol.ERRORCODE error_code = 1;
+      case 1: {
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_error_code(static_cast< ::protocol::ERRORCODE >(value));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_error_desc;
+        break;
+      }
+
+      // optional string error_desc = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_error_desc:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_error_desc()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->error_desc().data(), this->error_desc().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossHelloResponse.error_desc"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossHelloResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossHelloResponse)
+  return false;
+#undef DO_
+}
+
+void CrossHelloResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossHelloResponse)
+  // optional .protocol.ERRORCODE error_code = 1;
+  if (this->error_code() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->error_code(), output);
+  }
+
+  // optional string error_desc = 2;
+  if (this->error_desc().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->error_desc().data(), this->error_desc().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossHelloResponse.error_desc");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->error_desc(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossHelloResponse)
+}
+
+::google::protobuf::uint8* CrossHelloResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossHelloResponse)
+  // optional .protocol.ERRORCODE error_code = 1;
+  if (this->error_code() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->error_code(), target);
+  }
+
+  // optional string error_desc = 2;
+  if (this->error_desc().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->error_desc().data(), this->error_desc().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossHelloResponse.error_desc");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->error_desc(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossHelloResponse)
+  return target;
+}
+
+int CrossHelloResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossHelloResponse)
+  int total_size = 0;
+
+  // optional .protocol.ERRORCODE error_code = 1;
+  if (this->error_code() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->error_code());
+  }
+
+  // optional string error_desc = 2;
+  if (this->error_desc().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->error_desc());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossHelloResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossHelloResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossHelloResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossHelloResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossHelloResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossHelloResponse)
+    MergeFrom(*source);
+  }
+}
+
+void CrossHelloResponse::MergeFrom(const CrossHelloResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossHelloResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.error_code() != 0) {
+    set_error_code(from.error_code());
+  }
+  if (from.error_desc().size() > 0) {
+
+    error_desc_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.error_desc_);
+  }
+}
+
+void CrossHelloResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossHelloResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossHelloResponse::CopyFrom(const CrossHelloResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossHelloResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossHelloResponse::IsInitialized() const {
+
+  return true;
+}
+
+void CrossHelloResponse::Swap(CrossHelloResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossHelloResponse::InternalSwap(CrossHelloResponse* other) {
+  std::swap(error_code_, other->error_code_);
+  error_desc_.Swap(&other->error_desc_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossHelloResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossHelloResponse_descriptor_;
+  metadata.reflection = CrossHelloResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossHelloResponse
+
+// optional .protocol.ERRORCODE error_code = 1;
+void CrossHelloResponse::clear_error_code() {
+  error_code_ = 0;
+}
+ ::protocol::ERRORCODE CrossHelloResponse::error_code() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossHelloResponse.error_code)
+  return static_cast< ::protocol::ERRORCODE >(error_code_);
+}
+ void CrossHelloResponse::set_error_code(::protocol::ERRORCODE value) {
+  
+  error_code_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossHelloResponse.error_code)
+}
+
+// optional string error_desc = 2;
+void CrossHelloResponse::clear_error_desc() {
+  error_desc_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossHelloResponse::error_desc() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossHelloResponse.error_desc)
+  return error_desc_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossHelloResponse::set_error_desc(const ::std::string& value) {
+  
+  error_desc_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossHelloResponse.error_desc)
+}
+ void CrossHelloResponse::set_error_desc(const char* value) {
+  
+  error_desc_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossHelloResponse.error_desc)
+}
+ void CrossHelloResponse::set_error_desc(const char* value, size_t size) {
+  
+  error_desc_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossHelloResponse.error_desc)
+}
+ ::std::string* CrossHelloResponse::mutable_error_desc() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossHelloResponse.error_desc)
+  return error_desc_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossHelloResponse::release_error_desc() {
+  // @@protoc_insertion_point(field_release:protocol.CrossHelloResponse.error_desc)
+  
+  return error_desc_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossHelloResponse::set_allocated_error_desc(::std::string* error_desc) {
+  if (error_desc != NULL) {
+    
+  } else {
+    
+  }
+  error_desc_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error_desc);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossHelloResponse.error_desc)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossProposal::kSrcChainUniqueFieldNumber;
+const int CrossProposal::kDstChainUniqueFieldNumber;
+const int CrossProposal::kProposalIdFieldNumber;
+const int CrossProposal::kProposalBodyFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossProposal::CrossProposal()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossProposal)
+}
+
+void CrossProposal::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossProposal::CrossProposal(const CrossProposal& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossProposal)
+}
+
+void CrossProposal::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  src_chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  dst_chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_body_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossProposal::~CrossProposal() {
+  // @@protoc_insertion_point(destructor:protocol.CrossProposal)
+  SharedDtor();
+}
+
+void CrossProposal::SharedDtor() {
+  src_chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  dst_chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_body_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossProposal::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossProposal::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossProposal_descriptor_;
+}
+
+const CrossProposal& CrossProposal::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossProposal* CrossProposal::default_instance_ = NULL;
+
+CrossProposal* CrossProposal::New(::google::protobuf::Arena* arena) const {
+  CrossProposal* n = new CrossProposal;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossProposal::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossProposal)
+  src_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  dst_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossProposal::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossProposal)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string src_chain_unique = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_src_chain_unique()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->src_chain_unique().data(), this->src_chain_unique().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossProposal.src_chain_unique"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_dst_chain_unique;
+        break;
+      }
+
+      // optional string dst_chain_unique = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_dst_chain_unique:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_dst_chain_unique()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->dst_chain_unique().data(), this->dst_chain_unique().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossProposal.dst_chain_unique"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_proposal_id;
+        break;
+      }
+
+      // optional string proposal_id = 3;
+      case 3: {
+        if (tag == 26) {
+         parse_proposal_id:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_proposal_id()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->proposal_id().data(), this->proposal_id().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossProposal.proposal_id"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_proposal_body;
+        break;
+      }
+
+      // optional string proposal_body = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_proposal_body:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_proposal_body()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->proposal_body().data(), this->proposal_body().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossProposal.proposal_body"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossProposal)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossProposal)
+  return false;
+#undef DO_
+}
+
+void CrossProposal::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossProposal)
+  // optional string src_chain_unique = 1;
+  if (this->src_chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->src_chain_unique().data(), this->src_chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.src_chain_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->src_chain_unique(), output);
+  }
+
+  // optional string dst_chain_unique = 2;
+  if (this->dst_chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->dst_chain_unique().data(), this->dst_chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.dst_chain_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->dst_chain_unique(), output);
+  }
+
+  // optional string proposal_id = 3;
+  if (this->proposal_id().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->proposal_id().data(), this->proposal_id().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.proposal_id");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      3, this->proposal_id(), output);
+  }
+
+  // optional string proposal_body = 4;
+  if (this->proposal_body().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->proposal_body().data(), this->proposal_body().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.proposal_body");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      4, this->proposal_body(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossProposal)
+}
+
+::google::protobuf::uint8* CrossProposal::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossProposal)
+  // optional string src_chain_unique = 1;
+  if (this->src_chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->src_chain_unique().data(), this->src_chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.src_chain_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->src_chain_unique(), target);
+  }
+
+  // optional string dst_chain_unique = 2;
+  if (this->dst_chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->dst_chain_unique().data(), this->dst_chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.dst_chain_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->dst_chain_unique(), target);
+  }
+
+  // optional string proposal_id = 3;
+  if (this->proposal_id().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->proposal_id().data(), this->proposal_id().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.proposal_id");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->proposal_id(), target);
+  }
+
+  // optional string proposal_body = 4;
+  if (this->proposal_body().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->proposal_body().data(), this->proposal_body().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposal.proposal_body");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->proposal_body(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposal)
+  return target;
+}
+
+int CrossProposal::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossProposal)
+  int total_size = 0;
+
+  // optional string src_chain_unique = 1;
+  if (this->src_chain_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->src_chain_unique());
+  }
+
+  // optional string dst_chain_unique = 2;
+  if (this->dst_chain_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->dst_chain_unique());
+  }
+
+  // optional string proposal_id = 3;
+  if (this->proposal_id().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->proposal_id());
+  }
+
+  // optional string proposal_body = 4;
+  if (this->proposal_body().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->proposal_body());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossProposal::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossProposal)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossProposal* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossProposal>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossProposal)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossProposal)
+    MergeFrom(*source);
+  }
+}
+
+void CrossProposal::MergeFrom(const CrossProposal& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossProposal)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.src_chain_unique().size() > 0) {
+
+    src_chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.src_chain_unique_);
+  }
+  if (from.dst_chain_unique().size() > 0) {
+
+    dst_chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.dst_chain_unique_);
+  }
+  if (from.proposal_id().size() > 0) {
+
+    proposal_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.proposal_id_);
+  }
+  if (from.proposal_body().size() > 0) {
+
+    proposal_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.proposal_body_);
+  }
+}
+
+void CrossProposal::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossProposal)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossProposal::CopyFrom(const CrossProposal& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossProposal)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossProposal::IsInitialized() const {
+
+  return true;
+}
+
+void CrossProposal::Swap(CrossProposal* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossProposal::InternalSwap(CrossProposal* other) {
+  src_chain_unique_.Swap(&other->src_chain_unique_);
+  dst_chain_unique_.Swap(&other->dst_chain_unique_);
+  proposal_id_.Swap(&other->proposal_id_);
+  proposal_body_.Swap(&other->proposal_body_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossProposal::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossProposal_descriptor_;
+  metadata.reflection = CrossProposal_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossProposal
+
+// optional string src_chain_unique = 1;
+void CrossProposal::clear_src_chain_unique() {
+  src_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossProposal::src_chain_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.src_chain_unique)
+  return src_chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_src_chain_unique(const ::std::string& value) {
+  
+  src_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.src_chain_unique)
+}
+ void CrossProposal::set_src_chain_unique(const char* value) {
+  
+  src_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.src_chain_unique)
+}
+ void CrossProposal::set_src_chain_unique(const char* value, size_t size) {
+  
+  src_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.src_chain_unique)
+}
+ ::std::string* CrossProposal::mutable_src_chain_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.src_chain_unique)
+  return src_chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossProposal::release_src_chain_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposal.src_chain_unique)
+  
+  return src_chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_allocated_src_chain_unique(::std::string* src_chain_unique) {
+  if (src_chain_unique != NULL) {
+    
+  } else {
+    
+  }
+  src_chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), src_chain_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.src_chain_unique)
+}
+
+// optional string dst_chain_unique = 2;
+void CrossProposal::clear_dst_chain_unique() {
+  dst_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossProposal::dst_chain_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.dst_chain_unique)
+  return dst_chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_dst_chain_unique(const ::std::string& value) {
+  
+  dst_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.dst_chain_unique)
+}
+ void CrossProposal::set_dst_chain_unique(const char* value) {
+  
+  dst_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.dst_chain_unique)
+}
+ void CrossProposal::set_dst_chain_unique(const char* value, size_t size) {
+  
+  dst_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.dst_chain_unique)
+}
+ ::std::string* CrossProposal::mutable_dst_chain_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.dst_chain_unique)
+  return dst_chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossProposal::release_dst_chain_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposal.dst_chain_unique)
+  
+  return dst_chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_allocated_dst_chain_unique(::std::string* dst_chain_unique) {
+  if (dst_chain_unique != NULL) {
+    
+  } else {
+    
+  }
+  dst_chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), dst_chain_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.dst_chain_unique)
+}
+
+// optional string proposal_id = 3;
+void CrossProposal::clear_proposal_id() {
+  proposal_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossProposal::proposal_id() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.proposal_id)
+  return proposal_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_proposal_id(const ::std::string& value) {
+  
+  proposal_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
+}
+ void CrossProposal::set_proposal_id(const char* value) {
+  
+  proposal_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.proposal_id)
+}
+ void CrossProposal::set_proposal_id(const char* value, size_t size) {
+  
+  proposal_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.proposal_id)
+}
+ ::std::string* CrossProposal::mutable_proposal_id() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.proposal_id)
+  return proposal_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossProposal::release_proposal_id() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposal.proposal_id)
+  
+  return proposal_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_allocated_proposal_id(::std::string* proposal_id) {
+  if (proposal_id != NULL) {
+    
+  } else {
+    
+  }
+  proposal_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), proposal_id);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.proposal_id)
+}
+
+// optional string proposal_body = 4;
+void CrossProposal::clear_proposal_body() {
+  proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossProposal::proposal_body() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.proposal_body)
+  return proposal_body_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_proposal_body(const ::std::string& value) {
+  
+  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_body)
+}
+ void CrossProposal::set_proposal_body(const char* value) {
+  
+  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.proposal_body)
+}
+ void CrossProposal::set_proposal_body(const char* value, size_t size) {
+  
+  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.proposal_body)
+}
+ ::std::string* CrossProposal::mutable_proposal_body() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.proposal_body)
+  return proposal_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossProposal::release_proposal_body() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposal.proposal_body)
+  
+  return proposal_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposal::set_allocated_proposal_body(::std::string* proposal_body) {
+  if (proposal_body != NULL) {
+    
+  } else {
+    
+  }
+  proposal_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), proposal_body);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.proposal_body)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossGetChainInfo::CrossGetChainInfo()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossGetChainInfo)
+}
+
+void CrossGetChainInfo::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossGetChainInfo::CrossGetChainInfo(const CrossGetChainInfo& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossGetChainInfo)
+}
+
+void CrossGetChainInfo::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+}
+
+CrossGetChainInfo::~CrossGetChainInfo() {
+  // @@protoc_insertion_point(destructor:protocol.CrossGetChainInfo)
+  SharedDtor();
+}
+
+void CrossGetChainInfo::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void CrossGetChainInfo::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossGetChainInfo::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossGetChainInfo_descriptor_;
+}
+
+const CrossGetChainInfo& CrossGetChainInfo::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossGetChainInfo* CrossGetChainInfo::default_instance_ = NULL;
+
+CrossGetChainInfo* CrossGetChainInfo::New(::google::protobuf::Arena* arena) const {
+  CrossGetChainInfo* n = new CrossGetChainInfo;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossGetChainInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossGetChainInfo)
+}
+
+bool CrossGetChainInfo::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossGetChainInfo)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossGetChainInfo)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossGetChainInfo)
+  return false;
+#undef DO_
+}
+
+void CrossGetChainInfo::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossGetChainInfo)
+  // @@protoc_insertion_point(serialize_end:protocol.CrossGetChainInfo)
+}
+
+::google::protobuf::uint8* CrossGetChainInfo::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossGetChainInfo)
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossGetChainInfo)
+  return target;
+}
+
+int CrossGetChainInfo::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossGetChainInfo)
+  int total_size = 0;
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossGetChainInfo::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossGetChainInfo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossGetChainInfo* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossGetChainInfo>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossGetChainInfo)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossGetChainInfo)
+    MergeFrom(*source);
+  }
+}
+
+void CrossGetChainInfo::MergeFrom(const CrossGetChainInfo& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossGetChainInfo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+}
+
+void CrossGetChainInfo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossGetChainInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossGetChainInfo::CopyFrom(const CrossGetChainInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossGetChainInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossGetChainInfo::IsInitialized() const {
+
+  return true;
+}
+
+void CrossGetChainInfo::Swap(CrossGetChainInfo* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossGetChainInfo::InternalSwap(CrossGetChainInfo* other) {
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossGetChainInfo::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossGetChainInfo_descriptor_;
+  metadata.reflection = CrossGetChainInfo_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossGetChainInfo
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossChainInfoResponse::kChainUniqueFieldNumber;
+const int CrossChainInfoResponse::kTargetChainUniqueFieldNumber;
+const int CrossChainInfoResponse::kCommContractFieldNumber;
+const int CrossChainInfoResponse::kTargetCommContractFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossChainInfoResponse::CrossChainInfoResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossChainInfoResponse)
+}
+
+void CrossChainInfoResponse::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossChainInfoResponse::CrossChainInfoResponse(const CrossChainInfoResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossChainInfoResponse)
+}
+
+void CrossChainInfoResponse::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  target_chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  comm_contract_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  target_comm_contract_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossChainInfoResponse::~CrossChainInfoResponse() {
+  // @@protoc_insertion_point(destructor:protocol.CrossChainInfoResponse)
+  SharedDtor();
+}
+
+void CrossChainInfoResponse::SharedDtor() {
+  chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  target_chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  comm_contract_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  target_comm_contract_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossChainInfoResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossChainInfoResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossChainInfoResponse_descriptor_;
+}
+
+const CrossChainInfoResponse& CrossChainInfoResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossChainInfoResponse* CrossChainInfoResponse::default_instance_ = NULL;
+
+CrossChainInfoResponse* CrossChainInfoResponse::New(::google::protobuf::Arena* arena) const {
+  CrossChainInfoResponse* n = new CrossChainInfoResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossChainInfoResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossChainInfoResponse)
+  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  target_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  target_comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossChainInfoResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossChainInfoResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string chain_unique = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_chain_unique()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->chain_unique().data(), this->chain_unique().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossChainInfoResponse.chain_unique"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_target_chain_unique;
+        break;
+      }
+
+      // optional string target_chain_unique = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_target_chain_unique:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_target_chain_unique()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->target_chain_unique().data(), this->target_chain_unique().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossChainInfoResponse.target_chain_unique"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_comm_contract;
+        break;
+      }
+
+      // optional string comm_contract = 3;
+      case 3: {
+        if (tag == 26) {
+         parse_comm_contract:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_comm_contract()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->comm_contract().data(), this->comm_contract().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossChainInfoResponse.comm_contract"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_target_comm_contract;
+        break;
+      }
+
+      // optional string target_comm_contract = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_target_comm_contract:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_target_comm_contract()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->target_comm_contract().data(), this->target_comm_contract().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossChainInfoResponse.target_comm_contract"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossChainInfoResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossChainInfoResponse)
+  return false;
+#undef DO_
+}
+
+void CrossChainInfoResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossChainInfoResponse)
+  // optional string chain_unique = 1;
+  if (this->chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->chain_unique().data(), this->chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.chain_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->chain_unique(), output);
+  }
+
+  // optional string target_chain_unique = 2;
+  if (this->target_chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->target_chain_unique().data(), this->target_chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.target_chain_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->target_chain_unique(), output);
+  }
+
+  // optional string comm_contract = 3;
+  if (this->comm_contract().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->comm_contract().data(), this->comm_contract().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.comm_contract");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      3, this->comm_contract(), output);
+  }
+
+  // optional string target_comm_contract = 4;
+  if (this->target_comm_contract().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->target_comm_contract().data(), this->target_comm_contract().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.target_comm_contract");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      4, this->target_comm_contract(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossChainInfoResponse)
+}
+
+::google::protobuf::uint8* CrossChainInfoResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossChainInfoResponse)
+  // optional string chain_unique = 1;
+  if (this->chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->chain_unique().data(), this->chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.chain_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->chain_unique(), target);
+  }
+
+  // optional string target_chain_unique = 2;
+  if (this->target_chain_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->target_chain_unique().data(), this->target_chain_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.target_chain_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->target_chain_unique(), target);
+  }
+
+  // optional string comm_contract = 3;
+  if (this->comm_contract().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->comm_contract().data(), this->comm_contract().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.comm_contract");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->comm_contract(), target);
+  }
+
+  // optional string target_comm_contract = 4;
+  if (this->target_comm_contract().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->target_comm_contract().data(), this->target_comm_contract().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossChainInfoResponse.target_comm_contract");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->target_comm_contract(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossChainInfoResponse)
+  return target;
+}
+
+int CrossChainInfoResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossChainInfoResponse)
+  int total_size = 0;
+
+  // optional string chain_unique = 1;
+  if (this->chain_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->chain_unique());
+  }
+
+  // optional string target_chain_unique = 2;
+  if (this->target_chain_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->target_chain_unique());
+  }
+
+  // optional string comm_contract = 3;
+  if (this->comm_contract().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->comm_contract());
+  }
+
+  // optional string target_comm_contract = 4;
+  if (this->target_comm_contract().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->target_comm_contract());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossChainInfoResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossChainInfoResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossChainInfoResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossChainInfoResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossChainInfoResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossChainInfoResponse)
+    MergeFrom(*source);
+  }
+}
+
+void CrossChainInfoResponse::MergeFrom(const CrossChainInfoResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossChainInfoResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.chain_unique().size() > 0) {
+
+    chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.chain_unique_);
+  }
+  if (from.target_chain_unique().size() > 0) {
+
+    target_chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.target_chain_unique_);
+  }
+  if (from.comm_contract().size() > 0) {
+
+    comm_contract_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_contract_);
+  }
+  if (from.target_comm_contract().size() > 0) {
+
+    target_comm_contract_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.target_comm_contract_);
+  }
+}
+
+void CrossChainInfoResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossChainInfoResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossChainInfoResponse::CopyFrom(const CrossChainInfoResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossChainInfoResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossChainInfoResponse::IsInitialized() const {
+
+  return true;
+}
+
+void CrossChainInfoResponse::Swap(CrossChainInfoResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossChainInfoResponse::InternalSwap(CrossChainInfoResponse* other) {
+  chain_unique_.Swap(&other->chain_unique_);
+  target_chain_unique_.Swap(&other->target_chain_unique_);
+  comm_contract_.Swap(&other->comm_contract_);
+  target_comm_contract_.Swap(&other->target_comm_contract_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossChainInfoResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossChainInfoResponse_descriptor_;
+  metadata.reflection = CrossChainInfoResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossChainInfoResponse
+
+// optional string chain_unique = 1;
+void CrossChainInfoResponse::clear_chain_unique() {
+  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossChainInfoResponse::chain_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.chain_unique)
+  return chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_chain_unique(const ::std::string& value) {
+  
+  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.chain_unique)
+}
+ void CrossChainInfoResponse::set_chain_unique(const char* value) {
+  
+  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.chain_unique)
+}
+ void CrossChainInfoResponse::set_chain_unique(const char* value, size_t size) {
+  
+  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.chain_unique)
+}
+ ::std::string* CrossChainInfoResponse::mutable_chain_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.chain_unique)
+  return chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossChainInfoResponse::release_chain_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.chain_unique)
+  
+  return chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_allocated_chain_unique(::std::string* chain_unique) {
+  if (chain_unique != NULL) {
+    
+  } else {
+    
+  }
+  chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), chain_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.chain_unique)
+}
+
+// optional string target_chain_unique = 2;
+void CrossChainInfoResponse::clear_target_chain_unique() {
+  target_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossChainInfoResponse::target_chain_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.target_chain_unique)
+  return target_chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_target_chain_unique(const ::std::string& value) {
+  
+  target_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.target_chain_unique)
+}
+ void CrossChainInfoResponse::set_target_chain_unique(const char* value) {
+  
+  target_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.target_chain_unique)
+}
+ void CrossChainInfoResponse::set_target_chain_unique(const char* value, size_t size) {
+  
+  target_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.target_chain_unique)
+}
+ ::std::string* CrossChainInfoResponse::mutable_target_chain_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.target_chain_unique)
+  return target_chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossChainInfoResponse::release_target_chain_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.target_chain_unique)
+  
+  return target_chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_allocated_target_chain_unique(::std::string* target_chain_unique) {
+  if (target_chain_unique != NULL) {
+    
+  } else {
+    
+  }
+  target_chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), target_chain_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.target_chain_unique)
+}
+
+// optional string comm_contract = 3;
+void CrossChainInfoResponse::clear_comm_contract() {
+  comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossChainInfoResponse::comm_contract() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.comm_contract)
+  return comm_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_comm_contract(const ::std::string& value) {
+  
+  comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.comm_contract)
+}
+ void CrossChainInfoResponse::set_comm_contract(const char* value) {
+  
+  comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.comm_contract)
+}
+ void CrossChainInfoResponse::set_comm_contract(const char* value, size_t size) {
+  
+  comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.comm_contract)
+}
+ ::std::string* CrossChainInfoResponse::mutable_comm_contract() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.comm_contract)
+  return comm_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossChainInfoResponse::release_comm_contract() {
+  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.comm_contract)
+  
+  return comm_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_allocated_comm_contract(::std::string* comm_contract) {
+  if (comm_contract != NULL) {
+    
+  } else {
+    
+  }
+  comm_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_contract);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.comm_contract)
+}
+
+// optional string target_comm_contract = 4;
+void CrossChainInfoResponse::clear_target_comm_contract() {
+  target_comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossChainInfoResponse::target_comm_contract() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.target_comm_contract)
+  return target_comm_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_target_comm_contract(const ::std::string& value) {
+  
+  target_comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.target_comm_contract)
+}
+ void CrossChainInfoResponse::set_target_comm_contract(const char* value) {
+  
+  target_comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.target_comm_contract)
+}
+ void CrossChainInfoResponse::set_target_comm_contract(const char* value, size_t size) {
+  
+  target_comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.target_comm_contract)
+}
+ ::std::string* CrossChainInfoResponse::mutable_target_comm_contract() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.target_comm_contract)
+  return target_comm_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossChainInfoResponse::release_target_comm_contract() {
+  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.target_comm_contract)
+  
+  return target_comm_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossChainInfoResponse::set_allocated_target_comm_contract(::std::string* target_comm_contract) {
+  if (target_comm_contract != NULL) {
+    
+  } else {
+    
+  }
+  target_comm_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), target_comm_contract);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.target_comm_contract)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

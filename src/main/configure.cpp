@@ -188,6 +188,26 @@ namespace bubi {
 		return true;
 	}
 
+	CrossConfigure::CrossConfigure() {
+		enabled_ = false;
+	}
+
+	CrossConfigure::~CrossConfigure() {
+	}
+
+	bool CrossConfigure::Load(const Json::Value &value) {
+		Configure::GetValue(value, "chain_unique", chain_unique_);
+		Configure::GetValue(value, "target_chain_unique", target_chain_unique_);
+		Configure::GetValue(value, "comm_contract", comm_contract_);
+		Configure::GetValue(value, "enabled", enabled_);
+
+		std::string address;
+		Configure::GetValue(value, "notary_addr", address);
+		notary_addr_ = utils::InetAddress(address);
+
+		return true;
+	}
+
 	Configure::Configure() {}
 
 	Configure::~Configure() {}
@@ -210,6 +230,7 @@ namespace bubi {
 		validation_configure_.Load(values["validation"]);
 		wsserver_configure_.Load(values["wsserver"]);
 		monitor_configure_.Load(values["monitor"]);
+		cross_configure_.Load(values["cross"]);
 		return true;
 	}
 }

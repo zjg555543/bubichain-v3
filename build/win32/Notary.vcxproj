@@ -11,75 +11,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\api\websocket_server.cpp" />
-    <ClCompile Include="..\..\src\api\web_server.cpp" />
-    <ClCompile Include="..\..\src\api\web_server_command.cpp" />
-    <ClCompile Include="..\..\src\api\web_server_helper.cpp" />
-    <ClCompile Include="..\..\src\api\web_server_query.cpp" />
-    <ClCompile Include="..\..\src\api\web_server_update.cpp" />
-    <ClCompile Include="..\..\src\cross\cross_utils.cpp" />
     <ClCompile Include="..\..\src\cross\message_channel.cpp" />
-    <ClCompile Include="..\..\src\cross\cross_chain_mgr.cpp" />
-    <ClCompile Include="..\..\src\glue\ledger_upgrade.cpp" />
-    <ClCompile Include="..\..\src\glue\transaction_set.cpp" />
-    <ClCompile Include="..\..\src\ledger\contract_manager.cpp" />
     <ClCompile Include="..\..\src\ledger\environment.cpp" />
     <ClCompile Include="..\..\src\ledger\kv_trie.cpp" />
-    <ClCompile Include="..\..\src\ledger\operation_frm.cpp" />
     <ClCompile Include="..\..\src\ledger\trie.cpp" />
-    <ClCompile Include="..\..\src\main\configure.cpp" />
-    <ClCompile Include="..\..\src\monitor\monitor.cpp" />
-    <ClCompile Include="..\..\src\monitor\monitor_manager.cpp" />
-    <ClCompile Include="..\..\src\monitor\system_manager.cpp" />
+    <ClCompile Include="..\..\src\notary\configure.cpp" />
+    <ClCompile Include="..\..\src\notary\notary_mgr.cpp" />
+    <ClCompile Include="..\..\src\notary\main.cpp" />
     <ClCompile Include="..\..\src\overlay\peer.cpp" />
-    <ClCompile Include="..\..\src\overlay\peer_network.cpp" />
     <ClCompile Include="..\..\src\proto\cpp\chain.pb.cc" />
     <ClCompile Include="..\..\src\proto\cpp\common.pb.cc" />
-    <ClCompile Include="..\..\src\proto\cpp\consensus.pb.cc" />
     <ClCompile Include="..\..\src\proto\cpp\merkeltrie.pb.cc" />
-    <ClCompile Include="..\..\src\proto\cpp\monitor.pb.cc" />
     <ClCompile Include="..\..\src\proto\cpp\overlay.pb.cc" />
-    <ClCompile Include="..\..\src\glue\glue_manager.cpp" />
     <ClCompile Include="..\..\src\ledger\account.cpp" />
-    <ClCompile Include="..\..\src\ledger\ledger_frm.cpp" />
-    <ClCompile Include="..\..\src\ledger\ledger_manager.cpp" />
-    <ClCompile Include="..\..\src\ledger\transaction_frm.cpp" />
-    <ClCompile Include="..\..\src\main\main.cpp" />
     <ClCompile Include="..\..\src\overlay\broadcast.cpp" />
-    <ClCompile Include="..\..\src\overlay\peer_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\api\websocket_server.h" />
-    <ClInclude Include="..\..\src\api\web_server.h" />
-    <ClInclude Include="..\..\src\cross\cross_utils.h" />
     <ClInclude Include="..\..\src\cross\message_channel.h" />
-    <ClInclude Include="..\..\src\cross\cross_chain_mgr.h" />
-    <ClInclude Include="..\..\src\glue\ledger_upgrade.h" />
-    <ClInclude Include="..\..\src\glue\transaction_set.h" />
-    <ClInclude Include="..\..\src\ledger\contract_manager.h" />
     <ClInclude Include="..\..\src\ledger\environment.h" />
     <ClInclude Include="..\..\src\ledger\kv_trie.h" />
-    <ClInclude Include="..\..\src\ledger\operation_frm.h" />
     <ClInclude Include="..\..\src\ledger\trie.h" />
-    <ClInclude Include="..\..\src\main\configure.h" />
-    <ClInclude Include="..\..\src\monitor\monitor.h" />
-    <ClInclude Include="..\..\src\monitor\monitor_manager.h" />
-    <ClInclude Include="..\..\src\monitor\system_manager.h" />
+    <ClInclude Include="..\..\src\notary\configure.h" />
+    <ClInclude Include="..\..\src\notary\notary_mgr.h" />
     <ClInclude Include="..\..\src\overlay\peer.h" />
-    <ClInclude Include="..\..\src\overlay\peer_network.h" />
     <ClInclude Include="..\..\src\proto\cpp\chain.pb.h" />
     <ClInclude Include="..\..\src\proto\cpp\common.pb.h" />
-    <ClInclude Include="..\..\src\proto\cpp\consensus.pb.h" />
     <ClInclude Include="..\..\src\proto\cpp\merkeltrie.pb.h" />
-    <ClInclude Include="..\..\src\proto\cpp\monitor.pb.h" />
     <ClInclude Include="..\..\src\proto\cpp\overlay.pb.h" />
-    <ClInclude Include="..\..\src\glue\glue_manager.h" />
     <ClInclude Include="..\..\src\ledger\account.h" />
-    <ClInclude Include="..\..\src\ledger\ledger_frm.h" />
-    <ClInclude Include="..\..\src\ledger\ledger_manager.h" />
-    <ClInclude Include="..\..\src\ledger\transaction_frm.h" />
     <ClInclude Include="..\..\src\overlay\broadcast.h" />
-    <ClInclude Include="..\..\src\overlay\peer_manager.h" />
     <ClInclude Include="..\..\src\proto\pb2json.h" />
   </ItemGroup>
   <ItemGroup>
@@ -100,21 +60,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\src\overlay\Makefile.am" />
-    <None Include="..\..\src\glue\Makefile.am" />
-    <None Include="..\..\configure.ac" />
-    <None Include="..\..\src\ledger\Makefile.am" />
-    <None Include="..\..\src\main\Makefile.am" />
     <None Include="..\..\src\proto\common.proto" />
-    <None Include="..\..\src\proto\consensus.proto" />
     <None Include="..\..\src\proto\chain.proto" />
-    <None Include="..\..\src\proto\merkeltrie.proto" />
     <None Include="..\..\src\proto\overlay.proto" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B69ACED4-ACCB-4230-8229-1A2EA1A5C4CC}</ProjectGuid>
-    <RootNamespace>Bubi</RootNamespace>
-    <ProjectName>Bubi</ProjectName>
+    <ProjectGuid>{4F4FBC17-02BE-4E12-9742-6C502A369940}</ProjectGuid>
+    <RootNamespace>Notary</RootNamespace>
+    <ProjectName>Notary</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

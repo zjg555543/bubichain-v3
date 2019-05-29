@@ -45,6 +45,7 @@ namespace bubi {
 		const static char *MONITOR_CONFIG_FILE;
 		const static char *CA_CONFIG_FILE;
 		const static char *LOGGER_FILE;
+		const static char *CONFIG_NOTARY_FILE;
 
 		const static char* STATISTICS;
 		const static char *CONSENSUS_PREFIX;
