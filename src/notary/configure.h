@@ -23,7 +23,6 @@ namespace bubi {
 
 		std::string chain_unique_;
 		std::string target_chain_unique_;
-		std::string comm_contract_;
 
 		bool Load(const Json::Value &value);
 	};

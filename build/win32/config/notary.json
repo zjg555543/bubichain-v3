@@ -14,11 +14,9 @@
 	"pair_chain_1": {
 		"chain_unique": "CHAIN_20190528_A",
 		"target_chain_unique": "CHAIN_20190528_B",
-		"comm_contract": "a001c3bbfce78bba8bfcb37113a84e95a3fd441a5622e3",
 	},
 	"pair_chain_2": {
 		"chain_unique": "CHAIN_20190528_B",
 		"target_chain_unique": "CHAIN_20190528_A",
-		"comm_contract": "a001c3bbfce78bba8bfcb37113a84e95a3fd441a5622e3",
 	}
 }

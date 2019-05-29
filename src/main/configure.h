@@ -117,7 +117,6 @@ namespace bubi {
 		std::string chain_unique_;
 		std::string target_chain_unique_;
 		utils::InetAddress notary_addr_;
-		std::string comm_contract_;
 		bool enabled_;
 		bool Load(const Json::Value &value);
 	};

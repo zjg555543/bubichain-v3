@@ -28,7 +28,6 @@ namespace bubi {
 	bool PairChainConfigure::Load(const Json::Value &value) {
 		Configure::GetValue(value, "chain_unique", chain_unique_);
 		Configure::GetValue(value, "target_chain_unique", target_chain_unique_);
-		Configure::GetValue(value, "comm_contract", comm_contract_);
 		return true;
 	}
 

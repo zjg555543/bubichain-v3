@@ -18,8 +18,29 @@ namespace bubi {
 
 	}
 
+	void ChainObj::SetChainInfo(const std::string &chain_unique, const std::string &target_chain_unique){
+		chain_unique_ = chain_unique;
+		target_chain_unique_ = target_chain_unique;
+	}
+
 	void ChainObj::SetPeerChain(ChainObj *peer_chain){
 		peer_chain_ = peer_chain;
+	}
+
+	void ChainObj::OnHandleProposal(const std::string &data){
+		protocol::CrossProposal cross_proposal;
+		cross_proposal.ParseFromString(data);
+		//TODO
+		LOG_INFO("Recv Proposal..");
+		return;
+	}
+
+	void ChainObj::OnHandleProposalResponse(const std::string &data){
+		protocol::CrossHelloResponse cross_proposal_response;
+		cross_proposal_response.ParseFromString(data);
+		//TODO
+		LOG_INFO("Recv Proposal Response..");
+		return;
 	}
 
 	NotaryMgr::NotaryMgr(){
@@ -40,8 +61,15 @@ namespace bubi {
 		TimerNotify::RegisterModule(this);
 		LOG_INFO("Initialized notary mgr successfully");
 
+		PairChainMap::iterator itr = Configure::Instance().pair_chain_map_.begin();
+		const PairChainConfigure &pair_chain_a = itr->second;
 		a_chain_obj_.SetPeerChain(&b_chain_obj_);
+		a_chain_obj_.SetChainInfo(pair_chain_a.chain_unique_, pair_chain_a.target_chain_unique_);
+
+		itr++;
+		const PairChainConfigure &pair_chain_b = itr->second;;
 		b_chain_obj_.SetPeerChain(&a_chain_obj_);
+		a_chain_obj_.SetChainInfo(pair_chain_b.chain_unique_, pair_chain_b.target_chain_unique_);
 
 		ChannelParameter param;
 		param.inbound_ = true;
@@ -63,24 +91,9 @@ namespace bubi {
 	}
 
 	void NotaryMgr::HandleMessage(const std::string &chain_unique, int64_t msg_type, bool request, const std::string &data){
+		//1、判断是否存在于 chain_obj中
 
+		//2、把消息交付于对应的chain_obj 处理
 	}
-
-	void NotaryMgr::OnHandleProposal(const std::string &data){
-		protocol::CrossProposal cross_proposal;
-		cross_proposal.ParseFromString(data);
-		//TODO
-		LOG_INFO("Recv Proposal..");
-		return;
-	}
-
-	void NotaryMgr::OnHandleProposalResponse(const std::string &data){
-		protocol::CrossHelloResponse cross_proposal_response;
-		cross_proposal_response.ParseFromString(data);
-		//TODO
-		LOG_INFO("Recv Proposal Response..");
-		return;
-	}
-
 }
 

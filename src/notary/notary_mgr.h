@@ -14,11 +14,16 @@ namespace bubi {
 
 		void SetPeerChain(ChainObj *peer_chain);
 		void OnTimer(int64_t current_time);
-		//void SetChainInfo();
-		void SetChainObjId();
+		void SetChainInfo(const std::string &chain_unique, const std::string &target_chain_unique);
+		
+		//inside function
+		void OnHandleProposal(const std::string &data);
+		void OnHandleProposalResponse(const std::string &data);
 
 	private:
 		ChainObj *peer_chain_;
+		std::string chain_unique_;
+		std::string target_chain_unique_;
 	};
 
 	class NotaryMgr : public utils::Singleton<NotaryMgr>, public TimerNotify, public IMessageHandler{
@@ -35,10 +40,6 @@ namespace bubi {
 		virtual void OnSlowTimer(int64_t current_time) override {};
 
 		virtual void HandleMessage(const std::string &chain_unique, int64_t msg_type, bool request, const std::string &data) override;
-
-		//inside function
-		void OnHandleProposal(const std::string &data);
-		void OnHandleProposalResponse(const std::string &data);
 
 	private:
 		ChainObj a_chain_obj_;
