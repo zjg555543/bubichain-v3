@@ -10,18 +10,18 @@
 namespace bubi {
 	class IMessageHandler{
 	public:
-		virtual void HandleMessage(const std::string &chain_unique, int64_t msg_type, bool request, const std::string &data) = 0;
+		virtual void HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message) = 0;
 	};
 
 	class ChannelParameter{
 	public:
 		ChannelParameter(){
-			chain_unique_ = "";
+			comm_unique_ = "";
 			inbound_ = false;
 		}
 		~ChannelParameter(){}
 
-		std::string chain_unique_;
+		std::string comm_unique_;
 		utils::InetAddress listen_addr_;
 		utils::InetAddress notary_addr_;
 		bool inbound_;
@@ -38,18 +38,17 @@ namespace bubi {
 
 		void SetPeerInfo(const protocol::CrossHello &hello);
 		void SetActiveTime(int64_t current_time);
-		bool SendHello(const std::string &chain_unique, std::error_code &ec);
+		bool SendHello(const std::string &comm_unique, std::error_code &ec);
 
 		virtual bool OnNetworkTimer(int64_t current_time);
 
 	private:
 		//Peer infomation
 		int64_t active_time_;
-		std::string chain_unique_;
+		std::string comm_unique_;
 	};
 
 	class MessageChannel : public TimerNotify,
-		public StatusModule,
 		public Network,
 		public utils::Runnable {
 		friend class utils::Singleton<bubi::MessageChannel>;
@@ -59,9 +58,10 @@ namespace bubi {
 
 		bool Initialize(const ChannelParameter &param);
 		bool Exit();
-		void SendMessage(int64_t type, const std::string &data);
-		virtual void Register(IMessageHandler *handler, int64_t msg_type);
-		virtual void UnRegister(IMessageHandler *handler, int64_t msg_type);
+		void SendRequest(const std::string &comm_unique, int64_t type, const std::string &data);
+		void SendResponse(const std::string &comm_unique, const protocol::WsMessage &req_message, const std::string &data);
+		void Register(IMessageHandler *handler, int64_t msg_type);
+		void UnRegister(IMessageHandler *handler, int64_t msg_type);
 
 	protected:
 		virtual void Run(utils::Thread *thread) override;
@@ -81,20 +81,16 @@ namespace bubi {
 			connection_hdl con, const std::string &uri, int64_t id);
 
 		//override
-		virtual void GetModuleStatus(Json::Value &data) override;
 		virtual void OnTimer(int64_t current_time) override;
 		virtual void OnSlowTimer(int64_t current_time) override {};
 
 		//internal call
 		void ProcessMessageChannelDisconnect();
-		void Notify(const std::string &chain_unique, int64_t type, bool request, const std::string &data);
+		void Notify(const std::string &comm_unique, const protocol::WsMessage &message);
 		std::string GetChainUnique(int64_t conn_id);
 	
 	private:
 		utils::Thread *thread_ptr_;
-		uint64_t last_connect_time_;
-		uint64_t connect_interval_;
-		int64_t  network_id_;
 		std::error_code last_ec_;
 		int64_t last_uptate_time_;
 		std::map<int64_t, IMessageHandler*> listener_map_;

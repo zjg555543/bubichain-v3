@@ -26,8 +26,8 @@ namespace bubi {
 	}
 
 	bool PairChainConfigure::Load(const Json::Value &value) {
-		Configure::GetValue(value, "chain_unique", chain_unique_);
-		Configure::GetValue(value, "target_chain_unique", target_chain_unique_);
+		Configure::GetValue(value, "comm_unique", comm_unique_);
+		Configure::GetValue(value, "target_comm_unique", target_comm_unique_);
 		return true;
 	}
 
@@ -50,16 +50,16 @@ namespace bubi {
 		PairChainConfigure chain2;
 		chain2.Load(values["pair_chain_2"]);
 
-		if (chain1.chain_unique_ != chain2.target_chain_unique_){
+		if (chain1.comm_unique_ != chain2.target_comm_unique_){
 			return false;
 		}
 
-		if (chain1.target_chain_unique_ != chain2.chain_unique_){
+		if (chain1.target_comm_unique_ != chain2.comm_unique_){
 			return false;
 		}
 
-		pair_chain_map_[chain1.chain_unique_] = chain1;
-		pair_chain_map_[chain2.chain_unique_] = chain2;
+		pair_chain_map_[chain1.comm_unique_] = chain1;
+		pair_chain_map_[chain2.comm_unique_] = chain2;
 
 		return true;
 	}

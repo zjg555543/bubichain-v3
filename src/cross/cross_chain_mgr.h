@@ -20,18 +20,21 @@ namespace bubi {
 		MessageChannel *channel_;
 	};
 
-	class MessageHandler : public IMessageHandler{
+	class MessageHandler{
 	public:
-		MessageHandler(){}
+		MessageHandler(MessageChannel *channel);
 		~MessageHandler(){}
 
-		virtual void HandleMessage(const std::string &chain_unique, int64_t msg_type, bool request, const std::string &data) override;
+		void OnHandleProposal(const protocol::WsMessage &message);
+		void OnHandleNotarys(const protocol::WsMessage &message);
+		void OnHandleAccountNonce(const protocol::WsMessage &message);
+		void OnHandleDoTransaction(const protocol::WsMessage &message);
 
-		void OnHandleProposal(const std::string &data);
-		void OnHandleProposalResponse(const std::string &data);
+	private:
+		MessageChannel *channel_;
 	};
 
-	class CrossChainMgr : public utils::Singleton<CrossChainMgr>{
+	class CrossChainMgr : public utils::Singleton<CrossChainMgr>, public IMessageHandler{
 		friend class utils::Singleton<bubi::CrossChainMgr>;
 	public:
 		CrossChainMgr();
@@ -42,8 +45,11 @@ namespace bubi {
 		void HandleBlock(LedgerFrm::pointer closing_ledger);
 
 	private:
+		virtual void HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message) override;
+
+	private:
 		MessageChannel channel_;
-		MessageHandler handler_;
+		MessageHandler *handler_;
 		BlockListener *block_listener_;
 	};
 }

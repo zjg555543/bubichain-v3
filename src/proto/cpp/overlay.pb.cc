@@ -74,15 +74,34 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* CrossProposal_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   CrossProposal_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CrossGetChainInfo_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* CrossProposalInfo_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  CrossGetChainInfo_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CrossChainInfoResponse_descriptor_ = NULL;
+  CrossProposalInfo_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossProposalResponse_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  CrossChainInfoResponse_reflection_ = NULL;
+  CrossProposalResponse_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossNotarys_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossNotarys_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossNotarysResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossNotarysResponse_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossAccountNonce_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossAccountNonce_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossAccountNonceResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossAccountNonceResponse_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossDoTransaction_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossDoTransaction_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CrossDoTransactionResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CrossDoTransactionResponse_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* OVERLAY_MESSAGE_TYPE_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* ChainMessageType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CROSS_MESSAGE_TYPE_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* CROSS_PROPOSAL_TYPE_descriptor_ = NULL;
 
 }  // namespace
 
@@ -345,7 +364,7 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ChainContractLog, _is_default_instance_));
   CrossHello_descriptor_ = file->message_type(14);
   static const int CrossHello_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHello, chain_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHello, comm_unique_),
   };
   CrossHello_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -375,11 +394,10 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _is_default_instance_));
   CrossProposal_descriptor_ = file->message_type(16);
-  static const int CrossProposal_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, src_chain_unique_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, dst_chain_unique_),
+  static const int CrossProposal_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, proposal_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, proposal_body_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, confirmed_notary_),
   };
   CrossProposal_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -392,41 +410,137 @@ void protobuf_AssignDesc_overlay_2eproto() {
       sizeof(CrossProposal),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, _is_default_instance_));
-  CrossGetChainInfo_descriptor_ = file->message_type(17);
-  static const int CrossGetChainInfo_offsets_[1] = {
+  CrossProposalInfo_descriptor_ = file->message_type(17);
+  static const int CrossProposalInfo_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, comm_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, proposal_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, proposal_body_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, status_),
   };
-  CrossGetChainInfo_reflection_ =
+  CrossProposalInfo_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      CrossGetChainInfo_descriptor_,
-      CrossGetChainInfo::default_instance_,
-      CrossGetChainInfo_offsets_,
+      CrossProposalInfo_descriptor_,
+      CrossProposalInfo::default_instance_,
+      CrossProposalInfo_offsets_,
       -1,
       -1,
       -1,
-      sizeof(CrossGetChainInfo),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossGetChainInfo, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossGetChainInfo, _is_default_instance_));
-  CrossChainInfoResponse_descriptor_ = file->message_type(18);
-  static const int CrossChainInfoResponse_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, chain_unique_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, target_chain_unique_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, comm_contract_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, target_comm_contract_),
+      sizeof(CrossProposalInfo),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, _is_default_instance_));
+  CrossProposalResponse_descriptor_ = file->message_type(18);
+  static const int CrossProposalResponse_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalResponse, proposal_info_),
   };
-  CrossChainInfoResponse_reflection_ =
+  CrossProposalResponse_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      CrossChainInfoResponse_descriptor_,
-      CrossChainInfoResponse::default_instance_,
-      CrossChainInfoResponse_offsets_,
+      CrossProposalResponse_descriptor_,
+      CrossProposalResponse::default_instance_,
+      CrossProposalResponse_offsets_,
       -1,
       -1,
       -1,
-      sizeof(CrossChainInfoResponse),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossChainInfoResponse, _is_default_instance_));
+      sizeof(CrossProposalResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalResponse, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalResponse, _is_default_instance_));
+  CrossNotarys_descriptor_ = file->message_type(19);
+  static const int CrossNotarys_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarys, comm_unique_),
+  };
+  CrossNotarys_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossNotarys_descriptor_,
+      CrossNotarys::default_instance_,
+      CrossNotarys_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossNotarys),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarys, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarys, _is_default_instance_));
+  CrossNotarysResponse_descriptor_ = file->message_type(20);
+  static const int CrossNotarysResponse_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarysResponse, notary_),
+  };
+  CrossNotarysResponse_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossNotarysResponse_descriptor_,
+      CrossNotarysResponse::default_instance_,
+      CrossNotarysResponse_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossNotarysResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarysResponse, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarysResponse, _is_default_instance_));
+  CrossAccountNonce_descriptor_ = file->message_type(21);
+  static const int CrossAccountNonce_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossAccountNonce, account_),
+  };
+  CrossAccountNonce_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossAccountNonce_descriptor_,
+      CrossAccountNonce::default_instance_,
+      CrossAccountNonce_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossAccountNonce),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossAccountNonce, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossAccountNonce, _is_default_instance_));
+  CrossAccountNonceResponse_descriptor_ = file->message_type(22);
+  static const int CrossAccountNonceResponse_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossAccountNonceResponse, nonce_),
+  };
+  CrossAccountNonceResponse_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossAccountNonceResponse_descriptor_,
+      CrossAccountNonceResponse::default_instance_,
+      CrossAccountNonceResponse_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossAccountNonceResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossAccountNonceResponse, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossAccountNonceResponse, _is_default_instance_));
+  CrossDoTransaction_descriptor_ = file->message_type(23);
+  static const int CrossDoTransaction_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, hash_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, transaction_),
+  };
+  CrossDoTransaction_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossDoTransaction_descriptor_,
+      CrossDoTransaction::default_instance_,
+      CrossDoTransaction_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossDoTransaction),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, _is_default_instance_));
+  CrossDoTransactionResponse_descriptor_ = file->message_type(24);
+  static const int CrossDoTransactionResponse_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransactionResponse, hash_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransactionResponse, error_code_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransactionResponse, error_desc_),
+  };
+  CrossDoTransactionResponse_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CrossDoTransactionResponse_descriptor_,
+      CrossDoTransactionResponse::default_instance_,
+      CrossDoTransactionResponse_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CrossDoTransactionResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransactionResponse, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransactionResponse, _is_default_instance_));
   OVERLAY_MESSAGE_TYPE_descriptor_ = file->enum_type(0);
   ChainMessageType_descriptor_ = file->enum_type(1);
   CROSS_MESSAGE_TYPE_descriptor_ = file->enum_type(2);
+  CROSS_PROPOSAL_TYPE_descriptor_ = file->enum_type(3);
 }
 
 namespace {
@@ -475,9 +589,21 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       CrossProposal_descriptor_, &CrossProposal::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      CrossGetChainInfo_descriptor_, &CrossGetChainInfo::default_instance());
+      CrossProposalInfo_descriptor_, &CrossProposalInfo::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      CrossChainInfoResponse_descriptor_, &CrossChainInfoResponse::default_instance());
+      CrossProposalResponse_descriptor_, &CrossProposalResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossNotarys_descriptor_, &CrossNotarys::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossNotarysResponse_descriptor_, &CrossNotarysResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossAccountNonce_descriptor_, &CrossAccountNonce::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossAccountNonceResponse_descriptor_, &CrossAccountNonceResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossDoTransaction_descriptor_, &CrossDoTransaction::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CrossDoTransactionResponse_descriptor_, &CrossDoTransactionResponse::default_instance());
 }
 
 }  // namespace
@@ -517,10 +643,22 @@ void protobuf_ShutdownFile_overlay_2eproto() {
   delete CrossHelloResponse_reflection_;
   delete CrossProposal::default_instance_;
   delete CrossProposal_reflection_;
-  delete CrossGetChainInfo::default_instance_;
-  delete CrossGetChainInfo_reflection_;
-  delete CrossChainInfoResponse::default_instance_;
-  delete CrossChainInfoResponse_reflection_;
+  delete CrossProposalInfo::default_instance_;
+  delete CrossProposalInfo_reflection_;
+  delete CrossProposalResponse::default_instance_;
+  delete CrossProposalResponse_reflection_;
+  delete CrossNotarys::default_instance_;
+  delete CrossNotarys_reflection_;
+  delete CrossNotarysResponse::default_instance_;
+  delete CrossNotarysResponse_reflection_;
+  delete CrossAccountNonce::default_instance_;
+  delete CrossAccountNonce_reflection_;
+  delete CrossAccountNonceResponse::default_instance_;
+  delete CrossAccountNonceResponse_reflection_;
+  delete CrossDoTransaction::default_instance_;
+  delete CrossDoTransaction_reflection_;
+  delete CrossDoTransactionResponse::default_instance_;
+  delete CrossDoTransactionResponse_reflection_;
 }
 
 void protobuf_AddDesc_overlay_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -573,34 +711,48 @@ void protobuf_AddDesc_overlay_2eproto() {
     " \001(\003\"P\n\010TxStatus\022\r\n\tUNDEFINED\020\000\022\r\n\tCONFI"
     "RMED\020\001\022\013\n\007PENDING\020\002\022\014\n\010COMPLETE\020\003\022\013\n\007FAI"
     "LURE\020\004\"C\n\020ChainContractLog\022\016\n\006sender\030\001 \001"
-    "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"\"\n\nC"
-    "rossHello\022\024\n\014chain_unique\030\001 \001(\t\"Q\n\022Cross"
-    "HelloResponse\022\'\n\nerror_code\030\001 \001(\0162\023.prot"
-    "ocol.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"o\n\rCr"
-    "ossProposal\022\030\n\020src_chain_unique\030\001 \001(\t\022\030\n"
-    "\020dst_chain_unique\030\002 \001(\t\022\023\n\013proposal_id\030\003"
-    " \001(\t\022\025\n\rproposal_body\030\004 \001(\t\"\023\n\021CrossGetC"
-    "hainInfo\"\200\001\n\026CrossChainInfoResponse\022\024\n\014c"
-    "hain_unique\030\001 \001(\t\022\033\n\023target_chain_unique"
-    "\030\002 \001(\t\022\025\n\rcomm_contract\030\003 \001(\t\022\034\n\024target_"
-    "comm_contract\030\004 \001(\t*\203\002\n\024OVERLAY_MESSAGE_"
-    "TYPE\022\030\n\024OVERLAY_MSGTYPE_NONE\020\000\022\030\n\024OVERLA"
-    "Y_MSGTYPE_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_HELL"
-    "O\020\002\022\031\n\025OVERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OVERLA"
-    "Y_MSGTYPE_TRANSACTION\020\004\022\033\n\027OVERLAY_MSGTY"
-    "PE_LEDGERS\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)"
-    "\n%OVERLAY_MSGTYPE_LEDGER_UPGRADE_NOTIFY\020"
-    "\007*\342\001\n\020ChainMessageType\022\023\n\017CHAIN_TYPE_NON"
-    "E\020\000\022\017\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020"
-    "\013\022\025\n\021CHAIN_PEER_ONLINE\020\014\022\026\n\022CHAIN_PEER_O"
-    "FFLINE\020\r\022\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027CHAI"
-    "N_SUBMITTRANSACTION\020\017\022\027\n\023CHAIN_LEDGER_HE"
-    "ADER\020\020\022\026\n\022CHAIN_CONTRACT_LOG\020\021*\202\001\n\022CROSS"
-    "_MESSAGE_TYPE\022\026\n\022CROSS_MSGTYPE_NONE\020\000\022\030\n"
-    "\023CROSS_MSGTYPE_HELLO\020\221N\022\033\n\026CROSS_MSGTYPE"
-    "_PROPOSAL\020\222N\022\035\n\030CROSS_MSGTYPE_CHAIN_INFO"
-    "\020\223NB\035\n\033cn.bubi.blockchain.adapter3b\006prot"
-    "o3", 2682);
+    "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"!\n\nC"
+    "rossHello\022\023\n\013comm_unique\030\001 \001(\t\"Q\n\022CrossH"
+    "elloResponse\022\'\n\nerror_code\030\001 \001(\0162\023.proto"
+    "col.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"k\n\rCro"
+    "ssProposal\022+\n\004type\030\001 \001(\0162\035.protocol.CROS"
+    "S_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002 \001(\003\022\030\n\020"
+    "confirmed_notary\030\003 \003(\t\"\221\001\n\021CrossProposal"
+    "Info\022+\n\004type\030\001 \001(\0162\035.protocol.CROSS_PROP"
+    "OSAL_TYPE\022\023\n\013comm_unique\030\002 \001(\t\022\023\n\013propos"
+    "al_id\030\003 \001(\003\022\025\n\rproposal_body\030\004 \001(\t\022\016\n\006st"
+    "atus\030\005 \001(\t\"K\n\025CrossProposalResponse\0222\n\rp"
+    "roposal_info\030\001 \001(\0132\033.protocol.CrossPropo"
+    "salInfo\"#\n\014CrossNotarys\022\023\n\013comm_unique\030\001"
+    " \001(\t\"&\n\024CrossNotarysResponse\022\016\n\006notary\030\001"
+    " \003(\t\"$\n\021CrossAccountNonce\022\017\n\007account\030\001 \001"
+    "(\t\"*\n\031CrossAccountNonceResponse\022\r\n\005nonce"
+    "\030\001 \001(\003\"7\n\022CrossDoTransaction\022\014\n\004hash\030\001 \001"
+    "(\t\022\023\n\013transaction\030\002 \001(\014\"g\n\032CrossDoTransa"
+    "ctionResponse\022\014\n\004hash\030\001 \001(\t\022\'\n\nerror_cod"
+    "e\030\002 \001(\0162\023.protocol.ERRORCODE\022\022\n\nerror_de"
+    "sc\030\003 \001(\t*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024OVE"
+    "RLAY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_P"
+    "ING\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OVER"
+    "LAY_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_T"
+    "RANSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020"
+    "\005\022\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_M"
+    "SGTYPE_LEDGER_UPGRADE_NOTIFY\020\007*\342\001\n\020Chain"
+    "MessageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAI"
+    "N_HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_"
+    "PEER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n"
+    "\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRA"
+    "NSACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020\022\026\n\022C"
+    "HAIN_CONTRACT_LOG\020\021*\350\001\n\022CROSS_MESSAGE_TY"
+    "PE\022\026\n\022CROSS_MSGTYPE_NONE\020\000\022\030\n\023CROSS_MSGT"
+    "YPE_HELLO\020\221N\022\033\n\026CROSS_MSGTYPE_PROPOSAL\020\222"
+    "N\022\"\n\035CROSS_MSGTYPE_PROPOSAL_NOTICE\020\223N\022\032\n"
+    "\025CROSS_MSGTYPE_NOTARYS\020\224N\022 \n\033CROSS_MSGTY"
+    "PE_ACCOUNT_NONCE\020\225N\022!\n\034CROSS_MSGTYPE_DO_"
+    "TRANSACTION\020\226N*e\n\023CROSS_PROPOSAL_TYPE\022\027\n"
+    "\023CROSS_PROPOSAL_NONE\020\000\022\030\n\024CROSS_PROPOSAL"
+    "_TRANS\020\001\022\033\n\027CROSS_PROPOSAL_FEEDBACK\020\002B\035\n"
+    "\033cn.bubi.blockchain.adapter3b\006proto3", 3276);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -620,8 +772,14 @@ void protobuf_AddDesc_overlay_2eproto() {
   CrossHello::default_instance_ = new CrossHello();
   CrossHelloResponse::default_instance_ = new CrossHelloResponse();
   CrossProposal::default_instance_ = new CrossProposal();
-  CrossGetChainInfo::default_instance_ = new CrossGetChainInfo();
-  CrossChainInfoResponse::default_instance_ = new CrossChainInfoResponse();
+  CrossProposalInfo::default_instance_ = new CrossProposalInfo();
+  CrossProposalResponse::default_instance_ = new CrossProposalResponse();
+  CrossNotarys::default_instance_ = new CrossNotarys();
+  CrossNotarysResponse::default_instance_ = new CrossNotarysResponse();
+  CrossAccountNonce::default_instance_ = new CrossAccountNonce();
+  CrossAccountNonceResponse::default_instance_ = new CrossAccountNonceResponse();
+  CrossDoTransaction::default_instance_ = new CrossDoTransaction();
+  CrossDoTransactionResponse::default_instance_ = new CrossDoTransactionResponse();
   Hello::default_instance_->InitAsDefaultInstance();
   HelloResponse::default_instance_->InitAsDefaultInstance();
   Peer::default_instance_->InitAsDefaultInstance();
@@ -639,8 +797,14 @@ void protobuf_AddDesc_overlay_2eproto() {
   CrossHello::default_instance_->InitAsDefaultInstance();
   CrossHelloResponse::default_instance_->InitAsDefaultInstance();
   CrossProposal::default_instance_->InitAsDefaultInstance();
-  CrossGetChainInfo::default_instance_->InitAsDefaultInstance();
-  CrossChainInfoResponse::default_instance_->InitAsDefaultInstance();
+  CrossProposalInfo::default_instance_->InitAsDefaultInstance();
+  CrossProposalResponse::default_instance_->InitAsDefaultInstance();
+  CrossNotarys::default_instance_->InitAsDefaultInstance();
+  CrossNotarysResponse::default_instance_->InitAsDefaultInstance();
+  CrossAccountNonce::default_instance_->InitAsDefaultInstance();
+  CrossAccountNonceResponse::default_instance_->InitAsDefaultInstance();
+  CrossDoTransaction::default_instance_->InitAsDefaultInstance();
+  CrossDoTransactionResponse::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_overlay_2eproto);
 }
 
@@ -701,6 +865,24 @@ bool CROSS_MESSAGE_TYPE_IsValid(int value) {
     case 10001:
     case 10002:
     case 10003:
+    case 10004:
+    case 10005:
+    case 10006:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* CROSS_PROPOSAL_TYPE_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CROSS_PROPOSAL_TYPE_descriptor_;
+}
+bool CROSS_PROPOSAL_TYPE_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+    case 2:
       return true;
     default:
       return false;
@@ -7087,7 +7269,7 @@ void ChainContractLog::clear_timestamp() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CrossHello::kChainUniqueFieldNumber;
+const int CrossHello::kCommUniqueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossHello::CrossHello()
@@ -7112,7 +7294,7 @@ void CrossHello::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  comm_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 CrossHello::~CrossHello() {
@@ -7121,7 +7303,7 @@ CrossHello::~CrossHello() {
 }
 
 void CrossHello::SharedDtor() {
-  chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  comm_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -7153,7 +7335,7 @@ CrossHello* CrossHello::New(::google::protobuf::Arena* arena) const {
 
 void CrossHello::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossHello)
-  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 bool CrossHello::MergePartialFromCodedStream(
@@ -7166,15 +7348,15 @@ bool CrossHello::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string chain_unique = 1;
+      // optional string comm_unique = 1;
       case 1: {
         if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_chain_unique()));
+                input, this->mutable_comm_unique()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->chain_unique().data(), this->chain_unique().length(),
+            this->comm_unique().data(), this->comm_unique().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossHello.chain_unique"));
+            "protocol.CrossHello.comm_unique"));
         } else {
           goto handle_unusual;
         }
@@ -7206,14 +7388,14 @@ failure:
 void CrossHello::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:protocol.CrossHello)
-  // optional string chain_unique = 1;
-  if (this->chain_unique().size() > 0) {
+  // optional string comm_unique = 1;
+  if (this->comm_unique().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->chain_unique().data(), this->chain_unique().length(),
+      this->comm_unique().data(), this->comm_unique().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossHello.chain_unique");
+      "protocol.CrossHello.comm_unique");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->chain_unique(), output);
+      1, this->comm_unique(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossHello)
@@ -7222,15 +7404,15 @@ void CrossHello::SerializeWithCachedSizes(
 ::google::protobuf::uint8* CrossHello::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossHello)
-  // optional string chain_unique = 1;
-  if (this->chain_unique().size() > 0) {
+  // optional string comm_unique = 1;
+  if (this->comm_unique().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->chain_unique().data(), this->chain_unique().length(),
+      this->comm_unique().data(), this->comm_unique().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossHello.chain_unique");
+      "protocol.CrossHello.comm_unique");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->chain_unique(), target);
+        1, this->comm_unique(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossHello)
@@ -7241,11 +7423,11 @@ int CrossHello::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.CrossHello)
   int total_size = 0;
 
-  // optional string chain_unique = 1;
-  if (this->chain_unique().size() > 0) {
+  // optional string comm_unique = 1;
+  if (this->comm_unique().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->chain_unique());
+        this->comm_unique());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -7276,9 +7458,9 @@ void CrossHello::MergeFrom(const CrossHello& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.chain_unique().size() > 0) {
+  if (from.comm_unique().size() > 0) {
 
-    chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.chain_unique_);
+    comm_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_unique_);
   }
 }
 
@@ -7306,7 +7488,7 @@ void CrossHello::Swap(CrossHello* other) {
   InternalSwap(other);
 }
 void CrossHello::InternalSwap(CrossHello* other) {
-  chain_unique_.Swap(&other->chain_unique_);
+  comm_unique_.Swap(&other->comm_unique_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -7322,48 +7504,48 @@ void CrossHello::InternalSwap(CrossHello* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // CrossHello
 
-// optional string chain_unique = 1;
-void CrossHello::clear_chain_unique() {
-  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional string comm_unique = 1;
+void CrossHello::clear_comm_unique() {
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& CrossHello::chain_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossHello.chain_unique)
-  return chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ const ::std::string& CrossHello::comm_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossHello.comm_unique)
+  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossHello::set_chain_unique(const ::std::string& value) {
+ void CrossHello::set_comm_unique(const ::std::string& value) {
   
-  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossHello.chain_unique)
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossHello.comm_unique)
 }
- void CrossHello::set_chain_unique(const char* value) {
+ void CrossHello::set_comm_unique(const char* value) {
   
-  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossHello.chain_unique)
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossHello.comm_unique)
 }
- void CrossHello::set_chain_unique(const char* value, size_t size) {
+ void CrossHello::set_comm_unique(const char* value, size_t size) {
   
-  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossHello.chain_unique)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossHello.comm_unique)
 }
- ::std::string* CrossHello::mutable_chain_unique() {
+ ::std::string* CrossHello::mutable_comm_unique() {
   
-  // @@protoc_insertion_point(field_mutable:protocol.CrossHello.chain_unique)
-  return chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:protocol.CrossHello.comm_unique)
+  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* CrossHello::release_chain_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossHello.chain_unique)
+ ::std::string* CrossHello::release_comm_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossHello.comm_unique)
   
-  return chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossHello::set_allocated_chain_unique(::std::string* chain_unique) {
-  if (chain_unique != NULL) {
+ void CrossHello::set_allocated_comm_unique(::std::string* comm_unique) {
+  if (comm_unique != NULL) {
     
   } else {
     
   }
-  chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), chain_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossHello.chain_unique)
+  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossHello.comm_unique)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -7710,10 +7892,9 @@ void CrossHelloResponse::clear_error_desc() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CrossProposal::kSrcChainUniqueFieldNumber;
-const int CrossProposal::kDstChainUniqueFieldNumber;
+const int CrossProposal::kTypeFieldNumber;
 const int CrossProposal::kProposalIdFieldNumber;
-const int CrossProposal::kProposalBodyFieldNumber;
+const int CrossProposal::kConfirmedNotaryFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossProposal::CrossProposal()
@@ -7738,10 +7919,8 @@ void CrossProposal::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  src_chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  dst_chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  proposal_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  proposal_body_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  type_ = 0;
+  proposal_id_ = GOOGLE_LONGLONG(0);
 }
 
 CrossProposal::~CrossProposal() {
@@ -7750,10 +7929,6 @@ CrossProposal::~CrossProposal() {
 }
 
 void CrossProposal::SharedDtor() {
-  src_chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  dst_chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  proposal_id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  proposal_body_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -7785,10 +7960,9 @@ CrossProposal* CrossProposal::New(::google::protobuf::Arena* arena) const {
 
 void CrossProposal::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossProposal)
-  src_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  dst_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  proposal_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  type_ = 0;
+  proposal_id_ = GOOGLE_LONGLONG(0);
+  confirmed_notary_.Clear();
 }
 
 bool CrossProposal::MergePartialFromCodedStream(
@@ -7801,69 +7975,51 @@ bool CrossProposal::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string src_chain_unique = 1;
+      // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_src_chain_unique()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->src_chain_unique().data(), this->src_chain_unique().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposal.src_chain_unique"));
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_type(static_cast< ::protocol::CROSS_PROPOSAL_TYPE >(value));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_dst_chain_unique;
+        if (input->ExpectTag(16)) goto parse_proposal_id;
         break;
       }
 
-      // optional string dst_chain_unique = 2;
+      // optional int64 proposal_id = 2;
       case 2: {
-        if (tag == 18) {
-         parse_dst_chain_unique:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_dst_chain_unique()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->dst_chain_unique().data(), this->dst_chain_unique().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposal.dst_chain_unique"));
+        if (tag == 16) {
+         parse_proposal_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &proposal_id_)));
+
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_proposal_id;
+        if (input->ExpectTag(26)) goto parse_confirmed_notary;
         break;
       }
 
-      // optional string proposal_id = 3;
+      // repeated string confirmed_notary = 3;
       case 3: {
         if (tag == 26) {
-         parse_proposal_id:
+         parse_confirmed_notary:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_proposal_id()));
+                input, this->add_confirmed_notary()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->proposal_id().data(), this->proposal_id().length(),
+            this->confirmed_notary(this->confirmed_notary_size() - 1).data(),
+            this->confirmed_notary(this->confirmed_notary_size() - 1).length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposal.proposal_id"));
+            "protocol.CrossProposal.confirmed_notary"));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_proposal_body;
-        break;
-      }
-
-      // optional string proposal_body = 4;
-      case 4: {
-        if (tag == 34) {
-         parse_proposal_body:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_proposal_body()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->proposal_body().data(), this->proposal_body().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposal.proposal_body"));
-        } else {
-          goto handle_unusual;
-        }
+        if (input->ExpectTag(26)) goto parse_confirmed_notary;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -7892,44 +8048,25 @@ failure:
 void CrossProposal::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:protocol.CrossProposal)
-  // optional string src_chain_unique = 1;
-  if (this->src_chain_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->src_chain_unique().data(), this->src_chain_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.src_chain_unique");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->src_chain_unique(), output);
+  // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+  if (this->type() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
   }
 
-  // optional string dst_chain_unique = 2;
-  if (this->dst_chain_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->dst_chain_unique().data(), this->dst_chain_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.dst_chain_unique");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->dst_chain_unique(), output);
+  // optional int64 proposal_id = 2;
+  if (this->proposal_id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->proposal_id(), output);
   }
 
-  // optional string proposal_id = 3;
-  if (this->proposal_id().size() > 0) {
+  // repeated string confirmed_notary = 3;
+  for (int i = 0; i < this->confirmed_notary_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->proposal_id().data(), this->proposal_id().length(),
+      this->confirmed_notary(i).data(), this->confirmed_notary(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.proposal_id");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->proposal_id(), output);
-  }
-
-  // optional string proposal_body = 4;
-  if (this->proposal_body().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->proposal_body().data(), this->proposal_body().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.proposal_body");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      4, this->proposal_body(), output);
+      "protocol.CrossProposal.confirmed_notary");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->confirmed_notary(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossProposal)
@@ -7938,48 +8075,25 @@ void CrossProposal::SerializeWithCachedSizes(
 ::google::protobuf::uint8* CrossProposal::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossProposal)
-  // optional string src_chain_unique = 1;
-  if (this->src_chain_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->src_chain_unique().data(), this->src_chain_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.src_chain_unique");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->src_chain_unique(), target);
+  // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+  if (this->type() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
   }
 
-  // optional string dst_chain_unique = 2;
-  if (this->dst_chain_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->dst_chain_unique().data(), this->dst_chain_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.dst_chain_unique");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->dst_chain_unique(), target);
+  // optional int64 proposal_id = 2;
+  if (this->proposal_id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->proposal_id(), target);
   }
 
-  // optional string proposal_id = 3;
-  if (this->proposal_id().size() > 0) {
+  // repeated string confirmed_notary = 3;
+  for (int i = 0; i < this->confirmed_notary_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->proposal_id().data(), this->proposal_id().length(),
+      this->confirmed_notary(i).data(), this->confirmed_notary(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.proposal_id");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->proposal_id(), target);
-  }
-
-  // optional string proposal_body = 4;
-  if (this->proposal_body().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->proposal_body().data(), this->proposal_body().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.proposal_body");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->proposal_body(), target);
+      "protocol.CrossProposal.confirmed_notary");
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(3, this->confirmed_notary(i), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposal)
@@ -7990,32 +8104,24 @@ int CrossProposal::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.CrossProposal)
   int total_size = 0;
 
-  // optional string src_chain_unique = 1;
-  if (this->src_chain_unique().size() > 0) {
+  // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+  if (this->type() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->src_chain_unique());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
 
-  // optional string dst_chain_unique = 2;
-  if (this->dst_chain_unique().size() > 0) {
+  // optional int64 proposal_id = 2;
+  if (this->proposal_id() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->dst_chain_unique());
-  }
-
-  // optional string proposal_id = 3;
-  if (this->proposal_id().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->proposal_id());
   }
 
-  // optional string proposal_body = 4;
-  if (this->proposal_body().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->proposal_body());
+  // repeated string confirmed_notary = 3;
+  total_size += 1 * this->confirmed_notary_size();
+  for (int i = 0; i < this->confirmed_notary_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->confirmed_notary(i));
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -8046,21 +8152,12 @@ void CrossProposal::MergeFrom(const CrossProposal& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.src_chain_unique().size() > 0) {
-
-    src_chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.src_chain_unique_);
+  confirmed_notary_.MergeFrom(from.confirmed_notary_);
+  if (from.type() != 0) {
+    set_type(from.type());
   }
-  if (from.dst_chain_unique().size() > 0) {
-
-    dst_chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.dst_chain_unique_);
-  }
-  if (from.proposal_id().size() > 0) {
-
-    proposal_id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.proposal_id_);
-  }
-  if (from.proposal_body().size() > 0) {
-
-    proposal_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.proposal_body_);
+  if (from.proposal_id() != 0) {
+    set_proposal_id(from.proposal_id());
   }
 }
 
@@ -8088,10 +8185,9 @@ void CrossProposal::Swap(CrossProposal* other) {
   InternalSwap(other);
 }
 void CrossProposal::InternalSwap(CrossProposal* other) {
-  src_chain_unique_.Swap(&other->src_chain_unique_);
-  dst_chain_unique_.Swap(&other->dst_chain_unique_);
-  proposal_id_.Swap(&other->proposal_id_);
-  proposal_body_.Swap(&other->proposal_body_);
+  std::swap(type_, other->type_);
+  std::swap(proposal_id_, other->proposal_id_);
+  confirmed_notary_.UnsafeArenaSwap(&other->confirmed_notary_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -8107,180 +8203,87 @@ void CrossProposal::InternalSwap(CrossProposal* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // CrossProposal
 
-// optional string src_chain_unique = 1;
-void CrossProposal::clear_src_chain_unique() {
-  src_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+void CrossProposal::clear_type() {
+  type_ = 0;
 }
- const ::std::string& CrossProposal::src_chain_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.src_chain_unique)
-  return src_chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::protocol::CROSS_PROPOSAL_TYPE CrossProposal::type() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.type)
+  return static_cast< ::protocol::CROSS_PROPOSAL_TYPE >(type_);
 }
- void CrossProposal::set_src_chain_unique(const ::std::string& value) {
+ void CrossProposal::set_type(::protocol::CROSS_PROPOSAL_TYPE value) {
   
-  src_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.src_chain_unique)
-}
- void CrossProposal::set_src_chain_unique(const char* value) {
-  
-  src_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.src_chain_unique)
-}
- void CrossProposal::set_src_chain_unique(const char* value, size_t size) {
-  
-  src_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.src_chain_unique)
-}
- ::std::string* CrossProposal::mutable_src_chain_unique() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.src_chain_unique)
-  return src_chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposal::release_src_chain_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposal.src_chain_unique)
-  
-  return src_chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposal::set_allocated_src_chain_unique(::std::string* src_chain_unique) {
-  if (src_chain_unique != NULL) {
-    
-  } else {
-    
-  }
-  src_chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), src_chain_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.src_chain_unique)
+  type_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.type)
 }
 
-// optional string dst_chain_unique = 2;
-void CrossProposal::clear_dst_chain_unique() {
-  dst_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& CrossProposal::dst_chain_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.dst_chain_unique)
-  return dst_chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposal::set_dst_chain_unique(const ::std::string& value) {
-  
-  dst_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.dst_chain_unique)
-}
- void CrossProposal::set_dst_chain_unique(const char* value) {
-  
-  dst_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.dst_chain_unique)
-}
- void CrossProposal::set_dst_chain_unique(const char* value, size_t size) {
-  
-  dst_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.dst_chain_unique)
-}
- ::std::string* CrossProposal::mutable_dst_chain_unique() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.dst_chain_unique)
-  return dst_chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposal::release_dst_chain_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposal.dst_chain_unique)
-  
-  return dst_chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposal::set_allocated_dst_chain_unique(::std::string* dst_chain_unique) {
-  if (dst_chain_unique != NULL) {
-    
-  } else {
-    
-  }
-  dst_chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), dst_chain_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.dst_chain_unique)
-}
-
-// optional string proposal_id = 3;
+// optional int64 proposal_id = 2;
 void CrossProposal::clear_proposal_id() {
-  proposal_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_id_ = GOOGLE_LONGLONG(0);
 }
- const ::std::string& CrossProposal::proposal_id() const {
+ ::google::protobuf::int64 CrossProposal::proposal_id() const {
   // @@protoc_insertion_point(field_get:protocol.CrossProposal.proposal_id)
-  return proposal_id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return proposal_id_;
 }
- void CrossProposal::set_proposal_id(const ::std::string& value) {
+ void CrossProposal::set_proposal_id(::google::protobuf::int64 value) {
   
-  proposal_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  proposal_id_ = value;
   // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
 }
- void CrossProposal::set_proposal_id(const char* value) {
-  
-  proposal_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.proposal_id)
-}
- void CrossProposal::set_proposal_id(const char* value, size_t size) {
-  
-  proposal_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.proposal_id)
-}
- ::std::string* CrossProposal::mutable_proposal_id() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.proposal_id)
-  return proposal_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposal::release_proposal_id() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposal.proposal_id)
-  
-  return proposal_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposal::set_allocated_proposal_id(::std::string* proposal_id) {
-  if (proposal_id != NULL) {
-    
-  } else {
-    
-  }
-  proposal_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), proposal_id);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.proposal_id)
-}
 
-// optional string proposal_body = 4;
-void CrossProposal::clear_proposal_body() {
-  proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// repeated string confirmed_notary = 3;
+int CrossProposal::confirmed_notary_size() const {
+  return confirmed_notary_.size();
 }
- const ::std::string& CrossProposal::proposal_body() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.proposal_body)
-  return proposal_body_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+void CrossProposal::clear_confirmed_notary() {
+  confirmed_notary_.Clear();
 }
- void CrossProposal::set_proposal_body(const ::std::string& value) {
-  
-  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_body)
+ const ::std::string& CrossProposal::confirmed_notary(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.confirmed_notary)
+  return confirmed_notary_.Get(index);
 }
- void CrossProposal::set_proposal_body(const char* value) {
-  
-  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.proposal_body)
+ ::std::string* CrossProposal::mutable_confirmed_notary(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.confirmed_notary)
+  return confirmed_notary_.Mutable(index);
 }
- void CrossProposal::set_proposal_body(const char* value, size_t size) {
-  
-  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.proposal_body)
+ void CrossProposal::set_confirmed_notary(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.confirmed_notary)
+  confirmed_notary_.Mutable(index)->assign(value);
 }
- ::std::string* CrossProposal::mutable_proposal_body() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.proposal_body)
-  return proposal_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ void CrossProposal::set_confirmed_notary(int index, const char* value) {
+  confirmed_notary_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.confirmed_notary)
 }
- ::std::string* CrossProposal::release_proposal_body() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposal.proposal_body)
-  
-  return proposal_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ void CrossProposal::set_confirmed_notary(int index, const char* value, size_t size) {
+  confirmed_notary_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.confirmed_notary)
 }
- void CrossProposal::set_allocated_proposal_body(::std::string* proposal_body) {
-  if (proposal_body != NULL) {
-    
-  } else {
-    
-  }
-  proposal_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), proposal_body);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.proposal_body)
+ ::std::string* CrossProposal::add_confirmed_notary() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossProposal.confirmed_notary)
+  return confirmed_notary_.Add();
+}
+ void CrossProposal::add_confirmed_notary(const ::std::string& value) {
+  confirmed_notary_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossProposal.confirmed_notary)
+}
+ void CrossProposal::add_confirmed_notary(const char* value) {
+  confirmed_notary_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossProposal.confirmed_notary)
+}
+ void CrossProposal::add_confirmed_notary(const char* value, size_t size) {
+  confirmed_notary_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossProposal.confirmed_notary)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CrossProposal::confirmed_notary() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossProposal.confirmed_notary)
+  return confirmed_notary_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+CrossProposal::mutable_confirmed_notary() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossProposal.confirmed_notary)
+  return &confirmed_notary_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -8288,338 +8291,173 @@ void CrossProposal::clear_proposal_body() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossProposalInfo::kTypeFieldNumber;
+const int CrossProposalInfo::kCommUniqueFieldNumber;
+const int CrossProposalInfo::kProposalIdFieldNumber;
+const int CrossProposalInfo::kProposalBodyFieldNumber;
+const int CrossProposalInfo::kStatusFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-CrossGetChainInfo::CrossGetChainInfo()
+CrossProposalInfo::CrossProposalInfo()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:protocol.CrossGetChainInfo)
+  // @@protoc_insertion_point(constructor:protocol.CrossProposalInfo)
 }
 
-void CrossGetChainInfo::InitAsDefaultInstance() {
+void CrossProposalInfo::InitAsDefaultInstance() {
   _is_default_instance_ = true;
 }
 
-CrossGetChainInfo::CrossGetChainInfo(const CrossGetChainInfo& from)
+CrossProposalInfo::CrossProposalInfo(const CrossProposalInfo& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:protocol.CrossGetChainInfo)
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossProposalInfo)
 }
 
-void CrossGetChainInfo::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-}
-
-CrossGetChainInfo::~CrossGetChainInfo() {
-  // @@protoc_insertion_point(destructor:protocol.CrossGetChainInfo)
-  SharedDtor();
-}
-
-void CrossGetChainInfo::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void CrossGetChainInfo::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* CrossGetChainInfo::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CrossGetChainInfo_descriptor_;
-}
-
-const CrossGetChainInfo& CrossGetChainInfo::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
-  return *default_instance_;
-}
-
-CrossGetChainInfo* CrossGetChainInfo::default_instance_ = NULL;
-
-CrossGetChainInfo* CrossGetChainInfo::New(::google::protobuf::Arena* arena) const {
-  CrossGetChainInfo* n = new CrossGetChainInfo;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void CrossGetChainInfo::Clear() {
-// @@protoc_insertion_point(message_clear_start:protocol.CrossGetChainInfo)
-}
-
-bool CrossGetChainInfo::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:protocol.CrossGetChainInfo)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
-    }
-    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-  }
-success:
-  // @@protoc_insertion_point(parse_success:protocol.CrossGetChainInfo)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:protocol.CrossGetChainInfo)
-  return false;
-#undef DO_
-}
-
-void CrossGetChainInfo::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:protocol.CrossGetChainInfo)
-  // @@protoc_insertion_point(serialize_end:protocol.CrossGetChainInfo)
-}
-
-::google::protobuf::uint8* CrossGetChainInfo::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossGetChainInfo)
-  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossGetChainInfo)
-  return target;
-}
-
-int CrossGetChainInfo::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:protocol.CrossGetChainInfo)
-  int total_size = 0;
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void CrossGetChainInfo::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossGetChainInfo)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const CrossGetChainInfo* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const CrossGetChainInfo>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossGetChainInfo)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossGetChainInfo)
-    MergeFrom(*source);
-  }
-}
-
-void CrossGetChainInfo::MergeFrom(const CrossGetChainInfo& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossGetChainInfo)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-}
-
-void CrossGetChainInfo::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossGetChainInfo)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void CrossGetChainInfo::CopyFrom(const CrossGetChainInfo& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossGetChainInfo)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CrossGetChainInfo::IsInitialized() const {
-
-  return true;
-}
-
-void CrossGetChainInfo::Swap(CrossGetChainInfo* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void CrossGetChainInfo::InternalSwap(CrossGetChainInfo* other) {
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata CrossGetChainInfo::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CrossGetChainInfo_descriptor_;
-  metadata.reflection = CrossGetChainInfo_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// CrossGetChainInfo
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CrossChainInfoResponse::kChainUniqueFieldNumber;
-const int CrossChainInfoResponse::kTargetChainUniqueFieldNumber;
-const int CrossChainInfoResponse::kCommContractFieldNumber;
-const int CrossChainInfoResponse::kTargetCommContractFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-CrossChainInfoResponse::CrossChainInfoResponse()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:protocol.CrossChainInfoResponse)
-}
-
-void CrossChainInfoResponse::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-CrossChainInfoResponse::CrossChainInfoResponse(const CrossChainInfoResponse& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:protocol.CrossChainInfoResponse)
-}
-
-void CrossChainInfoResponse::SharedCtor() {
+void CrossProposalInfo::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  target_chain_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  comm_contract_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  target_comm_contract_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  type_ = 0;
+  comm_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_id_ = GOOGLE_LONGLONG(0);
+  proposal_body_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
-CrossChainInfoResponse::~CrossChainInfoResponse() {
-  // @@protoc_insertion_point(destructor:protocol.CrossChainInfoResponse)
+CrossProposalInfo::~CrossProposalInfo() {
+  // @@protoc_insertion_point(destructor:protocol.CrossProposalInfo)
   SharedDtor();
 }
 
-void CrossChainInfoResponse::SharedDtor() {
-  chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  target_chain_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  comm_contract_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  target_comm_contract_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+void CrossProposalInfo::SharedDtor() {
+  comm_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_body_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
 
-void CrossChainInfoResponse::SetCachedSize(int size) const {
+void CrossProposalInfo::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* CrossChainInfoResponse::descriptor() {
+const ::google::protobuf::Descriptor* CrossProposalInfo::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return CrossChainInfoResponse_descriptor_;
+  return CrossProposalInfo_descriptor_;
 }
 
-const CrossChainInfoResponse& CrossChainInfoResponse::default_instance() {
+const CrossProposalInfo& CrossProposalInfo::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
   return *default_instance_;
 }
 
-CrossChainInfoResponse* CrossChainInfoResponse::default_instance_ = NULL;
+CrossProposalInfo* CrossProposalInfo::default_instance_ = NULL;
 
-CrossChainInfoResponse* CrossChainInfoResponse::New(::google::protobuf::Arena* arena) const {
-  CrossChainInfoResponse* n = new CrossChainInfoResponse;
+CrossProposalInfo* CrossProposalInfo::New(::google::protobuf::Arena* arena) const {
+  CrossProposalInfo* n = new CrossProposalInfo;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void CrossChainInfoResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:protocol.CrossChainInfoResponse)
-  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  target_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  target_comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+void CrossProposalInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossProposalInfo)
+  type_ = 0;
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  proposal_id_ = GOOGLE_LONGLONG(0);
+  proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
-bool CrossChainInfoResponse::MergePartialFromCodedStream(
+bool CrossProposalInfo::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:protocol.CrossChainInfoResponse)
+  // @@protoc_insertion_point(parse_start:protocol.CrossProposalInfo)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string chain_unique = 1;
+      // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_chain_unique()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->chain_unique().data(), this->chain_unique().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossChainInfoResponse.chain_unique"));
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_type(static_cast< ::protocol::CROSS_PROPOSAL_TYPE >(value));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_target_chain_unique;
+        if (input->ExpectTag(18)) goto parse_comm_unique;
         break;
       }
 
-      // optional string target_chain_unique = 2;
+      // optional string comm_unique = 2;
       case 2: {
         if (tag == 18) {
-         parse_target_chain_unique:
+         parse_comm_unique:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_target_chain_unique()));
+                input, this->mutable_comm_unique()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->target_chain_unique().data(), this->target_chain_unique().length(),
+            this->comm_unique().data(), this->comm_unique().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossChainInfoResponse.target_chain_unique"));
+            "protocol.CrossProposalInfo.comm_unique"));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_comm_contract;
+        if (input->ExpectTag(24)) goto parse_proposal_id;
         break;
       }
 
-      // optional string comm_contract = 3;
+      // optional int64 proposal_id = 3;
       case 3: {
-        if (tag == 26) {
-         parse_comm_contract:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_comm_contract()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->comm_contract().data(), this->comm_contract().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossChainInfoResponse.comm_contract"));
+        if (tag == 24) {
+         parse_proposal_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &proposal_id_)));
+
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_target_comm_contract;
+        if (input->ExpectTag(34)) goto parse_proposal_body;
         break;
       }
 
-      // optional string target_comm_contract = 4;
+      // optional string proposal_body = 4;
       case 4: {
         if (tag == 34) {
-         parse_target_comm_contract:
+         parse_proposal_body:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_target_comm_contract()));
+                input, this->mutable_proposal_body()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->target_comm_contract().data(), this->target_comm_contract().length(),
+            this->proposal_body().data(), this->proposal_body().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossChainInfoResponse.target_comm_contract"));
+            "protocol.CrossProposalInfo.proposal_body"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(42)) goto parse_status;
+        break;
+      }
+
+      // optional string status = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_status:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_status()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->status().data(), this->status().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossProposalInfo.status"));
         } else {
           goto handle_unusual;
         }
@@ -8640,141 +8478,148 @@ bool CrossChainInfoResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:protocol.CrossChainInfoResponse)
+  // @@protoc_insertion_point(parse_success:protocol.CrossProposalInfo)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:protocol.CrossChainInfoResponse)
+  // @@protoc_insertion_point(parse_failure:protocol.CrossProposalInfo)
   return false;
 #undef DO_
 }
 
-void CrossChainInfoResponse::SerializeWithCachedSizes(
+void CrossProposalInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:protocol.CrossChainInfoResponse)
-  // optional string chain_unique = 1;
-  if (this->chain_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->chain_unique().data(), this->chain_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.chain_unique");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->chain_unique(), output);
+  // @@protoc_insertion_point(serialize_start:protocol.CrossProposalInfo)
+  // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+  if (this->type() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
   }
 
-  // optional string target_chain_unique = 2;
-  if (this->target_chain_unique().size() > 0) {
+  // optional string comm_unique = 2;
+  if (this->comm_unique().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->target_chain_unique().data(), this->target_chain_unique().length(),
+      this->comm_unique().data(), this->comm_unique().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.target_chain_unique");
+      "protocol.CrossProposalInfo.comm_unique");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->target_chain_unique(), output);
+      2, this->comm_unique(), output);
   }
 
-  // optional string comm_contract = 3;
-  if (this->comm_contract().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->comm_contract().data(), this->comm_contract().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.comm_contract");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->comm_contract(), output);
+  // optional int64 proposal_id = 3;
+  if (this->proposal_id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->proposal_id(), output);
   }
 
-  // optional string target_comm_contract = 4;
-  if (this->target_comm_contract().size() > 0) {
+  // optional string proposal_body = 4;
+  if (this->proposal_body().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->target_comm_contract().data(), this->target_comm_contract().length(),
+      this->proposal_body().data(), this->proposal_body().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.target_comm_contract");
+      "protocol.CrossProposalInfo.proposal_body");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      4, this->target_comm_contract(), output);
+      4, this->proposal_body(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:protocol.CrossChainInfoResponse)
+  // optional string status = 5;
+  if (this->status().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->status().data(), this->status().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposalInfo.status");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      5, this->status(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossProposalInfo)
 }
 
-::google::protobuf::uint8* CrossChainInfoResponse::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* CrossProposalInfo::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossChainInfoResponse)
-  // optional string chain_unique = 1;
-  if (this->chain_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->chain_unique().data(), this->chain_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.chain_unique");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->chain_unique(), target);
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossProposalInfo)
+  // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+  if (this->type() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->type(), target);
   }
 
-  // optional string target_chain_unique = 2;
-  if (this->target_chain_unique().size() > 0) {
+  // optional string comm_unique = 2;
+  if (this->comm_unique().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->target_chain_unique().data(), this->target_chain_unique().length(),
+      this->comm_unique().data(), this->comm_unique().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.target_chain_unique");
+      "protocol.CrossProposalInfo.comm_unique");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->target_chain_unique(), target);
+        2, this->comm_unique(), target);
   }
 
-  // optional string comm_contract = 3;
-  if (this->comm_contract().size() > 0) {
+  // optional int64 proposal_id = 3;
+  if (this->proposal_id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->proposal_id(), target);
+  }
+
+  // optional string proposal_body = 4;
+  if (this->proposal_body().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->comm_contract().data(), this->comm_contract().length(),
+      this->proposal_body().data(), this->proposal_body().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.comm_contract");
+      "protocol.CrossProposalInfo.proposal_body");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->comm_contract(), target);
+        4, this->proposal_body(), target);
   }
 
-  // optional string target_comm_contract = 4;
-  if (this->target_comm_contract().size() > 0) {
+  // optional string status = 5;
+  if (this->status().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->target_comm_contract().data(), this->target_comm_contract().length(),
+      this->status().data(), this->status().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossChainInfoResponse.target_comm_contract");
+      "protocol.CrossProposalInfo.status");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->target_comm_contract(), target);
+        5, this->status(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossChainInfoResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposalInfo)
   return target;
 }
 
-int CrossChainInfoResponse::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:protocol.CrossChainInfoResponse)
+int CrossProposalInfo::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossProposalInfo)
   int total_size = 0;
 
-  // optional string chain_unique = 1;
-  if (this->chain_unique().size() > 0) {
+  // optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+  if (this->type() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->chain_unique());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
 
-  // optional string target_chain_unique = 2;
-  if (this->target_chain_unique().size() > 0) {
+  // optional string comm_unique = 2;
+  if (this->comm_unique().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->target_chain_unique());
+        this->comm_unique());
   }
 
-  // optional string comm_contract = 3;
-  if (this->comm_contract().size() > 0) {
+  // optional int64 proposal_id = 3;
+  if (this->proposal_id() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->comm_contract());
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->proposal_id());
   }
 
-  // optional string target_comm_contract = 4;
-  if (this->target_comm_contract().size() > 0) {
+  // optional string proposal_body = 4;
+  if (this->proposal_body().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->target_comm_contract());
+        this->proposal_body());
+  }
+
+  // optional string status = 5;
+  if (this->status().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->status());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -8783,263 +8628,2421 @@ int CrossChainInfoResponse::ByteSize() const {
   return total_size;
 }
 
-void CrossChainInfoResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossChainInfoResponse)
+void CrossProposalInfo::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossProposalInfo)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  const CrossChainInfoResponse* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const CrossChainInfoResponse>(
+  const CrossProposalInfo* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossProposalInfo>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossChainInfoResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossProposalInfo)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossChainInfoResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossProposalInfo)
     MergeFrom(*source);
   }
 }
 
-void CrossChainInfoResponse::MergeFrom(const CrossChainInfoResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossChainInfoResponse)
+void CrossProposalInfo::MergeFrom(const CrossProposalInfo& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossProposalInfo)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.chain_unique().size() > 0) {
-
-    chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.chain_unique_);
+  if (from.type() != 0) {
+    set_type(from.type());
   }
-  if (from.target_chain_unique().size() > 0) {
+  if (from.comm_unique().size() > 0) {
 
-    target_chain_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.target_chain_unique_);
+    comm_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_unique_);
   }
-  if (from.comm_contract().size() > 0) {
-
-    comm_contract_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_contract_);
+  if (from.proposal_id() != 0) {
+    set_proposal_id(from.proposal_id());
   }
-  if (from.target_comm_contract().size() > 0) {
+  if (from.proposal_body().size() > 0) {
 
-    target_comm_contract_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.target_comm_contract_);
+    proposal_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.proposal_body_);
+  }
+  if (from.status().size() > 0) {
+
+    status_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.status_);
   }
 }
 
-void CrossChainInfoResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossChainInfoResponse)
+void CrossProposalInfo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossProposalInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void CrossChainInfoResponse::CopyFrom(const CrossChainInfoResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossChainInfoResponse)
+void CrossProposalInfo::CopyFrom(const CrossProposalInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossProposalInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CrossChainInfoResponse::IsInitialized() const {
+bool CrossProposalInfo::IsInitialized() const {
 
   return true;
 }
 
-void CrossChainInfoResponse::Swap(CrossChainInfoResponse* other) {
+void CrossProposalInfo::Swap(CrossProposalInfo* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void CrossChainInfoResponse::InternalSwap(CrossChainInfoResponse* other) {
-  chain_unique_.Swap(&other->chain_unique_);
-  target_chain_unique_.Swap(&other->target_chain_unique_);
-  comm_contract_.Swap(&other->comm_contract_);
-  target_comm_contract_.Swap(&other->target_comm_contract_);
+void CrossProposalInfo::InternalSwap(CrossProposalInfo* other) {
+  std::swap(type_, other->type_);
+  comm_unique_.Swap(&other->comm_unique_);
+  std::swap(proposal_id_, other->proposal_id_);
+  proposal_body_.Swap(&other->proposal_body_);
+  status_.Swap(&other->status_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata CrossChainInfoResponse::GetMetadata() const {
+::google::protobuf::Metadata CrossProposalInfo::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CrossChainInfoResponse_descriptor_;
-  metadata.reflection = CrossChainInfoResponse_reflection_;
+  metadata.descriptor = CrossProposalInfo_descriptor_;
+  metadata.reflection = CrossProposalInfo_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// CrossChainInfoResponse
+// CrossProposalInfo
 
-// optional string chain_unique = 1;
-void CrossChainInfoResponse::clear_chain_unique() {
-  chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional .protocol.CROSS_PROPOSAL_TYPE type = 1;
+void CrossProposalInfo::clear_type() {
+  type_ = 0;
 }
- const ::std::string& CrossChainInfoResponse::chain_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.chain_unique)
-  return chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::protocol::CROSS_PROPOSAL_TYPE CrossProposalInfo::type() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.type)
+  return static_cast< ::protocol::CROSS_PROPOSAL_TYPE >(type_);
 }
- void CrossChainInfoResponse::set_chain_unique(const ::std::string& value) {
+ void CrossProposalInfo::set_type(::protocol::CROSS_PROPOSAL_TYPE value) {
   
-  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.chain_unique)
+  type_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.type)
 }
- void CrossChainInfoResponse::set_chain_unique(const char* value) {
-  
-  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.chain_unique)
+
+// optional string comm_unique = 2;
+void CrossProposalInfo::clear_comm_unique() {
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossChainInfoResponse::set_chain_unique(const char* value, size_t size) {
+ const ::std::string& CrossProposalInfo::comm_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.comm_unique)
+  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposalInfo::set_comm_unique(const ::std::string& value) {
   
-  chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.comm_unique)
+}
+ void CrossProposalInfo::set_comm_unique(const char* value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.comm_unique)
+}
+ void CrossProposalInfo::set_comm_unique(const char* value, size_t size) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.chain_unique)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.comm_unique)
 }
- ::std::string* CrossChainInfoResponse::mutable_chain_unique() {
+ ::std::string* CrossProposalInfo::mutable_comm_unique() {
   
-  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.chain_unique)
-  return chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.comm_unique)
+  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* CrossChainInfoResponse::release_chain_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.chain_unique)
+ ::std::string* CrossProposalInfo::release_comm_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.comm_unique)
   
-  return chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossChainInfoResponse::set_allocated_chain_unique(::std::string* chain_unique) {
-  if (chain_unique != NULL) {
+ void CrossProposalInfo::set_allocated_comm_unique(::std::string* comm_unique) {
+  if (comm_unique != NULL) {
     
   } else {
     
   }
-  chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), chain_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.chain_unique)
+  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.comm_unique)
 }
 
-// optional string target_chain_unique = 2;
-void CrossChainInfoResponse::clear_target_chain_unique() {
-  target_chain_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional int64 proposal_id = 3;
+void CrossProposalInfo::clear_proposal_id() {
+  proposal_id_ = GOOGLE_LONGLONG(0);
 }
- const ::std::string& CrossChainInfoResponse::target_chain_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.target_chain_unique)
-  return target_chain_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::google::protobuf::int64 CrossProposalInfo::proposal_id() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.proposal_id)
+  return proposal_id_;
 }
- void CrossChainInfoResponse::set_target_chain_unique(const ::std::string& value) {
+ void CrossProposalInfo::set_proposal_id(::google::protobuf::int64 value) {
   
-  target_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.target_chain_unique)
+  proposal_id_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.proposal_id)
 }
- void CrossChainInfoResponse::set_target_chain_unique(const char* value) {
-  
-  target_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.target_chain_unique)
+
+// optional string proposal_body = 4;
+void CrossProposalInfo::clear_proposal_body() {
+  proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossChainInfoResponse::set_target_chain_unique(const char* value, size_t size) {
+ const ::std::string& CrossProposalInfo::proposal_body() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.proposal_body)
+  return proposal_body_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossProposalInfo::set_proposal_body(const ::std::string& value) {
   
-  target_chain_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.proposal_body)
+}
+ void CrossProposalInfo::set_proposal_body(const char* value) {
+  
+  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.proposal_body)
+}
+ void CrossProposalInfo::set_proposal_body(const char* value, size_t size) {
+  
+  proposal_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.target_chain_unique)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.proposal_body)
 }
- ::std::string* CrossChainInfoResponse::mutable_target_chain_unique() {
+ ::std::string* CrossProposalInfo::mutable_proposal_body() {
   
-  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.target_chain_unique)
-  return target_chain_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.proposal_body)
+  return proposal_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* CrossChainInfoResponse::release_target_chain_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.target_chain_unique)
+ ::std::string* CrossProposalInfo::release_proposal_body() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.proposal_body)
   
-  return target_chain_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return proposal_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossChainInfoResponse::set_allocated_target_chain_unique(::std::string* target_chain_unique) {
-  if (target_chain_unique != NULL) {
+ void CrossProposalInfo::set_allocated_proposal_body(::std::string* proposal_body) {
+  if (proposal_body != NULL) {
     
   } else {
     
   }
-  target_chain_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), target_chain_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.target_chain_unique)
+  proposal_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), proposal_body);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.proposal_body)
 }
 
-// optional string comm_contract = 3;
-void CrossChainInfoResponse::clear_comm_contract() {
-  comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional string status = 5;
+void CrossProposalInfo::clear_status() {
+  status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& CrossChainInfoResponse::comm_contract() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.comm_contract)
-  return comm_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ const ::std::string& CrossProposalInfo::status() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.status)
+  return status_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossChainInfoResponse::set_comm_contract(const ::std::string& value) {
+ void CrossProposalInfo::set_status(const ::std::string& value) {
   
-  comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.comm_contract)
+  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.status)
 }
- void CrossChainInfoResponse::set_comm_contract(const char* value) {
+ void CrossProposalInfo::set_status(const char* value) {
   
-  comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.comm_contract)
+  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.status)
 }
- void CrossChainInfoResponse::set_comm_contract(const char* value, size_t size) {
+ void CrossProposalInfo::set_status(const char* value, size_t size) {
   
-  comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.comm_contract)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.status)
 }
- ::std::string* CrossChainInfoResponse::mutable_comm_contract() {
+ ::std::string* CrossProposalInfo::mutable_status() {
   
-  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.comm_contract)
-  return comm_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.status)
+  return status_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* CrossChainInfoResponse::release_comm_contract() {
-  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.comm_contract)
+ ::std::string* CrossProposalInfo::release_status() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.status)
   
-  return comm_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return status_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossChainInfoResponse::set_allocated_comm_contract(::std::string* comm_contract) {
-  if (comm_contract != NULL) {
+ void CrossProposalInfo::set_allocated_status(::std::string* status) {
+  if (status != NULL) {
     
   } else {
     
   }
-  comm_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_contract);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.comm_contract)
+  status_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), status);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.status)
 }
 
-// optional string target_comm_contract = 4;
-void CrossChainInfoResponse::clear_target_comm_contract() {
-  target_comm_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossProposalResponse::kProposalInfoFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossProposalResponse::CrossProposalResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossProposalResponse)
 }
- const ::std::string& CrossChainInfoResponse::target_comm_contract() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossChainInfoResponse.target_comm_contract)
-  return target_comm_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+
+void CrossProposalResponse::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+  proposal_info_ = const_cast< ::protocol::CrossProposalInfo*>(&::protocol::CrossProposalInfo::default_instance());
 }
- void CrossChainInfoResponse::set_target_comm_contract(const ::std::string& value) {
+
+CrossProposalResponse::CrossProposalResponse(const CrossProposalResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossProposalResponse)
+}
+
+void CrossProposalResponse::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  proposal_info_ = NULL;
+}
+
+CrossProposalResponse::~CrossProposalResponse() {
+  // @@protoc_insertion_point(destructor:protocol.CrossProposalResponse)
+  SharedDtor();
+}
+
+void CrossProposalResponse::SharedDtor() {
+  if (this != default_instance_) {
+    delete proposal_info_;
+  }
+}
+
+void CrossProposalResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossProposalResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossProposalResponse_descriptor_;
+}
+
+const CrossProposalResponse& CrossProposalResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossProposalResponse* CrossProposalResponse::default_instance_ = NULL;
+
+CrossProposalResponse* CrossProposalResponse::New(::google::protobuf::Arena* arena) const {
+  CrossProposalResponse* n = new CrossProposalResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossProposalResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossProposalResponse)
+  if (GetArenaNoVirtual() == NULL && proposal_info_ != NULL) delete proposal_info_;
+  proposal_info_ = NULL;
+}
+
+bool CrossProposalResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossProposalResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional .protocol.CrossProposalInfo proposal_info = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_proposal_info()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossProposalResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossProposalResponse)
+  return false;
+#undef DO_
+}
+
+void CrossProposalResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossProposalResponse)
+  // optional .protocol.CrossProposalInfo proposal_info = 1;
+  if (this->has_proposal_info()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, *this->proposal_info_, output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossProposalResponse)
+}
+
+::google::protobuf::uint8* CrossProposalResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossProposalResponse)
+  // optional .protocol.CrossProposalInfo proposal_info = 1;
+  if (this->has_proposal_info()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        1, *this->proposal_info_, false, target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposalResponse)
+  return target;
+}
+
+int CrossProposalResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossProposalResponse)
+  int total_size = 0;
+
+  // optional .protocol.CrossProposalInfo proposal_info = 1;
+  if (this->has_proposal_info()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->proposal_info_);
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossProposalResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossProposalResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossProposalResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossProposalResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossProposalResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossProposalResponse)
+    MergeFrom(*source);
+  }
+}
+
+void CrossProposalResponse::MergeFrom(const CrossProposalResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossProposalResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.has_proposal_info()) {
+    mutable_proposal_info()->::protocol::CrossProposalInfo::MergeFrom(from.proposal_info());
+  }
+}
+
+void CrossProposalResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossProposalResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossProposalResponse::CopyFrom(const CrossProposalResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossProposalResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossProposalResponse::IsInitialized() const {
+
+  return true;
+}
+
+void CrossProposalResponse::Swap(CrossProposalResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossProposalResponse::InternalSwap(CrossProposalResponse* other) {
+  std::swap(proposal_info_, other->proposal_info_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossProposalResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossProposalResponse_descriptor_;
+  metadata.reflection = CrossProposalResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossProposalResponse
+
+// optional .protocol.CrossProposalInfo proposal_info = 1;
+bool CrossProposalResponse::has_proposal_info() const {
+  return !_is_default_instance_ && proposal_info_ != NULL;
+}
+void CrossProposalResponse::clear_proposal_info() {
+  if (GetArenaNoVirtual() == NULL && proposal_info_ != NULL) delete proposal_info_;
+  proposal_info_ = NULL;
+}
+const ::protocol::CrossProposalInfo& CrossProposalResponse::proposal_info() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalResponse.proposal_info)
+  return proposal_info_ != NULL ? *proposal_info_ : *default_instance_->proposal_info_;
+}
+::protocol::CrossProposalInfo* CrossProposalResponse::mutable_proposal_info() {
   
-  target_comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossChainInfoResponse.target_comm_contract)
+  if (proposal_info_ == NULL) {
+    proposal_info_ = new ::protocol::CrossProposalInfo;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalResponse.proposal_info)
+  return proposal_info_;
 }
- void CrossChainInfoResponse::set_target_comm_contract(const char* value) {
+::protocol::CrossProposalInfo* CrossProposalResponse::release_proposal_info() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposalResponse.proposal_info)
   
-  target_comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossChainInfoResponse.target_comm_contract)
+  ::protocol::CrossProposalInfo* temp = proposal_info_;
+  proposal_info_ = NULL;
+  return temp;
 }
- void CrossChainInfoResponse::set_target_comm_contract(const char* value, size_t size) {
-  
-  target_comm_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossChainInfoResponse.target_comm_contract)
-}
- ::std::string* CrossChainInfoResponse::mutable_target_comm_contract() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossChainInfoResponse.target_comm_contract)
-  return target_comm_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossChainInfoResponse::release_target_comm_contract() {
-  // @@protoc_insertion_point(field_release:protocol.CrossChainInfoResponse.target_comm_contract)
-  
-  return target_comm_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossChainInfoResponse::set_allocated_target_comm_contract(::std::string* target_comm_contract) {
-  if (target_comm_contract != NULL) {
+void CrossProposalResponse::set_allocated_proposal_info(::protocol::CrossProposalInfo* proposal_info) {
+  delete proposal_info_;
+  proposal_info_ = proposal_info;
+  if (proposal_info) {
     
   } else {
     
   }
-  target_comm_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), target_comm_contract);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossChainInfoResponse.target_comm_contract)
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalResponse.proposal_info)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossNotarys::kCommUniqueFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossNotarys::CrossNotarys()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossNotarys)
+}
+
+void CrossNotarys::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossNotarys::CrossNotarys(const CrossNotarys& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossNotarys)
+}
+
+void CrossNotarys::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  comm_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossNotarys::~CrossNotarys() {
+  // @@protoc_insertion_point(destructor:protocol.CrossNotarys)
+  SharedDtor();
+}
+
+void CrossNotarys::SharedDtor() {
+  comm_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossNotarys::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossNotarys::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossNotarys_descriptor_;
+}
+
+const CrossNotarys& CrossNotarys::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossNotarys* CrossNotarys::default_instance_ = NULL;
+
+CrossNotarys* CrossNotarys::New(::google::protobuf::Arena* arena) const {
+  CrossNotarys* n = new CrossNotarys;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossNotarys::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossNotarys)
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossNotarys::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossNotarys)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string comm_unique = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_comm_unique()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->comm_unique().data(), this->comm_unique().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossNotarys.comm_unique"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossNotarys)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossNotarys)
+  return false;
+#undef DO_
+}
+
+void CrossNotarys::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossNotarys)
+  // optional string comm_unique = 1;
+  if (this->comm_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->comm_unique().data(), this->comm_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossNotarys.comm_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->comm_unique(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossNotarys)
+}
+
+::google::protobuf::uint8* CrossNotarys::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossNotarys)
+  // optional string comm_unique = 1;
+  if (this->comm_unique().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->comm_unique().data(), this->comm_unique().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossNotarys.comm_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->comm_unique(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossNotarys)
+  return target;
+}
+
+int CrossNotarys::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossNotarys)
+  int total_size = 0;
+
+  // optional string comm_unique = 1;
+  if (this->comm_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->comm_unique());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossNotarys::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossNotarys)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossNotarys* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossNotarys>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossNotarys)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossNotarys)
+    MergeFrom(*source);
+  }
+}
+
+void CrossNotarys::MergeFrom(const CrossNotarys& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossNotarys)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.comm_unique().size() > 0) {
+
+    comm_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_unique_);
+  }
+}
+
+void CrossNotarys::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossNotarys)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossNotarys::CopyFrom(const CrossNotarys& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossNotarys)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossNotarys::IsInitialized() const {
+
+  return true;
+}
+
+void CrossNotarys::Swap(CrossNotarys* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossNotarys::InternalSwap(CrossNotarys* other) {
+  comm_unique_.Swap(&other->comm_unique_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossNotarys::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossNotarys_descriptor_;
+  metadata.reflection = CrossNotarys_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossNotarys
+
+// optional string comm_unique = 1;
+void CrossNotarys::clear_comm_unique() {
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossNotarys::comm_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossNotarys.comm_unique)
+  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossNotarys::set_comm_unique(const ::std::string& value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossNotarys.comm_unique)
+}
+ void CrossNotarys::set_comm_unique(const char* value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarys.comm_unique)
+}
+ void CrossNotarys::set_comm_unique(const char* value, size_t size) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarys.comm_unique)
+}
+ ::std::string* CrossNotarys::mutable_comm_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarys.comm_unique)
+  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossNotarys::release_comm_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossNotarys.comm_unique)
+  
+  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossNotarys::set_allocated_comm_unique(::std::string* comm_unique) {
+  if (comm_unique != NULL) {
+    
+  } else {
+    
+  }
+  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossNotarys.comm_unique)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossNotarysResponse::kNotaryFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossNotarysResponse::CrossNotarysResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossNotarysResponse)
+}
+
+void CrossNotarysResponse::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossNotarysResponse::CrossNotarysResponse(const CrossNotarysResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossNotarysResponse)
+}
+
+void CrossNotarysResponse::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+}
+
+CrossNotarysResponse::~CrossNotarysResponse() {
+  // @@protoc_insertion_point(destructor:protocol.CrossNotarysResponse)
+  SharedDtor();
+}
+
+void CrossNotarysResponse::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void CrossNotarysResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossNotarysResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossNotarysResponse_descriptor_;
+}
+
+const CrossNotarysResponse& CrossNotarysResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossNotarysResponse* CrossNotarysResponse::default_instance_ = NULL;
+
+CrossNotarysResponse* CrossNotarysResponse::New(::google::protobuf::Arena* arena) const {
+  CrossNotarysResponse* n = new CrossNotarysResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossNotarysResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossNotarysResponse)
+  notary_.Clear();
+}
+
+bool CrossNotarysResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossNotarysResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated string notary = 1;
+      case 1: {
+        if (tag == 10) {
+         parse_notary:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_notary()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->notary(this->notary_size() - 1).data(),
+            this->notary(this->notary_size() - 1).length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossNotarysResponse.notary"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(10)) goto parse_notary;
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossNotarysResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossNotarysResponse)
+  return false;
+#undef DO_
+}
+
+void CrossNotarysResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossNotarysResponse)
+  // repeated string notary = 1;
+  for (int i = 0; i < this->notary_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->notary(i).data(), this->notary(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossNotarysResponse.notary");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->notary(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossNotarysResponse)
+}
+
+::google::protobuf::uint8* CrossNotarysResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossNotarysResponse)
+  // repeated string notary = 1;
+  for (int i = 0; i < this->notary_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->notary(i).data(), this->notary(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossNotarysResponse.notary");
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(1, this->notary(i), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossNotarysResponse)
+  return target;
+}
+
+int CrossNotarysResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossNotarysResponse)
+  int total_size = 0;
+
+  // repeated string notary = 1;
+  total_size += 1 * this->notary_size();
+  for (int i = 0; i < this->notary_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->notary(i));
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossNotarysResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossNotarysResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossNotarysResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossNotarysResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossNotarysResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossNotarysResponse)
+    MergeFrom(*source);
+  }
+}
+
+void CrossNotarysResponse::MergeFrom(const CrossNotarysResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossNotarysResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  notary_.MergeFrom(from.notary_);
+}
+
+void CrossNotarysResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossNotarysResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossNotarysResponse::CopyFrom(const CrossNotarysResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossNotarysResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossNotarysResponse::IsInitialized() const {
+
+  return true;
+}
+
+void CrossNotarysResponse::Swap(CrossNotarysResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossNotarysResponse::InternalSwap(CrossNotarysResponse* other) {
+  notary_.UnsafeArenaSwap(&other->notary_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossNotarysResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossNotarysResponse_descriptor_;
+  metadata.reflection = CrossNotarysResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossNotarysResponse
+
+// repeated string notary = 1;
+int CrossNotarysResponse::notary_size() const {
+  return notary_.size();
+}
+void CrossNotarysResponse::clear_notary() {
+  notary_.Clear();
+}
+ const ::std::string& CrossNotarysResponse::notary(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossNotarysResponse.notary)
+  return notary_.Get(index);
+}
+ ::std::string* CrossNotarysResponse::mutable_notary(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarysResponse.notary)
+  return notary_.Mutable(index);
+}
+ void CrossNotarysResponse::set_notary(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossNotarysResponse.notary)
+  notary_.Mutable(index)->assign(value);
+}
+ void CrossNotarysResponse::set_notary(int index, const char* value) {
+  notary_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarysResponse.notary)
+}
+ void CrossNotarysResponse::set_notary(int index, const char* value, size_t size) {
+  notary_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarysResponse.notary)
+}
+ ::std::string* CrossNotarysResponse::add_notary() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossNotarysResponse.notary)
+  return notary_.Add();
+}
+ void CrossNotarysResponse::add_notary(const ::std::string& value) {
+  notary_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossNotarysResponse.notary)
+}
+ void CrossNotarysResponse::add_notary(const char* value) {
+  notary_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossNotarysResponse.notary)
+}
+ void CrossNotarysResponse::add_notary(const char* value, size_t size) {
+  notary_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossNotarysResponse.notary)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CrossNotarysResponse::notary() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossNotarysResponse.notary)
+  return notary_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+CrossNotarysResponse::mutable_notary() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossNotarysResponse.notary)
+  return &notary_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossAccountNonce::kAccountFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossAccountNonce::CrossAccountNonce()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossAccountNonce)
+}
+
+void CrossAccountNonce::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossAccountNonce::CrossAccountNonce(const CrossAccountNonce& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossAccountNonce)
+}
+
+void CrossAccountNonce::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  account_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossAccountNonce::~CrossAccountNonce() {
+  // @@protoc_insertion_point(destructor:protocol.CrossAccountNonce)
+  SharedDtor();
+}
+
+void CrossAccountNonce::SharedDtor() {
+  account_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossAccountNonce::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossAccountNonce::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossAccountNonce_descriptor_;
+}
+
+const CrossAccountNonce& CrossAccountNonce::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossAccountNonce* CrossAccountNonce::default_instance_ = NULL;
+
+CrossAccountNonce* CrossAccountNonce::New(::google::protobuf::Arena* arena) const {
+  CrossAccountNonce* n = new CrossAccountNonce;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossAccountNonce::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossAccountNonce)
+  account_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossAccountNonce::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossAccountNonce)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string account = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_account()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->account().data(), this->account().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossAccountNonce.account"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossAccountNonce)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossAccountNonce)
+  return false;
+#undef DO_
+}
+
+void CrossAccountNonce::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossAccountNonce)
+  // optional string account = 1;
+  if (this->account().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->account().data(), this->account().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossAccountNonce.account");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->account(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossAccountNonce)
+}
+
+::google::protobuf::uint8* CrossAccountNonce::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossAccountNonce)
+  // optional string account = 1;
+  if (this->account().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->account().data(), this->account().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossAccountNonce.account");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->account(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossAccountNonce)
+  return target;
+}
+
+int CrossAccountNonce::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossAccountNonce)
+  int total_size = 0;
+
+  // optional string account = 1;
+  if (this->account().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->account());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossAccountNonce::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossAccountNonce)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossAccountNonce* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossAccountNonce>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossAccountNonce)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossAccountNonce)
+    MergeFrom(*source);
+  }
+}
+
+void CrossAccountNonce::MergeFrom(const CrossAccountNonce& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossAccountNonce)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.account().size() > 0) {
+
+    account_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.account_);
+  }
+}
+
+void CrossAccountNonce::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossAccountNonce)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossAccountNonce::CopyFrom(const CrossAccountNonce& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossAccountNonce)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossAccountNonce::IsInitialized() const {
+
+  return true;
+}
+
+void CrossAccountNonce::Swap(CrossAccountNonce* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossAccountNonce::InternalSwap(CrossAccountNonce* other) {
+  account_.Swap(&other->account_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossAccountNonce::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossAccountNonce_descriptor_;
+  metadata.reflection = CrossAccountNonce_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossAccountNonce
+
+// optional string account = 1;
+void CrossAccountNonce::clear_account() {
+  account_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossAccountNonce::account() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossAccountNonce.account)
+  return account_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossAccountNonce::set_account(const ::std::string& value) {
+  
+  account_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossAccountNonce.account)
+}
+ void CrossAccountNonce::set_account(const char* value) {
+  
+  account_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossAccountNonce.account)
+}
+ void CrossAccountNonce::set_account(const char* value, size_t size) {
+  
+  account_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossAccountNonce.account)
+}
+ ::std::string* CrossAccountNonce::mutable_account() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossAccountNonce.account)
+  return account_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossAccountNonce::release_account() {
+  // @@protoc_insertion_point(field_release:protocol.CrossAccountNonce.account)
+  
+  return account_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossAccountNonce::set_allocated_account(::std::string* account) {
+  if (account != NULL) {
+    
+  } else {
+    
+  }
+  account_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), account);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossAccountNonce.account)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossAccountNonceResponse::kNonceFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossAccountNonceResponse::CrossAccountNonceResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossAccountNonceResponse)
+}
+
+void CrossAccountNonceResponse::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossAccountNonceResponse::CrossAccountNonceResponse(const CrossAccountNonceResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossAccountNonceResponse)
+}
+
+void CrossAccountNonceResponse::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  nonce_ = GOOGLE_LONGLONG(0);
+}
+
+CrossAccountNonceResponse::~CrossAccountNonceResponse() {
+  // @@protoc_insertion_point(destructor:protocol.CrossAccountNonceResponse)
+  SharedDtor();
+}
+
+void CrossAccountNonceResponse::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void CrossAccountNonceResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossAccountNonceResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossAccountNonceResponse_descriptor_;
+}
+
+const CrossAccountNonceResponse& CrossAccountNonceResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossAccountNonceResponse* CrossAccountNonceResponse::default_instance_ = NULL;
+
+CrossAccountNonceResponse* CrossAccountNonceResponse::New(::google::protobuf::Arena* arena) const {
+  CrossAccountNonceResponse* n = new CrossAccountNonceResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossAccountNonceResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossAccountNonceResponse)
+  nonce_ = GOOGLE_LONGLONG(0);
+}
+
+bool CrossAccountNonceResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossAccountNonceResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional int64 nonce = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &nonce_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossAccountNonceResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossAccountNonceResponse)
+  return false;
+#undef DO_
+}
+
+void CrossAccountNonceResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossAccountNonceResponse)
+  // optional int64 nonce = 1;
+  if (this->nonce() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->nonce(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossAccountNonceResponse)
+}
+
+::google::protobuf::uint8* CrossAccountNonceResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossAccountNonceResponse)
+  // optional int64 nonce = 1;
+  if (this->nonce() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->nonce(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossAccountNonceResponse)
+  return target;
+}
+
+int CrossAccountNonceResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossAccountNonceResponse)
+  int total_size = 0;
+
+  // optional int64 nonce = 1;
+  if (this->nonce() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->nonce());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossAccountNonceResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossAccountNonceResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossAccountNonceResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossAccountNonceResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossAccountNonceResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossAccountNonceResponse)
+    MergeFrom(*source);
+  }
+}
+
+void CrossAccountNonceResponse::MergeFrom(const CrossAccountNonceResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossAccountNonceResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.nonce() != 0) {
+    set_nonce(from.nonce());
+  }
+}
+
+void CrossAccountNonceResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossAccountNonceResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossAccountNonceResponse::CopyFrom(const CrossAccountNonceResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossAccountNonceResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossAccountNonceResponse::IsInitialized() const {
+
+  return true;
+}
+
+void CrossAccountNonceResponse::Swap(CrossAccountNonceResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossAccountNonceResponse::InternalSwap(CrossAccountNonceResponse* other) {
+  std::swap(nonce_, other->nonce_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossAccountNonceResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossAccountNonceResponse_descriptor_;
+  metadata.reflection = CrossAccountNonceResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossAccountNonceResponse
+
+// optional int64 nonce = 1;
+void CrossAccountNonceResponse::clear_nonce() {
+  nonce_ = GOOGLE_LONGLONG(0);
+}
+ ::google::protobuf::int64 CrossAccountNonceResponse::nonce() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossAccountNonceResponse.nonce)
+  return nonce_;
+}
+ void CrossAccountNonceResponse::set_nonce(::google::protobuf::int64 value) {
+  
+  nonce_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossAccountNonceResponse.nonce)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossDoTransaction::kHashFieldNumber;
+const int CrossDoTransaction::kTransactionFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossDoTransaction::CrossDoTransaction()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossDoTransaction)
+}
+
+void CrossDoTransaction::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossDoTransaction::CrossDoTransaction(const CrossDoTransaction& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossDoTransaction)
+}
+
+void CrossDoTransaction::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  hash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  transaction_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossDoTransaction::~CrossDoTransaction() {
+  // @@protoc_insertion_point(destructor:protocol.CrossDoTransaction)
+  SharedDtor();
+}
+
+void CrossDoTransaction::SharedDtor() {
+  hash_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  transaction_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossDoTransaction::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossDoTransaction::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossDoTransaction_descriptor_;
+}
+
+const CrossDoTransaction& CrossDoTransaction::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossDoTransaction* CrossDoTransaction::default_instance_ = NULL;
+
+CrossDoTransaction* CrossDoTransaction::New(::google::protobuf::Arena* arena) const {
+  CrossDoTransaction* n = new CrossDoTransaction;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossDoTransaction::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossDoTransaction)
+  hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  transaction_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossDoTransaction::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossDoTransaction)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string hash = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_hash()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->hash().data(), this->hash().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossDoTransaction.hash"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_transaction;
+        break;
+      }
+
+      // optional bytes transaction = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_transaction:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_transaction()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossDoTransaction)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossDoTransaction)
+  return false;
+#undef DO_
+}
+
+void CrossDoTransaction::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossDoTransaction)
+  // optional string hash = 1;
+  if (this->hash().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->hash().data(), this->hash().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossDoTransaction.hash");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->hash(), output);
+  }
+
+  // optional bytes transaction = 2;
+  if (this->transaction().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      2, this->transaction(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossDoTransaction)
+}
+
+::google::protobuf::uint8* CrossDoTransaction::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossDoTransaction)
+  // optional string hash = 1;
+  if (this->hash().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->hash().data(), this->hash().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossDoTransaction.hash");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->hash(), target);
+  }
+
+  // optional bytes transaction = 2;
+  if (this->transaction().size() > 0) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        2, this->transaction(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossDoTransaction)
+  return target;
+}
+
+int CrossDoTransaction::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossDoTransaction)
+  int total_size = 0;
+
+  // optional string hash = 1;
+  if (this->hash().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->hash());
+  }
+
+  // optional bytes transaction = 2;
+  if (this->transaction().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->transaction());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossDoTransaction::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossDoTransaction)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossDoTransaction* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossDoTransaction>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossDoTransaction)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossDoTransaction)
+    MergeFrom(*source);
+  }
+}
+
+void CrossDoTransaction::MergeFrom(const CrossDoTransaction& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossDoTransaction)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.hash().size() > 0) {
+
+    hash_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.hash_);
+  }
+  if (from.transaction().size() > 0) {
+
+    transaction_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.transaction_);
+  }
+}
+
+void CrossDoTransaction::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossDoTransaction)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossDoTransaction::CopyFrom(const CrossDoTransaction& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossDoTransaction)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossDoTransaction::IsInitialized() const {
+
+  return true;
+}
+
+void CrossDoTransaction::Swap(CrossDoTransaction* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossDoTransaction::InternalSwap(CrossDoTransaction* other) {
+  hash_.Swap(&other->hash_);
+  transaction_.Swap(&other->transaction_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossDoTransaction::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossDoTransaction_descriptor_;
+  metadata.reflection = CrossDoTransaction_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossDoTransaction
+
+// optional string hash = 1;
+void CrossDoTransaction::clear_hash() {
+  hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossDoTransaction::hash() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransaction.hash)
+  return hash_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransaction::set_hash(const ::std::string& value) {
+  
+  hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossDoTransaction.hash)
+}
+ void CrossDoTransaction::set_hash(const char* value) {
+  
+  hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossDoTransaction.hash)
+}
+ void CrossDoTransaction::set_hash(const char* value, size_t size) {
+  
+  hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossDoTransaction.hash)
+}
+ ::std::string* CrossDoTransaction::mutable_hash() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransaction.hash)
+  return hash_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossDoTransaction::release_hash() {
+  // @@protoc_insertion_point(field_release:protocol.CrossDoTransaction.hash)
+  
+  return hash_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransaction::set_allocated_hash(::std::string* hash) {
+  if (hash != NULL) {
+    
+  } else {
+    
+  }
+  hash_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), hash);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.hash)
+}
+
+// optional bytes transaction = 2;
+void CrossDoTransaction::clear_transaction() {
+  transaction_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossDoTransaction::transaction() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransaction.transaction)
+  return transaction_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransaction::set_transaction(const ::std::string& value) {
+  
+  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossDoTransaction.transaction)
+}
+ void CrossDoTransaction::set_transaction(const char* value) {
+  
+  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossDoTransaction.transaction)
+}
+ void CrossDoTransaction::set_transaction(const void* value, size_t size) {
+  
+  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossDoTransaction.transaction)
+}
+ ::std::string* CrossDoTransaction::mutable_transaction() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransaction.transaction)
+  return transaction_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossDoTransaction::release_transaction() {
+  // @@protoc_insertion_point(field_release:protocol.CrossDoTransaction.transaction)
+  
+  return transaction_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransaction::set_allocated_transaction(::std::string* transaction) {
+  if (transaction != NULL) {
+    
+  } else {
+    
+  }
+  transaction_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), transaction);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.transaction)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CrossDoTransactionResponse::kHashFieldNumber;
+const int CrossDoTransactionResponse::kErrorCodeFieldNumber;
+const int CrossDoTransactionResponse::kErrorDescFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CrossDoTransactionResponse::CrossDoTransactionResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:protocol.CrossDoTransactionResponse)
+}
+
+void CrossDoTransactionResponse::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CrossDoTransactionResponse::CrossDoTransactionResponse(const CrossDoTransactionResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:protocol.CrossDoTransactionResponse)
+}
+
+void CrossDoTransactionResponse::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  hash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  error_code_ = 0;
+  error_desc_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+CrossDoTransactionResponse::~CrossDoTransactionResponse() {
+  // @@protoc_insertion_point(destructor:protocol.CrossDoTransactionResponse)
+  SharedDtor();
+}
+
+void CrossDoTransactionResponse::SharedDtor() {
+  hash_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  error_desc_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void CrossDoTransactionResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CrossDoTransactionResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CrossDoTransactionResponse_descriptor_;
+}
+
+const CrossDoTransactionResponse& CrossDoTransactionResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_overlay_2eproto();
+  return *default_instance_;
+}
+
+CrossDoTransactionResponse* CrossDoTransactionResponse::default_instance_ = NULL;
+
+CrossDoTransactionResponse* CrossDoTransactionResponse::New(::google::protobuf::Arena* arena) const {
+  CrossDoTransactionResponse* n = new CrossDoTransactionResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CrossDoTransactionResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:protocol.CrossDoTransactionResponse)
+  hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  error_code_ = 0;
+  error_desc_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool CrossDoTransactionResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:protocol.CrossDoTransactionResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string hash = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_hash()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->hash().data(), this->hash().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossDoTransactionResponse.hash"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_error_code;
+        break;
+      }
+
+      // optional .protocol.ERRORCODE error_code = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_error_code:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_error_code(static_cast< ::protocol::ERRORCODE >(value));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_error_desc;
+        break;
+      }
+
+      // optional string error_desc = 3;
+      case 3: {
+        if (tag == 26) {
+         parse_error_desc:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_error_desc()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->error_desc().data(), this->error_desc().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossDoTransactionResponse.error_desc"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:protocol.CrossDoTransactionResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:protocol.CrossDoTransactionResponse)
+  return false;
+#undef DO_
+}
+
+void CrossDoTransactionResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:protocol.CrossDoTransactionResponse)
+  // optional string hash = 1;
+  if (this->hash().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->hash().data(), this->hash().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossDoTransactionResponse.hash");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->hash(), output);
+  }
+
+  // optional .protocol.ERRORCODE error_code = 2;
+  if (this->error_code() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      2, this->error_code(), output);
+  }
+
+  // optional string error_desc = 3;
+  if (this->error_desc().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->error_desc().data(), this->error_desc().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossDoTransactionResponse.error_desc");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      3, this->error_desc(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:protocol.CrossDoTransactionResponse)
+}
+
+::google::protobuf::uint8* CrossDoTransactionResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossDoTransactionResponse)
+  // optional string hash = 1;
+  if (this->hash().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->hash().data(), this->hash().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossDoTransactionResponse.hash");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->hash(), target);
+  }
+
+  // optional .protocol.ERRORCODE error_code = 2;
+  if (this->error_code() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      2, this->error_code(), target);
+  }
+
+  // optional string error_desc = 3;
+  if (this->error_desc().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->error_desc().data(), this->error_desc().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossDoTransactionResponse.error_desc");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->error_desc(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossDoTransactionResponse)
+  return target;
+}
+
+int CrossDoTransactionResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:protocol.CrossDoTransactionResponse)
+  int total_size = 0;
+
+  // optional string hash = 1;
+  if (this->hash().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->hash());
+  }
+
+  // optional .protocol.ERRORCODE error_code = 2;
+  if (this->error_code() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->error_code());
+  }
+
+  // optional string error_desc = 3;
+  if (this->error_desc().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->error_desc());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CrossDoTransactionResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:protocol.CrossDoTransactionResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CrossDoTransactionResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CrossDoTransactionResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:protocol.CrossDoTransactionResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:protocol.CrossDoTransactionResponse)
+    MergeFrom(*source);
+  }
+}
+
+void CrossDoTransactionResponse::MergeFrom(const CrossDoTransactionResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:protocol.CrossDoTransactionResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.hash().size() > 0) {
+
+    hash_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.hash_);
+  }
+  if (from.error_code() != 0) {
+    set_error_code(from.error_code());
+  }
+  if (from.error_desc().size() > 0) {
+
+    error_desc_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.error_desc_);
+  }
+}
+
+void CrossDoTransactionResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:protocol.CrossDoTransactionResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CrossDoTransactionResponse::CopyFrom(const CrossDoTransactionResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:protocol.CrossDoTransactionResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CrossDoTransactionResponse::IsInitialized() const {
+
+  return true;
+}
+
+void CrossDoTransactionResponse::Swap(CrossDoTransactionResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CrossDoTransactionResponse::InternalSwap(CrossDoTransactionResponse* other) {
+  hash_.Swap(&other->hash_);
+  std::swap(error_code_, other->error_code_);
+  error_desc_.Swap(&other->error_desc_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CrossDoTransactionResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CrossDoTransactionResponse_descriptor_;
+  metadata.reflection = CrossDoTransactionResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CrossDoTransactionResponse
+
+// optional string hash = 1;
+void CrossDoTransactionResponse::clear_hash() {
+  hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossDoTransactionResponse::hash() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransactionResponse.hash)
+  return hash_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransactionResponse::set_hash(const ::std::string& value) {
+  
+  hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossDoTransactionResponse.hash)
+}
+ void CrossDoTransactionResponse::set_hash(const char* value) {
+  
+  hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossDoTransactionResponse.hash)
+}
+ void CrossDoTransactionResponse::set_hash(const char* value, size_t size) {
+  
+  hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossDoTransactionResponse.hash)
+}
+ ::std::string* CrossDoTransactionResponse::mutable_hash() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransactionResponse.hash)
+  return hash_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossDoTransactionResponse::release_hash() {
+  // @@protoc_insertion_point(field_release:protocol.CrossDoTransactionResponse.hash)
+  
+  return hash_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransactionResponse::set_allocated_hash(::std::string* hash) {
+  if (hash != NULL) {
+    
+  } else {
+    
+  }
+  hash_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), hash);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransactionResponse.hash)
+}
+
+// optional .protocol.ERRORCODE error_code = 2;
+void CrossDoTransactionResponse::clear_error_code() {
+  error_code_ = 0;
+}
+ ::protocol::ERRORCODE CrossDoTransactionResponse::error_code() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransactionResponse.error_code)
+  return static_cast< ::protocol::ERRORCODE >(error_code_);
+}
+ void CrossDoTransactionResponse::set_error_code(::protocol::ERRORCODE value) {
+  
+  error_code_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossDoTransactionResponse.error_code)
+}
+
+// optional string error_desc = 3;
+void CrossDoTransactionResponse::clear_error_desc() {
+  error_desc_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CrossDoTransactionResponse::error_desc() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransactionResponse.error_desc)
+  return error_desc_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransactionResponse::set_error_desc(const ::std::string& value) {
+  
+  error_desc_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossDoTransactionResponse.error_desc)
+}
+ void CrossDoTransactionResponse::set_error_desc(const char* value) {
+  
+  error_desc_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossDoTransactionResponse.error_desc)
+}
+ void CrossDoTransactionResponse::set_error_desc(const char* value, size_t size) {
+  
+  error_desc_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossDoTransactionResponse.error_desc)
+}
+ ::std::string* CrossDoTransactionResponse::mutable_error_desc() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransactionResponse.error_desc)
+  return error_desc_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CrossDoTransactionResponse::release_error_desc() {
+  // @@protoc_insertion_point(field_release:protocol.CrossDoTransactionResponse.error_desc)
+  
+  return error_desc_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CrossDoTransactionResponse::set_allocated_error_desc(::std::string* error_desc) {
+  if (error_desc != NULL) {
+    
+  } else {
+    
+  }
+  error_desc_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error_desc);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransactionResponse.error_desc)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

@@ -21,8 +21,8 @@ namespace bubi {
 		PairChainConfigure(){}
 		~PairChainConfigure(){}
 
-		std::string chain_unique_;
-		std::string target_chain_unique_;
+		std::string comm_unique_;
+		std::string target_comm_unique_;
 
 		bool Load(const Json::Value &value);
 	};
