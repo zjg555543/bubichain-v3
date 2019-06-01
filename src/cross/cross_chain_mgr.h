@@ -9,13 +9,13 @@
 #include <ledger/ledger_frm.h>
 
 namespace bubi {
-	//?Y2?ê1ó??÷?ˉí¨?aê??t
+	//暂不使用主动通知事件
 	//void BlockListener::HandleBlock(LedgerFrm::pointer closing_ledger){
 	//	//TODO
 	//	if (0){
-	//		//?áè????¨o???μ????￠ê??t￡??òí¨?a??1??¤è?
+	//		//读取指定合约的消息事件，则通知给公证人
 	//		protocol::CrossProposalInfo proposal;
-	//		//TODO￡o·???meta data·￠?í???￠
+	//		//TODO：分析meta data发送消息
 	//		channel_->SendRequest("", protocol::CROSS_MSGTYPE_PROPOSAL_NOTICE, proposal.SerializeAsString());
 	//	}
 	//}
@@ -26,7 +26,7 @@ namespace bubi {
 		~MessageHandler(){}
 
 		void OnHandleProposal(const protocol::WsMessage &message);
-		void OnHandleNotarys(const protocol::WsMessage &message);
+		void OnHandleCommInfo(const protocol::WsMessage &message);
 		void OnHandleAccountNonce(const protocol::WsMessage &message);
 		void OnHandleDoTransaction(const protocol::WsMessage &message);
 

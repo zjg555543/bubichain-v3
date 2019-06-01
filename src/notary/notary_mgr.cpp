@@ -23,19 +23,21 @@ namespace bubi {
 
 	void ChainObj::OnTimer(int64_t current_time){
 		//Get the latest output list and sort outmap
-		RequestAndSortOutput();
+		RequestAndSort(protocol::CROSS_PROPOSAL_OUTPUT);
 
 		//Get the latest intput list and sort the inputmap
-		RequestAndSortInput();
+		RequestAndSort(protocol::CROSS_PROPOSAL_INPUT);
 
 		//Check the number of tx errors
 		CheckTxError();
 
 		//vote output
-		VoteOutPut();
+		Vote(protocol::CROSS_PROPOSAL_OUTPUT);
 
 		//vote input
-		VoteInPut();
+		Vote(protocol::CROSS_PROPOSAL_INPUT);
+
+		SubmitTransaction();
 	}
 
 	void ChainObj::OnHandleMessage(const protocol::WsMessage &message){
@@ -47,8 +49,8 @@ namespace bubi {
 			OnHandleProposalNotice(message);
 		}
 
-		if (message.type() == protocol::CROSS_MSGTYPE_NOTARYS && !message.request()){
-			OnHandleNotarysResponse(message);
+		if (message.type() == protocol::CROSS_MSGTYPE_COMM_INFO && !message.request()){
+			OnHandleCrossCommInfoResponse(message);
 		}
 
 		if (message.type() == protocol::CROSS_MSGTYPE_ACCOUNT_NONCE && !message.request()){
@@ -84,8 +86,8 @@ namespace bubi {
 		HandleProposalNotice(msg.proposal_info());
 	}
 
-	void ChainObj::OnHandleNotarysResponse(const protocol::WsMessage &message){
-		protocol::CrossNotarysResponse msg;
+	void ChainObj::OnHandleCrossCommInfoResponse(const protocol::WsMessage &message){
+		protocol::CrossCommInfoResponse msg;
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Notarys Response..");
 
@@ -130,97 +132,84 @@ namespace bubi {
 	void ChainObj::HandleProposalNotice(const protocol::CrossProposalInfo &proposal_info){
 		//save proposal
 		utils::MutexGuard guard(lock_);
-		if (proposal_info.type() == protocol::CROSS_PROPOSAL_OUTPUT){
-			chain_info_.output_map[proposal_info.proposal_id()] = proposal_info;
-			chain_info_.output_recv_max_seq = MAX(proposal_info.proposal_id(), chain_info_.output_recv_max_seq);
-			if (proposal_info.status() == "ok"){
-				chain_info_.output_affirm_max_seq = MAX(proposal_info.proposal_id(), chain_info_.output_affirm_max_seq);
-			}
 
+		ProposalMap *proposal_map = nullptr;
+		if (proposal_info.type() == protocol::CROSS_PROPOSAL_OUTPUT){
+			proposal_map = &chain_info_.output_map;
 		}
 		else if (proposal_info.type() == protocol::CROSS_PROPOSAL_INPUT){
-			chain_info_.input_map[proposal_info.proposal_id()] = proposal_info;
-			chain_info_.input_recv_max_seq = MAX(proposal_info.proposal_id(), chain_info_.input_recv_max_seq);
-			if (proposal_info.status() == "ok"){
-				chain_info_.input_affirm_max_seq = MAX(proposal_info.proposal_id(), chain_info_.input_affirm_max_seq);
-			}
+			proposal_map = &chain_info_.input_map;
+		}
+		if (proposal_map == nullptr){
+			LOG_ERROR("Unknown proposal type.");
+			return;
+		}
+
+		auto itr = proposal_map->find(proposal_info.asset_contract());
+		if (itr == proposal_map->end()){
+			LOG_ERROR("Cannot find asset contract 's output map:%s", proposal_info.asset_contract());
+			return;
+		}
+		Proposal &prosal = itr->second;
+		prosal.proposal_info_map[proposal_info.proposal_id()] = proposal_info;
+		prosal.recv_max_seq = MAX(proposal_info.proposal_id(), prosal.recv_max_seq);
+		if (proposal_info.status() == "ok"){
+			prosal.affirm_max_seq = MAX(proposal_info.proposal_id(), prosal.affirm_max_seq);
+		}
+	}
+
+	void ChainObj::RequestAndSort(protocol::CROSS_PROPOSAL_TYPE type){
+		utils::MutexGuard guard(lock_);
+		//请求最新的type提案，最后确认的type提案
+		protocol::CrossProposal proposal;
+		proposal.set_type(type);
+		proposal.set_proposal_id(-1);
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
+
+		ProposalMap *proposal_map = nullptr;
+		if (type == protocol::CROSS_PROPOSAL_OUTPUT){
+			proposal_map = &chain_info_.output_map;
+		}
+		else if (type == protocol::CROSS_PROPOSAL_INPUT){
+			proposal_map = &chain_info_.input_map;
 		}
 		else{
 			LOG_ERROR("Unknown proposal type.");
+			return;
 		}
-	}
-
-	void ChainObj::RequestAndSortOutput(){
-		utils::MutexGuard guard(lock_);
-		//请求最新的output提案，最后确认的output提案
-		protocol::CrossProposal proposal;
-		proposal.set_type(protocol::CROSS_PROPOSAL_OUTPUT);
-		proposal.set_proposal_id(-1);
-		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
-
-		CrossProposalInfoMap &out_map = chain_info_.output_map;
+		
 		//删除已完成的提案
-		for (auto itr = out_map.begin(); itr != out_map.end();){
-			const protocol::CrossProposalInfo &info = itr->second;
-			if (info.status() != "ok"){
-				itr++;
-			}
+		for (auto itr = proposal_map->begin(); itr != proposal_map->end(); itr++){
+			ProposalInfoMap &proposal_info = itr->second.proposal_info_map;
+			for (auto itr_info = proposal_info.begin(); itr_info != proposal_info.end();){
+				const protocol::CrossProposalInfo &info = itr_info->second;
+				if (info.status() != "ok"){
+					itr++;
+				}
 
-			out_map.erase(itr++);
+				proposal_map->erase(itr++);
+			}
 		}
 		
 		//请求从最后确实开始后的缺失output的提案
-		int64_t max_nums = MIN(100, (chain_info_.output_recv_max_seq - chain_info_.output_affirm_max_seq));
-		if (max_nums <= 0){
-			max_nums = 1;
-		}
-		for (int64_t i = 1; i <= max_nums; i++){
-			int64_t index = chain_info_.output_affirm_max_seq + i;
-			auto itr = chain_info_.output_map.find(index);
-			if (itr != chain_info_.output_map.end()){
-				continue;
+		for (auto itr = proposal_map->begin(); itr != proposal_map->end(); itr++){
+			Proposal &proposal = itr->second;
+
+			int64_t max_nums = MIN(100, (proposal.recv_max_seq - proposal.affirm_max_seq));
+			if (max_nums <= 0){
+				max_nums = 1;
 			}
-			protocol::CrossProposal proposal;
-			proposal.set_type(protocol::CROSS_PROPOSAL_OUTPUT);
-			proposal.set_proposal_id(index);
-			channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
-		}
-	}
-
-	void ChainObj::RequestAndSortInput(){
-		utils::MutexGuard guard(lock_);
-		//请求最新的input提案
-		protocol::CrossProposal proposal;
-		proposal.set_type(protocol::CROSS_PROPOSAL_INPUT);
-		proposal.set_proposal_id(-1);
-		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
-
-		CrossProposalInfoMap &input_map = chain_info_.input_map;
-		//删除已完成的提案
-		for (auto itr = input_map.begin(); itr != input_map.end();){
-			const protocol::CrossProposalInfo &info = itr->second;
-			if (info.status() != "ok"){
-				itr++;
+			for (int64_t i = 1; i <= max_nums; i++){
+				int64_t index = proposal.affirm_max_seq + i;
+				auto itr = proposal.proposal_info_map.find(index);
+				if (itr != proposal.proposal_info_map.end()){
+					continue;
+				}
+				protocol::CrossProposal proposal;
+				proposal.set_type(type);
+				proposal.set_proposal_id(index);
+				channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
 			}
-
-			input_map.erase(itr++);
-		}
-
-		//请求从最后确实开始后的缺失input的提案
-		int64_t max_nums = MIN(100, (chain_info_.input_recv_max_seq - chain_info_.input_affirm_max_seq));
-		if (max_nums <= 0){
-			max_nums = 1;
-		}
-		for (int64_t i = 1; i <= max_nums; i++){
-			int64_t index = chain_info_.input_affirm_max_seq + i;
-			auto itr = chain_info_.input_map.find(index);
-			if (itr != chain_info_.input_map.end()){
-				continue;
-			}
-			protocol::CrossProposal proposal;
-			proposal.set_type(protocol::CROSS_PROPOSAL_INPUT);
-			proposal.set_proposal_id(index);
-			channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
 		}
 	}
 
@@ -228,107 +217,79 @@ namespace bubi {
 		//TODO 处理异常的交易
 	}
 
-	void ChainObj::VoteOutPut(){
-		//检查自己的output列表最后一个完成状态的下一个值是否存在
-		if (chain_info_.output_affirm_max_seq < 0){
-			LOG_ERROR("No output affirm max seq.");
+	void ChainObj::Vote(protocol::CROSS_PROPOSAL_TYPE type){
+		utils::MutexGuard guard(lock_);
+		ProposalMap *proposal_map = nullptr;
+		if (type == protocol::CROSS_PROPOSAL_OUTPUT){
+			proposal_map = &chain_info_.output_map;
+		}
+		else if (type == protocol::CROSS_PROPOSAL_INPUT){
+			proposal_map = &chain_info_.input_map;
+		}
+		else{
+			LOG_ERROR("Unknown proposal type.");
 			return;
 		}
 
-		protocol::CrossProposalInfo vote_proposal;
-		vote_proposal.set_proposal_id(-1);
-		do 
-		{
-			utils::MutexGuard guard(lock_);
-			const CrossProposalInfoMap &out_map = chain_info_.output_map;
-			auto itr = out_map.find(chain_info_.output_affirm_max_seq + 1);
-			if (itr != out_map.end()){
-				LOG_INFO("No output unaffirmed proposal.");
-				//如果不存在检查对端的intput列表，是否需要进行新的投票表决
-				//TODO GetPeerInput Proposal
-				vote_proposal;
-				break;
+		for (auto itr = proposal_map->begin(); itr != proposal_map->end(); itr++){
+			Proposal &proposal = itr->second;
+			//检查自己的列表最后一个完成状态的下一个值是否存在
+			if (proposal.affirm_max_seq < 0){
+				LOG_ERROR("No type affirm max seq.");
+				return;
 			}
+			protocol::CrossProposalInfo vote_proposal;
+			vote_proposal.set_proposal_id(-1);
 
-			//如果存在则判断自己是否投过票并进行投票处理
-			const protocol::CrossProposalInfo &proposal = itr->second;
-			bool confirmed = false;
-			for (size_t i = 0; i < proposal.confirmed_notarys_size(); i++){
-				if (proposal.confirmed_notarys(i) != notary_address_){
-					confirmed = true;
+			do
+			{
+				const ProposalInfoMap &proposal_info_map = proposal.proposal_info_map;
+				auto itr = proposal_info_map.find(proposal.affirm_max_seq + 1);
+				if (itr != proposal_info_map.end()){
+					LOG_INFO("No output unaffirmed proposal.");
+					//如果不存在检查对端的intput列表，是否需要进行新的投票表决
+					//TODO GetPeerInput Proposal
+					vote_proposal;
 					break;
 				}
-			}
 
-			if (confirmed){
-				break;
-			}
-			vote_proposal = proposal;
-		} while (false);
+				//如果存在则判断自己是否投过票并进行投票处理
+				const protocol::CrossProposalInfo &proposal = itr->second;
+				bool confirmed = false;
+				for (size_t i = 0; i < proposal.confirmed_notarys_size(); i++){
+					if (proposal.confirmed_notarys(i) != notary_address_){
+						confirmed = true;
+						break;
+					}
+				}
 
-		
-		if (vote_proposal.proposal_id() == -1){
-			return;
-		}
-
-		//发起交易，改变提案状态为output方式
-		vote_proposal.set_type(protocol::CROSS_PROPOSAL_OUTPUT);
-		SubmitTransaction(vote_proposal);
-	}
-
-	void ChainObj::VoteInPut(){
-		//检查自己的input列表最后一个完成状态的下一个值是否存在
-		if (chain_info_.input_affirm_max_seq < 0){
-			LOG_ERROR("No input affirm max seq.");
-			return;
-		}
-
-		protocol::CrossProposalInfo vote_proposal;
-		vote_proposal.set_proposal_id(-1);
-		do
-		{
-			utils::MutexGuard guard(lock_);
-			const CrossProposalInfoMap &input_map = chain_info_.input_map;
-			auto itr = input_map.find(chain_info_.input_affirm_max_seq + 1);
-			if (itr != input_map.end()){
-				LOG_INFO("No input_map unaffirmed proposal.");
-				//如果不存在检查对端的output列表，是否需要进行新的投票表决
-				//TODO GetPeerOutput Proposal
-				vote_proposal;
-				break;
-			}
-
-			//如果存在则判断自己是否投过票并进行投票处理
-			const protocol::CrossProposalInfo &proposal = itr->second;
-			bool confirmed = false;
-			for (size_t i = 0; i < proposal.confirmed_notarys_size(); i++){
-				if (proposal.confirmed_notarys(i) != notary_address_){
-					confirmed = true;
+				if (confirmed){
 					break;
 				}
+				vote_proposal = proposal;
+			} while (false);
+
+
+			if (vote_proposal.proposal_id() == -1){
+				continue;
 			}
 
-			if (confirmed){
-				break;
-			}
-			vote_proposal = proposal;
-		} while (false);
-
-		if (vote_proposal.proposal_id() == -1){
-			return;
+			//发起交易，改变提案状态为output方式
+			vote_proposal.set_type(type);
+			proposal_info_vector_.push_back(vote_proposal);
 		}
-
-		//发起交易，改变提案状态为input方式
-		vote_proposal.set_type(protocol::CROSS_PROPOSAL_INPUT);
-		SubmitTransaction(vote_proposal);
 	}
 
-	void ChainObj::SubmitTransaction(const protocol::CrossProposalInfo &vote_proposal){
+	void ChainObj::SubmitTransaction(){
+		utils::MutexGuard guard(lock_);
 		protocol::CrossDoTransaction cross_do_trans;
 		protocol::TransactionEnv tran_env;
 		protocol::Transaction *tran = tran_env.mutable_transaction();
 		//TODO 制造交易
-		
+		for (size_t i = 0; i < proposal_info_vector_.size(); i++){
+			//TODO 打包操作
+		}
+
 		std::string content = tran->SerializeAsString();
 		PrivateKey privateKey(private_key_);
 		if (!privateKey.IsValid()) {
@@ -339,6 +300,14 @@ namespace bubi {
 		protocol::Signature *signpro = tran_env.add_signatures();
 		signpro->set_sign_data(sign);
 		signpro->set_public_key(privateKey.GetBase16PublicKey());
+
+		//TODO: 发送交易
+
+		protocol::CrossDoTransaction do_trans;
+		do_trans.set_hash("xxxxxx");
+		*do_trans.mutable_tran_env() = tran_env;
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_DO_TRANSACTION, do_trans.SerializeAsString());
+		proposal_info_vector_.clear();
 	}
 
 	NotaryMgr::NotaryMgr(){
@@ -378,7 +347,7 @@ namespace bubi {
 		channel_.Initialize(param);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_PROPOSAL);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_PROPOSAL_NOTICE);
-		channel_.Register(this, protocol::CROSS_MSGTYPE_NOTARYS);
+		channel_.Register(this, protocol::CROSS_MSGTYPE_COMM_INFO);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_ACCOUNT_NONCE);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_DO_TRANSACTION);
 

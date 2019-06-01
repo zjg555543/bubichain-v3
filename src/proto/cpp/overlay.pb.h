@@ -46,12 +46,12 @@ class ChainStatus;
 class ChainTxStatus;
 class CrossAccountNonce;
 class CrossAccountNonceResponse;
+class CrossCommInfo;
+class CrossCommInfoResponse;
 class CrossDoTransaction;
 class CrossDoTransactionResponse;
 class CrossHello;
 class CrossHelloResponse;
-class CrossNotarys;
-class CrossNotarysResponse;
 class CrossProposal;
 class CrossProposalInfo;
 class CrossProposalResponse;
@@ -174,7 +174,7 @@ enum CROSS_MESSAGE_TYPE {
   CROSS_MSGTYPE_HELLO = 10001,
   CROSS_MSGTYPE_PROPOSAL = 10002,
   CROSS_MSGTYPE_PROPOSAL_NOTICE = 10003,
-  CROSS_MSGTYPE_NOTARYS = 10004,
+  CROSS_MSGTYPE_COMM_INFO = 10004,
   CROSS_MSGTYPE_ACCOUNT_NONCE = 10005,
   CROSS_MSGTYPE_DO_TRANSACTION = 10006,
   CROSS_MESSAGE_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
@@ -2068,12 +2068,24 @@ class CrossProposal : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::int64 proposal_id() const;
   void set_proposal_id(::google::protobuf::int64 value);
 
+  // optional string asset_contract = 3;
+  void clear_asset_contract();
+  static const int kAssetContractFieldNumber = 3;
+  const ::std::string& asset_contract() const;
+  void set_asset_contract(const ::std::string& value);
+  void set_asset_contract(const char* value);
+  void set_asset_contract(const char* value, size_t size);
+  ::std::string* mutable_asset_contract();
+  ::std::string* release_asset_contract();
+  void set_allocated_asset_contract(::std::string* asset_contract);
+
   // @@protoc_insertion_point(class_scope:protocol.CrossProposal)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::int64 proposal_id_;
+  ::google::protobuf::internal::ArenaStringPtr asset_contract_;
   int type_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
@@ -2168,9 +2180,20 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_proposal_body();
   void set_allocated_proposal_body(::std::string* proposal_body);
 
-  // optional string status = 4;
+  // optional string asset_contract = 4;
+  void clear_asset_contract();
+  static const int kAssetContractFieldNumber = 4;
+  const ::std::string& asset_contract() const;
+  void set_asset_contract(const ::std::string& value);
+  void set_asset_contract(const char* value);
+  void set_asset_contract(const char* value, size_t size);
+  ::std::string* mutable_asset_contract();
+  ::std::string* release_asset_contract();
+  void set_allocated_asset_contract(::std::string* asset_contract);
+
+  // optional string status = 5;
   void clear_status();
-  static const int kStatusFieldNumber = 4;
+  static const int kStatusFieldNumber = 5;
   const ::std::string& status() const;
   void set_status(const ::std::string& value);
   void set_status(const char* value);
@@ -2179,10 +2202,10 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_status();
   void set_allocated_status(::std::string* status);
 
-  // repeated string confirmed_notarys = 5;
+  // repeated string confirmed_notarys = 6;
   int confirmed_notarys_size() const;
   void clear_confirmed_notarys();
-  static const int kConfirmedNotarysFieldNumber = 5;
+  static const int kConfirmedNotarysFieldNumber = 6;
   const ::std::string& confirmed_notarys(int index) const;
   ::std::string* mutable_confirmed_notarys(int index);
   void set_confirmed_notarys(int index, const ::std::string& value);
@@ -2202,6 +2225,7 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   bool _is_default_instance_;
   ::google::protobuf::int64 proposal_id_;
   ::google::protobuf::internal::ArenaStringPtr proposal_body_;
+  ::google::protobuf::internal::ArenaStringPtr asset_contract_;
   ::google::protobuf::internal::ArenaStringPtr status_;
   ::google::protobuf::RepeatedPtrField< ::std::string> confirmed_notarys_;
   int type_;
@@ -2300,32 +2324,32 @@ class CrossProposalResponse : public ::google::protobuf::Message /* @@protoc_ins
 };
 // -------------------------------------------------------------------
 
-class CrossNotarys : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.CrossNotarys) */ {
+class CrossCommInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.CrossCommInfo) */ {
  public:
-  CrossNotarys();
-  virtual ~CrossNotarys();
+  CrossCommInfo();
+  virtual ~CrossCommInfo();
 
-  CrossNotarys(const CrossNotarys& from);
+  CrossCommInfo(const CrossCommInfo& from);
 
-  inline CrossNotarys& operator=(const CrossNotarys& from) {
+  inline CrossCommInfo& operator=(const CrossCommInfo& from) {
     CopyFrom(from);
     return *this;
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const CrossNotarys& default_instance();
+  static const CrossCommInfo& default_instance();
 
-  void Swap(CrossNotarys* other);
+  void Swap(CrossCommInfo* other);
 
   // implements Message ----------------------------------------------
 
-  inline CrossNotarys* New() const { return New(NULL); }
+  inline CrossCommInfo* New() const { return New(NULL); }
 
-  CrossNotarys* New(::google::protobuf::Arena* arena) const;
+  CrossCommInfo* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CrossNotarys& from);
-  void MergeFrom(const CrossNotarys& from);
+  void CopyFrom(const CrossCommInfo& from);
+  void MergeFrom(const CrossCommInfo& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -2344,7 +2368,7 @@ class CrossNotarys : public ::google::protobuf::Message /* @@protoc_insertion_po
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(CrossNotarys* other);
+  void InternalSwap(CrossCommInfo* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -2360,7 +2384,7 @@ class CrossNotarys : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:protocol.CrossNotarys)
+  // @@protoc_insertion_point(class_scope:protocol.CrossCommInfo)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -2371,36 +2395,36 @@ class CrossNotarys : public ::google::protobuf::Message /* @@protoc_insertion_po
   friend void protobuf_ShutdownFile_overlay_2eproto();
 
   void InitAsDefaultInstance();
-  static CrossNotarys* default_instance_;
+  static CrossCommInfo* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class CrossNotarysResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.CrossNotarysResponse) */ {
+class CrossCommInfoResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:protocol.CrossCommInfoResponse) */ {
  public:
-  CrossNotarysResponse();
-  virtual ~CrossNotarysResponse();
+  CrossCommInfoResponse();
+  virtual ~CrossCommInfoResponse();
 
-  CrossNotarysResponse(const CrossNotarysResponse& from);
+  CrossCommInfoResponse(const CrossCommInfoResponse& from);
 
-  inline CrossNotarysResponse& operator=(const CrossNotarysResponse& from) {
+  inline CrossCommInfoResponse& operator=(const CrossCommInfoResponse& from) {
     CopyFrom(from);
     return *this;
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const CrossNotarysResponse& default_instance();
+  static const CrossCommInfoResponse& default_instance();
 
-  void Swap(CrossNotarysResponse* other);
+  void Swap(CrossCommInfoResponse* other);
 
   // implements Message ----------------------------------------------
 
-  inline CrossNotarysResponse* New() const { return New(NULL); }
+  inline CrossCommInfoResponse* New() const { return New(NULL); }
 
-  CrossNotarysResponse* New(::google::protobuf::Arena* arena) const;
+  CrossCommInfoResponse* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CrossNotarysResponse& from);
-  void MergeFrom(const CrossNotarysResponse& from);
+  void CopyFrom(const CrossCommInfoResponse& from);
+  void MergeFrom(const CrossCommInfoResponse& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -2419,7 +2443,7 @@ class CrossNotarysResponse : public ::google::protobuf::Message /* @@protoc_inse
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(CrossNotarysResponse* other);
+  void InternalSwap(CrossCommInfoResponse* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -2451,19 +2475,53 @@ class CrossNotarysResponse : public ::google::protobuf::Message /* @@protoc_inse
   const ::google::protobuf::RepeatedPtrField< ::std::string>& notarys() const;
   ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_notarys();
 
-  // @@protoc_insertion_point(class_scope:protocol.CrossNotarysResponse)
+  // repeated string asset_input_contracts = 2;
+  int asset_input_contracts_size() const;
+  void clear_asset_input_contracts();
+  static const int kAssetInputContractsFieldNumber = 2;
+  const ::std::string& asset_input_contracts(int index) const;
+  ::std::string* mutable_asset_input_contracts(int index);
+  void set_asset_input_contracts(int index, const ::std::string& value);
+  void set_asset_input_contracts(int index, const char* value);
+  void set_asset_input_contracts(int index, const char* value, size_t size);
+  ::std::string* add_asset_input_contracts();
+  void add_asset_input_contracts(const ::std::string& value);
+  void add_asset_input_contracts(const char* value);
+  void add_asset_input_contracts(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& asset_input_contracts() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_asset_input_contracts();
+
+  // repeated string asset_output_contracts = 3;
+  int asset_output_contracts_size() const;
+  void clear_asset_output_contracts();
+  static const int kAssetOutputContractsFieldNumber = 3;
+  const ::std::string& asset_output_contracts(int index) const;
+  ::std::string* mutable_asset_output_contracts(int index);
+  void set_asset_output_contracts(int index, const ::std::string& value);
+  void set_asset_output_contracts(int index, const char* value);
+  void set_asset_output_contracts(int index, const char* value, size_t size);
+  ::std::string* add_asset_output_contracts();
+  void add_asset_output_contracts(const ::std::string& value);
+  void add_asset_output_contracts(const char* value);
+  void add_asset_output_contracts(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& asset_output_contracts() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_asset_output_contracts();
+
+  // @@protoc_insertion_point(class_scope:protocol.CrossCommInfoResponse)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::RepeatedPtrField< ::std::string> notarys_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> asset_input_contracts_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> asset_output_contracts_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
   friend void protobuf_ShutdownFile_overlay_2eproto();
 
   void InitAsDefaultInstance();
-  static CrossNotarysResponse* default_instance_;
+  static CrossCommInfoResponse* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -4411,6 +4469,50 @@ inline void CrossProposal::set_proposal_id(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
 }
 
+// optional string asset_contract = 3;
+inline void CrossProposal::clear_asset_contract() {
+  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& CrossProposal::asset_contract() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposal.asset_contract)
+  return asset_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void CrossProposal::set_asset_contract(const ::std::string& value) {
+  
+  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposal.asset_contract)
+}
+inline void CrossProposal::set_asset_contract(const char* value) {
+  
+  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.asset_contract)
+}
+inline void CrossProposal::set_asset_contract(const char* value, size_t size) {
+  
+  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.asset_contract)
+}
+inline ::std::string* CrossProposal::mutable_asset_contract() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.asset_contract)
+  return asset_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* CrossProposal::release_asset_contract() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposal.asset_contract)
+  
+  return asset_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void CrossProposal::set_allocated_asset_contract(::std::string* asset_contract) {
+  if (asset_contract != NULL) {
+    
+  } else {
+    
+  }
+  asset_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), asset_contract);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.asset_contract)
+}
+
 // -------------------------------------------------------------------
 
 // CrossProposalInfo
@@ -4487,7 +4589,51 @@ inline void CrossProposalInfo::set_allocated_proposal_body(::std::string* propos
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.proposal_body)
 }
 
-// optional string status = 4;
+// optional string asset_contract = 4;
+inline void CrossProposalInfo::clear_asset_contract() {
+  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& CrossProposalInfo::asset_contract() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.asset_contract)
+  return asset_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void CrossProposalInfo::set_asset_contract(const ::std::string& value) {
+  
+  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.asset_contract)
+}
+inline void CrossProposalInfo::set_asset_contract(const char* value) {
+  
+  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.asset_contract)
+}
+inline void CrossProposalInfo::set_asset_contract(const char* value, size_t size) {
+  
+  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.asset_contract)
+}
+inline ::std::string* CrossProposalInfo::mutable_asset_contract() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.asset_contract)
+  return asset_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* CrossProposalInfo::release_asset_contract() {
+  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.asset_contract)
+  
+  return asset_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void CrossProposalInfo::set_allocated_asset_contract(::std::string* asset_contract) {
+  if (asset_contract != NULL) {
+    
+  } else {
+    
+  }
+  asset_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), asset_contract);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.asset_contract)
+}
+
+// optional string status = 5;
 inline void CrossProposalInfo::clear_status() {
   status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4531,7 +4677,7 @@ inline void CrossProposalInfo::set_allocated_status(::std::string* status) {
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.status)
 }
 
-// repeated string confirmed_notarys = 5;
+// repeated string confirmed_notarys = 6;
 inline int CrossProposalInfo::confirmed_notarys_size() const {
   return confirmed_notarys_.size();
 }
@@ -4630,65 +4776,175 @@ inline void CrossProposalResponse::set_allocated_proposal_info(::protocol::Cross
 
 // -------------------------------------------------------------------
 
-// CrossNotarys
+// CrossCommInfo
 
 // -------------------------------------------------------------------
 
-// CrossNotarysResponse
+// CrossCommInfoResponse
 
 // repeated string notarys = 1;
-inline int CrossNotarysResponse::notarys_size() const {
+inline int CrossCommInfoResponse::notarys_size() const {
   return notarys_.size();
 }
-inline void CrossNotarysResponse::clear_notarys() {
+inline void CrossCommInfoResponse::clear_notarys() {
   notarys_.Clear();
 }
-inline const ::std::string& CrossNotarysResponse::notarys(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossNotarysResponse.notarys)
+inline const ::std::string& CrossCommInfoResponse::notarys(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.notarys)
   return notarys_.Get(index);
 }
-inline ::std::string* CrossNotarysResponse::mutable_notarys(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarysResponse.notarys)
+inline ::std::string* CrossCommInfoResponse::mutable_notarys(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.notarys)
   return notarys_.Mutable(index);
 }
-inline void CrossNotarysResponse::set_notarys(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossNotarysResponse.notarys)
+inline void CrossCommInfoResponse::set_notarys(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.notarys)
   notarys_.Mutable(index)->assign(value);
 }
-inline void CrossNotarysResponse::set_notarys(int index, const char* value) {
+inline void CrossCommInfoResponse::set_notarys(int index, const char* value) {
   notarys_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarysResponse.notarys)
+  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.notarys)
 }
-inline void CrossNotarysResponse::set_notarys(int index, const char* value, size_t size) {
+inline void CrossCommInfoResponse::set_notarys(int index, const char* value, size_t size) {
   notarys_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarysResponse.notarys)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.notarys)
 }
-inline ::std::string* CrossNotarysResponse::add_notarys() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossNotarysResponse.notarys)
+inline ::std::string* CrossCommInfoResponse::add_notarys() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.notarys)
   return notarys_.Add();
 }
-inline void CrossNotarysResponse::add_notarys(const ::std::string& value) {
+inline void CrossCommInfoResponse::add_notarys(const ::std::string& value) {
   notarys_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossNotarysResponse.notarys)
+  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.notarys)
 }
-inline void CrossNotarysResponse::add_notarys(const char* value) {
+inline void CrossCommInfoResponse::add_notarys(const char* value) {
   notarys_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossNotarysResponse.notarys)
+  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.notarys)
 }
-inline void CrossNotarysResponse::add_notarys(const char* value, size_t size) {
+inline void CrossCommInfoResponse::add_notarys(const char* value, size_t size) {
   notarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossNotarysResponse.notarys)
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.notarys)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossNotarysResponse::notarys() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossNotarysResponse.notarys)
+CrossCommInfoResponse::notarys() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.notarys)
   return notarys_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossNotarysResponse::mutable_notarys() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossNotarysResponse.notarys)
+CrossCommInfoResponse::mutable_notarys() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.notarys)
   return &notarys_;
+}
+
+// repeated string asset_input_contracts = 2;
+inline int CrossCommInfoResponse::asset_input_contracts_size() const {
+  return asset_input_contracts_.size();
+}
+inline void CrossCommInfoResponse::clear_asset_input_contracts() {
+  asset_input_contracts_.Clear();
+}
+inline const ::std::string& CrossCommInfoResponse::asset_input_contracts(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.asset_input_contracts)
+  return asset_input_contracts_.Get(index);
+}
+inline ::std::string* CrossCommInfoResponse::mutable_asset_input_contracts(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.asset_input_contracts)
+  return asset_input_contracts_.Mutable(index);
+}
+inline void CrossCommInfoResponse::set_asset_input_contracts(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.asset_input_contracts)
+  asset_input_contracts_.Mutable(index)->assign(value);
+}
+inline void CrossCommInfoResponse::set_asset_input_contracts(int index, const char* value) {
+  asset_input_contracts_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.asset_input_contracts)
+}
+inline void CrossCommInfoResponse::set_asset_input_contracts(int index, const char* value, size_t size) {
+  asset_input_contracts_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.asset_input_contracts)
+}
+inline ::std::string* CrossCommInfoResponse::add_asset_input_contracts() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.asset_input_contracts)
+  return asset_input_contracts_.Add();
+}
+inline void CrossCommInfoResponse::add_asset_input_contracts(const ::std::string& value) {
+  asset_input_contracts_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.asset_input_contracts)
+}
+inline void CrossCommInfoResponse::add_asset_input_contracts(const char* value) {
+  asset_input_contracts_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.asset_input_contracts)
+}
+inline void CrossCommInfoResponse::add_asset_input_contracts(const char* value, size_t size) {
+  asset_input_contracts_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.asset_input_contracts)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CrossCommInfoResponse::asset_input_contracts() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.asset_input_contracts)
+  return asset_input_contracts_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+CrossCommInfoResponse::mutable_asset_input_contracts() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.asset_input_contracts)
+  return &asset_input_contracts_;
+}
+
+// repeated string asset_output_contracts = 3;
+inline int CrossCommInfoResponse::asset_output_contracts_size() const {
+  return asset_output_contracts_.size();
+}
+inline void CrossCommInfoResponse::clear_asset_output_contracts() {
+  asset_output_contracts_.Clear();
+}
+inline const ::std::string& CrossCommInfoResponse::asset_output_contracts(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.asset_output_contracts)
+  return asset_output_contracts_.Get(index);
+}
+inline ::std::string* CrossCommInfoResponse::mutable_asset_output_contracts(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.asset_output_contracts)
+  return asset_output_contracts_.Mutable(index);
+}
+inline void CrossCommInfoResponse::set_asset_output_contracts(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.asset_output_contracts)
+  asset_output_contracts_.Mutable(index)->assign(value);
+}
+inline void CrossCommInfoResponse::set_asset_output_contracts(int index, const char* value) {
+  asset_output_contracts_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.asset_output_contracts)
+}
+inline void CrossCommInfoResponse::set_asset_output_contracts(int index, const char* value, size_t size) {
+  asset_output_contracts_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.asset_output_contracts)
+}
+inline ::std::string* CrossCommInfoResponse::add_asset_output_contracts() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.asset_output_contracts)
+  return asset_output_contracts_.Add();
+}
+inline void CrossCommInfoResponse::add_asset_output_contracts(const ::std::string& value) {
+  asset_output_contracts_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.asset_output_contracts)
+}
+inline void CrossCommInfoResponse::add_asset_output_contracts(const char* value) {
+  asset_output_contracts_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.asset_output_contracts)
+}
+inline void CrossCommInfoResponse::add_asset_output_contracts(const char* value, size_t size) {
+  asset_output_contracts_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.asset_output_contracts)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CrossCommInfoResponse::asset_output_contracts() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.asset_output_contracts)
+  return asset_output_contracts_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+CrossCommInfoResponse::mutable_asset_output_contracts() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.asset_output_contracts)
+  return &asset_output_contracts_;
 }
 
 // -------------------------------------------------------------------

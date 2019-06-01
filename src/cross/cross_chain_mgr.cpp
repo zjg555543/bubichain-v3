@@ -27,29 +27,34 @@ namespace bubi {
 		}
 
 		if (cross_proposal.type() == protocol::CROSS_PROPOSAL_INPUT){
-			//TODO ??????
+			//TODO 对接合约参数
 			protocol::KeyPair value_ptr;
+			cross_proposal.asset_contract();
+
 			if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
-				//??????????
+				//尚未找到合约相关信息
 				LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
 				return;
 			}
 
 			protocol::CrossProposalInfo info;
-			//TODO ??????
+			//TODO 保存提案信息
+			info.set_asset_contract(cross_proposal.asset_contract());
 
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
 		else if (cross_proposal.type() == protocol::CROSS_PROPOSAL_INPUT){
-			//TODO ??output??
+			//TODO 查找output消息
 			protocol::KeyPair value_ptr;
+			cross_proposal.asset_contract();
 			if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
-				//??????????
+				//尚未找到合约相关信息
 				return;
 			}
 
 			protocol::CrossProposalInfo info;
-			//TODO ??????
+			//TODO 保存提案信息
+			info.set_asset_contract(cross_proposal.asset_contract());
 
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
@@ -67,10 +72,10 @@ namespace bubi {
 		return;
 	}
 
-	void MessageHandler::OnHandleNotarys(const protocol::WsMessage &message){
-		protocol::CrossNotarys notarys;
-		notarys.ParseFromString(message.data());
-		protocol::CrossNotarysResponse response;
+	void MessageHandler::OnHandleCommInfo(const protocol::WsMessage &message){
+		protocol::CrossCommInfo comm_info;
+		comm_info.ParseFromString(message.data());
+		protocol::CrossCommInfoResponse response;
 
 		//Find the notary list for the contract
 		AccountFrm::pointer acc = NULL;
@@ -86,9 +91,19 @@ namespace bubi {
 			return;
 		}
 
-		//TODO ???????
+		//TODO 读取公证人列表
 		for (size_t i = 0; i <= 1; i++){
 			*response.add_notarys() = "123456";
+		}
+
+		//TODO 读取输入资产的业务地址
+		for (size_t i = 0; i <= 1; i++){
+			*response.add_asset_input_contracts() = "123456";
+		}
+
+		//TODO 读取输出资产的业务地址
+		for (size_t i = 0; i <= 1; i++){
+			*response.add_asset_output_contracts() = "123456";
 		}
 
 		channel_->SendResponse("", message, response.SerializeAsString());
@@ -167,7 +182,7 @@ namespace bubi {
 		handler_ = new MessageHandler(&channel_, config.comm_contract_);
 		channel_.Initialize(param);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_PROPOSAL);
-		channel_.Register(this, protocol::CROSS_MSGTYPE_NOTARYS);
+		channel_.Register(this, protocol::CROSS_MSGTYPE_COMM_INFO);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_ACCOUNT_NONCE);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_DO_TRANSACTION);
 		return true;
@@ -188,8 +203,8 @@ namespace bubi {
 			handler_->OnHandleProposal(message);
 		}
 
-		if (protocol::CROSS_MSGTYPE_NOTARYS == message.type() && message.request()){
-			handler_->OnHandleNotarys(message);
+		if (protocol::CROSS_MSGTYPE_COMM_INFO == message.type() && message.request()){
+			handler_->OnHandleCommInfo(message);
 		}
 
 		if (protocol::CROSS_MSGTYPE_ACCOUNT_NONCE == message.type() && message.request()){

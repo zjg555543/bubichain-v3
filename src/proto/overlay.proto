@@ -160,7 +160,7 @@ enum CROSS_MESSAGE_TYPE{
 	CROSS_MSGTYPE_HELLO = 10001;
 	CROSS_MSGTYPE_PROPOSAL  = 10002;
 	CROSS_MSGTYPE_PROPOSAL_NOTICE  = 10003;
-	CROSS_MSGTYPE_NOTARYS  = 10004;
+	CROSS_MSGTYPE_COMM_INFO  = 10004;
 	CROSS_MSGTYPE_ACCOUNT_NONCE  = 10005;
 	CROSS_MSGTYPE_DO_TRANSACTION  = 10006;
 }
@@ -183,25 +183,29 @@ enum CROSS_PROPOSAL_TYPE{
 message CrossProposal {
 	CROSS_PROPOSAL_TYPE type = 1;
     int64 proposal_id = 2;
+	string asset_contract = 3;
 }
 
 message CrossProposalInfo {
 	CROSS_PROPOSAL_TYPE type = 1;
     int64 proposal_id = 2;
 	string proposal_body = 3;
-	string status = 4;
-	repeated string confirmed_notarys = 5; 
+	string asset_contract = 4;
+	string status = 5;
+	repeated string confirmed_notarys = 6; 
 }
 
 message CrossProposalResponse {
 	CrossProposalInfo proposal_info = 1;
 }
 
-message CrossNotarys {
+message CrossCommInfo {
 }
 
-message CrossNotarysResponse {
+message CrossCommInfoResponse {
 	repeated string notarys = 1; 
+	repeated string asset_input_contracts = 2;
+	repeated string asset_output_contracts = 3;
 }
 
 message CrossAccountNonce {
