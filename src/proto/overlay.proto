@@ -176,22 +176,21 @@ message CrossHelloResponse {
 
 enum CROSS_PROPOSAL_TYPE{
 	CROSS_PROPOSAL_NONE = 0;
-	CROSS_PROPOSAL_TRANS = 1;
-	CROSS_PROPOSAL_FEEDBACK  = 2;
+	CROSS_PROPOSAL_OUTPUT = 1;
+	CROSS_PROPOSAL_INPUT  = 2;
 }
 
 message CrossProposal {
 	CROSS_PROPOSAL_TYPE type = 1;
     int64 proposal_id = 2;
-	repeated string confirmed_notary = 3; 
 }
 
 message CrossProposalInfo {
 	CROSS_PROPOSAL_TYPE type = 1;
-	string comm_unique = 2;
-    int64 proposal_id = 3;
-	string proposal_body = 4;
-	string status = 5;
+    int64 proposal_id = 2;
+	string proposal_body = 3;
+	string status = 4;
+	repeated string confirmed_notarys = 5; 
 }
 
 message CrossProposalResponse {
@@ -199,11 +198,10 @@ message CrossProposalResponse {
 }
 
 message CrossNotarys {
-	string comm_unique = 1;
 }
 
 message CrossNotarysResponse {
-	repeated string notary = 1; 
+	repeated string notarys = 1; 
 }
 
 message CrossAccountNonce {
@@ -216,11 +214,11 @@ message CrossAccountNonceResponse {
 
 message CrossDoTransaction {
 	string hash = 1;
-	bytes transaction = 2;
+	TransactionEnv tran_env = 2;
 }
 
 message CrossDoTransactionResponse {
 	string hash = 1;
-	ERRORCODE error_code = 2;
+	int32 error_code = 2;
 	string error_desc = 3;
 }

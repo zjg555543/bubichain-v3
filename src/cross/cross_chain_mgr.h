@@ -9,20 +9,20 @@
 #include <ledger/ledger_frm.h>
 
 namespace bubi {
-
-	class BlockListener {
-	public:
-		BlockListener(MessageChannel &channel);
-		~BlockListener();
-
-		void HandleBlock(LedgerFrm::pointer closing_ledger);
-	private:
-		MessageChannel *channel_;
-	};
+	//?Y2?¨º1¨®??¡Â?¡¥¨ª¡§?a¨º??t
+	//void BlockListener::HandleBlock(LedgerFrm::pointer closing_ledger){
+	//	//TODO
+	//	if (0){
+	//		//?¨¢¨¨????¡§o???¦Ì????¡é¨º??t¡ê??¨°¨ª¡§?a??1??¡è¨¨?
+	//		protocol::CrossProposalInfo proposal;
+	//		//TODO¡êo¡¤???meta data¡¤¡é?¨ª???¡é
+	//		channel_->SendRequest("", protocol::CROSS_MSGTYPE_PROPOSAL_NOTICE, proposal.SerializeAsString());
+	//	}
+	//}
 
 	class MessageHandler{
 	public:
-		MessageHandler(MessageChannel *channel);
+		MessageHandler(MessageChannel *channel, const std::string &comm_contract);
 		~MessageHandler(){}
 
 		void OnHandleProposal(const protocol::WsMessage &message);
@@ -32,6 +32,7 @@ namespace bubi {
 
 	private:
 		MessageChannel *channel_;
+		std::string comm_contract_;
 	};
 
 	class CrossChainMgr : public utils::Singleton<CrossChainMgr>, public IMessageHandler{
@@ -42,7 +43,6 @@ namespace bubi {
 
 		bool Initialize();
 		bool Exit();
-		void HandleBlock(LedgerFrm::pointer closing_ledger);
 
 	private:
 		virtual void HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message) override;
@@ -50,7 +50,6 @@ namespace bubi {
 	private:
 		MessageChannel channel_;
 		MessageHandler *handler_;
-		BlockListener *block_listener_;
 	};
 }
 

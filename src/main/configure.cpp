@@ -197,6 +197,7 @@ namespace bubi {
 
 	bool CrossConfigure::Load(const Json::Value &value) {
 		Configure::GetValue(value, "comm_unique", comm_unique_);
+		Configure::GetValue(value, "comm_contract", comm_contract_);
 		Configure::GetValue(value, "enabled", enabled_);
 
 		std::string address;

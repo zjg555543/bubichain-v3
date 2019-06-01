@@ -64,7 +64,8 @@
 		]
 	},
 	"cross": {
-		"chain_unique": "CHAIN_20190528_A",
+		"comm_unique": "CHAIN_20190528_A",
+		"comm_contract": "a0024740b934765287b16113adc6bb285d72c124d9e3c1",
 		"notary_addr": "127.0.0.1:30000",
 		"enabled" : true
 	}

@@ -2,30 +2,14 @@
 #include <common/private_key.h>
 #include <common/pb2json.h>
 #include <api/websocket_server.h>
+#include <glue/glue_manager.h>
+#include <overlay/peer_manager.h>
 #include "cross_chain_mgr.h"
 
 namespace bubi {
-
-	BlockListener::BlockListener(MessageChannel &channel){
-		channel_ = &channel;
-	}
-
-	BlockListener::~BlockListener(){
-
-	}
-
-	void BlockListener::HandleBlock(LedgerFrm::pointer closing_ledger){
-		//TODO
-		if (0){
-			//读取指定合约的消息事件，则通知给公证人
-			protocol::CrossProposalInfo proposal;
-			//TODO：分析meta data发送消息
-			channel_->SendRequest("", protocol::CROSS_MSGTYPE_PROPOSAL_NOTICE, proposal.SerializeAsString());
-		}
-	}
-
-	MessageHandler::MessageHandler(MessageChannel *channel){
+	MessageHandler::MessageHandler(MessageChannel *channel, const std::string &comm_contract){
 		channel_ = channel;
+		comm_contract_ = comm_contract;
 	}
 
 	void MessageHandler::OnHandleProposal(const protocol::WsMessage &message){
@@ -34,16 +18,48 @@ namespace bubi {
 		protocol::CrossProposalResponse cross_proposal_response;
 
 		LOG_INFO("Recv Proposal request, proposal type:%d, id:(" FMT_I64 " ).", cross_proposal.type(), cross_proposal.proposal_id());
-		if (cross_proposal.type() == protocol::CROSS_PROPOSAL_TRANS){
-			//TODO 查找需要转移的消息队列
 
+		//find input proposal
+		AccountFrm::pointer acc = NULL;
+		if (!Environment::AccountFromDB(comm_contract_, acc)) {
+			LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
+			return;
 		}
-		else if(cross_proposal.type() == protocol::CROSS_PROPOSAL_FEEDBACK){
-			//TODO 查找需要反馈的消息队列
 
+		if (cross_proposal.type() == protocol::CROSS_PROPOSAL_INPUT){
+			//TODO ??????
+			protocol::KeyPair value_ptr;
+			if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
+				//??????????
+				LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
+				return;
+			}
+
+			protocol::CrossProposalInfo info;
+			//TODO ??????
+
+			*cross_proposal_response.mutable_proposal_info() = info;
+		}
+		else if (cross_proposal.type() == protocol::CROSS_PROPOSAL_INPUT){
+			//TODO ??output??
+			protocol::KeyPair value_ptr;
+			if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
+				//??????????
+				return;
+			}
+
+			protocol::CrossProposalInfo info;
+			//TODO ??????
+
+			*cross_proposal_response.mutable_proposal_info() = info;
 		}
 		else{
 			LOG_ERROR("Parse proposal error!");
+			return;
+		}
+
+		if (cross_proposal_response.proposal_info().proposal_id() <= 0){
+			LOG_ERROR("No proposal response message.");
 			return;
 		}
 
@@ -55,8 +71,25 @@ namespace bubi {
 		protocol::CrossNotarys notarys;
 		notarys.ParseFromString(message.data());
 		protocol::CrossNotarysResponse response;
-		//TODO 查找对应合约的公证人列表
 
+		//Find the notary list for the contract
+		AccountFrm::pointer acc = NULL;
+		if (!Environment::AccountFromDB(comm_contract_, acc)) {
+			LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
+			return;
+		}
+
+		protocol::KeyPair value_ptr;
+		if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
+			//No contract information has been found
+			LOG_ERROR("GetAccount fail, xxxxxxxxxx not exist");
+			return;
+		}
+
+		//TODO ???????
+		for (size_t i = 0; i <= 1; i++){
+			*response.add_notarys() = "123456";
+		}
 
 		channel_->SendResponse("", message, response.SerializeAsString());
 	}
@@ -65,9 +98,15 @@ namespace bubi {
 		protocol::CrossAccountNonce account;
 		account.ParseFromString(message.data());
 		protocol::CrossAccountNonceResponse response;
-		//TODO 查找账号nonce值
 
+		//Find the account nonce value
+		AccountFrm::pointer acc = NULL;
+		if (!Environment::AccountFromDB(account.account(), acc)) {
+			LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
+			return;
+		}
 
+		response.set_nonce(acc->GetAccountNonce());
 		channel_->SendResponse("", message, response.SerializeAsString());
 	}
 
@@ -75,8 +114,34 @@ namespace bubi {
 		protocol::CrossDoTransaction trans;
 		trans.ParseFromString(message.data());
 		protocol::CrossDoTransactionResponse response;
-		//TODO 发起交易，并返回交易的结果
 
+		Result result;
+		result.set_code(protocol::ERRCODE_SUCCESS);
+		result.set_desc("");
+
+		protocol::TransactionEnv tran_env = trans.tran_env();
+		TransactionFrm::pointer ptr = std::make_shared<TransactionFrm>(tran_env);
+		do 
+		{
+			// add node signature
+			PrivateKey privateKey(bubi::Configure::Instance().p2p_configure_.node_private_key_);
+			if (!privateKey.IsValid()) {
+				result.set_code(protocol::ERRCODE_INVALID_PRIKEY);
+				result.set_desc("signature failed");
+				break;
+			}
+			std::string sign = privateKey.Sign(tran_env.transaction().SerializeAsString());
+			protocol::Signature *signpro = tran_env.add_signatures();
+			signpro->set_sign_data(sign);
+			signpro->set_public_key(privateKey.GetBase16PublicKey());
+
+			GlueManager::Instance().OnTransaction(ptr, result);
+			PeerManager::Instance().Broadcast(protocol::OVERLAY_MSGTYPE_TRANSACTION, tran_env.SerializeAsString());		
+		} while (false);
+		
+		response.set_error_code(result.code());
+		response.set_error_desc(result.desc());
+		response.set_hash(trans.hash());
 		channel_->SendResponse("", message, response.SerializeAsString());
 	}
 
@@ -99,14 +164,12 @@ namespace bubi {
 		param.notary_addr_ = config.notary_addr_;
 		param.comm_unique_ = config.comm_unique_;
 
-		handler_ = new MessageHandler(&channel_);
+		handler_ = new MessageHandler(&channel_, config.comm_contract_);
 		channel_.Initialize(param);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_PROPOSAL);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_NOTARYS);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_ACCOUNT_NONCE);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_DO_TRANSACTION);
-
-		block_listener_ = new BlockListener(channel_);
 		return true;
 	}
 
@@ -118,13 +181,6 @@ namespace bubi {
 
 		channel_.Exit();
 		return true;
-	}
-
-	void CrossChainMgr::HandleBlock(LedgerFrm::pointer closing_ledger){
-		if (block_listener_ == nullptr || closing_ledger == nullptr){
-			return;
-		}
-		block_listener_->HandleBlock(closing_ledger);
 	}
 
 	void CrossChainMgr::HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message){

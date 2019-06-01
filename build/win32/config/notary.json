@@ -8,15 +8,15 @@
 		"expire_days": 10
 	},
 	"notary": {
+		"address":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+		"private_key":"pppppppppppppppppppppppppppppppp"
 		"listen_addr": "127.0.0.1:30000",
 		"enabled" : true
 	},
 	"pair_chain_1": {
-		"chain_unique": "CHAIN_20190528_A",
-		"target_chain_unique": "CHAIN_20190528_B",
+		"chain_unique": "CHAIN_20190528_A"
 	},
 	"pair_chain_2": {
-		"chain_unique": "CHAIN_20190528_B",
-		"target_chain_unique": "CHAIN_20190528_A",
+		"chain_unique": "CHAIN_20190528_B"
 	}
 }

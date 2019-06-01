@@ -1,13 +1,20 @@
 
 #include <utils/headers.h>
+#include <utils/common.h>
 #include <common/general.h>
 #include <notary/configure.h>
 #include <notary/notary_mgr.h>
+#include <common/private_key.h>
 
 namespace bubi {
 
-	ChainObj::ChainObj(){
+	ChainObj::ChainObj(MessageChannel *channel, const std::string &comm_unique, const std::string &notary_address, const std::string &private_key){
+		chain_info_.Reset();
 		peer_chain_ = nullptr;
+		channel_ = channel;
+		comm_unique_ = comm_unique;
+		notary_address_ = notary_address;
+		private_key_ = private_key;
 	}
 
 	ChainObj::~ChainObj(){
@@ -15,24 +22,20 @@ namespace bubi {
 	}
 
 	void ChainObj::OnTimer(int64_t current_time){
-		//获取最新的output列表
+		//Get the latest output list and sort outmap
+		RequestAndSortOutput();
 
-		//获取最新的intput列表
+		//Get the latest intput list and sort the inputmap
+		RequestAndSortInput();
 
-		//排序outmap
+		//Check the number of tx errors
+		CheckTxError();
 
-		//排序inputmap
+		//vote output
+		VoteOutPut();
 
-		//检查交易错误次数是否超过最大值
-
-		//投票output
-
-		//投票input
-	}
-
-	void ChainObj::SetChainInfo(const std::string &comm_unique, const std::string &target_comm_unique){
-		comm_unique_ = comm_unique;
-		target_comm_unique_ = target_comm_unique;
+		//vote input
+		VoteInPut();
 	}
 
 	void ChainObj::OnHandleMessage(const protocol::WsMessage &message){
@@ -57,8 +60,13 @@ namespace bubi {
 		}
 	}
 
-	void ChainObj::SetPeerChain(ChainObj *peer_chain){
+	void ChainObj::SetPeerChain(std::shared_ptr<ChainObj> peer_chain){
 		peer_chain_ = peer_chain;
+	}
+
+	ChainObj::ChainInfo ChainObj::GetChainInfo(){
+		utils::MutexGuard guard(lock_);
+		return chain_info_;
 	}
 
 	void ChainObj::OnHandleProposalNotice(const protocol::WsMessage &message){
@@ -77,48 +85,260 @@ namespace bubi {
 	}
 
 	void ChainObj::OnHandleNotarysResponse(const protocol::WsMessage &message){
-		protocol::CrossNotarys msg;
+		protocol::CrossNotarysResponse msg;
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Notarys Response..");
-		//TODO 处理公证人列表
 
+		if (msg.notarys_size() >= 100){
+			LOG_ERROR("Notary nums is no more than 100");
+			return;
+		}
+
+		for (int i = 0; i < msg.notarys_size(); i++) {
+			chain_info_.notary_list[i] = msg.notarys(i);
+		}
 	}
 
 	void ChainObj::OnHandleAccountNonceResponse(const protocol::WsMessage &message){
 		protocol::CrossAccountNonceResponse msg;
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Account Nonce Response..");
-		//TODO 处理账号nonce值
-
+		chain_info_.nonce = msg.nonce();
 	}
 
 	void ChainObj::OnHandleProposalDoTransResponse(const protocol::WsMessage &message){
 		protocol::CrossDoTransactionResponse msg;
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Do Trans Response..");
-		//TODO 处理交易结果值
+
+		auto iter = std::find(chain_info_.tx_history.begin(), chain_info_.tx_history.end(), msg.hash());
+		if (iter == chain_info_.tx_history.end()){
+			return;
+		}
+
+		if (msg.error_code() == protocol::ERRCODE_SUCCESS){
+			chain_info_.error_tx_times = 0;
+			chain_info_.tx_history.clear();
+			return;
+		}
+		chain_info_.error_tx_times++;
+		LOG_ERROR("Failed to Do Transaction, (" FMT_I64 "),tx hash is %s,err_code is (" FMT_I64 "),err_desc is %s",
+			msg.hash().c_str(), msg.error_code(), msg.error_desc().c_str());
 
 	}
 
 	void ChainObj::HandleProposalNotice(const protocol::CrossProposalInfo &proposal_info){
-		//TODO 处理提案用例
-		LOG_INFO("Handel Proposal Notice..");
+		//save proposal
+		utils::MutexGuard guard(lock_);
+		if (proposal_info.type() == protocol::CROSS_PROPOSAL_OUTPUT){
+			chain_info_.output_map[proposal_info.proposal_id()] = proposal_info;
+			chain_info_.output_recv_max_seq = MAX(proposal_info.proposal_id(), chain_info_.output_recv_max_seq);
+			if (proposal_info.status() == "ok"){
+				chain_info_.output_affirm_max_seq = MAX(proposal_info.proposal_id(), chain_info_.output_affirm_max_seq);
+			}
+
+		}
+		else if (proposal_info.type() == protocol::CROSS_PROPOSAL_INPUT){
+			chain_info_.input_map[proposal_info.proposal_id()] = proposal_info;
+			chain_info_.input_recv_max_seq = MAX(proposal_info.proposal_id(), chain_info_.input_recv_max_seq);
+			if (proposal_info.status() == "ok"){
+				chain_info_.input_affirm_max_seq = MAX(proposal_info.proposal_id(), chain_info_.input_affirm_max_seq);
+			}
+		}
+		else{
+			LOG_ERROR("Unknown proposal type.");
+		}
+	}
+
+	void ChainObj::RequestAndSortOutput(){
+		utils::MutexGuard guard(lock_);
+		//请求最新的output提案，最后确认的output提案
+		protocol::CrossProposal proposal;
+		proposal.set_type(protocol::CROSS_PROPOSAL_OUTPUT);
+		proposal.set_proposal_id(-1);
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
+
+		CrossProposalInfoMap &out_map = chain_info_.output_map;
+		//删除已完成的提案
+		for (auto itr = out_map.begin(); itr != out_map.end();){
+			const protocol::CrossProposalInfo &info = itr->second;
+			if (info.status() != "ok"){
+				itr++;
+			}
+
+			out_map.erase(itr++);
+		}
+		
+		//请求从最后确实开始后的缺失output的提案
+		int64_t max_nums = MIN(100, (chain_info_.output_recv_max_seq - chain_info_.output_affirm_max_seq));
+		if (max_nums <= 0){
+			max_nums = 1;
+		}
+		for (int64_t i = 1; i <= max_nums; i++){
+			int64_t index = chain_info_.output_affirm_max_seq + i;
+			auto itr = chain_info_.output_map.find(index);
+			if (itr != chain_info_.output_map.end()){
+				continue;
+			}
+			protocol::CrossProposal proposal;
+			proposal.set_type(protocol::CROSS_PROPOSAL_OUTPUT);
+			proposal.set_proposal_id(index);
+			channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
+		}
+	}
+
+	void ChainObj::RequestAndSortInput(){
+		utils::MutexGuard guard(lock_);
+		//请求最新的input提案
+		protocol::CrossProposal proposal;
+		proposal.set_type(protocol::CROSS_PROPOSAL_INPUT);
+		proposal.set_proposal_id(-1);
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
+
+		CrossProposalInfoMap &input_map = chain_info_.input_map;
+		//删除已完成的提案
+		for (auto itr = input_map.begin(); itr != input_map.end();){
+			const protocol::CrossProposalInfo &info = itr->second;
+			if (info.status() != "ok"){
+				itr++;
+			}
+
+			input_map.erase(itr++);
+		}
+
+		//请求从最后确实开始后的缺失input的提案
+		int64_t max_nums = MIN(100, (chain_info_.input_recv_max_seq - chain_info_.input_affirm_max_seq));
+		if (max_nums <= 0){
+			max_nums = 1;
+		}
+		for (int64_t i = 1; i <= max_nums; i++){
+			int64_t index = chain_info_.input_affirm_max_seq + i;
+			auto itr = chain_info_.input_map.find(index);
+			if (itr != chain_info_.input_map.end()){
+				continue;
+			}
+			protocol::CrossProposal proposal;
+			proposal.set_type(protocol::CROSS_PROPOSAL_INPUT);
+			proposal.set_proposal_id(index);
+			channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
+		}
+	}
+
+	void ChainObj::CheckTxError(){
+		//TODO 处理异常的交易
 	}
 
 	void ChainObj::VoteOutPut(){
-		//1.获取对端input列表的情况
+		//检查自己的output列表最后一个完成状态的下一个值是否存在
+		if (chain_info_.output_affirm_max_seq < 0){
+			LOG_ERROR("No output affirm max seq.");
+			return;
+		}
 
-		//2.获取自己的output列表
+		protocol::CrossProposalInfo vote_proposal;
+		vote_proposal.set_proposal_id(-1);
+		do 
+		{
+			utils::MutexGuard guard(lock_);
+			const CrossProposalInfoMap &out_map = chain_info_.output_map;
+			auto itr = out_map.find(chain_info_.output_affirm_max_seq + 1);
+			if (itr != out_map.end()){
+				LOG_INFO("No output unaffirmed proposal.");
+				//如果不存在检查对端的intput列表，是否需要进行新的投票表决
+				//TODO GetPeerInput Proposal
+				vote_proposal;
+				break;
+			}
 
-		//3.检查自己的output列表最后一个完成状态的下一个值是否存在，如果存在则判断自己是否投过票并进行投票处理，如果不存在检查对端的intput列表，是否需要进行新的投票表决
+			//如果存在则判断自己是否投过票并进行投票处理
+			const protocol::CrossProposalInfo &proposal = itr->second;
+			bool confirmed = false;
+			for (size_t i = 0; i < proposal.confirmed_notarys_size(); i++){
+				if (proposal.confirmed_notarys(i) != notary_address_){
+					confirmed = true;
+					break;
+				}
+			}
+
+			if (confirmed){
+				break;
+			}
+			vote_proposal = proposal;
+		} while (false);
+
+		
+		if (vote_proposal.proposal_id() == -1){
+			return;
+		}
+
+		//发起交易，改变提案状态为output方式
+		vote_proposal.set_type(protocol::CROSS_PROPOSAL_OUTPUT);
+		SubmitTransaction(vote_proposal);
 	}
 
 	void ChainObj::VoteInPut(){
-		//1.获取对端的output列表
+		//检查自己的input列表最后一个完成状态的下一个值是否存在
+		if (chain_info_.input_affirm_max_seq < 0){
+			LOG_ERROR("No input affirm max seq.");
+			return;
+		}
 
-		//2.获取自己的input列表
+		protocol::CrossProposalInfo vote_proposal;
+		vote_proposal.set_proposal_id(-1);
+		do
+		{
+			utils::MutexGuard guard(lock_);
+			const CrossProposalInfoMap &input_map = chain_info_.input_map;
+			auto itr = input_map.find(chain_info_.input_affirm_max_seq + 1);
+			if (itr != input_map.end()){
+				LOG_INFO("No input_map unaffirmed proposal.");
+				//如果不存在检查对端的output列表，是否需要进行新的投票表决
+				//TODO GetPeerOutput Proposal
+				vote_proposal;
+				break;
+			}
 
-		//3.检查自己的input列表状态里最后一个完成状态的下一个值是否存在，如果存在判断自己是否投过票并进行投票处理，如果不存在检查对端的output列表，是否需要进行新的投票表决
+			//如果存在则判断自己是否投过票并进行投票处理
+			const protocol::CrossProposalInfo &proposal = itr->second;
+			bool confirmed = false;
+			for (size_t i = 0; i < proposal.confirmed_notarys_size(); i++){
+				if (proposal.confirmed_notarys(i) != notary_address_){
+					confirmed = true;
+					break;
+				}
+			}
+
+			if (confirmed){
+				break;
+			}
+			vote_proposal = proposal;
+		} while (false);
+
+		if (vote_proposal.proposal_id() == -1){
+			return;
+		}
+
+		//发起交易，改变提案状态为input方式
+		vote_proposal.set_type(protocol::CROSS_PROPOSAL_INPUT);
+		SubmitTransaction(vote_proposal);
+	}
+
+	void ChainObj::SubmitTransaction(const protocol::CrossProposalInfo &vote_proposal){
+		protocol::CrossDoTransaction cross_do_trans;
+		protocol::TransactionEnv tran_env;
+		protocol::Transaction *tran = tran_env.mutable_transaction();
+		//TODO 制造交易
+		
+		std::string content = tran->SerializeAsString();
+		PrivateKey privateKey(private_key_);
+		if (!privateKey.IsValid()) {
+			LOG_ERROR("Submit transaction error.");
+			return;
+		}
+		std::string sign = privateKey.Sign(content);
+		protocol::Signature *signpro = tran_env.add_signatures();
+		signpro->set_sign_data(sign);
+		signpro->set_public_key(privateKey.GetBase16PublicKey());
 	}
 
 	NotaryMgr::NotaryMgr(){
@@ -140,14 +360,17 @@ namespace bubi {
 		LOG_INFO("Initialized notary mgr successfully");
 
 		PairChainMap::iterator itr = Configure::Instance().pair_chain_map_.begin();
-		const PairChainConfigure &pair_chain_a = itr->second;
-		a_chain_obj_.SetChainInfo(pair_chain_a.comm_unique_, pair_chain_a.target_comm_unique_);
-		a_chain_obj_.SetPeerChain(&b_chain_obj_);
-
+		const PairChainConfigure &config_a = itr->second;
 		itr++;
-		const PairChainConfigure &pair_chain_b = itr->second;
-		b_chain_obj_.SetChainInfo(pair_chain_b.comm_unique_, pair_chain_b.target_comm_unique_);
-		b_chain_obj_.SetPeerChain(&a_chain_obj_);
+		const PairChainConfigure &config_b = itr->second;
+		std::shared_ptr<ChainObj> a = std::make_shared<ChainObj>(&channel_, config_a.comm_unique_, config.address_);
+		std::shared_ptr<ChainObj> b = std::make_shared<ChainObj>(&channel_, config_b.comm_unique_, config.address_);
+
+		chain_obj_map_[config_a.comm_unique_] = a;
+		chain_obj_map_[config_b.comm_unique_] = b;
+
+		a->SetPeerChain(b);
+		b->SetPeerChain(a);
 
 		ChannelParameter param;
 		param.inbound_ = true;
@@ -163,32 +386,25 @@ namespace bubi {
 	}
 
 	bool NotaryMgr::Exit(){
-
 		return true;
 	}
 
 	void NotaryMgr::OnTimer(int64_t current_time){
-		a_chain_obj_.OnTimer(current_time);
-		b_chain_obj_.OnTimer(current_time);
+		for (auto itr = chain_obj_map_.begin(); itr != chain_obj_map_.end(); itr++){
+			itr->second->OnTimer(current_time);
+		}
 	}
 
 	void NotaryMgr::HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message){
-		//1、判断是否存在于 chain_obj中
-		ChainObj * chain = nullptr;
-		if (comm_unique == a_chain_obj_.GetChainUnique()){
-			chain = &a_chain_obj_;
-		}
-		else if (comm_unique == b_chain_obj_.GetChainUnique()){
-			chain = &b_chain_obj_;
-		}
-
-		if (chain == nullptr){
+		//Check existing in chain obj
+		auto itr = chain_obj_map_.find(comm_unique);
+		if (itr == chain_obj_map_.end()){
 			LOG_ERROR("Can not find chain.");
 			return;
 		}
-
-		//2、把消息交付于对应的chain_obj 处理
-		chain->OnHandleMessage(message);
+		LOG_INFO("Recv comm unique %s message", comm_unique.c_str());
+		//Deliver the message to chain obj
+		itr->second->OnHandleMessage(message);
 	}
 }
 

@@ -16,6 +16,8 @@ namespace bubi {
 	}
 
 	bool NotaryConfigure::Load(const Json::Value &value) {
+		Configure::GetValue(value, "address", address_);
+		Configure::GetValue(value, "private_key", private_key_);
 		Configure::GetValue(value, "enabled", enabled_);
 
 		std::string address;
@@ -27,7 +29,6 @@ namespace bubi {
 
 	bool PairChainConfigure::Load(const Json::Value &value) {
 		Configure::GetValue(value, "comm_unique", comm_unique_);
-		Configure::GetValue(value, "target_comm_unique", target_comm_unique_);
 		return true;
 	}
 
@@ -50,11 +51,7 @@ namespace bubi {
 		PairChainConfigure chain2;
 		chain2.Load(values["pair_chain_2"]);
 
-		if (chain1.comm_unique_ != chain2.target_comm_unique_){
-			return false;
-		}
-
-		if (chain1.target_comm_unique_ != chain2.comm_unique_){
+		if (chain1.comm_unique_ == chain2.comm_unique_){
 			return false;
 		}
 

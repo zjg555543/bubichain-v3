@@ -197,14 +197,14 @@ inline bool CROSS_MESSAGE_TYPE_Parse(
 }
 enum CROSS_PROPOSAL_TYPE {
   CROSS_PROPOSAL_NONE = 0,
-  CROSS_PROPOSAL_TRANS = 1,
-  CROSS_PROPOSAL_FEEDBACK = 2,
+  CROSS_PROPOSAL_OUTPUT = 1,
+  CROSS_PROPOSAL_INPUT = 2,
   CROSS_PROPOSAL_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   CROSS_PROPOSAL_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool CROSS_PROPOSAL_TYPE_IsValid(int value);
 const CROSS_PROPOSAL_TYPE CROSS_PROPOSAL_TYPE_MIN = CROSS_PROPOSAL_NONE;
-const CROSS_PROPOSAL_TYPE CROSS_PROPOSAL_TYPE_MAX = CROSS_PROPOSAL_FEEDBACK;
+const CROSS_PROPOSAL_TYPE CROSS_PROPOSAL_TYPE_MAX = CROSS_PROPOSAL_INPUT;
 const int CROSS_PROPOSAL_TYPE_ARRAYSIZE = CROSS_PROPOSAL_TYPE_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* CROSS_PROPOSAL_TYPE_descriptor();
@@ -2068,29 +2068,12 @@ class CrossProposal : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::int64 proposal_id() const;
   void set_proposal_id(::google::protobuf::int64 value);
 
-  // repeated string confirmed_notary = 3;
-  int confirmed_notary_size() const;
-  void clear_confirmed_notary();
-  static const int kConfirmedNotaryFieldNumber = 3;
-  const ::std::string& confirmed_notary(int index) const;
-  ::std::string* mutable_confirmed_notary(int index);
-  void set_confirmed_notary(int index, const ::std::string& value);
-  void set_confirmed_notary(int index, const char* value);
-  void set_confirmed_notary(int index, const char* value, size_t size);
-  ::std::string* add_confirmed_notary();
-  void add_confirmed_notary(const ::std::string& value);
-  void add_confirmed_notary(const char* value);
-  void add_confirmed_notary(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& confirmed_notary() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_confirmed_notary();
-
   // @@protoc_insertion_point(class_scope:protocol.CrossProposal)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::int64 proposal_id_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> confirmed_notary_;
   int type_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
@@ -2168,26 +2151,15 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::protocol::CROSS_PROPOSAL_TYPE type() const;
   void set_type(::protocol::CROSS_PROPOSAL_TYPE value);
 
-  // optional string comm_unique = 2;
-  void clear_comm_unique();
-  static const int kCommUniqueFieldNumber = 2;
-  const ::std::string& comm_unique() const;
-  void set_comm_unique(const ::std::string& value);
-  void set_comm_unique(const char* value);
-  void set_comm_unique(const char* value, size_t size);
-  ::std::string* mutable_comm_unique();
-  ::std::string* release_comm_unique();
-  void set_allocated_comm_unique(::std::string* comm_unique);
-
-  // optional int64 proposal_id = 3;
+  // optional int64 proposal_id = 2;
   void clear_proposal_id();
-  static const int kProposalIdFieldNumber = 3;
+  static const int kProposalIdFieldNumber = 2;
   ::google::protobuf::int64 proposal_id() const;
   void set_proposal_id(::google::protobuf::int64 value);
 
-  // optional string proposal_body = 4;
+  // optional string proposal_body = 3;
   void clear_proposal_body();
-  static const int kProposalBodyFieldNumber = 4;
+  static const int kProposalBodyFieldNumber = 3;
   const ::std::string& proposal_body() const;
   void set_proposal_body(const ::std::string& value);
   void set_proposal_body(const char* value);
@@ -2196,9 +2168,9 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_proposal_body();
   void set_allocated_proposal_body(::std::string* proposal_body);
 
-  // optional string status = 5;
+  // optional string status = 4;
   void clear_status();
-  static const int kStatusFieldNumber = 5;
+  static const int kStatusFieldNumber = 4;
   const ::std::string& status() const;
   void set_status(const ::std::string& value);
   void set_status(const char* value);
@@ -2207,15 +2179,31 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_status();
   void set_allocated_status(::std::string* status);
 
+  // repeated string confirmed_notarys = 5;
+  int confirmed_notarys_size() const;
+  void clear_confirmed_notarys();
+  static const int kConfirmedNotarysFieldNumber = 5;
+  const ::std::string& confirmed_notarys(int index) const;
+  ::std::string* mutable_confirmed_notarys(int index);
+  void set_confirmed_notarys(int index, const ::std::string& value);
+  void set_confirmed_notarys(int index, const char* value);
+  void set_confirmed_notarys(int index, const char* value, size_t size);
+  ::std::string* add_confirmed_notarys();
+  void add_confirmed_notarys(const ::std::string& value);
+  void add_confirmed_notarys(const char* value);
+  void add_confirmed_notarys(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& confirmed_notarys() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_confirmed_notarys();
+
   // @@protoc_insertion_point(class_scope:protocol.CrossProposalInfo)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::internal::ArenaStringPtr comm_unique_;
   ::google::protobuf::int64 proposal_id_;
   ::google::protobuf::internal::ArenaStringPtr proposal_body_;
   ::google::protobuf::internal::ArenaStringPtr status_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> confirmed_notarys_;
   int type_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
@@ -2372,23 +2360,11 @@ class CrossNotarys : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // optional string comm_unique = 1;
-  void clear_comm_unique();
-  static const int kCommUniqueFieldNumber = 1;
-  const ::std::string& comm_unique() const;
-  void set_comm_unique(const ::std::string& value);
-  void set_comm_unique(const char* value);
-  void set_comm_unique(const char* value, size_t size);
-  ::std::string* mutable_comm_unique();
-  ::std::string* release_comm_unique();
-  void set_allocated_comm_unique(::std::string* comm_unique);
-
   // @@protoc_insertion_point(class_scope:protocol.CrossNotarys)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::internal::ArenaStringPtr comm_unique_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -2459,28 +2435,28 @@ class CrossNotarysResponse : public ::google::protobuf::Message /* @@protoc_inse
 
   // accessors -------------------------------------------------------
 
-  // repeated string notary = 1;
-  int notary_size() const;
-  void clear_notary();
-  static const int kNotaryFieldNumber = 1;
-  const ::std::string& notary(int index) const;
-  ::std::string* mutable_notary(int index);
-  void set_notary(int index, const ::std::string& value);
-  void set_notary(int index, const char* value);
-  void set_notary(int index, const char* value, size_t size);
-  ::std::string* add_notary();
-  void add_notary(const ::std::string& value);
-  void add_notary(const char* value);
-  void add_notary(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& notary() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_notary();
+  // repeated string notarys = 1;
+  int notarys_size() const;
+  void clear_notarys();
+  static const int kNotarysFieldNumber = 1;
+  const ::std::string& notarys(int index) const;
+  ::std::string* mutable_notarys(int index);
+  void set_notarys(int index, const ::std::string& value);
+  void set_notarys(int index, const char* value);
+  void set_notarys(int index, const char* value, size_t size);
+  ::std::string* add_notarys();
+  void add_notarys(const ::std::string& value);
+  void add_notarys(const char* value);
+  void add_notarys(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& notarys() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_notarys();
 
   // @@protoc_insertion_point(class_scope:protocol.CrossNotarysResponse)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> notary_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> notarys_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -2731,16 +2707,14 @@ class CrossDoTransaction : public ::google::protobuf::Message /* @@protoc_insert
   ::std::string* release_hash();
   void set_allocated_hash(::std::string* hash);
 
-  // optional bytes transaction = 2;
-  void clear_transaction();
-  static const int kTransactionFieldNumber = 2;
-  const ::std::string& transaction() const;
-  void set_transaction(const ::std::string& value);
-  void set_transaction(const char* value);
-  void set_transaction(const void* value, size_t size);
-  ::std::string* mutable_transaction();
-  ::std::string* release_transaction();
-  void set_allocated_transaction(::std::string* transaction);
+  // optional .protocol.TransactionEnv tran_env = 2;
+  bool has_tran_env() const;
+  void clear_tran_env();
+  static const int kTranEnvFieldNumber = 2;
+  const ::protocol::TransactionEnv& tran_env() const;
+  ::protocol::TransactionEnv* mutable_tran_env();
+  ::protocol::TransactionEnv* release_tran_env();
+  void set_allocated_tran_env(::protocol::TransactionEnv* tran_env);
 
   // @@protoc_insertion_point(class_scope:protocol.CrossDoTransaction)
  private:
@@ -2748,7 +2722,7 @@ class CrossDoTransaction : public ::google::protobuf::Message /* @@protoc_insert
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::internal::ArenaStringPtr hash_;
-  ::google::protobuf::internal::ArenaStringPtr transaction_;
+  ::protocol::TransactionEnv* tran_env_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -2830,11 +2804,11 @@ class CrossDoTransactionResponse : public ::google::protobuf::Message /* @@proto
   ::std::string* release_hash();
   void set_allocated_hash(::std::string* hash);
 
-  // optional .protocol.ERRORCODE error_code = 2;
+  // optional int32 error_code = 2;
   void clear_error_code();
   static const int kErrorCodeFieldNumber = 2;
-  ::protocol::ERRORCODE error_code() const;
-  void set_error_code(::protocol::ERRORCODE value);
+  ::google::protobuf::int32 error_code() const;
+  void set_error_code(::google::protobuf::int32 value);
 
   // optional string error_desc = 3;
   void clear_error_desc();
@@ -2854,7 +2828,7 @@ class CrossDoTransactionResponse : public ::google::protobuf::Message /* @@proto
   bool _is_default_instance_;
   ::google::protobuf::internal::ArenaStringPtr hash_;
   ::google::protobuf::internal::ArenaStringPtr error_desc_;
-  int error_code_;
+  ::google::protobuf::int32 error_code_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -4437,61 +4411,6 @@ inline void CrossProposal::set_proposal_id(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
 }
 
-// repeated string confirmed_notary = 3;
-inline int CrossProposal::confirmed_notary_size() const {
-  return confirmed_notary_.size();
-}
-inline void CrossProposal::clear_confirmed_notary() {
-  confirmed_notary_.Clear();
-}
-inline const ::std::string& CrossProposal::confirmed_notary(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_.Get(index);
-}
-inline ::std::string* CrossProposal::mutable_confirmed_notary(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_.Mutable(index);
-}
-inline void CrossProposal::set_confirmed_notary(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.confirmed_notary)
-  confirmed_notary_.Mutable(index)->assign(value);
-}
-inline void CrossProposal::set_confirmed_notary(int index, const char* value) {
-  confirmed_notary_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.confirmed_notary)
-}
-inline void CrossProposal::set_confirmed_notary(int index, const char* value, size_t size) {
-  confirmed_notary_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.confirmed_notary)
-}
-inline ::std::string* CrossProposal::add_confirmed_notary() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_.Add();
-}
-inline void CrossProposal::add_confirmed_notary(const ::std::string& value) {
-  confirmed_notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossProposal.confirmed_notary)
-}
-inline void CrossProposal::add_confirmed_notary(const char* value) {
-  confirmed_notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossProposal.confirmed_notary)
-}
-inline void CrossProposal::add_confirmed_notary(const char* value, size_t size) {
-  confirmed_notary_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossProposal.confirmed_notary)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossProposal::confirmed_notary() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossProposal::mutable_confirmed_notary() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossProposal.confirmed_notary)
-  return &confirmed_notary_;
-}
-
 // -------------------------------------------------------------------
 
 // CrossProposalInfo
@@ -4510,51 +4429,7 @@ inline void CrossProposalInfo::set_type(::protocol::CROSS_PROPOSAL_TYPE value) {
   // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.type)
 }
 
-// optional string comm_unique = 2;
-inline void CrossProposalInfo::clear_comm_unique() {
-  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& CrossProposalInfo::comm_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.comm_unique)
-  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposalInfo::set_comm_unique(const ::std::string& value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.comm_unique)
-}
-inline void CrossProposalInfo::set_comm_unique(const char* value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.comm_unique)
-}
-inline void CrossProposalInfo::set_comm_unique(const char* value, size_t size) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.comm_unique)
-}
-inline ::std::string* CrossProposalInfo::mutable_comm_unique() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.comm_unique)
-  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CrossProposalInfo::release_comm_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.comm_unique)
-  
-  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposalInfo::set_allocated_comm_unique(::std::string* comm_unique) {
-  if (comm_unique != NULL) {
-    
-  } else {
-    
-  }
-  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.comm_unique)
-}
-
-// optional int64 proposal_id = 3;
+// optional int64 proposal_id = 2;
 inline void CrossProposalInfo::clear_proposal_id() {
   proposal_id_ = GOOGLE_LONGLONG(0);
 }
@@ -4568,7 +4443,7 @@ inline void CrossProposalInfo::set_proposal_id(::google::protobuf::int64 value) 
   // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.proposal_id)
 }
 
-// optional string proposal_body = 4;
+// optional string proposal_body = 3;
 inline void CrossProposalInfo::clear_proposal_body() {
   proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4612,7 +4487,7 @@ inline void CrossProposalInfo::set_allocated_proposal_body(::std::string* propos
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.proposal_body)
 }
 
-// optional string status = 5;
+// optional string status = 4;
 inline void CrossProposalInfo::clear_status() {
   status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -4654,6 +4529,61 @@ inline void CrossProposalInfo::set_allocated_status(::std::string* status) {
   }
   status_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), status);
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.status)
+}
+
+// repeated string confirmed_notarys = 5;
+inline int CrossProposalInfo::confirmed_notarys_size() const {
+  return confirmed_notarys_.size();
+}
+inline void CrossProposalInfo::clear_confirmed_notarys() {
+  confirmed_notarys_.Clear();
+}
+inline const ::std::string& CrossProposalInfo::confirmed_notarys(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_.Get(index);
+}
+inline ::std::string* CrossProposalInfo::mutable_confirmed_notarys(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_.Mutable(index);
+}
+inline void CrossProposalInfo::set_confirmed_notarys(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.confirmed_notarys)
+  confirmed_notarys_.Mutable(index)->assign(value);
+}
+inline void CrossProposalInfo::set_confirmed_notarys(int index, const char* value) {
+  confirmed_notarys_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.confirmed_notarys)
+}
+inline void CrossProposalInfo::set_confirmed_notarys(int index, const char* value, size_t size) {
+  confirmed_notarys_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.confirmed_notarys)
+}
+inline ::std::string* CrossProposalInfo::add_confirmed_notarys() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_.Add();
+}
+inline void CrossProposalInfo::add_confirmed_notarys(const ::std::string& value) {
+  confirmed_notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossProposalInfo.confirmed_notarys)
+}
+inline void CrossProposalInfo::add_confirmed_notarys(const char* value) {
+  confirmed_notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossProposalInfo.confirmed_notarys)
+}
+inline void CrossProposalInfo::add_confirmed_notarys(const char* value, size_t size) {
+  confirmed_notarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossProposalInfo.confirmed_notarys)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CrossProposalInfo::confirmed_notarys() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+CrossProposalInfo::mutable_confirmed_notarys() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossProposalInfo.confirmed_notarys)
+  return &confirmed_notarys_;
 }
 
 // -------------------------------------------------------------------
@@ -4702,107 +4632,63 @@ inline void CrossProposalResponse::set_allocated_proposal_info(::protocol::Cross
 
 // CrossNotarys
 
-// optional string comm_unique = 1;
-inline void CrossNotarys::clear_comm_unique() {
-  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& CrossNotarys::comm_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossNotarys.comm_unique)
-  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossNotarys::set_comm_unique(const ::std::string& value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossNotarys.comm_unique)
-}
-inline void CrossNotarys::set_comm_unique(const char* value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarys.comm_unique)
-}
-inline void CrossNotarys::set_comm_unique(const char* value, size_t size) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarys.comm_unique)
-}
-inline ::std::string* CrossNotarys::mutable_comm_unique() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarys.comm_unique)
-  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CrossNotarys::release_comm_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossNotarys.comm_unique)
-  
-  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossNotarys::set_allocated_comm_unique(::std::string* comm_unique) {
-  if (comm_unique != NULL) {
-    
-  } else {
-    
-  }
-  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossNotarys.comm_unique)
-}
-
 // -------------------------------------------------------------------
 
 // CrossNotarysResponse
 
-// repeated string notary = 1;
-inline int CrossNotarysResponse::notary_size() const {
-  return notary_.size();
+// repeated string notarys = 1;
+inline int CrossNotarysResponse::notarys_size() const {
+  return notarys_.size();
 }
-inline void CrossNotarysResponse::clear_notary() {
-  notary_.Clear();
+inline void CrossNotarysResponse::clear_notarys() {
+  notarys_.Clear();
 }
-inline const ::std::string& CrossNotarysResponse::notary(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossNotarysResponse.notary)
-  return notary_.Get(index);
+inline const ::std::string& CrossNotarysResponse::notarys(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossNotarysResponse.notarys)
+  return notarys_.Get(index);
 }
-inline ::std::string* CrossNotarysResponse::mutable_notary(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarysResponse.notary)
-  return notary_.Mutable(index);
+inline ::std::string* CrossNotarysResponse::mutable_notarys(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarysResponse.notarys)
+  return notarys_.Mutable(index);
 }
-inline void CrossNotarysResponse::set_notary(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossNotarysResponse.notary)
-  notary_.Mutable(index)->assign(value);
+inline void CrossNotarysResponse::set_notarys(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossNotarysResponse.notarys)
+  notarys_.Mutable(index)->assign(value);
 }
-inline void CrossNotarysResponse::set_notary(int index, const char* value) {
-  notary_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarysResponse.notary)
+inline void CrossNotarysResponse::set_notarys(int index, const char* value) {
+  notarys_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarysResponse.notarys)
 }
-inline void CrossNotarysResponse::set_notary(int index, const char* value, size_t size) {
-  notary_.Mutable(index)->assign(
+inline void CrossNotarysResponse::set_notarys(int index, const char* value, size_t size) {
+  notarys_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarysResponse.notary)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarysResponse.notarys)
 }
-inline ::std::string* CrossNotarysResponse::add_notary() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossNotarysResponse.notary)
-  return notary_.Add();
+inline ::std::string* CrossNotarysResponse::add_notarys() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossNotarysResponse.notarys)
+  return notarys_.Add();
 }
-inline void CrossNotarysResponse::add_notary(const ::std::string& value) {
-  notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossNotarysResponse.notary)
+inline void CrossNotarysResponse::add_notarys(const ::std::string& value) {
+  notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossNotarysResponse.notarys)
 }
-inline void CrossNotarysResponse::add_notary(const char* value) {
-  notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossNotarysResponse.notary)
+inline void CrossNotarysResponse::add_notarys(const char* value) {
+  notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossNotarysResponse.notarys)
 }
-inline void CrossNotarysResponse::add_notary(const char* value, size_t size) {
-  notary_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossNotarysResponse.notary)
+inline void CrossNotarysResponse::add_notarys(const char* value, size_t size) {
+  notarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossNotarysResponse.notarys)
 }
 inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossNotarysResponse::notary() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossNotarysResponse.notary)
-  return notary_;
+CrossNotarysResponse::notarys() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossNotarysResponse.notarys)
+  return notarys_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossNotarysResponse::mutable_notary() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossNotarysResponse.notary)
-  return &notary_;
+CrossNotarysResponse::mutable_notarys() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossNotarysResponse.notarys)
+  return &notarys_;
 }
 
 // -------------------------------------------------------------------
@@ -4919,48 +4805,42 @@ inline void CrossDoTransaction::set_allocated_hash(::std::string* hash) {
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.hash)
 }
 
-// optional bytes transaction = 2;
-inline void CrossDoTransaction::clear_transaction() {
-  transaction_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional .protocol.TransactionEnv tran_env = 2;
+inline bool CrossDoTransaction::has_tran_env() const {
+  return !_is_default_instance_ && tran_env_ != NULL;
 }
-inline const ::std::string& CrossDoTransaction::transaction() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossDoTransaction.transaction)
-  return transaction_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline void CrossDoTransaction::clear_tran_env() {
+  if (GetArenaNoVirtual() == NULL && tran_env_ != NULL) delete tran_env_;
+  tran_env_ = NULL;
 }
-inline void CrossDoTransaction::set_transaction(const ::std::string& value) {
+inline const ::protocol::TransactionEnv& CrossDoTransaction::tran_env() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransaction.tran_env)
+  return tran_env_ != NULL ? *tran_env_ : *default_instance_->tran_env_;
+}
+inline ::protocol::TransactionEnv* CrossDoTransaction::mutable_tran_env() {
   
-  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossDoTransaction.transaction)
+  if (tran_env_ == NULL) {
+    tran_env_ = new ::protocol::TransactionEnv;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransaction.tran_env)
+  return tran_env_;
 }
-inline void CrossDoTransaction::set_transaction(const char* value) {
+inline ::protocol::TransactionEnv* CrossDoTransaction::release_tran_env() {
+  // @@protoc_insertion_point(field_release:protocol.CrossDoTransaction.tran_env)
   
-  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossDoTransaction.transaction)
+  ::protocol::TransactionEnv* temp = tran_env_;
+  tran_env_ = NULL;
+  return temp;
 }
-inline void CrossDoTransaction::set_transaction(const void* value, size_t size) {
-  
-  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossDoTransaction.transaction)
-}
-inline ::std::string* CrossDoTransaction::mutable_transaction() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransaction.transaction)
-  return transaction_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CrossDoTransaction::release_transaction() {
-  // @@protoc_insertion_point(field_release:protocol.CrossDoTransaction.transaction)
-  
-  return transaction_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossDoTransaction::set_allocated_transaction(::std::string* transaction) {
-  if (transaction != NULL) {
+inline void CrossDoTransaction::set_allocated_tran_env(::protocol::TransactionEnv* tran_env) {
+  delete tran_env_;
+  tran_env_ = tran_env;
+  if (tran_env) {
     
   } else {
     
   }
-  transaction_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), transaction);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.transaction)
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.tran_env)
 }
 
 // -------------------------------------------------------------------
@@ -5011,15 +4891,15 @@ inline void CrossDoTransactionResponse::set_allocated_hash(::std::string* hash) 
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransactionResponse.hash)
 }
 
-// optional .protocol.ERRORCODE error_code = 2;
+// optional int32 error_code = 2;
 inline void CrossDoTransactionResponse::clear_error_code() {
   error_code_ = 0;
 }
-inline ::protocol::ERRORCODE CrossDoTransactionResponse::error_code() const {
+inline ::google::protobuf::int32 CrossDoTransactionResponse::error_code() const {
   // @@protoc_insertion_point(field_get:protocol.CrossDoTransactionResponse.error_code)
-  return static_cast< ::protocol::ERRORCODE >(error_code_);
+  return error_code_;
 }
-inline void CrossDoTransactionResponse::set_error_code(::protocol::ERRORCODE value) {
+inline void CrossDoTransactionResponse::set_error_code(::google::protobuf::int32 value) {
   
   error_code_ = value;
   // @@protoc_insertion_point(field_set:protocol.CrossDoTransactionResponse.error_code)

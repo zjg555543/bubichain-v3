@@ -394,10 +394,9 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _is_default_instance_));
   CrossProposal_descriptor_ = file->message_type(16);
-  static const int CrossProposal_offsets_[3] = {
+  static const int CrossProposal_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, proposal_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, confirmed_notary_),
   };
   CrossProposal_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -413,10 +412,10 @@ void protobuf_AssignDesc_overlay_2eproto() {
   CrossProposalInfo_descriptor_ = file->message_type(17);
   static const int CrossProposalInfo_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, type_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, comm_unique_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, proposal_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, proposal_body_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, status_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, confirmed_notarys_),
   };
   CrossProposalInfo_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -446,7 +445,6 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalResponse, _is_default_instance_));
   CrossNotarys_descriptor_ = file->message_type(19);
   static const int CrossNotarys_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarys, comm_unique_),
   };
   CrossNotarys_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -461,7 +459,7 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarys, _is_default_instance_));
   CrossNotarysResponse_descriptor_ = file->message_type(20);
   static const int CrossNotarysResponse_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarysResponse, notary_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossNotarysResponse, notarys_),
   };
   CrossNotarysResponse_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -507,7 +505,7 @@ void protobuf_AssignDesc_overlay_2eproto() {
   CrossDoTransaction_descriptor_ = file->message_type(23);
   static const int CrossDoTransaction_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, hash_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, transaction_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossDoTransaction, tran_env_),
   };
   CrossDoTransaction_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -714,45 +712,44 @@ void protobuf_AddDesc_overlay_2eproto() {
     "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"!\n\nC"
     "rossHello\022\023\n\013comm_unique\030\001 \001(\t\"Q\n\022CrossH"
     "elloResponse\022\'\n\nerror_code\030\001 \001(\0162\023.proto"
-    "col.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"k\n\rCro"
+    "col.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"Q\n\rCro"
     "ssProposal\022+\n\004type\030\001 \001(\0162\035.protocol.CROS"
-    "S_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002 \001(\003\022\030\n\020"
-    "confirmed_notary\030\003 \003(\t\"\221\001\n\021CrossProposal"
-    "Info\022+\n\004type\030\001 \001(\0162\035.protocol.CROSS_PROP"
-    "OSAL_TYPE\022\023\n\013comm_unique\030\002 \001(\t\022\023\n\013propos"
-    "al_id\030\003 \001(\003\022\025\n\rproposal_body\030\004 \001(\t\022\016\n\006st"
-    "atus\030\005 \001(\t\"K\n\025CrossProposalResponse\0222\n\rp"
-    "roposal_info\030\001 \001(\0132\033.protocol.CrossPropo"
-    "salInfo\"#\n\014CrossNotarys\022\023\n\013comm_unique\030\001"
-    " \001(\t\"&\n\024CrossNotarysResponse\022\016\n\006notary\030\001"
+    "S_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002 \001(\003\"\227\001\n"
+    "\021CrossProposalInfo\022+\n\004type\030\001 \001(\0162\035.proto"
+    "col.CROSS_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002"
+    " \001(\003\022\025\n\rproposal_body\030\003 \001(\t\022\016\n\006status\030\004 "
+    "\001(\t\022\031\n\021confirmed_notarys\030\005 \003(\t\"K\n\025CrossP"
+    "roposalResponse\0222\n\rproposal_info\030\001 \001(\0132\033"
+    ".protocol.CrossProposalInfo\"\016\n\014CrossNota"
+    "rys\"\'\n\024CrossNotarysResponse\022\017\n\007notarys\030\001"
     " \003(\t\"$\n\021CrossAccountNonce\022\017\n\007account\030\001 \001"
     "(\t\"*\n\031CrossAccountNonceResponse\022\r\n\005nonce"
-    "\030\001 \001(\003\"7\n\022CrossDoTransaction\022\014\n\004hash\030\001 \001"
-    "(\t\022\023\n\013transaction\030\002 \001(\014\"g\n\032CrossDoTransa"
-    "ctionResponse\022\014\n\004hash\030\001 \001(\t\022\'\n\nerror_cod"
-    "e\030\002 \001(\0162\023.protocol.ERRORCODE\022\022\n\nerror_de"
-    "sc\030\003 \001(\t*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024OVE"
-    "RLAY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_P"
-    "ING\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OVER"
-    "LAY_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_T"
-    "RANSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020"
-    "\005\022\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_M"
-    "SGTYPE_LEDGER_UPGRADE_NOTIFY\020\007*\342\001\n\020Chain"
-    "MessageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAI"
-    "N_HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_"
-    "PEER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n"
-    "\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRA"
-    "NSACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020\022\026\n\022C"
-    "HAIN_CONTRACT_LOG\020\021*\350\001\n\022CROSS_MESSAGE_TY"
-    "PE\022\026\n\022CROSS_MSGTYPE_NONE\020\000\022\030\n\023CROSS_MSGT"
-    "YPE_HELLO\020\221N\022\033\n\026CROSS_MSGTYPE_PROPOSAL\020\222"
-    "N\022\"\n\035CROSS_MSGTYPE_PROPOSAL_NOTICE\020\223N\022\032\n"
-    "\025CROSS_MSGTYPE_NOTARYS\020\224N\022 \n\033CROSS_MSGTY"
-    "PE_ACCOUNT_NONCE\020\225N\022!\n\034CROSS_MSGTYPE_DO_"
-    "TRANSACTION\020\226N*e\n\023CROSS_PROPOSAL_TYPE\022\027\n"
-    "\023CROSS_PROPOSAL_NONE\020\000\022\030\n\024CROSS_PROPOSAL"
-    "_TRANS\020\001\022\033\n\027CROSS_PROPOSAL_FEEDBACK\020\002B\035\n"
-    "\033cn.bubi.blockchain.adapter3b\006proto3", 3276);
+    "\030\001 \001(\003\"N\n\022CrossDoTransaction\022\014\n\004hash\030\001 \001"
+    "(\t\022*\n\010tran_env\030\002 \001(\0132\030.protocol.Transact"
+    "ionEnv\"R\n\032CrossDoTransactionResponse\022\014\n\004"
+    "hash\030\001 \001(\t\022\022\n\nerror_code\030\002 \001(\005\022\022\n\nerror_"
+    "desc\030\003 \001(\t*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024O"
+    "VERLAY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE"
+    "_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OV"
+    "ERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE"
+    "_TRANSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGER"
+    "S\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY"
+    "_MSGTYPE_LEDGER_UPGRADE_NOTIFY\020\007*\342\001\n\020Cha"
+    "inMessageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CH"
+    "AIN_HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAI"
+    "N_PEER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022"
+    "\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITT"
+    "RANSACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020\022\026\n"
+    "\022CHAIN_CONTRACT_LOG\020\021*\350\001\n\022CROSS_MESSAGE_"
+    "TYPE\022\026\n\022CROSS_MSGTYPE_NONE\020\000\022\030\n\023CROSS_MS"
+    "GTYPE_HELLO\020\221N\022\033\n\026CROSS_MSGTYPE_PROPOSAL"
+    "\020\222N\022\"\n\035CROSS_MSGTYPE_PROPOSAL_NOTICE\020\223N\022"
+    "\032\n\025CROSS_MSGTYPE_NOTARYS\020\224N\022 \n\033CROSS_MSG"
+    "TYPE_ACCOUNT_NONCE\020\225N\022!\n\034CROSS_MSGTYPE_D"
+    "O_TRANSACTION\020\226N*c\n\023CROSS_PROPOSAL_TYPE\022"
+    "\027\n\023CROSS_PROPOSAL_NONE\020\000\022\031\n\025CROSS_PROPOS"
+    "AL_OUTPUT\020\001\022\030\n\024CROSS_PROPOSAL_INPUT\020\002B\035\n"
+    "\033cn.bubi.blockchain.adapter3b\006proto3", 3236);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -7894,7 +7891,6 @@ void CrossHelloResponse::clear_error_desc() {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CrossProposal::kTypeFieldNumber;
 const int CrossProposal::kProposalIdFieldNumber;
-const int CrossProposal::kConfirmedNotaryFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossProposal::CrossProposal()
@@ -7917,7 +7913,6 @@ CrossProposal::CrossProposal(const CrossProposal& from)
 
 void CrossProposal::SharedCtor() {
     _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   type_ = 0;
   proposal_id_ = GOOGLE_LONGLONG(0);
@@ -7960,9 +7955,27 @@ CrossProposal* CrossProposal::New(::google::protobuf::Arena* arena) const {
 
 void CrossProposal::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossProposal)
-  type_ = 0;
-  proposal_id_ = GOOGLE_LONGLONG(0);
-  confirmed_notary_.Clear();
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(CrossProposal, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<CrossProposal*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(proposal_id_, type_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
 }
 
 bool CrossProposal::MergePartialFromCodedStream(
@@ -8001,25 +8014,6 @@ bool CrossProposal::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_confirmed_notary;
-        break;
-      }
-
-      // repeated string confirmed_notary = 3;
-      case 3: {
-        if (tag == 26) {
-         parse_confirmed_notary:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_confirmed_notary()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->confirmed_notary(this->confirmed_notary_size() - 1).data(),
-            this->confirmed_notary(this->confirmed_notary_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposal.confirmed_notary"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_confirmed_notary;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -8059,16 +8053,6 @@ void CrossProposal::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->proposal_id(), output);
   }
 
-  // repeated string confirmed_notary = 3;
-  for (int i = 0; i < this->confirmed_notary_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->confirmed_notary(i).data(), this->confirmed_notary(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.confirmed_notary");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->confirmed_notary(i), output);
-  }
-
   // @@protoc_insertion_point(serialize_end:protocol.CrossProposal)
 }
 
@@ -8084,16 +8068,6 @@ void CrossProposal::SerializeWithCachedSizes(
   // optional int64 proposal_id = 2;
   if (this->proposal_id() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->proposal_id(), target);
-  }
-
-  // repeated string confirmed_notary = 3;
-  for (int i = 0; i < this->confirmed_notary_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->confirmed_notary(i).data(), this->confirmed_notary(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.confirmed_notary");
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(3, this->confirmed_notary(i), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposal)
@@ -8115,13 +8089,6 @@ int CrossProposal::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->proposal_id());
-  }
-
-  // repeated string confirmed_notary = 3;
-  total_size += 1 * this->confirmed_notary_size();
-  for (int i = 0; i < this->confirmed_notary_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->confirmed_notary(i));
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -8152,7 +8119,6 @@ void CrossProposal::MergeFrom(const CrossProposal& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  confirmed_notary_.MergeFrom(from.confirmed_notary_);
   if (from.type() != 0) {
     set_type(from.type());
   }
@@ -8187,7 +8153,6 @@ void CrossProposal::Swap(CrossProposal* other) {
 void CrossProposal::InternalSwap(CrossProposal* other) {
   std::swap(type_, other->type_);
   std::swap(proposal_id_, other->proposal_id_);
-  confirmed_notary_.UnsafeArenaSwap(&other->confirmed_notary_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -8231,71 +8196,16 @@ void CrossProposal::clear_proposal_id() {
   // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
 }
 
-// repeated string confirmed_notary = 3;
-int CrossProposal::confirmed_notary_size() const {
-  return confirmed_notary_.size();
-}
-void CrossProposal::clear_confirmed_notary() {
-  confirmed_notary_.Clear();
-}
- const ::std::string& CrossProposal::confirmed_notary(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_.Get(index);
-}
- ::std::string* CrossProposal::mutable_confirmed_notary(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_.Mutable(index);
-}
- void CrossProposal::set_confirmed_notary(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.confirmed_notary)
-  confirmed_notary_.Mutable(index)->assign(value);
-}
- void CrossProposal::set_confirmed_notary(int index, const char* value) {
-  confirmed_notary_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.confirmed_notary)
-}
- void CrossProposal::set_confirmed_notary(int index, const char* value, size_t size) {
-  confirmed_notary_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.confirmed_notary)
-}
- ::std::string* CrossProposal::add_confirmed_notary() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_.Add();
-}
- void CrossProposal::add_confirmed_notary(const ::std::string& value) {
-  confirmed_notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossProposal.confirmed_notary)
-}
- void CrossProposal::add_confirmed_notary(const char* value) {
-  confirmed_notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossProposal.confirmed_notary)
-}
- void CrossProposal::add_confirmed_notary(const char* value, size_t size) {
-  confirmed_notary_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossProposal.confirmed_notary)
-}
- const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossProposal::confirmed_notary() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossProposal.confirmed_notary)
-  return confirmed_notary_;
-}
- ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossProposal::mutable_confirmed_notary() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossProposal.confirmed_notary)
-  return &confirmed_notary_;
-}
-
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CrossProposalInfo::kTypeFieldNumber;
-const int CrossProposalInfo::kCommUniqueFieldNumber;
 const int CrossProposalInfo::kProposalIdFieldNumber;
 const int CrossProposalInfo::kProposalBodyFieldNumber;
 const int CrossProposalInfo::kStatusFieldNumber;
+const int CrossProposalInfo::kConfirmedNotarysFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossProposalInfo::CrossProposalInfo()
@@ -8321,7 +8231,6 @@ void CrossProposalInfo::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   type_ = 0;
-  comm_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   proposal_id_ = GOOGLE_LONGLONG(0);
   proposal_body_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -8333,7 +8242,6 @@ CrossProposalInfo::~CrossProposalInfo() {
 }
 
 void CrossProposalInfo::SharedDtor() {
-  comm_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   proposal_body_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
@@ -8368,10 +8276,10 @@ CrossProposalInfo* CrossProposalInfo::New(::google::protobuf::Arena* arena) cons
 void CrossProposalInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossProposalInfo)
   type_ = 0;
-  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   proposal_id_ = GOOGLE_LONGLONG(0);
   proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  confirmed_notarys_.Clear();
 }
 
 bool CrossProposalInfo::MergePartialFromCodedStream(
@@ -8395,30 +8303,13 @@ bool CrossProposalInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_comm_unique;
+        if (input->ExpectTag(16)) goto parse_proposal_id;
         break;
       }
 
-      // optional string comm_unique = 2;
+      // optional int64 proposal_id = 2;
       case 2: {
-        if (tag == 18) {
-         parse_comm_unique:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_comm_unique()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->comm_unique().data(), this->comm_unique().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposalInfo.comm_unique"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(24)) goto parse_proposal_id;
-        break;
-      }
-
-      // optional int64 proposal_id = 3;
-      case 3: {
-        if (tag == 24) {
+        if (tag == 16) {
          parse_proposal_id:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
@@ -8427,13 +8318,13 @@ bool CrossProposalInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_proposal_body;
+        if (input->ExpectTag(26)) goto parse_proposal_body;
         break;
       }
 
-      // optional string proposal_body = 4;
-      case 4: {
-        if (tag == 34) {
+      // optional string proposal_body = 3;
+      case 3: {
+        if (tag == 26) {
          parse_proposal_body:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_proposal_body()));
@@ -8444,13 +8335,13 @@ bool CrossProposalInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(42)) goto parse_status;
+        if (input->ExpectTag(34)) goto parse_status;
         break;
       }
 
-      // optional string status = 5;
-      case 5: {
-        if (tag == 42) {
+      // optional string status = 4;
+      case 4: {
+        if (tag == 34) {
          parse_status:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_status()));
@@ -8461,6 +8352,25 @@ bool CrossProposalInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(42)) goto parse_confirmed_notarys;
+        break;
+      }
+
+      // repeated string confirmed_notarys = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_confirmed_notarys:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_confirmed_notarys()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->confirmed_notarys(this->confirmed_notarys_size() - 1).data(),
+            this->confirmed_notarys(this->confirmed_notarys_size() - 1).length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "protocol.CrossProposalInfo.confirmed_notarys"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(42)) goto parse_confirmed_notarys;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -8495,39 +8405,39 @@ void CrossProposalInfo::SerializeWithCachedSizes(
       1, this->type(), output);
   }
 
-  // optional string comm_unique = 2;
-  if (this->comm_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->comm_unique().data(), this->comm_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposalInfo.comm_unique");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->comm_unique(), output);
-  }
-
-  // optional int64 proposal_id = 3;
+  // optional int64 proposal_id = 2;
   if (this->proposal_id() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->proposal_id(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->proposal_id(), output);
   }
 
-  // optional string proposal_body = 4;
+  // optional string proposal_body = 3;
   if (this->proposal_body().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->proposal_body().data(), this->proposal_body().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "protocol.CrossProposalInfo.proposal_body");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      4, this->proposal_body(), output);
+      3, this->proposal_body(), output);
   }
 
-  // optional string status = 5;
+  // optional string status = 4;
   if (this->status().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->status().data(), this->status().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "protocol.CrossProposalInfo.status");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      5, this->status(), output);
+      4, this->status(), output);
+  }
+
+  // repeated string confirmed_notarys = 5;
+  for (int i = 0; i < this->confirmed_notarys_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->confirmed_notarys(i).data(), this->confirmed_notarys(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposalInfo.confirmed_notarys");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      5, this->confirmed_notarys(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossProposalInfo)
@@ -8542,23 +8452,12 @@ void CrossProposalInfo::SerializeWithCachedSizes(
       1, this->type(), target);
   }
 
-  // optional string comm_unique = 2;
-  if (this->comm_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->comm_unique().data(), this->comm_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposalInfo.comm_unique");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->comm_unique(), target);
-  }
-
-  // optional int64 proposal_id = 3;
+  // optional int64 proposal_id = 2;
   if (this->proposal_id() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->proposal_id(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->proposal_id(), target);
   }
 
-  // optional string proposal_body = 4;
+  // optional string proposal_body = 3;
   if (this->proposal_body().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->proposal_body().data(), this->proposal_body().length(),
@@ -8566,10 +8465,10 @@ void CrossProposalInfo::SerializeWithCachedSizes(
       "protocol.CrossProposalInfo.proposal_body");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->proposal_body(), target);
+        3, this->proposal_body(), target);
   }
 
-  // optional string status = 5;
+  // optional string status = 4;
   if (this->status().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->status().data(), this->status().length(),
@@ -8577,7 +8476,17 @@ void CrossProposalInfo::SerializeWithCachedSizes(
       "protocol.CrossProposalInfo.status");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        5, this->status(), target);
+        4, this->status(), target);
+  }
+
+  // repeated string confirmed_notarys = 5;
+  for (int i = 0; i < this->confirmed_notarys_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->confirmed_notarys(i).data(), this->confirmed_notarys(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "protocol.CrossProposalInfo.confirmed_notarys");
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(5, this->confirmed_notarys(i), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposalInfo)
@@ -8594,32 +8503,32 @@ int CrossProposalInfo::ByteSize() const {
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
 
-  // optional string comm_unique = 2;
-  if (this->comm_unique().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->comm_unique());
-  }
-
-  // optional int64 proposal_id = 3;
+  // optional int64 proposal_id = 2;
   if (this->proposal_id() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->proposal_id());
   }
 
-  // optional string proposal_body = 4;
+  // optional string proposal_body = 3;
   if (this->proposal_body().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->proposal_body());
   }
 
-  // optional string status = 5;
+  // optional string status = 4;
   if (this->status().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->status());
+  }
+
+  // repeated string confirmed_notarys = 5;
+  total_size += 1 * this->confirmed_notarys_size();
+  for (int i = 0; i < this->confirmed_notarys_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->confirmed_notarys(i));
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -8650,12 +8559,9 @@ void CrossProposalInfo::MergeFrom(const CrossProposalInfo& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
+  confirmed_notarys_.MergeFrom(from.confirmed_notarys_);
   if (from.type() != 0) {
     set_type(from.type());
-  }
-  if (from.comm_unique().size() > 0) {
-
-    comm_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_unique_);
   }
   if (from.proposal_id() != 0) {
     set_proposal_id(from.proposal_id());
@@ -8695,10 +8601,10 @@ void CrossProposalInfo::Swap(CrossProposalInfo* other) {
 }
 void CrossProposalInfo::InternalSwap(CrossProposalInfo* other) {
   std::swap(type_, other->type_);
-  comm_unique_.Swap(&other->comm_unique_);
   std::swap(proposal_id_, other->proposal_id_);
   proposal_body_.Swap(&other->proposal_body_);
   status_.Swap(&other->status_);
+  confirmed_notarys_.UnsafeArenaSwap(&other->confirmed_notarys_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -8728,51 +8634,7 @@ void CrossProposalInfo::clear_type() {
   // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.type)
 }
 
-// optional string comm_unique = 2;
-void CrossProposalInfo::clear_comm_unique() {
-  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& CrossProposalInfo::comm_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.comm_unique)
-  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposalInfo::set_comm_unique(const ::std::string& value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.comm_unique)
-}
- void CrossProposalInfo::set_comm_unique(const char* value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.comm_unique)
-}
- void CrossProposalInfo::set_comm_unique(const char* value, size_t size) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.comm_unique)
-}
- ::std::string* CrossProposalInfo::mutable_comm_unique() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.comm_unique)
-  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposalInfo::release_comm_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.comm_unique)
-  
-  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposalInfo::set_allocated_comm_unique(::std::string* comm_unique) {
-  if (comm_unique != NULL) {
-    
-  } else {
-    
-  }
-  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.comm_unique)
-}
-
-// optional int64 proposal_id = 3;
+// optional int64 proposal_id = 2;
 void CrossProposalInfo::clear_proposal_id() {
   proposal_id_ = GOOGLE_LONGLONG(0);
 }
@@ -8786,7 +8648,7 @@ void CrossProposalInfo::clear_proposal_id() {
   // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.proposal_id)
 }
 
-// optional string proposal_body = 4;
+// optional string proposal_body = 3;
 void CrossProposalInfo::clear_proposal_body() {
   proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -8830,7 +8692,7 @@ void CrossProposalInfo::clear_proposal_body() {
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.proposal_body)
 }
 
-// optional string status = 5;
+// optional string status = 4;
 void CrossProposalInfo::clear_status() {
   status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -8872,6 +8734,61 @@ void CrossProposalInfo::clear_status() {
   }
   status_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), status);
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.status)
+}
+
+// repeated string confirmed_notarys = 5;
+int CrossProposalInfo::confirmed_notarys_size() const {
+  return confirmed_notarys_.size();
+}
+void CrossProposalInfo::clear_confirmed_notarys() {
+  confirmed_notarys_.Clear();
+}
+ const ::std::string& CrossProposalInfo::confirmed_notarys(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_.Get(index);
+}
+ ::std::string* CrossProposalInfo::mutable_confirmed_notarys(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_.Mutable(index);
+}
+ void CrossProposalInfo::set_confirmed_notarys(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.confirmed_notarys)
+  confirmed_notarys_.Mutable(index)->assign(value);
+}
+ void CrossProposalInfo::set_confirmed_notarys(int index, const char* value) {
+  confirmed_notarys_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.confirmed_notarys)
+}
+ void CrossProposalInfo::set_confirmed_notarys(int index, const char* value, size_t size) {
+  confirmed_notarys_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.confirmed_notarys)
+}
+ ::std::string* CrossProposalInfo::add_confirmed_notarys() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_.Add();
+}
+ void CrossProposalInfo::add_confirmed_notarys(const ::std::string& value) {
+  confirmed_notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossProposalInfo.confirmed_notarys)
+}
+ void CrossProposalInfo::add_confirmed_notarys(const char* value) {
+  confirmed_notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossProposalInfo.confirmed_notarys)
+}
+ void CrossProposalInfo::add_confirmed_notarys(const char* value, size_t size) {
+  confirmed_notarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossProposalInfo.confirmed_notarys)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CrossProposalInfo::confirmed_notarys() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossProposalInfo.confirmed_notarys)
+  return confirmed_notarys_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+CrossProposalInfo::mutable_confirmed_notarys() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossProposalInfo.confirmed_notarys)
+  return &confirmed_notarys_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -9145,7 +9062,6 @@ void CrossProposalResponse::set_allocated_proposal_info(::protocol::CrossProposa
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CrossNotarys::kCommUniqueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossNotarys::CrossNotarys()
@@ -9168,9 +9084,7 @@ CrossNotarys::CrossNotarys(const CrossNotarys& from)
 
 void CrossNotarys::SharedCtor() {
     _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  comm_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 CrossNotarys::~CrossNotarys() {
@@ -9179,7 +9093,6 @@ CrossNotarys::~CrossNotarys() {
 }
 
 void CrossNotarys::SharedDtor() {
-  comm_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -9211,7 +9124,6 @@ CrossNotarys* CrossNotarys::New(::google::protobuf::Arena* arena) const {
 
 void CrossNotarys::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossNotarys)
-  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 bool CrossNotarys::MergePartialFromCodedStream(
@@ -9223,34 +9135,13 @@ bool CrossNotarys::MergePartialFromCodedStream(
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string comm_unique = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_comm_unique()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->comm_unique().data(), this->comm_unique().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossNotarys.comm_unique"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
     }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
   }
 success:
   // @@protoc_insertion_point(parse_success:protocol.CrossNotarys)
@@ -9264,33 +9155,12 @@ failure:
 void CrossNotarys::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:protocol.CrossNotarys)
-  // optional string comm_unique = 1;
-  if (this->comm_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->comm_unique().data(), this->comm_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossNotarys.comm_unique");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->comm_unique(), output);
-  }
-
   // @@protoc_insertion_point(serialize_end:protocol.CrossNotarys)
 }
 
 ::google::protobuf::uint8* CrossNotarys::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossNotarys)
-  // optional string comm_unique = 1;
-  if (this->comm_unique().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->comm_unique().data(), this->comm_unique().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossNotarys.comm_unique");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->comm_unique(), target);
-  }
-
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossNotarys)
   return target;
 }
@@ -9298,13 +9168,6 @@ void CrossNotarys::SerializeWithCachedSizes(
 int CrossNotarys::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.CrossNotarys)
   int total_size = 0;
-
-  // optional string comm_unique = 1;
-  if (this->comm_unique().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->comm_unique());
-  }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = total_size;
@@ -9334,10 +9197,6 @@ void CrossNotarys::MergeFrom(const CrossNotarys& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.comm_unique().size() > 0) {
-
-    comm_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_unique_);
-  }
 }
 
 void CrossNotarys::CopyFrom(const ::google::protobuf::Message& from) {
@@ -9364,7 +9223,6 @@ void CrossNotarys::Swap(CrossNotarys* other) {
   InternalSwap(other);
 }
 void CrossNotarys::InternalSwap(CrossNotarys* other) {
-  comm_unique_.Swap(&other->comm_unique_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -9380,56 +9238,12 @@ void CrossNotarys::InternalSwap(CrossNotarys* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // CrossNotarys
 
-// optional string comm_unique = 1;
-void CrossNotarys::clear_comm_unique() {
-  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& CrossNotarys::comm_unique() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossNotarys.comm_unique)
-  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossNotarys::set_comm_unique(const ::std::string& value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossNotarys.comm_unique)
-}
- void CrossNotarys::set_comm_unique(const char* value) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarys.comm_unique)
-}
- void CrossNotarys::set_comm_unique(const char* value, size_t size) {
-  
-  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarys.comm_unique)
-}
- ::std::string* CrossNotarys::mutable_comm_unique() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarys.comm_unique)
-  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossNotarys::release_comm_unique() {
-  // @@protoc_insertion_point(field_release:protocol.CrossNotarys.comm_unique)
-  
-  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossNotarys::set_allocated_comm_unique(::std::string* comm_unique) {
-  if (comm_unique != NULL) {
-    
-  } else {
-    
-  }
-  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossNotarys.comm_unique)
-}
-
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CrossNotarysResponse::kNotaryFieldNumber;
+const int CrossNotarysResponse::kNotarysFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossNotarysResponse::CrossNotarysResponse()
@@ -9493,7 +9307,7 @@ CrossNotarysResponse* CrossNotarysResponse::New(::google::protobuf::Arena* arena
 
 void CrossNotarysResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossNotarysResponse)
-  notary_.Clear();
+  notarys_.Clear();
 }
 
 bool CrossNotarysResponse::MergePartialFromCodedStream(
@@ -9506,21 +9320,21 @@ bool CrossNotarysResponse::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated string notary = 1;
+      // repeated string notarys = 1;
       case 1: {
         if (tag == 10) {
-         parse_notary:
+         parse_notarys:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_notary()));
+                input, this->add_notarys()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->notary(this->notary_size() - 1).data(),
-            this->notary(this->notary_size() - 1).length(),
+            this->notarys(this->notarys_size() - 1).data(),
+            this->notarys(this->notarys_size() - 1).length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossNotarysResponse.notary"));
+            "protocol.CrossNotarysResponse.notarys"));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_notary;
+        if (input->ExpectTag(10)) goto parse_notarys;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -9549,14 +9363,14 @@ failure:
 void CrossNotarysResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:protocol.CrossNotarysResponse)
-  // repeated string notary = 1;
-  for (int i = 0; i < this->notary_size(); i++) {
+  // repeated string notarys = 1;
+  for (int i = 0; i < this->notarys_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->notary(i).data(), this->notary(i).length(),
+      this->notarys(i).data(), this->notarys(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossNotarysResponse.notary");
+      "protocol.CrossNotarysResponse.notarys");
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->notary(i), output);
+      1, this->notarys(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossNotarysResponse)
@@ -9565,14 +9379,14 @@ void CrossNotarysResponse::SerializeWithCachedSizes(
 ::google::protobuf::uint8* CrossNotarysResponse::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:protocol.CrossNotarysResponse)
-  // repeated string notary = 1;
-  for (int i = 0; i < this->notary_size(); i++) {
+  // repeated string notarys = 1;
+  for (int i = 0; i < this->notarys_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->notary(i).data(), this->notary(i).length(),
+      this->notarys(i).data(), this->notarys(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossNotarysResponse.notary");
+      "protocol.CrossNotarysResponse.notarys");
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(1, this->notary(i), target);
+      WriteStringToArray(1, this->notarys(i), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossNotarysResponse)
@@ -9583,11 +9397,11 @@ int CrossNotarysResponse::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.CrossNotarysResponse)
   int total_size = 0;
 
-  // repeated string notary = 1;
-  total_size += 1 * this->notary_size();
-  for (int i = 0; i < this->notary_size(); i++) {
+  // repeated string notarys = 1;
+  total_size += 1 * this->notarys_size();
+  for (int i = 0; i < this->notarys_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->notary(i));
+      this->notarys(i));
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -9618,7 +9432,7 @@ void CrossNotarysResponse::MergeFrom(const CrossNotarysResponse& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  notary_.MergeFrom(from.notary_);
+  notarys_.MergeFrom(from.notarys_);
 }
 
 void CrossNotarysResponse::CopyFrom(const ::google::protobuf::Message& from) {
@@ -9645,7 +9459,7 @@ void CrossNotarysResponse::Swap(CrossNotarysResponse* other) {
   InternalSwap(other);
 }
 void CrossNotarysResponse::InternalSwap(CrossNotarysResponse* other) {
-  notary_.UnsafeArenaSwap(&other->notary_);
+  notarys_.UnsafeArenaSwap(&other->notarys_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -9661,59 +9475,59 @@ void CrossNotarysResponse::InternalSwap(CrossNotarysResponse* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // CrossNotarysResponse
 
-// repeated string notary = 1;
-int CrossNotarysResponse::notary_size() const {
-  return notary_.size();
+// repeated string notarys = 1;
+int CrossNotarysResponse::notarys_size() const {
+  return notarys_.size();
 }
-void CrossNotarysResponse::clear_notary() {
-  notary_.Clear();
+void CrossNotarysResponse::clear_notarys() {
+  notarys_.Clear();
 }
- const ::std::string& CrossNotarysResponse::notary(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossNotarysResponse.notary)
-  return notary_.Get(index);
+ const ::std::string& CrossNotarysResponse::notarys(int index) const {
+  // @@protoc_insertion_point(field_get:protocol.CrossNotarysResponse.notarys)
+  return notarys_.Get(index);
 }
- ::std::string* CrossNotarysResponse::mutable_notary(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarysResponse.notary)
-  return notary_.Mutable(index);
+ ::std::string* CrossNotarysResponse::mutable_notarys(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol.CrossNotarysResponse.notarys)
+  return notarys_.Mutable(index);
 }
- void CrossNotarysResponse::set_notary(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossNotarysResponse.notary)
-  notary_.Mutable(index)->assign(value);
+ void CrossNotarysResponse::set_notarys(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol.CrossNotarysResponse.notarys)
+  notarys_.Mutable(index)->assign(value);
 }
- void CrossNotarysResponse::set_notary(int index, const char* value) {
-  notary_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarysResponse.notary)
+ void CrossNotarysResponse::set_notarys(int index, const char* value) {
+  notarys_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol.CrossNotarysResponse.notarys)
 }
- void CrossNotarysResponse::set_notary(int index, const char* value, size_t size) {
-  notary_.Mutable(index)->assign(
+ void CrossNotarysResponse::set_notarys(int index, const char* value, size_t size) {
+  notarys_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarysResponse.notary)
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossNotarysResponse.notarys)
 }
- ::std::string* CrossNotarysResponse::add_notary() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossNotarysResponse.notary)
-  return notary_.Add();
+ ::std::string* CrossNotarysResponse::add_notarys() {
+  // @@protoc_insertion_point(field_add_mutable:protocol.CrossNotarysResponse.notarys)
+  return notarys_.Add();
 }
- void CrossNotarysResponse::add_notary(const ::std::string& value) {
-  notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossNotarysResponse.notary)
+ void CrossNotarysResponse::add_notarys(const ::std::string& value) {
+  notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:protocol.CrossNotarysResponse.notarys)
 }
- void CrossNotarysResponse::add_notary(const char* value) {
-  notary_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossNotarysResponse.notary)
+ void CrossNotarysResponse::add_notarys(const char* value) {
+  notarys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol.CrossNotarysResponse.notarys)
 }
- void CrossNotarysResponse::add_notary(const char* value, size_t size) {
-  notary_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossNotarysResponse.notary)
+ void CrossNotarysResponse::add_notarys(const char* value, size_t size) {
+  notarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol.CrossNotarysResponse.notarys)
 }
  const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossNotarysResponse::notary() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossNotarysResponse.notary)
-  return notary_;
+CrossNotarysResponse::notarys() const {
+  // @@protoc_insertion_point(field_list:protocol.CrossNotarysResponse.notarys)
+  return notarys_;
 }
  ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossNotarysResponse::mutable_notary() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossNotarysResponse.notary)
-  return &notary_;
+CrossNotarysResponse::mutable_notarys() {
+  // @@protoc_insertion_point(field_mutable_list:protocol.CrossNotarysResponse.notarys)
+  return &notarys_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -10244,7 +10058,7 @@ void CrossAccountNonceResponse::clear_nonce() {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CrossDoTransaction::kHashFieldNumber;
-const int CrossDoTransaction::kTransactionFieldNumber;
+const int CrossDoTransaction::kTranEnvFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossDoTransaction::CrossDoTransaction()
@@ -10255,6 +10069,7 @@ CrossDoTransaction::CrossDoTransaction()
 
 void CrossDoTransaction::InitAsDefaultInstance() {
   _is_default_instance_ = true;
+  tran_env_ = const_cast< ::protocol::TransactionEnv*>(&::protocol::TransactionEnv::default_instance());
 }
 
 CrossDoTransaction::CrossDoTransaction(const CrossDoTransaction& from)
@@ -10270,7 +10085,7 @@ void CrossDoTransaction::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   hash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  transaction_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  tran_env_ = NULL;
 }
 
 CrossDoTransaction::~CrossDoTransaction() {
@@ -10280,8 +10095,8 @@ CrossDoTransaction::~CrossDoTransaction() {
 
 void CrossDoTransaction::SharedDtor() {
   hash_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  transaction_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
+    delete tran_env_;
   }
 }
 
@@ -10313,7 +10128,8 @@ CrossDoTransaction* CrossDoTransaction::New(::google::protobuf::Arena* arena) co
 void CrossDoTransaction::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossDoTransaction)
   hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  transaction_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (GetArenaNoVirtual() == NULL && tran_env_ != NULL) delete tran_env_;
+  tran_env_ = NULL;
 }
 
 bool CrossDoTransaction::MergePartialFromCodedStream(
@@ -10338,16 +10154,16 @@ bool CrossDoTransaction::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_transaction;
+        if (input->ExpectTag(18)) goto parse_tran_env;
         break;
       }
 
-      // optional bytes transaction = 2;
+      // optional .protocol.TransactionEnv tran_env = 2;
       case 2: {
         if (tag == 18) {
-         parse_transaction:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->mutable_transaction()));
+         parse_tran_env:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_tran_env()));
         } else {
           goto handle_unusual;
         }
@@ -10389,10 +10205,10 @@ void CrossDoTransaction::SerializeWithCachedSizes(
       1, this->hash(), output);
   }
 
-  // optional bytes transaction = 2;
-  if (this->transaction().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
-      2, this->transaction(), output);
+  // optional .protocol.TransactionEnv tran_env = 2;
+  if (this->has_tran_env()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, *this->tran_env_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossDoTransaction)
@@ -10412,11 +10228,11 @@ void CrossDoTransaction::SerializeWithCachedSizes(
         1, this->hash(), target);
   }
 
-  // optional bytes transaction = 2;
-  if (this->transaction().size() > 0) {
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        2, this->transaction(), target);
+  // optional .protocol.TransactionEnv tran_env = 2;
+  if (this->has_tran_env()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        2, *this->tran_env_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossDoTransaction)
@@ -10434,11 +10250,11 @@ int CrossDoTransaction::ByteSize() const {
         this->hash());
   }
 
-  // optional bytes transaction = 2;
-  if (this->transaction().size() > 0) {
+  // optional .protocol.TransactionEnv tran_env = 2;
+  if (this->has_tran_env()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::BytesSize(
-        this->transaction());
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->tran_env_);
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -10473,9 +10289,8 @@ void CrossDoTransaction::MergeFrom(const CrossDoTransaction& from) {
 
     hash_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.hash_);
   }
-  if (from.transaction().size() > 0) {
-
-    transaction_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.transaction_);
+  if (from.has_tran_env()) {
+    mutable_tran_env()->::protocol::TransactionEnv::MergeFrom(from.tran_env());
   }
 }
 
@@ -10504,7 +10319,7 @@ void CrossDoTransaction::Swap(CrossDoTransaction* other) {
 }
 void CrossDoTransaction::InternalSwap(CrossDoTransaction* other) {
   hash_.Swap(&other->hash_);
-  transaction_.Swap(&other->transaction_);
+  std::swap(tran_env_, other->tran_env_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -10564,48 +10379,42 @@ void CrossDoTransaction::clear_hash() {
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.hash)
 }
 
-// optional bytes transaction = 2;
-void CrossDoTransaction::clear_transaction() {
-  transaction_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional .protocol.TransactionEnv tran_env = 2;
+bool CrossDoTransaction::has_tran_env() const {
+  return !_is_default_instance_ && tran_env_ != NULL;
 }
- const ::std::string& CrossDoTransaction::transaction() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossDoTransaction.transaction)
-  return transaction_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+void CrossDoTransaction::clear_tran_env() {
+  if (GetArenaNoVirtual() == NULL && tran_env_ != NULL) delete tran_env_;
+  tran_env_ = NULL;
 }
- void CrossDoTransaction::set_transaction(const ::std::string& value) {
+const ::protocol::TransactionEnv& CrossDoTransaction::tran_env() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossDoTransaction.tran_env)
+  return tran_env_ != NULL ? *tran_env_ : *default_instance_->tran_env_;
+}
+::protocol::TransactionEnv* CrossDoTransaction::mutable_tran_env() {
   
-  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossDoTransaction.transaction)
+  if (tran_env_ == NULL) {
+    tran_env_ = new ::protocol::TransactionEnv;
+  }
+  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransaction.tran_env)
+  return tran_env_;
 }
- void CrossDoTransaction::set_transaction(const char* value) {
+::protocol::TransactionEnv* CrossDoTransaction::release_tran_env() {
+  // @@protoc_insertion_point(field_release:protocol.CrossDoTransaction.tran_env)
   
-  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossDoTransaction.transaction)
+  ::protocol::TransactionEnv* temp = tran_env_;
+  tran_env_ = NULL;
+  return temp;
 }
- void CrossDoTransaction::set_transaction(const void* value, size_t size) {
-  
-  transaction_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossDoTransaction.transaction)
-}
- ::std::string* CrossDoTransaction::mutable_transaction() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossDoTransaction.transaction)
-  return transaction_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossDoTransaction::release_transaction() {
-  // @@protoc_insertion_point(field_release:protocol.CrossDoTransaction.transaction)
-  
-  return transaction_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossDoTransaction::set_allocated_transaction(::std::string* transaction) {
-  if (transaction != NULL) {
+void CrossDoTransaction::set_allocated_tran_env(::protocol::TransactionEnv* tran_env) {
+  delete tran_env_;
+  tran_env_ = tran_env;
+  if (tran_env) {
     
   } else {
     
   }
-  transaction_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), transaction);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.transaction)
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransaction.tran_env)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -10715,15 +10524,14 @@ bool CrossDoTransactionResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.ERRORCODE error_code = 2;
+      // optional int32 error_code = 2;
       case 2: {
         if (tag == 16) {
          parse_error_code:
-          int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_error_code(static_cast< ::protocol::ERRORCODE >(value));
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &error_code_)));
+
         } else {
           goto handle_unusual;
         }
@@ -10782,10 +10590,9 @@ void CrossDoTransactionResponse::SerializeWithCachedSizes(
       1, this->hash(), output);
   }
 
-  // optional .protocol.ERRORCODE error_code = 2;
+  // optional int32 error_code = 2;
   if (this->error_code() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->error_code(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->error_code(), output);
   }
 
   // optional string error_desc = 3;
@@ -10815,10 +10622,9 @@ void CrossDoTransactionResponse::SerializeWithCachedSizes(
         1, this->hash(), target);
   }
 
-  // optional .protocol.ERRORCODE error_code = 2;
+  // optional int32 error_code = 2;
   if (this->error_code() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->error_code(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->error_code(), target);
   }
 
   // optional string error_desc = 3;
@@ -10847,10 +10653,11 @@ int CrossDoTransactionResponse::ByteSize() const {
         this->hash());
   }
 
-  // optional .protocol.ERRORCODE error_code = 2;
+  // optional int32 error_code = 2;
   if (this->error_code() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->error_code());
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->error_code());
   }
 
   // optional string error_desc = 3;
@@ -10987,15 +10794,15 @@ void CrossDoTransactionResponse::clear_hash() {
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossDoTransactionResponse.hash)
 }
 
-// optional .protocol.ERRORCODE error_code = 2;
+// optional int32 error_code = 2;
 void CrossDoTransactionResponse::clear_error_code() {
   error_code_ = 0;
 }
- ::protocol::ERRORCODE CrossDoTransactionResponse::error_code() const {
+ ::google::protobuf::int32 CrossDoTransactionResponse::error_code() const {
   // @@protoc_insertion_point(field_get:protocol.CrossDoTransactionResponse.error_code)
-  return static_cast< ::protocol::ERRORCODE >(error_code_);
+  return error_code_;
 }
- void CrossDoTransactionResponse::set_error_code(::protocol::ERRORCODE value) {
+ void CrossDoTransactionResponse::set_error_code(::google::protobuf::int32 value) {
   
   error_code_ = value;
   // @@protoc_insertion_point(field_set:protocol.CrossDoTransactionResponse.error_code)
