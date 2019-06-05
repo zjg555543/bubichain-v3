@@ -227,54 +227,20 @@ namespace bubi {
 			return;
 		}
 
-		//查找最后一个完成提案，并检查下一个提案是否已经存在
 		record->affirm_max_seq = MAX(0, record->affirm_max_seq);
+		//先获取对端列表
 		protocol::CrossProposalInfo vote_proposal;
-		vote_proposal.set_proposal_id(-1);
-
-		do
-		{
-			const ProposalInfoMap &proposal_info_map = record->proposal_info_map;
-			int64_t next_proposal_index = record->affirm_max_seq + 1;
-			auto itr = proposal_info_map.find(next_proposal_index);
-			if (itr == proposal_info_map.end()){
-				//如果不存在，则主动检查对端的列表
-				if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
-					LOG_INFO("No proposl");
-					return;
-				}
-				break;
-			}
-
-			//如果存在则判断自己是否投过票并进行投票处理
-			const protocol::CrossProposalInfo &proposal = itr->second;
-			bool confirmed = false;
-			for (int i = 0; i < proposal.confirmed_notarys_size(); i++){
-				if (proposal.confirmed_notarys(i) == notary_address_){
-					confirmed = true;
-					break;
-				}
-			}
-
-			if (confirmed){
-				break;
-			}
-
-			//对于自己没有投票的提案，不要盲目相信已经提案的列表，而是需要自己从对端获取提案的原始数据
-			if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
-				LOG_ERROR("No proposl INFO");
-				break;
-			}
-		} while (false);
-
-		if (vote_proposal.proposal_id() == -1){
+		int64_t next_proposal_index = record->affirm_max_seq + 1;
+		if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
+			//不存在在直接返回
+			LOG_INFO("No proposl");
 			return;
 		}
 
 		//当获取对端为output时候，需要保证其状态非ok状态
 		if (get_peer_type == protocol::CROSS_PROPOSAL_OUTPUT){
-			if (vote_proposal.status() == EXECUTE_STATE_SUCCESS){
-				LOG_INFO("If peers' output is sucess, ignore it.");
+			if (vote_proposal.status() == EXECUTE_STATE_SUCCESS || vote_proposal.status() == EXECUTE_STATE_FAIL){
+				LOG_INFO("If peers' output is sucess or fail, ignore it.%d", vote_proposal.status());
 				return;
 			}
 		}
@@ -283,6 +249,19 @@ namespace bubi {
 			if (vote_proposal.status() == EXECUTE_STATE_INITIAL || vote_proposal.status() == EXECUTE_STATE_PROCESSING){
 				LOG_INFO("If peers' input is init or processing, ignore it, status:%d", vote_proposal.status());
 				return;
+			}
+		}
+
+		//再判断自己提案列表
+		const ProposalInfoMap &proposal_info_map = record->proposal_info_map;
+		auto itr = proposal_info_map.find(next_proposal_index);
+		if (itr != proposal_info_map.end()){
+			//如果存在则判断自己是否投过票，投过票则忽略处理
+			const protocol::CrossProposalInfo &proposal = itr->second;
+			for (int i = 0; i < proposal.confirmed_notarys_size(); i++){
+				if (proposal.confirmed_notarys(i) == notary_address_){
+					return;
+				}
 			}
 		}
 
