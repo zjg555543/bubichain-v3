@@ -13,6 +13,8 @@ namespace bubi {
 		virtual void HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message) = 0;
 	};
 
+	static const std::string static_notary_unique_ = "static_notary_unique";
+
 	class ChannelParameter{
 	public:
 		ChannelParameter(){
@@ -23,7 +25,6 @@ namespace bubi {
 
 		std::string comm_unique_;
 		utils::InetAddress listen_addr_;
-		utils::InetAddress notary_addr_;
 		bool inbound_;
 	};
 
@@ -34,7 +35,7 @@ namespace bubi {
 
 		bool IsActive() const;
 		int64_t GetActiveTime() const;
-		std::string GetChainUnique() const;
+		std::string GePeerUnique() const;
 
 		void SetPeerInfo(const protocol::CrossHello &hello);
 		void SetActiveTime(int64_t current_time);
@@ -70,8 +71,7 @@ namespace bubi {
 		//handel message
 		bool OnHandleHello(const protocol::WsMessage &message, int64_t conn_id);
 		bool OnHandleHelloResponse(const protocol::WsMessage &message, int64_t conn_id);
-		bool OnHandleProposal(const protocol::WsMessage &message, int64_t conn_id);
-		bool OnHandleProposalResponse(const protocol::WsMessage &message, int64_t conn_id);
+		bool OnHandleApplyMessage(const protocol::WsMessage &message, int64_t conn_id);
 
 		//network handlers
 		virtual void OnDisconnect(Connection *conn);
@@ -87,7 +87,7 @@ namespace bubi {
 		//internal call
 		void ProcessMessageChannelDisconnect();
 		void Notify(const std::string &comm_unique, const protocol::WsMessage &message);
-		std::string GetChainUnique(int64_t conn_id);
+		std::string GePeerUnique(int64_t conn_id);
 	
 	private:
 		utils::Thread *thread_ptr_;

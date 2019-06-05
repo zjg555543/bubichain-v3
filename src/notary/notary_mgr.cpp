@@ -8,29 +8,35 @@
 
 namespace bubi {
 
-	ChainObj::ChainObj(MessageChannel *channel, const std::string &comm_unique, const std::string &notary_address, const std::string &private_key){
-		chain_info_.Reset();
+	ChainObj::ChainObj(MessageChannel *channel, const std::string &comm_unique, const std::string &notary_address, const std::string &private_key, const std::string &comm_contract){
+		ResetChainInfo();
 		peer_chain_ = nullptr;
 		channel_ = channel;
 		comm_unique_ = comm_unique;
 		notary_address_ = notary_address;
 		private_key_ = private_key;
+		comm_contract_ = comm_contract;
 	}
 
 	ChainObj::~ChainObj(){
 
 	}
 
-	void ChainObj::OnTimer(int64_t current_time){
+	void ChainObj::OnSlowTimer(int64_t current_time){
+		//请求通信合约的信息
+		RequestCommInfo();
+
 		//Get the latest output list and sort outmap
-		RequestAndSort(protocol::CROSS_PROPOSAL_OUTPUT);
+		RequestAndUpdate(protocol::CROSS_PROPOSAL_OUTPUT);
 
 		//Get the latest intput list and sort the inputmap
-		RequestAndSort(protocol::CROSS_PROPOSAL_INPUT);
+		RequestAndUpdate(protocol::CROSS_PROPOSAL_INPUT);
 
 		//Check the number of tx errors
 		CheckTxError();
+	}
 
+	void ChainObj::OnFastTimer(int64_t current_time){
 		//vote output
 		Vote(protocol::CROSS_PROPOSAL_OUTPUT);
 
@@ -41,24 +47,26 @@ namespace bubi {
 	}
 
 	void ChainObj::OnHandleMessage(const protocol::WsMessage &message){
-		if (message.type() == protocol::CROSS_MSGTYPE_PROPOSAL && !message.request()){
+		if (message.request()){
+			return;
+		}
+
+		switch (message.type())
+		{
+		case protocol::CROSS_MSGTYPE_PROPOSAL:
 			OnHandleProposalResponse(message);
-		}
-
-		if (message.type() == protocol::CROSS_MSGTYPE_PROPOSAL_NOTICE){
-			OnHandleProposalNotice(message);
-		}
-
-		if (message.type() == protocol::CROSS_MSGTYPE_COMM_INFO && !message.request()){
+			break;
+		case protocol::CROSS_MSGTYPE_COMM_INFO:
 			OnHandleCrossCommInfoResponse(message);
-		}
-
-		if (message.type() == protocol::CROSS_MSGTYPE_ACCOUNT_NONCE && !message.request()){
+			break;
+		case protocol::CROSS_MSGTYPE_ACCOUNT_NONCE:
 			OnHandleAccountNonceResponse(message);
-		}
-
-		if (message.type() == protocol::CROSS_MSGTYPE_DO_TRANSACTION && !message.request()){
+			break;
+		case protocol::CROSS_MSGTYPE_DO_TRANSACTION:
 			OnHandleProposalDoTransResponse(message);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -66,15 +74,21 @@ namespace bubi {
 		peer_chain_ = peer_chain;
 	}
 
-	ChainObj::ChainInfo ChainObj::GetChainInfo(){
+	bool ChainObj::GetProposalInfo(protocol::CROSS_PROPOSAL_TYPE type, int64_t index, protocol::CrossProposalInfo &info){
 		utils::MutexGuard guard(lock_);
-		return chain_info_;
+		ProposalRecord *record = GetProposalRecord(type);
+		auto itr_info = record->proposal_info_map.find(index);
+		if (itr_info == record->proposal_info_map.end()){
+			return false;
+		}
+		info = itr_info->second;
+		return true;
 	}
 
 	void ChainObj::OnHandleProposalNotice(const protocol::WsMessage &message){
 		protocol::CrossProposalInfo cross_proposal;
 		cross_proposal.ParseFromString(message.data());
-		LOG_INFO("Recv Proposal Notice..");
+		LOG_INFO("Recv proposal notice..");
 		HandleProposalNotice(cross_proposal);
 		return;
 	}
@@ -82,30 +96,41 @@ namespace bubi {
 	void ChainObj::OnHandleProposalResponse(const protocol::WsMessage &message){
 		protocol::CrossProposalResponse msg;
 		msg.ParseFromString(message.data());
-		LOG_INFO("Recv Proposal Response..");
+		LOG_INFO("Recv proposal pesponse..");
 		HandleProposalNotice(msg.proposal_info());
 	}
 
 	void ChainObj::OnHandleCrossCommInfoResponse(const protocol::WsMessage &message){
 		protocol::CrossCommInfoResponse msg;
 		msg.ParseFromString(message.data());
-		LOG_INFO("Recv Notarys Response..");
+		LOG_INFO("Recv cross comm info response..");
 
+		assert(comm_unique_ == msg.comm_unique());
+
+		//保存公证人列表
 		if (msg.notarys_size() >= 100){
 			LOG_ERROR("Notary nums is no more than 100");
+			assert(false);
 			return;
 		}
-
+		memset(&notary_list_, 0, sizeof(notary_list_));
 		for (int i = 0; i < msg.notarys_size(); i++) {
-			chain_info_.notary_list[i] = msg.notarys(i);
+			notary_list_[i] = msg.notarys(i);
 		}
+
+		//保存最大确认序号和最大序号
+		input_record_.affirm_max_seq = MAX(input_record_.affirm_max_seq, msg.input_finish_seq());
+		input_record_.recv_max_seq = MAX(input_record_.recv_max_seq, msg.input_max_seq());
+
+		output_record_.affirm_max_seq = MAX(output_record_.affirm_max_seq, msg.output_finish_seq());
+		output_record_.recv_max_seq = MAX(output_record_.recv_max_seq, msg.output_max_seq());
 	}
 
 	void ChainObj::OnHandleAccountNonceResponse(const protocol::WsMessage &message){
 		protocol::CrossAccountNonceResponse msg;
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Account Nonce Response..");
-		chain_info_.nonce = msg.nonce();
+		nonce_ = msg.nonce();
 	}
 
 	void ChainObj::OnHandleProposalDoTransResponse(const protocol::WsMessage &message){
@@ -113,17 +138,17 @@ namespace bubi {
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Do Trans Response..");
 
-		auto iter = std::find(chain_info_.tx_history.begin(), chain_info_.tx_history.end(), msg.hash());
-		if (iter == chain_info_.tx_history.end()){
+		auto iter = std::find(tx_history_.begin(), tx_history_.end(), msg.hash());
+		if (iter == tx_history_.end()){
 			return;
 		}
 
 		if (msg.error_code() == protocol::ERRCODE_SUCCESS){
-			chain_info_.error_tx_times = 0;
-			chain_info_.tx_history.clear();
+			error_tx_times_ = 0;
+			tx_history_.clear();
 			return;
 		}
-		chain_info_.error_tx_times++;
+		error_tx_times_++;
 		LOG_ERROR("Failed to Do Transaction, (" FMT_I64 "),tx hash is %s,err_code is (" FMT_I64 "),err_desc is %s",
 			msg.hash().c_str(), msg.error_code(), msg.error_desc().c_str());
 
@@ -132,84 +157,53 @@ namespace bubi {
 	void ChainObj::HandleProposalNotice(const protocol::CrossProposalInfo &proposal_info){
 		//save proposal
 		utils::MutexGuard guard(lock_);
+		ProposalRecord *proposal = GetProposalRecord(proposal_info.type());
+		assert(proposal_info.proposal_id() >= 0);
 
-		ProposalMap *proposal_map = nullptr;
-		if (proposal_info.type() == protocol::CROSS_PROPOSAL_OUTPUT){
-			proposal_map = &chain_info_.output_map;
-		}
-		else if (proposal_info.type() == protocol::CROSS_PROPOSAL_INPUT){
-			proposal_map = &chain_info_.input_map;
-		}
-		if (proposal_map == nullptr){
-			LOG_ERROR("Unknown proposal type.");
-			return;
-		}
-
-		auto itr = proposal_map->find(proposal_info.asset_contract());
-		if (itr == proposal_map->end()){
-			LOG_ERROR("Cannot find asset contract 's output map:%s", proposal_info.asset_contract());
-			return;
-		}
-		Proposal &prosal = itr->second;
-		prosal.proposal_info_map[proposal_info.proposal_id()] = proposal_info;
-		prosal.recv_max_seq = MAX(proposal_info.proposal_id(), prosal.recv_max_seq);
-		if (proposal_info.status() == "ok"){
-			prosal.affirm_max_seq = MAX(proposal_info.proposal_id(), prosal.affirm_max_seq);
+		proposal->proposal_info_map[proposal_info.proposal_id()] = proposal_info;
+		proposal->recv_max_seq = MAX(proposal_info.proposal_id(), proposal->recv_max_seq);
+		if ((proposal_info.status() == EXECUTE_STATE_SUCCESS) || (proposal_info.status() == EXECUTE_STATE_FAIL)){
+			proposal->affirm_max_seq = MAX(proposal_info.proposal_id(), proposal->affirm_max_seq);
 		}
 	}
 
-	void ChainObj::RequestAndSort(protocol::CROSS_PROPOSAL_TYPE type){
+	void ChainObj::RequestCommInfo(){
+		protocol::CrossCommInfo comm_info;
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_COMM_INFO, comm_info.SerializeAsString());
+	}
+
+	void ChainObj::RequestAndUpdate(protocol::CROSS_PROPOSAL_TYPE type){
 		utils::MutexGuard guard(lock_);
-		//请求最新的type提案，最后确认的type提案
-		protocol::CrossProposal proposal;
-		proposal.set_type(type);
-		proposal.set_proposal_id(-1);
-		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
+		//请求最新的提案
+		protocol::CrossProposal cross_proposal;
+		cross_proposal.set_type(type);
+		cross_proposal.set_proposal_id(-1);
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, cross_proposal.SerializeAsString());
 
-		ProposalMap *proposal_map = nullptr;
-		if (type == protocol::CROSS_PROPOSAL_OUTPUT){
-			proposal_map = &chain_info_.output_map;
-		}
-		else if (type == protocol::CROSS_PROPOSAL_INPUT){
-			proposal_map = &chain_info_.input_map;
-		}
-		else{
-			LOG_ERROR("Unknown proposal type.");
-			return;
-		}
-		
 		//删除已完成的提案
-		for (auto itr = proposal_map->begin(); itr != proposal_map->end(); itr++){
-			ProposalInfoMap &proposal_info = itr->second.proposal_info_map;
-			for (auto itr_info = proposal_info.begin(); itr_info != proposal_info.end();){
-				const protocol::CrossProposalInfo &info = itr_info->second;
-				if (info.status() != "ok"){
-					itr++;
-				}
-
-				proposal_map->erase(itr++);
+		ProposalRecord *record = GetProposalRecord(type);
+		ProposalInfoMap &proposal_info = record->proposal_info_map;
+		for (auto itr_info = proposal_info.begin(); itr_info != proposal_info.end();){
+			const protocol::CrossProposalInfo &info = itr_info->second;
+			if ((info.status() == EXECUTE_STATE_SUCCESS) || (info.status() == EXECUTE_STATE_FAIL)){
+				proposal_info.erase(itr_info++);
+				continue;
 			}
+
+			itr_info++;
 		}
 		
-		//请求从最后确实开始后的缺失output的提案
-		for (auto itr = proposal_map->begin(); itr != proposal_map->end(); itr++){
-			Proposal &proposal = itr->second;
-
-			int64_t max_nums = MIN(100, (proposal.recv_max_seq - proposal.affirm_max_seq));
-			if (max_nums <= 0){
-				max_nums = 1;
-			}
-			for (int64_t i = 1; i <= max_nums; i++){
-				int64_t index = proposal.affirm_max_seq + i;
-				auto itr = proposal.proposal_info_map.find(index);
-				if (itr != proposal.proposal_info_map.end()){
-					continue;
-				}
-				protocol::CrossProposal proposal;
-				proposal.set_type(type);
-				proposal.set_proposal_id(index);
-				channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
-			}
+		//请求从最后确认的一个提案后的缺失的提案开始，每次最大更新10个
+		int64_t max_nums = MIN(10, (record->recv_max_seq - record->affirm_max_seq));
+		if (max_nums <= 0){
+			max_nums = 1;
+		}
+		for (int64_t i = 1; i <= max_nums; i++){
+			int64_t index = record->affirm_max_seq + i;
+			protocol::CrossProposal proposal;
+			proposal.set_type(type);
+			proposal.set_proposal_id(index);
+			channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_PROPOSAL, proposal.SerializeAsString());
 		}
 	}
 
@@ -219,65 +213,84 @@ namespace bubi {
 
 	void ChainObj::Vote(protocol::CROSS_PROPOSAL_TYPE type){
 		utils::MutexGuard guard(lock_);
-		ProposalMap *proposal_map = nullptr;
+		ProposalRecord *record = GetProposalRecord(type);
+
+		protocol::CROSS_PROPOSAL_TYPE get_peer_type;
 		if (type == protocol::CROSS_PROPOSAL_OUTPUT){
-			proposal_map = &chain_info_.output_map;
+			get_peer_type = protocol::CROSS_PROPOSAL_INPUT;
 		}
 		else if (type == protocol::CROSS_PROPOSAL_INPUT){
-			proposal_map = &chain_info_.input_map;
+			get_peer_type = protocol::CROSS_PROPOSAL_OUTPUT;
 		}
 		else{
 			LOG_ERROR("Unknown proposal type.");
 			return;
 		}
 
-		for (auto itr = proposal_map->begin(); itr != proposal_map->end(); itr++){
-			Proposal &proposal = itr->second;
-			//检查自己的列表最后一个完成状态的下一个值是否存在
-			if (proposal.affirm_max_seq < 0){
-				LOG_ERROR("No type affirm max seq.");
+		//查找最后一个完成提案，并检查下一个提案是否已经存在
+		record->affirm_max_seq = MAX(0, record->affirm_max_seq);
+		protocol::CrossProposalInfo vote_proposal;
+		vote_proposal.set_proposal_id(-1);
+
+		do
+		{
+			const ProposalInfoMap &proposal_info_map = record->proposal_info_map;
+			int64_t next_proposal_index = record->affirm_max_seq + 1;
+			auto itr = proposal_info_map.find(next_proposal_index);
+			if (itr == proposal_info_map.end()){
+				//如果不存在，则主动检查对端的列表
+				if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
+					LOG_INFO("No proposl");
+					return;
+				}
+				break;
+			}
+
+			//如果存在则判断自己是否投过票并进行投票处理
+			const protocol::CrossProposalInfo &proposal = itr->second;
+			bool confirmed = false;
+			for (int i = 0; i < proposal.confirmed_notarys_size(); i++){
+				if (proposal.confirmed_notarys(i) == notary_address_){
+					confirmed = true;
+					break;
+				}
+			}
+
+			if (confirmed){
+				break;
+			}
+
+			//对于自己没有投票的提案，不要盲目相信已经提案的列表，而是需要自己从对端获取提案的原始数据
+			if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
+				LOG_ERROR("No proposl INFO");
+				break;
+			}
+		} while (false);
+
+		if (vote_proposal.proposal_id() == -1){
+			return;
+		}
+
+		//当获取对端为output时候，需要保证其状态非ok状态
+		if (get_peer_type == protocol::CROSS_PROPOSAL_OUTPUT){
+			if (vote_proposal.status() == EXECUTE_STATE_SUCCESS){
+				LOG_INFO("If peers' output is sucess, ignore it.");
 				return;
 			}
-			protocol::CrossProposalInfo vote_proposal;
-			vote_proposal.set_proposal_id(-1);
-
-			do
-			{
-				const ProposalInfoMap &proposal_info_map = proposal.proposal_info_map;
-				auto itr = proposal_info_map.find(proposal.affirm_max_seq + 1);
-				if (itr != proposal_info_map.end()){
-					LOG_INFO("No output unaffirmed proposal.");
-					//如果不存在检查对端的intput列表，是否需要进行新的投票表决
-					//TODO GetPeerInput Proposal
-					vote_proposal;
-					break;
-				}
-
-				//如果存在则判断自己是否投过票并进行投票处理
-				const protocol::CrossProposalInfo &proposal = itr->second;
-				bool confirmed = false;
-				for (size_t i = 0; i < proposal.confirmed_notarys_size(); i++){
-					if (proposal.confirmed_notarys(i) != notary_address_){
-						confirmed = true;
-						break;
-					}
-				}
-
-				if (confirmed){
-					break;
-				}
-				vote_proposal = proposal;
-			} while (false);
-
-
-			if (vote_proposal.proposal_id() == -1){
-				continue;
-			}
-
-			//发起交易，改变提案状态为output方式
-			vote_proposal.set_type(type);
-			proposal_info_vector_.push_back(vote_proposal);
 		}
+		//当获取对端为input时候，需要保证其状态为成功状态或者失败状态
+		else if (get_peer_type == protocol::CROSS_PROPOSAL_INPUT){
+			if (vote_proposal.status() == EXECUTE_STATE_INITIAL || vote_proposal.status() == EXECUTE_STATE_PROCESSING){
+				LOG_INFO("If peers' input is init or processing, ignore it, status:%d", vote_proposal.status());
+				return;
+			}
+		}
+
+		//改变提案状态类型，保存提案队列。
+		vote_proposal.set_type(type);
+		vote_proposal.clear_status();
+		vote_proposal.clear_confirmed_notarys();
+		proposal_info_vector_.push_back(vote_proposal);
 	}
 
 	void ChainObj::SubmitTransaction(){
@@ -285,9 +298,33 @@ namespace bubi {
 		protocol::CrossDoTransaction cross_do_trans;
 		protocol::TransactionEnv tran_env;
 		protocol::Transaction *tran = tran_env.mutable_transaction();
-		//TODO 制造交易
-		for (size_t i = 0; i < proposal_info_vector_.size(); i++){
-			//TODO 打包操作
+		tran->set_source_address(notary_address_);
+		tran->set_nonce(nonce_);
+
+		//打包操作
+		for (unsigned i = 0; i < proposal_info_vector_.size(); i++){
+			const protocol::CrossProposalInfo &info = proposal_info_vector_[i];
+			protocol::Operation *ope = tran->add_operations();
+			ope->set_type(protocol::Operation_Type_PAYMENT);
+			protocol::OperationPayment *payment = ope->mutable_payment();
+			payment->set_dest_address(comm_contract_);
+			if (info.type() == protocol::CROSS_PROPOSAL_INPUT){
+				Json::Value input_value;
+				Json::Value data;
+				data.fromString(info.proposal_body());
+				input_value["action"] = "put_msg";
+				input_value["data"] = data;
+				payment->set_input(input_value.toFastString());
+			}
+			else{
+				Json::Value input_value;
+				Json::Value data;
+				data.fromString(info.proposal_body());
+				input_value["function"] = "processState";
+				input_value["seq"] = info.proposal_id();
+				input_value["state"] = info.status();
+				payment->set_input(input_value.toFastString());
+			}
 		}
 
 		std::string content = tran->SerializeAsString();
@@ -301,8 +338,7 @@ namespace bubi {
 		signpro->set_sign_data(sign);
 		signpro->set_public_key(privateKey.GetBase16PublicKey());
 
-		//TODO: 发送交易
-
+		//发送交易
 		protocol::CrossDoTransaction do_trans;
 		do_trans.set_hash("xxxxxx");
 		*do_trans.mutable_tran_env() = tran_env;
@@ -310,21 +346,25 @@ namespace bubi {
 		proposal_info_vector_.clear();
 	}
 
-	NotaryMgr::NotaryMgr(){
-	}
-
-	NotaryMgr::~NotaryMgr(){
+	ChainObj::ProposalRecord* ChainObj::GetProposalRecord(protocol::CROSS_PROPOSAL_TYPE type){
+		ProposalRecord *record = nullptr;
+		if (type == protocol::CROSS_PROPOSAL_OUTPUT){
+			record = &output_record_;
+		}
+		else if (type == protocol::CROSS_PROPOSAL_INPUT){
+			record = &input_record_;
+		}
+		else{
+			LOG_ERROR("Canot find proposal, type:%d", type);
+			assert(false);
+		}
+		return record;
 	}
 
 	bool NotaryMgr::Initialize(){
-
-		NotaryConfigure &config = Configure::Instance().notary_configure_;
-
-		if (!config.enabled_){
-			LOG_TRACE("Failed to init notary mgr, configuration file is not allowed");
-			return true;
-		}
-		
+		last_update_time_ = utils::Timestamp::HighResolution();
+		update_times_ = 0;
+		NotaryConfigure &config = Configure::Instance().notary_configure_;		
 		TimerNotify::RegisterModule(this);
 		LOG_INFO("Initialized notary mgr successfully");
 
@@ -332,8 +372,8 @@ namespace bubi {
 		const PairChainConfigure &config_a = itr->second;
 		itr++;
 		const PairChainConfigure &config_b = itr->second;
-		std::shared_ptr<ChainObj> a = std::make_shared<ChainObj>(&channel_, config_a.comm_unique_, config.address_);
-		std::shared_ptr<ChainObj> b = std::make_shared<ChainObj>(&channel_, config_b.comm_unique_, config.address_);
+		std::shared_ptr<ChainObj> a = std::make_shared<ChainObj>(&channel_, config_a.comm_unique_, config.notary_address_, config.private_key_, config_a.comm_contract_);
+		std::shared_ptr<ChainObj> b = std::make_shared<ChainObj>(&channel_, config_b.comm_unique_, config.notary_address_, config.private_key_, config_a.comm_contract_);
 
 		chain_obj_map_[config_a.comm_unique_] = a;
 		chain_obj_map_[config_b.comm_unique_] = b;
@@ -343,10 +383,10 @@ namespace bubi {
 
 		ChannelParameter param;
 		param.inbound_ = true;
-		param.notary_addr_ = config.listen_addr_;
+		param.listen_addr_ = config.listen_addr_;
+		param.comm_unique_ = static_notary_unique_;
 		channel_.Initialize(param);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_PROPOSAL);
-		channel_.Register(this, protocol::CROSS_MSGTYPE_PROPOSAL_NOTICE);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_COMM_INFO);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_ACCOUNT_NONCE);
 		channel_.Register(this, protocol::CROSS_MSGTYPE_DO_TRANSACTION);
@@ -359,8 +399,22 @@ namespace bubi {
 	}
 
 	void NotaryMgr::OnTimer(int64_t current_time){
+		if ((current_time - last_update_time_) < 3 * utils::MICRO_UNITS_PER_SEC){
+			return;
+		}
+		last_update_time_ = current_time;
+		update_times_++;
+
+		//3秒更新状态
 		for (auto itr = chain_obj_map_.begin(); itr != chain_obj_map_.end(); itr++){
-			itr->second->OnTimer(current_time);
+			itr->second->OnFastTimer(current_time);
+		}
+
+		//12秒提交提案
+		if (update_times_ % 4 == 0){
+			for (auto itr = chain_obj_map_.begin(); itr != chain_obj_map_.end(); itr++){
+				itr->second->OnSlowTimer(current_time);
+			}
 		}
 	}
 

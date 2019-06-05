@@ -2068,24 +2068,12 @@ class CrossProposal : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::int64 proposal_id() const;
   void set_proposal_id(::google::protobuf::int64 value);
 
-  // optional string asset_contract = 3;
-  void clear_asset_contract();
-  static const int kAssetContractFieldNumber = 3;
-  const ::std::string& asset_contract() const;
-  void set_asset_contract(const ::std::string& value);
-  void set_asset_contract(const char* value);
-  void set_asset_contract(const char* value, size_t size);
-  ::std::string* mutable_asset_contract();
-  ::std::string* release_asset_contract();
-  void set_allocated_asset_contract(::std::string* asset_contract);
-
   // @@protoc_insertion_point(class_scope:protocol.CrossProposal)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::int64 proposal_id_;
-  ::google::protobuf::internal::ArenaStringPtr asset_contract_;
   int type_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
@@ -2180,32 +2168,16 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_proposal_body();
   void set_allocated_proposal_body(::std::string* proposal_body);
 
-  // optional string asset_contract = 4;
-  void clear_asset_contract();
-  static const int kAssetContractFieldNumber = 4;
-  const ::std::string& asset_contract() const;
-  void set_asset_contract(const ::std::string& value);
-  void set_asset_contract(const char* value);
-  void set_asset_contract(const char* value, size_t size);
-  ::std::string* mutable_asset_contract();
-  ::std::string* release_asset_contract();
-  void set_allocated_asset_contract(::std::string* asset_contract);
-
-  // optional string status = 5;
+  // optional int32 status = 4;
   void clear_status();
-  static const int kStatusFieldNumber = 5;
-  const ::std::string& status() const;
-  void set_status(const ::std::string& value);
-  void set_status(const char* value);
-  void set_status(const char* value, size_t size);
-  ::std::string* mutable_status();
-  ::std::string* release_status();
-  void set_allocated_status(::std::string* status);
+  static const int kStatusFieldNumber = 4;
+  ::google::protobuf::int32 status() const;
+  void set_status(::google::protobuf::int32 value);
 
-  // repeated string confirmed_notarys = 6;
+  // repeated string confirmed_notarys = 5;
   int confirmed_notarys_size() const;
   void clear_confirmed_notarys();
-  static const int kConfirmedNotarysFieldNumber = 6;
+  static const int kConfirmedNotarysFieldNumber = 5;
   const ::std::string& confirmed_notarys(int index) const;
   ::std::string* mutable_confirmed_notarys(int index);
   void set_confirmed_notarys(int index, const ::std::string& value);
@@ -2224,11 +2196,10 @@ class CrossProposalInfo : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::int64 proposal_id_;
-  ::google::protobuf::internal::ArenaStringPtr proposal_body_;
-  ::google::protobuf::internal::ArenaStringPtr asset_contract_;
-  ::google::protobuf::internal::ArenaStringPtr status_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> confirmed_notarys_;
   int type_;
+  ::google::protobuf::int32 status_;
+  ::google::protobuf::internal::ArenaStringPtr proposal_body_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> confirmed_notarys_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -2475,37 +2446,40 @@ class CrossCommInfoResponse : public ::google::protobuf::Message /* @@protoc_ins
   const ::google::protobuf::RepeatedPtrField< ::std::string>& notarys() const;
   ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_notarys();
 
-  // repeated string asset_input_contracts = 2;
-  int asset_input_contracts_size() const;
-  void clear_asset_input_contracts();
-  static const int kAssetInputContractsFieldNumber = 2;
-  const ::std::string& asset_input_contracts(int index) const;
-  ::std::string* mutable_asset_input_contracts(int index);
-  void set_asset_input_contracts(int index, const ::std::string& value);
-  void set_asset_input_contracts(int index, const char* value);
-  void set_asset_input_contracts(int index, const char* value, size_t size);
-  ::std::string* add_asset_input_contracts();
-  void add_asset_input_contracts(const ::std::string& value);
-  void add_asset_input_contracts(const char* value);
-  void add_asset_input_contracts(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& asset_input_contracts() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_asset_input_contracts();
+  // optional string comm_unique = 2;
+  void clear_comm_unique();
+  static const int kCommUniqueFieldNumber = 2;
+  const ::std::string& comm_unique() const;
+  void set_comm_unique(const ::std::string& value);
+  void set_comm_unique(const char* value);
+  void set_comm_unique(const char* value, size_t size);
+  ::std::string* mutable_comm_unique();
+  ::std::string* release_comm_unique();
+  void set_allocated_comm_unique(::std::string* comm_unique);
 
-  // repeated string asset_output_contracts = 3;
-  int asset_output_contracts_size() const;
-  void clear_asset_output_contracts();
-  static const int kAssetOutputContractsFieldNumber = 3;
-  const ::std::string& asset_output_contracts(int index) const;
-  ::std::string* mutable_asset_output_contracts(int index);
-  void set_asset_output_contracts(int index, const ::std::string& value);
-  void set_asset_output_contracts(int index, const char* value);
-  void set_asset_output_contracts(int index, const char* value, size_t size);
-  ::std::string* add_asset_output_contracts();
-  void add_asset_output_contracts(const ::std::string& value);
-  void add_asset_output_contracts(const char* value);
-  void add_asset_output_contracts(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& asset_output_contracts() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_asset_output_contracts();
+  // optional int64 input_finish_seq = 3;
+  void clear_input_finish_seq();
+  static const int kInputFinishSeqFieldNumber = 3;
+  ::google::protobuf::int64 input_finish_seq() const;
+  void set_input_finish_seq(::google::protobuf::int64 value);
+
+  // optional int64 input_max_seq = 4;
+  void clear_input_max_seq();
+  static const int kInputMaxSeqFieldNumber = 4;
+  ::google::protobuf::int64 input_max_seq() const;
+  void set_input_max_seq(::google::protobuf::int64 value);
+
+  // optional int64 output_finish_seq = 5;
+  void clear_output_finish_seq();
+  static const int kOutputFinishSeqFieldNumber = 5;
+  ::google::protobuf::int64 output_finish_seq() const;
+  void set_output_finish_seq(::google::protobuf::int64 value);
+
+  // optional int64 output_max_seq = 6;
+  void clear_output_max_seq();
+  static const int kOutputMaxSeqFieldNumber = 6;
+  ::google::protobuf::int64 output_max_seq() const;
+  void set_output_max_seq(::google::protobuf::int64 value);
 
   // @@protoc_insertion_point(class_scope:protocol.CrossCommInfoResponse)
  private:
@@ -2513,8 +2487,11 @@ class CrossCommInfoResponse : public ::google::protobuf::Message /* @@protoc_ins
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::RepeatedPtrField< ::std::string> notarys_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> asset_input_contracts_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> asset_output_contracts_;
+  ::google::protobuf::internal::ArenaStringPtr comm_unique_;
+  ::google::protobuf::int64 input_finish_seq_;
+  ::google::protobuf::int64 input_max_seq_;
+  ::google::protobuf::int64 output_finish_seq_;
+  ::google::protobuf::int64 output_max_seq_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_overlay_2eproto();
   friend void protobuf_AssignDesc_overlay_2eproto();
@@ -4469,50 +4446,6 @@ inline void CrossProposal::set_proposal_id(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
 }
 
-// optional string asset_contract = 3;
-inline void CrossProposal::clear_asset_contract() {
-  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& CrossProposal::asset_contract() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.asset_contract)
-  return asset_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposal::set_asset_contract(const ::std::string& value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.asset_contract)
-}
-inline void CrossProposal::set_asset_contract(const char* value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.asset_contract)
-}
-inline void CrossProposal::set_asset_contract(const char* value, size_t size) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.asset_contract)
-}
-inline ::std::string* CrossProposal::mutable_asset_contract() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.asset_contract)
-  return asset_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CrossProposal::release_asset_contract() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposal.asset_contract)
-  
-  return asset_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposal::set_allocated_asset_contract(::std::string* asset_contract) {
-  if (asset_contract != NULL) {
-    
-  } else {
-    
-  }
-  asset_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), asset_contract);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.asset_contract)
-}
-
 // -------------------------------------------------------------------
 
 // CrossProposalInfo
@@ -4589,95 +4522,21 @@ inline void CrossProposalInfo::set_allocated_proposal_body(::std::string* propos
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.proposal_body)
 }
 
-// optional string asset_contract = 4;
-inline void CrossProposalInfo::clear_asset_contract() {
-  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& CrossProposalInfo::asset_contract() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.asset_contract)
-  return asset_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposalInfo::set_asset_contract(const ::std::string& value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.asset_contract)
-}
-inline void CrossProposalInfo::set_asset_contract(const char* value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.asset_contract)
-}
-inline void CrossProposalInfo::set_asset_contract(const char* value, size_t size) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.asset_contract)
-}
-inline ::std::string* CrossProposalInfo::mutable_asset_contract() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.asset_contract)
-  return asset_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CrossProposalInfo::release_asset_contract() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.asset_contract)
-  
-  return asset_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposalInfo::set_allocated_asset_contract(::std::string* asset_contract) {
-  if (asset_contract != NULL) {
-    
-  } else {
-    
-  }
-  asset_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), asset_contract);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.asset_contract)
-}
-
-// optional string status = 5;
+// optional int32 status = 4;
 inline void CrossProposalInfo::clear_status() {
-  status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_ = 0;
 }
-inline const ::std::string& CrossProposalInfo::status() const {
+inline ::google::protobuf::int32 CrossProposalInfo::status() const {
   // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.status)
-  return status_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return status_;
 }
-inline void CrossProposalInfo::set_status(const ::std::string& value) {
+inline void CrossProposalInfo::set_status(::google::protobuf::int32 value) {
   
-  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  status_ = value;
   // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.status)
 }
-inline void CrossProposalInfo::set_status(const char* value) {
-  
-  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.status)
-}
-inline void CrossProposalInfo::set_status(const char* value, size_t size) {
-  
-  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.status)
-}
-inline ::std::string* CrossProposalInfo::mutable_status() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.status)
-  return status_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CrossProposalInfo::release_status() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.status)
-  
-  return status_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CrossProposalInfo::set_allocated_status(::std::string* status) {
-  if (status != NULL) {
-    
-  } else {
-    
-  }
-  status_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), status);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.status)
-}
 
-// repeated string confirmed_notarys = 6;
+// repeated string confirmed_notarys = 5;
 inline int CrossProposalInfo::confirmed_notarys_size() const {
   return confirmed_notarys_.size();
 }
@@ -4837,114 +4696,104 @@ CrossCommInfoResponse::mutable_notarys() {
   return &notarys_;
 }
 
-// repeated string asset_input_contracts = 2;
-inline int CrossCommInfoResponse::asset_input_contracts_size() const {
-  return asset_input_contracts_.size();
+// optional string comm_unique = 2;
+inline void CrossCommInfoResponse::clear_comm_unique() {
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void CrossCommInfoResponse::clear_asset_input_contracts() {
-  asset_input_contracts_.Clear();
+inline const ::std::string& CrossCommInfoResponse::comm_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.comm_unique)
+  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& CrossCommInfoResponse::asset_input_contracts(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_.Get(index);
+inline void CrossCommInfoResponse::set_comm_unique(const ::std::string& value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.comm_unique)
 }
-inline ::std::string* CrossCommInfoResponse::mutable_asset_input_contracts(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_.Mutable(index);
+inline void CrossCommInfoResponse::set_comm_unique(const char* value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.comm_unique)
 }
-inline void CrossCommInfoResponse::set_asset_input_contracts(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.asset_input_contracts)
-  asset_input_contracts_.Mutable(index)->assign(value);
+inline void CrossCommInfoResponse::set_comm_unique(const char* value, size_t size) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.comm_unique)
 }
-inline void CrossCommInfoResponse::set_asset_input_contracts(int index, const char* value) {
-  asset_input_contracts_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.asset_input_contracts)
+inline ::std::string* CrossCommInfoResponse::mutable_comm_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.comm_unique)
+  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void CrossCommInfoResponse::set_asset_input_contracts(int index, const char* value, size_t size) {
-  asset_input_contracts_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.asset_input_contracts)
+inline ::std::string* CrossCommInfoResponse::release_comm_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossCommInfoResponse.comm_unique)
+  
+  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* CrossCommInfoResponse::add_asset_input_contracts() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_.Add();
-}
-inline void CrossCommInfoResponse::add_asset_input_contracts(const ::std::string& value) {
-  asset_input_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.asset_input_contracts)
-}
-inline void CrossCommInfoResponse::add_asset_input_contracts(const char* value) {
-  asset_input_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.asset_input_contracts)
-}
-inline void CrossCommInfoResponse::add_asset_input_contracts(const char* value, size_t size) {
-  asset_input_contracts_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.asset_input_contracts)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossCommInfoResponse::asset_input_contracts() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossCommInfoResponse::mutable_asset_input_contracts() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return &asset_input_contracts_;
+inline void CrossCommInfoResponse::set_allocated_comm_unique(::std::string* comm_unique) {
+  if (comm_unique != NULL) {
+    
+  } else {
+    
+  }
+  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossCommInfoResponse.comm_unique)
 }
 
-// repeated string asset_output_contracts = 3;
-inline int CrossCommInfoResponse::asset_output_contracts_size() const {
-  return asset_output_contracts_.size();
+// optional int64 input_finish_seq = 3;
+inline void CrossCommInfoResponse::clear_input_finish_seq() {
+  input_finish_seq_ = GOOGLE_LONGLONG(0);
 }
-inline void CrossCommInfoResponse::clear_asset_output_contracts() {
-  asset_output_contracts_.Clear();
+inline ::google::protobuf::int64 CrossCommInfoResponse::input_finish_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.input_finish_seq)
+  return input_finish_seq_;
 }
-inline const ::std::string& CrossCommInfoResponse::asset_output_contracts(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_.Get(index);
+inline void CrossCommInfoResponse::set_input_finish_seq(::google::protobuf::int64 value) {
+  
+  input_finish_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.input_finish_seq)
 }
-inline ::std::string* CrossCommInfoResponse::mutable_asset_output_contracts(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_.Mutable(index);
+
+// optional int64 input_max_seq = 4;
+inline void CrossCommInfoResponse::clear_input_max_seq() {
+  input_max_seq_ = GOOGLE_LONGLONG(0);
 }
-inline void CrossCommInfoResponse::set_asset_output_contracts(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.asset_output_contracts)
-  asset_output_contracts_.Mutable(index)->assign(value);
+inline ::google::protobuf::int64 CrossCommInfoResponse::input_max_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.input_max_seq)
+  return input_max_seq_;
 }
-inline void CrossCommInfoResponse::set_asset_output_contracts(int index, const char* value) {
-  asset_output_contracts_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.asset_output_contracts)
+inline void CrossCommInfoResponse::set_input_max_seq(::google::protobuf::int64 value) {
+  
+  input_max_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.input_max_seq)
 }
-inline void CrossCommInfoResponse::set_asset_output_contracts(int index, const char* value, size_t size) {
-  asset_output_contracts_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.asset_output_contracts)
+
+// optional int64 output_finish_seq = 5;
+inline void CrossCommInfoResponse::clear_output_finish_seq() {
+  output_finish_seq_ = GOOGLE_LONGLONG(0);
 }
-inline ::std::string* CrossCommInfoResponse::add_asset_output_contracts() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_.Add();
+inline ::google::protobuf::int64 CrossCommInfoResponse::output_finish_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.output_finish_seq)
+  return output_finish_seq_;
 }
-inline void CrossCommInfoResponse::add_asset_output_contracts(const ::std::string& value) {
-  asset_output_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.asset_output_contracts)
+inline void CrossCommInfoResponse::set_output_finish_seq(::google::protobuf::int64 value) {
+  
+  output_finish_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.output_finish_seq)
 }
-inline void CrossCommInfoResponse::add_asset_output_contracts(const char* value) {
-  asset_output_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.asset_output_contracts)
+
+// optional int64 output_max_seq = 6;
+inline void CrossCommInfoResponse::clear_output_max_seq() {
+  output_max_seq_ = GOOGLE_LONGLONG(0);
 }
-inline void CrossCommInfoResponse::add_asset_output_contracts(const char* value, size_t size) {
-  asset_output_contracts_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.asset_output_contracts)
+inline ::google::protobuf::int64 CrossCommInfoResponse::output_max_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.output_max_seq)
+  return output_max_seq_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossCommInfoResponse::asset_output_contracts() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossCommInfoResponse::mutable_asset_output_contracts() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return &asset_output_contracts_;
+inline void CrossCommInfoResponse::set_output_max_seq(::google::protobuf::int64 value) {
+  
+  output_max_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.output_max_seq)
 }
 
 // -------------------------------------------------------------------

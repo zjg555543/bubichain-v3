@@ -394,10 +394,9 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossHelloResponse, _is_default_instance_));
   CrossProposal_descriptor_ = file->message_type(16);
-  static const int CrossProposal_offsets_[3] = {
+  static const int CrossProposal_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, proposal_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, asset_contract_),
   };
   CrossProposal_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -411,11 +410,10 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposal, _is_default_instance_));
   CrossProposalInfo_descriptor_ = file->message_type(17);
-  static const int CrossProposalInfo_offsets_[6] = {
+  static const int CrossProposalInfo_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, proposal_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, proposal_body_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, asset_contract_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, status_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossProposalInfo, confirmed_notarys_),
   };
@@ -460,10 +458,13 @@ void protobuf_AssignDesc_overlay_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfo, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfo, _is_default_instance_));
   CrossCommInfoResponse_descriptor_ = file->message_type(20);
-  static const int CrossCommInfoResponse_offsets_[3] = {
+  static const int CrossCommInfoResponse_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, notarys_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, asset_input_contracts_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, asset_output_contracts_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, comm_unique_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, input_finish_seq_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, input_max_seq_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, output_finish_seq_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CrossCommInfoResponse, output_max_seq_),
   };
   CrossCommInfoResponse_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -716,47 +717,48 @@ void protobuf_AddDesc_overlay_2eproto() {
     "(\t\022\014\n\004data\030\002 \001(\t\022\021\n\ttimestamp\030\003 \001(\003\"!\n\nC"
     "rossHello\022\023\n\013comm_unique\030\001 \001(\t\"Q\n\022CrossH"
     "elloResponse\022\'\n\nerror_code\030\001 \001(\0162\023.proto"
-    "col.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"i\n\rCro"
+    "col.ERRORCODE\022\022\n\nerror_desc\030\002 \001(\t\"Q\n\rCro"
     "ssProposal\022+\n\004type\030\001 \001(\0162\035.protocol.CROS"
-    "S_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002 \001(\003\022\026\n\016"
-    "asset_contract\030\003 \001(\t\"\257\001\n\021CrossProposalIn"
-    "fo\022+\n\004type\030\001 \001(\0162\035.protocol.CROSS_PROPOS"
-    "AL_TYPE\022\023\n\013proposal_id\030\002 \001(\003\022\025\n\rproposal"
-    "_body\030\003 \001(\t\022\026\n\016asset_contract\030\004 \001(\t\022\016\n\006s"
-    "tatus\030\005 \001(\t\022\031\n\021confirmed_notarys\030\006 \003(\t\"K"
-    "\n\025CrossProposalResponse\0222\n\rproposal_info"
-    "\030\001 \001(\0132\033.protocol.CrossProposalInfo\"\017\n\rC"
-    "rossCommInfo\"g\n\025CrossCommInfoResponse\022\017\n"
-    "\007notarys\030\001 \003(\t\022\035\n\025asset_input_contracts\030"
-    "\002 \003(\t\022\036\n\026asset_output_contracts\030\003 \003(\t\"$\n"
-    "\021CrossAccountNonce\022\017\n\007account\030\001 \001(\t\"*\n\031C"
-    "rossAccountNonceResponse\022\r\n\005nonce\030\001 \001(\003\""
-    "N\n\022CrossDoTransaction\022\014\n\004hash\030\001 \001(\t\022*\n\010t"
-    "ran_env\030\002 \001(\0132\030.protocol.TransactionEnv\""
-    "R\n\032CrossDoTransactionResponse\022\014\n\004hash\030\001 "
-    "\001(\t\022\022\n\nerror_code\030\002 \001(\005\022\022\n\nerror_desc\030\003 "
-    "\001(\t*\203\002\n\024OVERLAY_MESSAGE_TYPE\022\030\n\024OVERLAY_"
-    "MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSGTYPE_PING\020\001"
-    "\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031\n\025OVERLAY_M"
-    "SGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSGTYPE_TRANSA"
-    "CTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LEDGERS\020\005\022\030\n\024"
-    "OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVERLAY_MSGTYP"
-    "E_LEDGER_UPGRADE_NOTIFY\020\007*\342\001\n\020ChainMessa"
-    "geType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017\n\013CHAIN_HEL"
-    "LO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021CHAIN_PEER_"
-    "ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLINE\020\r\022\026\n\022CHAI"
-    "N_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUBMITTRANSACT"
-    "ION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020\020\022\026\n\022CHAIN_"
-    "CONTRACT_LOG\020\021*\352\001\n\022CROSS_MESSAGE_TYPE\022\026\n"
-    "\022CROSS_MSGTYPE_NONE\020\000\022\030\n\023CROSS_MSGTYPE_H"
-    "ELLO\020\221N\022\033\n\026CROSS_MSGTYPE_PROPOSAL\020\222N\022\"\n\035"
-    "CROSS_MSGTYPE_PROPOSAL_NOTICE\020\223N\022\034\n\027CROS"
-    "S_MSGTYPE_COMM_INFO\020\224N\022 \n\033CROSS_MSGTYPE_"
-    "ACCOUNT_NONCE\020\225N\022!\n\034CROSS_MSGTYPE_DO_TRA"
-    "NSACTION\020\226N*c\n\023CROSS_PROPOSAL_TYPE\022\027\n\023CR"
-    "OSS_PROPOSAL_NONE\020\000\022\031\n\025CROSS_PROPOSAL_OU"
-    "TPUT\020\001\022\030\n\024CROSS_PROPOSAL_INPUT\020\002B\035\n\033cn.b"
-    "ubi.blockchain.adapter3b\006proto3", 3351);
+    "S_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002 \001(\003\"\227\001\n"
+    "\021CrossProposalInfo\022+\n\004type\030\001 \001(\0162\035.proto"
+    "col.CROSS_PROPOSAL_TYPE\022\023\n\013proposal_id\030\002"
+    " \001(\003\022\025\n\rproposal_body\030\003 \001(\t\022\016\n\006status\030\004 "
+    "\001(\005\022\031\n\021confirmed_notarys\030\005 \003(\t\"K\n\025CrossP"
+    "roposalResponse\0222\n\rproposal_info\030\001 \001(\0132\033"
+    ".protocol.CrossProposalInfo\"\017\n\rCrossComm"
+    "Info\"\241\001\n\025CrossCommInfoResponse\022\017\n\007notary"
+    "s\030\001 \003(\t\022\023\n\013comm_unique\030\002 \001(\t\022\030\n\020input_fi"
+    "nish_seq\030\003 \001(\003\022\025\n\rinput_max_seq\030\004 \001(\003\022\031\n"
+    "\021output_finish_seq\030\005 \001(\003\022\026\n\016output_max_s"
+    "eq\030\006 \001(\003\"$\n\021CrossAccountNonce\022\017\n\007account"
+    "\030\001 \001(\t\"*\n\031CrossAccountNonceResponse\022\r\n\005n"
+    "once\030\001 \001(\003\"N\n\022CrossDoTransaction\022\014\n\004hash"
+    "\030\001 \001(\t\022*\n\010tran_env\030\002 \001(\0132\030.protocol.Tran"
+    "sactionEnv\"R\n\032CrossDoTransactionResponse"
+    "\022\014\n\004hash\030\001 \001(\t\022\022\n\nerror_code\030\002 \001(\005\022\022\n\ner"
+    "ror_desc\030\003 \001(\t*\203\002\n\024OVERLAY_MESSAGE_TYPE\022"
+    "\030\n\024OVERLAY_MSGTYPE_NONE\020\000\022\030\n\024OVERLAY_MSG"
+    "TYPE_PING\020\001\022\031\n\025OVERLAY_MSGTYPE_HELLO\020\002\022\031"
+    "\n\025OVERLAY_MSGTYPE_PEERS\020\003\022\037\n\033OVERLAY_MSG"
+    "TYPE_TRANSACTION\020\004\022\033\n\027OVERLAY_MSGTYPE_LE"
+    "DGERS\020\005\022\030\n\024OVERLAY_MSGTYPE_PBFT\020\006\022)\n%OVE"
+    "RLAY_MSGTYPE_LEDGER_UPGRADE_NOTIFY\020\007*\342\001\n"
+    "\020ChainMessageType\022\023\n\017CHAIN_TYPE_NONE\020\000\022\017"
+    "\n\013CHAIN_HELLO\020\n\022\023\n\017CHAIN_TX_STATUS\020\013\022\025\n\021"
+    "CHAIN_PEER_ONLINE\020\014\022\026\n\022CHAIN_PEER_OFFLIN"
+    "E\020\r\022\026\n\022CHAIN_PEER_MESSAGE\020\016\022\033\n\027CHAIN_SUB"
+    "MITTRANSACTION\020\017\022\027\n\023CHAIN_LEDGER_HEADER\020"
+    "\020\022\026\n\022CHAIN_CONTRACT_LOG\020\021*\352\001\n\022CROSS_MESS"
+    "AGE_TYPE\022\026\n\022CROSS_MSGTYPE_NONE\020\000\022\030\n\023CROS"
+    "S_MSGTYPE_HELLO\020\221N\022\033\n\026CROSS_MSGTYPE_PROP"
+    "OSAL\020\222N\022\"\n\035CROSS_MSGTYPE_PROPOSAL_NOTICE"
+    "\020\223N\022\034\n\027CROSS_MSGTYPE_COMM_INFO\020\224N\022 \n\033CRO"
+    "SS_MSGTYPE_ACCOUNT_NONCE\020\225N\022!\n\034CROSS_MSG"
+    "TYPE_DO_TRANSACTION\020\226N*c\n\023CROSS_PROPOSAL"
+    "_TYPE\022\027\n\023CROSS_PROPOSAL_NONE\020\000\022\031\n\025CROSS_"
+    "PROPOSAL_OUTPUT\020\001\022\030\n\024CROSS_PROPOSAL_INPU"
+    "T\020\002B\035\n\033cn.bubi.blockchain.adapter3b\006prot"
+    "o3", 3362);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "overlay.proto", &protobuf_RegisterTypes);
   Hello::default_instance_ = new Hello();
@@ -7898,7 +7900,6 @@ void CrossHelloResponse::clear_error_desc() {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CrossProposal::kTypeFieldNumber;
 const int CrossProposal::kProposalIdFieldNumber;
-const int CrossProposal::kAssetContractFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossProposal::CrossProposal()
@@ -7921,11 +7922,9 @@ CrossProposal::CrossProposal(const CrossProposal& from)
 
 void CrossProposal::SharedCtor() {
     _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   type_ = 0;
   proposal_id_ = GOOGLE_LONGLONG(0);
-  asset_contract_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 CrossProposal::~CrossProposal() {
@@ -7934,7 +7933,6 @@ CrossProposal::~CrossProposal() {
 }
 
 void CrossProposal::SharedDtor() {
-  asset_contract_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -7966,9 +7964,27 @@ CrossProposal* CrossProposal::New(::google::protobuf::Arena* arena) const {
 
 void CrossProposal::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossProposal)
-  type_ = 0;
-  proposal_id_ = GOOGLE_LONGLONG(0);
-  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(CrossProposal, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<CrossProposal*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(proposal_id_, type_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
 }
 
 bool CrossProposal::MergePartialFromCodedStream(
@@ -8004,23 +8020,6 @@ bool CrossProposal::MergePartialFromCodedStream(
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &proposal_id_)));
 
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_asset_contract;
-        break;
-      }
-
-      // optional string asset_contract = 3;
-      case 3: {
-        if (tag == 26) {
-         parse_asset_contract:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_asset_contract()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->asset_contract().data(), this->asset_contract().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposal.asset_contract"));
         } else {
           goto handle_unusual;
         }
@@ -8063,16 +8062,6 @@ void CrossProposal::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->proposal_id(), output);
   }
 
-  // optional string asset_contract = 3;
-  if (this->asset_contract().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_contract().data(), this->asset_contract().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.asset_contract");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->asset_contract(), output);
-  }
-
   // @@protoc_insertion_point(serialize_end:protocol.CrossProposal)
 }
 
@@ -8088,17 +8077,6 @@ void CrossProposal::SerializeWithCachedSizes(
   // optional int64 proposal_id = 2;
   if (this->proposal_id() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->proposal_id(), target);
-  }
-
-  // optional string asset_contract = 3;
-  if (this->asset_contract().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_contract().data(), this->asset_contract().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposal.asset_contract");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->asset_contract(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposal)
@@ -8120,13 +8098,6 @@ int CrossProposal::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->proposal_id());
-  }
-
-  // optional string asset_contract = 3;
-  if (this->asset_contract().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->asset_contract());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -8163,10 +8134,6 @@ void CrossProposal::MergeFrom(const CrossProposal& from) {
   if (from.proposal_id() != 0) {
     set_proposal_id(from.proposal_id());
   }
-  if (from.asset_contract().size() > 0) {
-
-    asset_contract_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.asset_contract_);
-  }
 }
 
 void CrossProposal::CopyFrom(const ::google::protobuf::Message& from) {
@@ -8195,7 +8162,6 @@ void CrossProposal::Swap(CrossProposal* other) {
 void CrossProposal::InternalSwap(CrossProposal* other) {
   std::swap(type_, other->type_);
   std::swap(proposal_id_, other->proposal_id_);
-  asset_contract_.Swap(&other->asset_contract_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -8239,50 +8205,6 @@ void CrossProposal::clear_proposal_id() {
   // @@protoc_insertion_point(field_set:protocol.CrossProposal.proposal_id)
 }
 
-// optional string asset_contract = 3;
-void CrossProposal::clear_asset_contract() {
-  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& CrossProposal::asset_contract() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposal.asset_contract)
-  return asset_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposal::set_asset_contract(const ::std::string& value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposal.asset_contract)
-}
- void CrossProposal::set_asset_contract(const char* value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposal.asset_contract)
-}
- void CrossProposal::set_asset_contract(const char* value, size_t size) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposal.asset_contract)
-}
- ::std::string* CrossProposal::mutable_asset_contract() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposal.asset_contract)
-  return asset_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposal::release_asset_contract() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposal.asset_contract)
-  
-  return asset_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposal::set_allocated_asset_contract(::std::string* asset_contract) {
-  if (asset_contract != NULL) {
-    
-  } else {
-    
-  }
-  asset_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), asset_contract);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposal.asset_contract)
-}
-
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -8291,7 +8213,6 @@ void CrossProposal::clear_asset_contract() {
 const int CrossProposalInfo::kTypeFieldNumber;
 const int CrossProposalInfo::kProposalIdFieldNumber;
 const int CrossProposalInfo::kProposalBodyFieldNumber;
-const int CrossProposalInfo::kAssetContractFieldNumber;
 const int CrossProposalInfo::kStatusFieldNumber;
 const int CrossProposalInfo::kConfirmedNotarysFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -8321,8 +8242,7 @@ void CrossProposalInfo::SharedCtor() {
   type_ = 0;
   proposal_id_ = GOOGLE_LONGLONG(0);
   proposal_body_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  asset_contract_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  status_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_ = 0;
 }
 
 CrossProposalInfo::~CrossProposalInfo() {
@@ -8332,8 +8252,6 @@ CrossProposalInfo::~CrossProposalInfo() {
 
 void CrossProposalInfo::SharedDtor() {
   proposal_body_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  asset_contract_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  status_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -8365,11 +8283,28 @@ CrossProposalInfo* CrossProposalInfo::New(::google::protobuf::Arena* arena) cons
 
 void CrossProposalInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossProposalInfo)
-  type_ = 0;
-  proposal_id_ = GOOGLE_LONGLONG(0);
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(CrossProposalInfo, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<CrossProposalInfo*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(proposal_id_, status_);
   proposal_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+
+#undef ZR_HELPER_
+#undef ZR_
+
   confirmed_notarys_.Clear();
 }
 
@@ -8426,47 +8361,28 @@ bool CrossProposalInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_asset_contract;
+        if (input->ExpectTag(32)) goto parse_status;
         break;
       }
 
-      // optional string asset_contract = 4;
+      // optional int32 status = 4;
       case 4: {
-        if (tag == 34) {
-         parse_asset_contract:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_asset_contract()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->asset_contract().data(), this->asset_contract().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposalInfo.asset_contract"));
+        if (tag == 32) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &status_)));
+
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(42)) goto parse_status;
+        if (input->ExpectTag(42)) goto parse_confirmed_notarys;
         break;
       }
 
-      // optional string status = 5;
+      // repeated string confirmed_notarys = 5;
       case 5: {
         if (tag == 42) {
-         parse_status:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_status()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->status().data(), this->status().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossProposalInfo.status"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(50)) goto parse_confirmed_notarys;
-        break;
-      }
-
-      // repeated string confirmed_notarys = 6;
-      case 6: {
-        if (tag == 50) {
          parse_confirmed_notarys:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->add_confirmed_notarys()));
@@ -8478,7 +8394,7 @@ bool CrossProposalInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(50)) goto parse_confirmed_notarys;
+        if (input->ExpectTag(42)) goto parse_confirmed_notarys;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -8528,34 +8444,19 @@ void CrossProposalInfo::SerializeWithCachedSizes(
       3, this->proposal_body(), output);
   }
 
-  // optional string asset_contract = 4;
-  if (this->asset_contract().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_contract().data(), this->asset_contract().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposalInfo.asset_contract");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      4, this->asset_contract(), output);
+  // optional int32 status = 4;
+  if (this->status() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->status(), output);
   }
 
-  // optional string status = 5;
-  if (this->status().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->status().data(), this->status().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposalInfo.status");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      5, this->status(), output);
-  }
-
-  // repeated string confirmed_notarys = 6;
+  // repeated string confirmed_notarys = 5;
   for (int i = 0; i < this->confirmed_notarys_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->confirmed_notarys(i).data(), this->confirmed_notarys(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "protocol.CrossProposalInfo.confirmed_notarys");
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      6, this->confirmed_notarys(i), output);
+      5, this->confirmed_notarys(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossProposalInfo)
@@ -8586,36 +8487,19 @@ void CrossProposalInfo::SerializeWithCachedSizes(
         3, this->proposal_body(), target);
   }
 
-  // optional string asset_contract = 4;
-  if (this->asset_contract().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_contract().data(), this->asset_contract().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposalInfo.asset_contract");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->asset_contract(), target);
+  // optional int32 status = 4;
+  if (this->status() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->status(), target);
   }
 
-  // optional string status = 5;
-  if (this->status().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->status().data(), this->status().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossProposalInfo.status");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        5, this->status(), target);
-  }
-
-  // repeated string confirmed_notarys = 6;
+  // repeated string confirmed_notarys = 5;
   for (int i = 0; i < this->confirmed_notarys_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->confirmed_notarys(i).data(), this->confirmed_notarys(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "protocol.CrossProposalInfo.confirmed_notarys");
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(6, this->confirmed_notarys(i), target);
+      WriteStringToArray(5, this->confirmed_notarys(i), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossProposalInfo)
@@ -8646,21 +8530,14 @@ int CrossProposalInfo::ByteSize() const {
         this->proposal_body());
   }
 
-  // optional string asset_contract = 4;
-  if (this->asset_contract().size() > 0) {
+  // optional int32 status = 4;
+  if (this->status() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->asset_contract());
-  }
-
-  // optional string status = 5;
-  if (this->status().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->status());
   }
 
-  // repeated string confirmed_notarys = 6;
+  // repeated string confirmed_notarys = 5;
   total_size += 1 * this->confirmed_notarys_size();
   for (int i = 0; i < this->confirmed_notarys_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -8706,13 +8583,8 @@ void CrossProposalInfo::MergeFrom(const CrossProposalInfo& from) {
 
     proposal_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.proposal_body_);
   }
-  if (from.asset_contract().size() > 0) {
-
-    asset_contract_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.asset_contract_);
-  }
-  if (from.status().size() > 0) {
-
-    status_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.status_);
+  if (from.status() != 0) {
+    set_status(from.status());
   }
 }
 
@@ -8743,8 +8615,7 @@ void CrossProposalInfo::InternalSwap(CrossProposalInfo* other) {
   std::swap(type_, other->type_);
   std::swap(proposal_id_, other->proposal_id_);
   proposal_body_.Swap(&other->proposal_body_);
-  asset_contract_.Swap(&other->asset_contract_);
-  status_.Swap(&other->status_);
+  std::swap(status_, other->status_);
   confirmed_notarys_.UnsafeArenaSwap(&other->confirmed_notarys_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -8833,95 +8704,21 @@ void CrossProposalInfo::clear_proposal_body() {
   // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.proposal_body)
 }
 
-// optional string asset_contract = 4;
-void CrossProposalInfo::clear_asset_contract() {
-  asset_contract_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& CrossProposalInfo::asset_contract() const {
-  // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.asset_contract)
-  return asset_contract_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposalInfo::set_asset_contract(const ::std::string& value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.asset_contract)
-}
- void CrossProposalInfo::set_asset_contract(const char* value) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.asset_contract)
-}
- void CrossProposalInfo::set_asset_contract(const char* value, size_t size) {
-  
-  asset_contract_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.asset_contract)
-}
- ::std::string* CrossProposalInfo::mutable_asset_contract() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.asset_contract)
-  return asset_contract_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposalInfo::release_asset_contract() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.asset_contract)
-  
-  return asset_contract_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposalInfo::set_allocated_asset_contract(::std::string* asset_contract) {
-  if (asset_contract != NULL) {
-    
-  } else {
-    
-  }
-  asset_contract_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), asset_contract);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.asset_contract)
-}
-
-// optional string status = 5;
+// optional int32 status = 4;
 void CrossProposalInfo::clear_status() {
-  status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_ = 0;
 }
- const ::std::string& CrossProposalInfo::status() const {
+ ::google::protobuf::int32 CrossProposalInfo::status() const {
   // @@protoc_insertion_point(field_get:protocol.CrossProposalInfo.status)
-  return status_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return status_;
 }
- void CrossProposalInfo::set_status(const ::std::string& value) {
+ void CrossProposalInfo::set_status(::google::protobuf::int32 value) {
   
-  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  status_ = value;
   // @@protoc_insertion_point(field_set:protocol.CrossProposalInfo.status)
 }
- void CrossProposalInfo::set_status(const char* value) {
-  
-  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:protocol.CrossProposalInfo.status)
-}
- void CrossProposalInfo::set_status(const char* value, size_t size) {
-  
-  status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossProposalInfo.status)
-}
- ::std::string* CrossProposalInfo::mutable_status() {
-  
-  // @@protoc_insertion_point(field_mutable:protocol.CrossProposalInfo.status)
-  return status_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* CrossProposalInfo::release_status() {
-  // @@protoc_insertion_point(field_release:protocol.CrossProposalInfo.status)
-  
-  return status_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void CrossProposalInfo::set_allocated_status(::std::string* status) {
-  if (status != NULL) {
-    
-  } else {
-    
-  }
-  status_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), status);
-  // @@protoc_insertion_point(field_set_allocated:protocol.CrossProposalInfo.status)
-}
 
-// repeated string confirmed_notarys = 6;
+// repeated string confirmed_notarys = 5;
 int CrossProposalInfo::confirmed_notarys_size() const {
   return confirmed_notarys_.size();
 }
@@ -9429,8 +9226,11 @@ void CrossCommInfo::InternalSwap(CrossCommInfo* other) {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int CrossCommInfoResponse::kNotarysFieldNumber;
-const int CrossCommInfoResponse::kAssetInputContractsFieldNumber;
-const int CrossCommInfoResponse::kAssetOutputContractsFieldNumber;
+const int CrossCommInfoResponse::kCommUniqueFieldNumber;
+const int CrossCommInfoResponse::kInputFinishSeqFieldNumber;
+const int CrossCommInfoResponse::kInputMaxSeqFieldNumber;
+const int CrossCommInfoResponse::kOutputFinishSeqFieldNumber;
+const int CrossCommInfoResponse::kOutputMaxSeqFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CrossCommInfoResponse::CrossCommInfoResponse()
@@ -9455,6 +9255,11 @@ void CrossCommInfoResponse::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
+  comm_unique_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  input_finish_seq_ = GOOGLE_LONGLONG(0);
+  input_max_seq_ = GOOGLE_LONGLONG(0);
+  output_finish_seq_ = GOOGLE_LONGLONG(0);
+  output_max_seq_ = GOOGLE_LONGLONG(0);
 }
 
 CrossCommInfoResponse::~CrossCommInfoResponse() {
@@ -9463,6 +9268,7 @@ CrossCommInfoResponse::~CrossCommInfoResponse() {
 }
 
 void CrossCommInfoResponse::SharedDtor() {
+  comm_unique_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -9494,9 +9300,29 @@ CrossCommInfoResponse* CrossCommInfoResponse::New(::google::protobuf::Arena* are
 
 void CrossCommInfoResponse::Clear() {
 // @@protoc_insertion_point(message_clear_start:protocol.CrossCommInfoResponse)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(CrossCommInfoResponse, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<CrossCommInfoResponse*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(input_finish_seq_, output_max_seq_);
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+
+#undef ZR_HELPER_
+#undef ZR_
+
   notarys_.Clear();
-  asset_input_contracts_.Clear();
-  asset_output_contracts_.Clear();
 }
 
 bool CrossCommInfoResponse::MergePartialFromCodedStream(
@@ -9524,44 +9350,83 @@ bool CrossCommInfoResponse::MergePartialFromCodedStream(
           goto handle_unusual;
         }
         if (input->ExpectTag(10)) goto parse_notarys;
-        if (input->ExpectTag(18)) goto parse_asset_input_contracts;
+        if (input->ExpectTag(18)) goto parse_comm_unique;
         break;
       }
 
-      // repeated string asset_input_contracts = 2;
+      // optional string comm_unique = 2;
       case 2: {
         if (tag == 18) {
-         parse_asset_input_contracts:
+         parse_comm_unique:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_asset_input_contracts()));
+                input, this->mutable_comm_unique()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->asset_input_contracts(this->asset_input_contracts_size() - 1).data(),
-            this->asset_input_contracts(this->asset_input_contracts_size() - 1).length(),
+            this->comm_unique().data(), this->comm_unique().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossCommInfoResponse.asset_input_contracts"));
+            "protocol.CrossCommInfoResponse.comm_unique"));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_asset_input_contracts;
-        if (input->ExpectTag(26)) goto parse_asset_output_contracts;
+        if (input->ExpectTag(24)) goto parse_input_finish_seq;
         break;
       }
 
-      // repeated string asset_output_contracts = 3;
+      // optional int64 input_finish_seq = 3;
       case 3: {
-        if (tag == 26) {
-         parse_asset_output_contracts:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_asset_output_contracts()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->asset_output_contracts(this->asset_output_contracts_size() - 1).data(),
-            this->asset_output_contracts(this->asset_output_contracts_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "protocol.CrossCommInfoResponse.asset_output_contracts"));
+        if (tag == 24) {
+         parse_input_finish_seq:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &input_finish_seq_)));
+
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_asset_output_contracts;
+        if (input->ExpectTag(32)) goto parse_input_max_seq;
+        break;
+      }
+
+      // optional int64 input_max_seq = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_input_max_seq:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &input_max_seq_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_output_finish_seq;
+        break;
+      }
+
+      // optional int64 output_finish_seq = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_output_finish_seq:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &output_finish_seq_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(48)) goto parse_output_max_seq;
+        break;
+      }
+
+      // optional int64 output_max_seq = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_output_max_seq:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &output_max_seq_)));
+
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -9600,24 +9465,34 @@ void CrossCommInfoResponse::SerializeWithCachedSizes(
       1, this->notarys(i), output);
   }
 
-  // repeated string asset_input_contracts = 2;
-  for (int i = 0; i < this->asset_input_contracts_size(); i++) {
+  // optional string comm_unique = 2;
+  if (this->comm_unique().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_input_contracts(i).data(), this->asset_input_contracts(i).length(),
+      this->comm_unique().data(), this->comm_unique().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossCommInfoResponse.asset_input_contracts");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->asset_input_contracts(i), output);
+      "protocol.CrossCommInfoResponse.comm_unique");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->comm_unique(), output);
   }
 
-  // repeated string asset_output_contracts = 3;
-  for (int i = 0; i < this->asset_output_contracts_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_output_contracts(i).data(), this->asset_output_contracts(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossCommInfoResponse.asset_output_contracts");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->asset_output_contracts(i), output);
+  // optional int64 input_finish_seq = 3;
+  if (this->input_finish_seq() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->input_finish_seq(), output);
+  }
+
+  // optional int64 input_max_seq = 4;
+  if (this->input_max_seq() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(4, this->input_max_seq(), output);
+  }
+
+  // optional int64 output_finish_seq = 5;
+  if (this->output_finish_seq() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(5, this->output_finish_seq(), output);
+  }
+
+  // optional int64 output_max_seq = 6;
+  if (this->output_max_seq() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(6, this->output_max_seq(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:protocol.CrossCommInfoResponse)
@@ -9636,24 +9511,35 @@ void CrossCommInfoResponse::SerializeWithCachedSizes(
       WriteStringToArray(1, this->notarys(i), target);
   }
 
-  // repeated string asset_input_contracts = 2;
-  for (int i = 0; i < this->asset_input_contracts_size(); i++) {
+  // optional string comm_unique = 2;
+  if (this->comm_unique().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_input_contracts(i).data(), this->asset_input_contracts(i).length(),
+      this->comm_unique().data(), this->comm_unique().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossCommInfoResponse.asset_input_contracts");
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(2, this->asset_input_contracts(i), target);
+      "protocol.CrossCommInfoResponse.comm_unique");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->comm_unique(), target);
   }
 
-  // repeated string asset_output_contracts = 3;
-  for (int i = 0; i < this->asset_output_contracts_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->asset_output_contracts(i).data(), this->asset_output_contracts(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "protocol.CrossCommInfoResponse.asset_output_contracts");
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(3, this->asset_output_contracts(i), target);
+  // optional int64 input_finish_seq = 3;
+  if (this->input_finish_seq() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->input_finish_seq(), target);
+  }
+
+  // optional int64 input_max_seq = 4;
+  if (this->input_max_seq() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(4, this->input_max_seq(), target);
+  }
+
+  // optional int64 output_finish_seq = 5;
+  if (this->output_finish_seq() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(5, this->output_finish_seq(), target);
+  }
+
+  // optional int64 output_max_seq = 6;
+  if (this->output_max_seq() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(6, this->output_max_seq(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:protocol.CrossCommInfoResponse)
@@ -9664,25 +9550,46 @@ int CrossCommInfoResponse::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:protocol.CrossCommInfoResponse)
   int total_size = 0;
 
+  // optional string comm_unique = 2;
+  if (this->comm_unique().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->comm_unique());
+  }
+
+  // optional int64 input_finish_seq = 3;
+  if (this->input_finish_seq() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->input_finish_seq());
+  }
+
+  // optional int64 input_max_seq = 4;
+  if (this->input_max_seq() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->input_max_seq());
+  }
+
+  // optional int64 output_finish_seq = 5;
+  if (this->output_finish_seq() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->output_finish_seq());
+  }
+
+  // optional int64 output_max_seq = 6;
+  if (this->output_max_seq() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->output_max_seq());
+  }
+
   // repeated string notarys = 1;
   total_size += 1 * this->notarys_size();
   for (int i = 0; i < this->notarys_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
       this->notarys(i));
-  }
-
-  // repeated string asset_input_contracts = 2;
-  total_size += 1 * this->asset_input_contracts_size();
-  for (int i = 0; i < this->asset_input_contracts_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->asset_input_contracts(i));
-  }
-
-  // repeated string asset_output_contracts = 3;
-  total_size += 1 * this->asset_output_contracts_size();
-  for (int i = 0; i < this->asset_output_contracts_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->asset_output_contracts(i));
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -9714,8 +9621,22 @@ void CrossCommInfoResponse::MergeFrom(const CrossCommInfoResponse& from) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
   notarys_.MergeFrom(from.notarys_);
-  asset_input_contracts_.MergeFrom(from.asset_input_contracts_);
-  asset_output_contracts_.MergeFrom(from.asset_output_contracts_);
+  if (from.comm_unique().size() > 0) {
+
+    comm_unique_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.comm_unique_);
+  }
+  if (from.input_finish_seq() != 0) {
+    set_input_finish_seq(from.input_finish_seq());
+  }
+  if (from.input_max_seq() != 0) {
+    set_input_max_seq(from.input_max_seq());
+  }
+  if (from.output_finish_seq() != 0) {
+    set_output_finish_seq(from.output_finish_seq());
+  }
+  if (from.output_max_seq() != 0) {
+    set_output_max_seq(from.output_max_seq());
+  }
 }
 
 void CrossCommInfoResponse::CopyFrom(const ::google::protobuf::Message& from) {
@@ -9743,8 +9664,11 @@ void CrossCommInfoResponse::Swap(CrossCommInfoResponse* other) {
 }
 void CrossCommInfoResponse::InternalSwap(CrossCommInfoResponse* other) {
   notarys_.UnsafeArenaSwap(&other->notarys_);
-  asset_input_contracts_.UnsafeArenaSwap(&other->asset_input_contracts_);
-  asset_output_contracts_.UnsafeArenaSwap(&other->asset_output_contracts_);
+  comm_unique_.Swap(&other->comm_unique_);
+  std::swap(input_finish_seq_, other->input_finish_seq_);
+  std::swap(input_max_seq_, other->input_max_seq_);
+  std::swap(output_finish_seq_, other->output_finish_seq_);
+  std::swap(output_max_seq_, other->output_max_seq_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -9815,114 +9739,104 @@ CrossCommInfoResponse::mutable_notarys() {
   return &notarys_;
 }
 
-// repeated string asset_input_contracts = 2;
-int CrossCommInfoResponse::asset_input_contracts_size() const {
-  return asset_input_contracts_.size();
+// optional string comm_unique = 2;
+void CrossCommInfoResponse::clear_comm_unique() {
+  comm_unique_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-void CrossCommInfoResponse::clear_asset_input_contracts() {
-  asset_input_contracts_.Clear();
+ const ::std::string& CrossCommInfoResponse::comm_unique() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.comm_unique)
+  return comm_unique_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& CrossCommInfoResponse::asset_input_contracts(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_.Get(index);
+ void CrossCommInfoResponse::set_comm_unique(const ::std::string& value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.comm_unique)
 }
- ::std::string* CrossCommInfoResponse::mutable_asset_input_contracts(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_.Mutable(index);
+ void CrossCommInfoResponse::set_comm_unique(const char* value) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.comm_unique)
 }
- void CrossCommInfoResponse::set_asset_input_contracts(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.asset_input_contracts)
-  asset_input_contracts_.Mutable(index)->assign(value);
+ void CrossCommInfoResponse::set_comm_unique(const char* value, size_t size) {
+  
+  comm_unique_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.comm_unique)
 }
- void CrossCommInfoResponse::set_asset_input_contracts(int index, const char* value) {
-  asset_input_contracts_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.asset_input_contracts)
+ ::std::string* CrossCommInfoResponse::mutable_comm_unique() {
+  
+  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.comm_unique)
+  return comm_unique_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void CrossCommInfoResponse::set_asset_input_contracts(int index, const char* value, size_t size) {
-  asset_input_contracts_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.asset_input_contracts)
+ ::std::string* CrossCommInfoResponse::release_comm_unique() {
+  // @@protoc_insertion_point(field_release:protocol.CrossCommInfoResponse.comm_unique)
+  
+  return comm_unique_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* CrossCommInfoResponse::add_asset_input_contracts() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_.Add();
-}
- void CrossCommInfoResponse::add_asset_input_contracts(const ::std::string& value) {
-  asset_input_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.asset_input_contracts)
-}
- void CrossCommInfoResponse::add_asset_input_contracts(const char* value) {
-  asset_input_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.asset_input_contracts)
-}
- void CrossCommInfoResponse::add_asset_input_contracts(const char* value, size_t size) {
-  asset_input_contracts_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.asset_input_contracts)
-}
- const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossCommInfoResponse::asset_input_contracts() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return asset_input_contracts_;
-}
- ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossCommInfoResponse::mutable_asset_input_contracts() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.asset_input_contracts)
-  return &asset_input_contracts_;
+ void CrossCommInfoResponse::set_allocated_comm_unique(::std::string* comm_unique) {
+  if (comm_unique != NULL) {
+    
+  } else {
+    
+  }
+  comm_unique_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), comm_unique);
+  // @@protoc_insertion_point(field_set_allocated:protocol.CrossCommInfoResponse.comm_unique)
 }
 
-// repeated string asset_output_contracts = 3;
-int CrossCommInfoResponse::asset_output_contracts_size() const {
-  return asset_output_contracts_.size();
+// optional int64 input_finish_seq = 3;
+void CrossCommInfoResponse::clear_input_finish_seq() {
+  input_finish_seq_ = GOOGLE_LONGLONG(0);
 }
-void CrossCommInfoResponse::clear_asset_output_contracts() {
-  asset_output_contracts_.Clear();
+ ::google::protobuf::int64 CrossCommInfoResponse::input_finish_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.input_finish_seq)
+  return input_finish_seq_;
 }
- const ::std::string& CrossCommInfoResponse::asset_output_contracts(int index) const {
-  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_.Get(index);
+ void CrossCommInfoResponse::set_input_finish_seq(::google::protobuf::int64 value) {
+  
+  input_finish_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.input_finish_seq)
 }
- ::std::string* CrossCommInfoResponse::mutable_asset_output_contracts(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_.Mutable(index);
+
+// optional int64 input_max_seq = 4;
+void CrossCommInfoResponse::clear_input_max_seq() {
+  input_max_seq_ = GOOGLE_LONGLONG(0);
 }
- void CrossCommInfoResponse::set_asset_output_contracts(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.asset_output_contracts)
-  asset_output_contracts_.Mutable(index)->assign(value);
+ ::google::protobuf::int64 CrossCommInfoResponse::input_max_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.input_max_seq)
+  return input_max_seq_;
 }
- void CrossCommInfoResponse::set_asset_output_contracts(int index, const char* value) {
-  asset_output_contracts_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:protocol.CrossCommInfoResponse.asset_output_contracts)
+ void CrossCommInfoResponse::set_input_max_seq(::google::protobuf::int64 value) {
+  
+  input_max_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.input_max_seq)
 }
- void CrossCommInfoResponse::set_asset_output_contracts(int index, const char* value, size_t size) {
-  asset_output_contracts_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:protocol.CrossCommInfoResponse.asset_output_contracts)
+
+// optional int64 output_finish_seq = 5;
+void CrossCommInfoResponse::clear_output_finish_seq() {
+  output_finish_seq_ = GOOGLE_LONGLONG(0);
 }
- ::std::string* CrossCommInfoResponse::add_asset_output_contracts() {
-  // @@protoc_insertion_point(field_add_mutable:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_.Add();
+ ::google::protobuf::int64 CrossCommInfoResponse::output_finish_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.output_finish_seq)
+  return output_finish_seq_;
 }
- void CrossCommInfoResponse::add_asset_output_contracts(const ::std::string& value) {
-  asset_output_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:protocol.CrossCommInfoResponse.asset_output_contracts)
+ void CrossCommInfoResponse::set_output_finish_seq(::google::protobuf::int64 value) {
+  
+  output_finish_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.output_finish_seq)
 }
- void CrossCommInfoResponse::add_asset_output_contracts(const char* value) {
-  asset_output_contracts_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:protocol.CrossCommInfoResponse.asset_output_contracts)
+
+// optional int64 output_max_seq = 6;
+void CrossCommInfoResponse::clear_output_max_seq() {
+  output_max_seq_ = GOOGLE_LONGLONG(0);
 }
- void CrossCommInfoResponse::add_asset_output_contracts(const char* value, size_t size) {
-  asset_output_contracts_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:protocol.CrossCommInfoResponse.asset_output_contracts)
+ ::google::protobuf::int64 CrossCommInfoResponse::output_max_seq() const {
+  // @@protoc_insertion_point(field_get:protocol.CrossCommInfoResponse.output_max_seq)
+  return output_max_seq_;
 }
- const ::google::protobuf::RepeatedPtrField< ::std::string>&
-CrossCommInfoResponse::asset_output_contracts() const {
-  // @@protoc_insertion_point(field_list:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return asset_output_contracts_;
-}
- ::google::protobuf::RepeatedPtrField< ::std::string>*
-CrossCommInfoResponse::mutable_asset_output_contracts() {
-  // @@protoc_insertion_point(field_mutable_list:protocol.CrossCommInfoResponse.asset_output_contracts)
-  return &asset_output_contracts_;
+ void CrossCommInfoResponse::set_output_max_seq(::google::protobuf::int64 value) {
+  
+  output_max_seq_ = value;
+  // @@protoc_insertion_point(field_set:protocol.CrossCommInfoResponse.output_max_seq)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

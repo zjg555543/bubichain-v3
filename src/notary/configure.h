@@ -11,10 +11,9 @@ namespace bubi {
 		NotaryConfigure();
 		~NotaryConfigure();
 
-		std::string address_;
+		std::string notary_address_;
 		std::string private_key_;
 		utils::InetAddress listen_addr_;
-		bool enabled_;
 		bool Load(const Json::Value &value);
 	};
 
@@ -24,6 +23,7 @@ namespace bubi {
 		~PairChainConfigure(){}
 
 		std::string comm_unique_;
+		std::string comm_contract_;
 
 		bool Load(const Json::Value &value);
 	};

@@ -17,49 +17,97 @@ namespace bubi {
 		cross_proposal.ParseFromString(message.data());
 		protocol::CrossProposalResponse cross_proposal_response;
 
-		LOG_INFO("Recv Proposal request, proposal type:%d, id:(" FMT_I64 " ).", cross_proposal.type(), cross_proposal.proposal_id());
+		LOG_INFO("Recvd proposal for request, type:%d, id:(" FMT_I64 " ).", cross_proposal.type(), cross_proposal.proposal_id());
 
-		//find input proposal
+		//查找通讯合约
 		AccountFrm::pointer acc = NULL;
 		if (!Environment::AccountFromDB(comm_contract_, acc)) {
-			LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
+			LOG_INFO("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
 			return;
 		}
 
 		if (cross_proposal.type() == protocol::CROSS_PROPOSAL_INPUT){
-			//TODO 对接合约参数
-			protocol::KeyPair value_ptr;
-			cross_proposal.asset_contract();
+			int64_t id = cross_proposal.proposal_id();
+			if (id <= 0){
+				protocol::KeyPair value_ptr;
+				if (!acc->GetMetaData("CPC", value_ptr)){
+					//尚未找到合约相关信息
+					LOG_ERROR("Get metadata fail, key CPC not exist");
+					assert(false);
+					return;
+				}
 
-			if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
+				Json::Value data;
+				data.fromString(value_ptr.value());
+				id = data["newest_seq"].asInt64();
+			}
+
+			protocol::KeyPair value_ptr;
+			std::string key = utils::String::Format("deposit_" FMT_I64 "", id);
+			if (!acc->GetMetaData(key, value_ptr)){
 				//尚未找到合约相关信息
-				LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
+				LOG_INFO("Get metadata fail, key(%s) not exist", key);
 				return;
 			}
 
+			//设置提案信息
+			Json::Value data;
+			data.fromString(value_ptr.value());
 			protocol::CrossProposalInfo info;
-			//TODO 保存提案信息
-			info.set_asset_contract(cross_proposal.asset_contract());
+			info.set_type(cross_proposal.type());
+			info.set_proposal_id(id);
+			info.set_proposal_body(value_ptr.value());
+			info.set_status(data["status"].asInt());
+			const Json::Value &json_votes = data["votes"];
+			for (size_t i = 0; i < json_votes.size(); i++) {
+				*info.add_confirmed_notarys() = json_votes[i].asString();
+			}
 
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
-		else if (cross_proposal.type() == protocol::CROSS_PROPOSAL_INPUT){
-			//TODO 查找output消息
+		else if (cross_proposal.type() == protocol::CROSS_PROPOSAL_OUTPUT){
+			int64_t id = cross_proposal.proposal_id();
+			if (id <= 0){
+				protocol::KeyPair value_ptr;
+				if (!acc->GetMetaData("cross_chain", value_ptr)){
+					//尚未找到合约相关信息
+					LOG_ERROR("Get metadata fail, key CPC not exist");
+					assert(false);
+					return;
+				}
+
+				Json::Value data;
+				data.fromString(value_ptr.value());
+				id = data["init_seq"].asInt64();
+			}
+
 			protocol::KeyPair value_ptr;
-			cross_proposal.asset_contract();
-			if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
+			std::string key = utils::String::Format("proposal_" FMT_I64 "", id);
+			if (!acc->GetMetaData(key, value_ptr)){
 				//尚未找到合约相关信息
+				LOG_INFO("Get metadata fail, key(%s) not exist", key);
 				return;
 			}
 
+			//设置提案信息
+			Json::Value data;
+			data.fromString(value_ptr.value());
 			protocol::CrossProposalInfo info;
-			//TODO 保存提案信息
-			info.set_asset_contract(cross_proposal.asset_contract());
+			info.set_type(cross_proposal.type());
+			info.set_proposal_id(id);
+			info.set_proposal_body(value_ptr.value());
+			info.set_status(1); //DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG
+			const Json::Value &json_votes = data["votes"];
+			for (size_t i = 0; i < json_votes.size(); i++) {
+				std::string vote = json_votes[i].asString();
+				*info.add_confirmed_notarys() = vote;
+			}
 
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
 		else{
 			LOG_ERROR("Parse proposal error!");
+			assert(false);
 			return;
 		}
 
@@ -68,7 +116,7 @@ namespace bubi {
 			return;
 		}
 
-		channel_->SendResponse("", message, cross_proposal_response.SerializeAsString());
+		channel_->SendResponse(static_notary_unique_, message, cross_proposal_response.SerializeAsString());
 		return;
 	}
 
@@ -77,36 +125,38 @@ namespace bubi {
 		comm_info.ParseFromString(message.data());
 		protocol::CrossCommInfoResponse response;
 
-		//Find the notary list for the contract
 		AccountFrm::pointer acc = NULL;
 		if (!Environment::AccountFromDB(comm_contract_, acc)) {
 			LOG_ERROR("GetAccount fail, account(%s) not exist", comm_contract_.c_str());
 			return;
 		}
 
-		protocol::KeyPair value_ptr;
-		if (!acc->GetMetaData("xxxxxxxxxx", value_ptr)){
-			//No contract information has been found
-			LOG_ERROR("GetAccount fail, xxxxxxxxxx not exist");
-			return;
+		//查询合约信息的input信息
+		protocol::KeyPair cpc;
+		if (acc->GetMetaData("CPC", cpc)){
+			Json::Value data;
+			data.fromString(cpc.value());
+			response.set_comm_unique(data["chain_id"].asString());
+			response.set_input_finish_seq(data["finish_seq"].asInt64());
+			response.set_input_max_seq(data["newest_seq"].asInt64());
+		}
+		
+		//查询合约信息的output信息
+		protocol::KeyPair comm_unique;
+		if (acc->GetMetaData("chain_id", comm_unique)){
+			response.set_comm_unique(comm_unique.value());
 		}
 
-		//TODO 读取公证人列表
-		for (size_t i = 0; i <= 1; i++){
-			*response.add_notarys() = "123456";
+		protocol::KeyPair cross_chain;
+		if (acc->GetMetaData("cross_chain", cross_chain)){
+			Json::Value data;
+			data.fromString(cross_chain.value());
+			response.set_comm_unique(comm_unique.value());
+			response.set_output_finish_seq(data["current_seq"].asInt64());
+			response.set_output_max_seq(data["init_seq"].asInt64());
 		}
 
-		//TODO 读取输入资产的业务地址
-		for (size_t i = 0; i <= 1; i++){
-			*response.add_asset_input_contracts() = "123456";
-		}
-
-		//TODO 读取输出资产的业务地址
-		for (size_t i = 0; i <= 1; i++){
-			*response.add_asset_output_contracts() = "123456";
-		}
-
-		channel_->SendResponse("", message, response.SerializeAsString());
+		channel_->SendResponse(static_notary_unique_, message, response.SerializeAsString());
 	}
 
 	void MessageHandler::OnHandleAccountNonce(const protocol::WsMessage &message){
@@ -122,7 +172,7 @@ namespace bubi {
 		}
 
 		response.set_nonce(acc->GetAccountNonce());
-		channel_->SendResponse("", message, response.SerializeAsString());
+		channel_->SendResponse(static_notary_unique_, message, response.SerializeAsString());
 	}
 
 	void MessageHandler::OnHandleDoTransaction(const protocol::WsMessage &message){
@@ -157,18 +207,11 @@ namespace bubi {
 		response.set_error_code(result.code());
 		response.set_error_desc(result.desc());
 		response.set_hash(trans.hash());
-		channel_->SendResponse("", message, response.SerializeAsString());
-	}
-
-	CrossChainMgr::CrossChainMgr(){
-	}
-
-	CrossChainMgr::~CrossChainMgr(){
+		channel_->SendResponse(static_notary_unique_, message, response.SerializeAsString());
 	}
 
 	bool CrossChainMgr::Initialize(){
 		CrossConfigure &config = Configure::Instance().cross_configure_;
-
 		if (!config.enabled_){
 			LOG_TRACE("Failed to init cross chain mgr, configuration file is not allowed");
 			return true;
@@ -176,7 +219,6 @@ namespace bubi {
 
 		ChannelParameter param;
 		param.inbound_ = false;
-		param.notary_addr_ = config.notary_addr_;
 		param.comm_unique_ = config.comm_unique_;
 
 		handler_ = new MessageHandler(&channel_, config.comm_contract_);
@@ -199,20 +241,27 @@ namespace bubi {
 	}
 
 	void CrossChainMgr::HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message){
-		if (protocol::CROSS_MSGTYPE_PROPOSAL == message.type() && message.request()){
+		assert(static_notary_unique_ == comm_unique);
+		if (!message.request()){
+			return;
+		}
+
+		switch (message.type())
+		{
+		case protocol::CROSS_MSGTYPE_PROPOSAL:
 			handler_->OnHandleProposal(message);
-		}
-
-		if (protocol::CROSS_MSGTYPE_COMM_INFO == message.type() && message.request()){
+			break;
+		case protocol::CROSS_MSGTYPE_COMM_INFO:
 			handler_->OnHandleCommInfo(message);
-		}
-
-		if (protocol::CROSS_MSGTYPE_ACCOUNT_NONCE == message.type() && message.request()){
+			break;
+		case protocol::CROSS_MSGTYPE_ACCOUNT_NONCE:
 			handler_->OnHandleAccountNonce(message);
-		}
-
-		if (protocol::CROSS_MSGTYPE_DO_TRANSACTION == message.type() && message.request()){
+			break;
+		case protocol::CROSS_MSGTYPE_DO_TRANSACTION:
 			handler_->OnHandleDoTransaction(message);
+			break;
+		default:
+			break;
 		}
 
 		return;

@@ -8,53 +8,46 @@
 
 namespace bubi {
 	//save and control self chain
+	typedef enum ExecuteState{
+		EXECUTE_STATE_INITIAL = 1,
+		EXECUTE_STATE_PROCESSING = 2,
+		EXECUTE_STATE_FAIL = 3,
+		EXECUTE_STATE_SUCCESS = 4
+	};
+
 	class ChainObj{
 	public:
-		ChainObj(MessageChannel *channel, const std::string &comm_unique, const std::string &notary_address, const std::string &private_key);
+		ChainObj(MessageChannel *channel, const std::string &comm_unique, const std::string &notary_address, const std::string &private_key, const std::string &comm_contract);
 		~ChainObj();
 
 		typedef std::map<int64_t, protocol::CrossProposalInfo> ProposalInfoMap;
 		typedef std::vector<protocol::CrossProposalInfo> ProposalInfoVector;
 
-		typedef struct tagProposal{
+		typedef struct tagProposalRecord{
 			ProposalInfoMap proposal_info_map;
 			int64_t recv_max_seq;
 			int64_t affirm_max_seq;
-			utils::StringVector asset_vector;
 
 			void Reset(){
 				proposal_info_map.clear();
 				recv_max_seq = -1;
 				affirm_max_seq = -1;
 			}
-		}Proposal;
+		}ProposalRecord;
 
-		typedef std::map<std::string, Proposal> ProposalMap;
-
-		typedef struct tagChainInfo
-		{
-			int64_t nonce;
-			ProposalMap output_map;
-			ProposalMap input_map;
-			int64_t error_tx_times;
-			utils::StringList tx_history;
-			std::string notary_list[100];
-			
-		public:
-			void Reset() {
-				output_map.clear();
-				input_map.clear();
-				error_tx_times = -1;
-				tx_history.clear();
-				memset(&notary_list, 0, sizeof(notary_list));
-				nonce = -1;
-			}
-		}ChainInfo;
+		void ResetChainInfo() {
+			output_record_.Reset();
+			input_record_.Reset();
+			error_tx_times_ = -1;
+			tx_history_.clear();
+			memset(&notary_list_, 0, sizeof(notary_list_));
+		}
 
 		void SetPeerChain(std::shared_ptr<ChainObj> peer_chain);
-		void OnTimer(int64_t current_time);
+		void OnSlowTimer(int64_t current_time);
+		void OnFastTimer(int64_t current_time);
 		void OnHandleMessage(const protocol::WsMessage &message);
-		ChainInfo GetChainInfo();
+		bool GetProposalInfo(protocol::CROSS_PROPOSAL_TYPE type, int64_t index, protocol::CrossProposalInfo &info);
 
 	private:
 		//message handle
@@ -66,20 +59,31 @@ namespace bubi {
 		void HandleProposalNotice(const protocol::CrossProposalInfo &proposal_info);
 		
 		//内部函数处理
-		void RequestAndSort(protocol::CROSS_PROPOSAL_TYPE type);
+		void RequestCommInfo();
+		void RequestAndUpdate(protocol::CROSS_PROPOSAL_TYPE type);
 		void CheckTxError();
 		void Vote(protocol::CROSS_PROPOSAL_TYPE type);
 		void SubmitTransaction();
 
+		ProposalRecord* GetProposalRecord(protocol::CROSS_PROPOSAL_TYPE type); //使用的时候，需要在外部加锁
+
 	private:
-		ChainInfo chain_info_;
 		utils::Mutex lock_;
 		std::shared_ptr<ChainObj> peer_chain_;
 		MessageChannel *channel_;
 		std::string comm_unique_;
+		std::string comm_contract_;
 		std::string notary_address_;
 		std::string private_key_;
+		int64_t nonce_;
 		ProposalInfoVector proposal_info_vector_;
+
+		//Chain Info
+		ProposalRecord output_record_;
+		ProposalRecord input_record_;
+		int64_t error_tx_times_;
+		utils::StringList tx_history_;
+		std::string notary_list_[100];
 	};
 
 	typedef std::map<std::string, std::shared_ptr<ChainObj>> ChainObjMap;
@@ -87,8 +91,8 @@ namespace bubi {
 	class NotaryMgr : public utils::Singleton<NotaryMgr>, public TimerNotify, public IMessageHandler{
 		friend class utils::Singleton<bubi::NotaryMgr>;
 	public:
-		NotaryMgr();
-		~NotaryMgr();
+		NotaryMgr(){}
+		~NotaryMgr(){}
 
 		bool Initialize();
 		bool Exit();
@@ -102,6 +106,8 @@ namespace bubi {
 	private:
 		ChainObjMap chain_obj_map_;
 		MessageChannel channel_;
+		int64_t last_update_time_;
+		int64_t update_times_;
 	};
 }
 

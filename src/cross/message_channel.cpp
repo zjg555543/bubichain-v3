@@ -40,7 +40,7 @@ namespace bubi {
 		return SendRequest(protocol::CROSS_MSGTYPE_HELLO, hello.SerializeAsString(), ec);
 	}
 
-	std::string MessageChannelPeer::GetChainUnique() const{
+	std::string MessageChannelPeer::GePeerUnique() const{
 		return comm_unique_;
 	}
 
@@ -57,10 +57,16 @@ namespace bubi {
 		last_uptate_time_ = utils::Timestamp::HighResolution();
 
 		request_methods_[protocol::CROSS_MSGTYPE_HELLO] = std::bind(&MessageChannel::OnHandleHello, this, std::placeholders::_1, std::placeholders::_2);
-		request_methods_[protocol::CROSS_MSGTYPE_PROPOSAL] = std::bind(&MessageChannel::OnHandleProposal, this, std::placeholders::_1, std::placeholders::_2);
+		request_methods_[protocol::CROSS_MSGTYPE_PROPOSAL] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
+		request_methods_[protocol::CROSS_MSGTYPE_COMM_INFO] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
+		request_methods_[protocol::CROSS_MSGTYPE_ACCOUNT_NONCE] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
+		request_methods_[protocol::CROSS_MSGTYPE_DO_TRANSACTION] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
 
 		response_methods_[protocol::CROSS_MSGTYPE_HELLO] = std::bind(&MessageChannel::OnHandleHelloResponse, this, std::placeholders::_1, std::placeholders::_2);
-		response_methods_[protocol::CROSS_MSGTYPE_PROPOSAL] = std::bind(&MessageChannel::OnHandleProposalResponse, this, std::placeholders::_1, std::placeholders::_2);
+		response_methods_[protocol::CROSS_MSGTYPE_PROPOSAL] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
+		response_methods_[protocol::CROSS_MSGTYPE_COMM_INFO] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
+		response_methods_[protocol::CROSS_MSGTYPE_ACCOUNT_NONCE] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
+		response_methods_[protocol::CROSS_MSGTYPE_DO_TRANSACTION] = std::bind(&MessageChannel::OnHandleApplyMessage, this, std::placeholders::_1, std::placeholders::_2);
 		
 		thread_ptr_ = NULL;
 	}
@@ -75,12 +81,12 @@ namespace bubi {
 		param_ = param;
 
 		thread_ptr_ = new utils::Thread(this);
-		if (!thread_ptr_->Start("messageChannel")) {
+		if (!thread_ptr_->Start("MessageChannel")) {
 			return false;
 		}
 
 		TimerNotify::RegisterModule(this);
-		LOG_INFO("Initialized message channel server successfully");
+		LOG_INFO("Initialized message channel successfully");
 		return true;
 	}
 
@@ -91,13 +97,13 @@ namespace bubi {
 	}
 
 	void MessageChannel::Run(utils::Thread *thread) {
-		if (!param_.inbound_){
-			Start(param_.notary_addr_);
-		}
-		else{
+		if (param_.inbound_){
 			utils::InetAddress ip;
 			Start(ip);
+			return;
 		}
+		
+		Start(param_.listen_addr_);
 	}
 
 	bool MessageChannel::OnHandleHello(const protocol::WsMessage &message, int64_t conn_id){
@@ -109,23 +115,20 @@ namespace bubi {
 
 		utils::MutexGuard guard_(conns_list_lock_);
 		Connection *conn = GetConnection(conn_id);
-		do{
-			if (!conn) {
-				LOG_ERROR("MessageChannelPeer conn pointer is empty");
-				return false;
-			}
+		if (!conn) {
+			LOG_ERROR("MessageChannelPeer conn pointer is empty");
+			return false;
+		}
 
-			MessageChannelPeer *peer = (MessageChannelPeer *)conn;
-			peer->SetPeerInfo(hello);
-			hello_response.set_error_code(protocol::ERRCODE_SUCCESS);
-			LOG_INFO("Received a hello message, peer(%s) is active", conn->GetPeerAddress().ToIpPort().c_str());
-			peer->SetActiveTime(utils::Timestamp::HighResolution());
+		MessageChannelPeer *peer = (MessageChannelPeer *)conn;
+		peer->SetPeerInfo(hello);
+		hello_response.set_error_code(protocol::ERRCODE_SUCCESS);
+		LOG_INFO("Received a hello message, peer(%s) is active", conn->GetPeerAddress().ToIpPort().c_str());
+		peer->SetActiveTime(utils::Timestamp::HighResolution());
 
-			if (peer->InBound()) {
-				peer->SendHello(param_.comm_unique_, last_ec_);
-			}
-
-		} while (false);
+		if (peer->InBound()) {
+			peer->SendHello(param_.comm_unique_, last_ec_);
+		}
 
 		conn->SendResponse(message, hello_response.SerializeAsString(), ignore_ec);
 		return hello_response.error_code() == 0;
@@ -149,32 +152,23 @@ namespace bubi {
 		return true;
 	}
 
-	bool MessageChannel::OnHandleProposal(const protocol::WsMessage &message, int64_t conn_id){
-		std::string comm_unique = GetChainUnique(conn_id);
+	bool MessageChannel::OnHandleApplyMessage(const protocol::WsMessage &message, int64_t conn_id){
+		std::string comm_unique = GePeerUnique(conn_id);
 		if (comm_unique.empty()){
 			LOG_ERROR("Failed to handle proposal, chain unique is empty.");
 			return false;
 		}
 
-		Notify(comm_unique, message);
-		return true;
-	}
-
-	bool MessageChannel::OnHandleProposalResponse(const protocol::WsMessage &message, int64_t conn_id){
-		std::string comm_unique = GetChainUnique(conn_id);
-		if (comm_unique.empty()){
-			LOG_ERROR("Failed to handle proposal, chain unique is empty.");
-			return false;
-		}
 		Notify(comm_unique, message);
 		return true;
 	}
 
 	void MessageChannel::SendRequest(const std::string &comm_unique, int64_t type, const std::string &data) {
+		assert(!comm_unique.empty());
 		utils::MutexGuard guard(conns_list_lock_);
 		for (auto iter = connections_.begin(); iter != connections_.end(); iter++) {
 			MessageChannelPeer *messageChannel = (MessageChannelPeer *)iter->second;
-			if (!comm_unique.empty() && messageChannel->GetChainUnique() != comm_unique){
+			if (messageChannel->GePeerUnique() != comm_unique){
 				continue;
 			}
 			std::error_code ec;
@@ -183,10 +177,11 @@ namespace bubi {
 	}
 
 	void MessageChannel::SendResponse(const std::string &comm_unique, const protocol::WsMessage &req_message, const std::string &data){
+		assert(!comm_unique.empty());
 		utils::MutexGuard guard(conns_list_lock_);
 		for (auto iter = connections_.begin(); iter != connections_.end(); iter++) {
 			MessageChannelPeer *messageChannel = (MessageChannelPeer *)iter->second;
-			if (!comm_unique.empty() && messageChannel->GetChainUnique() != comm_unique){
+			if (messageChannel->GePeerUnique() != comm_unique){
 				continue;
 			}
 			std::error_code ec;
@@ -206,7 +201,7 @@ namespace bubi {
 
 	void MessageChannel::OnDisconnect(Connection *conn) {
 		MessageChannelPeer *peer = (MessageChannelPeer *)conn;
-		LOG_INFO("The MessageChannelPeer has been disconnected, node address is (%s)", peer->GetPeerAddress().ToIpPort().c_str());
+		LOG_ERROR("The MessageChannelPeer has been disconnected, node address is (%s)", peer->GetPeerAddress().ToIpPort().c_str());
 	}
 
 	Connection *MessageChannel::CreateConnectObject(server *server_h, client *client_,
@@ -216,23 +211,23 @@ namespace bubi {
 	}
 
 	void MessageChannel::ProcessMessageChannelDisconnect(){
+		//服务端不用处理
 		if (param_.inbound_){
 			return;
 		}
 
+		//仅处理客户端的连接异常
 		utils::MutexGuard guard(conns_list_lock_);
-		ConnectionMap::const_iterator iter;
 		utils::StringList ip_port_list;
-		iter = connections_.begin();
+		auto iter = connections_.begin();
 		while (iter != connections_.end()) {
 			ip_port_list.push_back(iter->second->GetPeerAddress().ToIpPort().c_str());
 			iter++;
 		}
-		std::string address = param_.notary_addr_.ToIpPort().c_str();
-		utils::StringList::const_iterator itr;
-		itr = std::find(ip_port_list.begin(), ip_port_list.end(), address.c_str());
+		std::string target_address = param_.listen_addr_.ToIpPort().c_str();
+		auto itr = std::find(ip_port_list.begin(), ip_port_list.end(), target_address.c_str());
 		if (itr == ip_port_list.end()){
-			std::string uri = utils::String::Format("%s://%s", ssl_parameter_.enable_ ? "wss" : "ws", address.c_str());
+			std::string uri = utils::String::Format("%s://%s", ssl_parameter_.enable_ ? "wss" : "ws", target_address.c_str());
 			Connect(uri);
 		}
 	}
@@ -251,8 +246,7 @@ namespace bubi {
 
 	void MessageChannel::UnRegister(IMessageHandler *handler, int64_t msg_type){
 		utils::MutexGuard guard(listener_map_lock_);
-
-		std::map<int64_t, IMessageHandler*>::iterator itr = listener_map_.find(msg_type);
+		auto itr = listener_map_.find(msg_type);
 		if (itr != listener_map_.end()){
 			listener_map_.erase(itr);
 		}
@@ -260,13 +254,13 @@ namespace bubi {
 
 	void MessageChannel::Notify(const std::string &comm_unique, const protocol::WsMessage &message){
 		utils::MutexGuard guard(listener_map_lock_);
-		std::map<int64_t, IMessageHandler*>::iterator itr = listener_map_.find(message.type());
+		auto itr = listener_map_.find(message.type());
 		if (itr != listener_map_.end()){
 			itr->second->HandleMessage(comm_unique, message);
 		}
 	}
 
-	std::string MessageChannel::GetChainUnique(int64_t conn_id){
+	std::string MessageChannel::GePeerUnique(int64_t conn_id){
 		Connection *conn = GetConnection(conn_id);
 		if (!conn) {
 			LOG_ERROR("MessageChannelPeer conn pointer is empty");
@@ -274,7 +268,7 @@ namespace bubi {
 		}
 
 		MessageChannelPeer *peer = (MessageChannelPeer *)conn;
-		return peer->GetChainUnique();
+		return peer->GePeerUnique();
 	}
 }
 
