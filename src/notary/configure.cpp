@@ -19,7 +19,7 @@ namespace bubi {
 		Configure::GetValue(value, "private_key", private_key_);
 
 		std::string address;
-		Configure::GetValue(value, "notary_addr", address);
+		Configure::GetValue(value, "listen_addr", address);
 		listen_addr_ = utils::InetAddress(address);
 
 		return true;

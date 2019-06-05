@@ -23,6 +23,16 @@ namespace bubi {
 	}
 
 	void ChainObj::OnSlowTimer(int64_t current_time){
+		//vote output
+		Vote(protocol::CROSS_PROPOSAL_OUTPUT);
+
+		//vote input
+		Vote(protocol::CROSS_PROPOSAL_INPUT);
+
+		SubmitTransaction();
+	}
+
+	void ChainObj::OnFastTimer(int64_t current_time){
 		//请求通信合约的信息
 		RequestCommInfo();
 
@@ -34,16 +44,6 @@ namespace bubi {
 
 		//Check the number of tx errors
 		CheckTxError();
-	}
-
-	void ChainObj::OnFastTimer(int64_t current_time){
-		//vote output
-		Vote(protocol::CROSS_PROPOSAL_OUTPUT);
-
-		//vote input
-		Vote(protocol::CROSS_PROPOSAL_INPUT);
-
-		SubmitTransaction();
 	}
 
 	void ChainObj::OnHandleMessage(const protocol::WsMessage &message){
@@ -233,7 +233,7 @@ namespace bubi {
 		int64_t next_proposal_index = record->affirm_max_seq + 1;
 		if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
 			//不存在在直接返回
-			LOG_INFO("No proposl");
+			LOG_INFO("Chain %s,no proposl from peer type :%d", comm_unique_.c_str(), get_peer_type);
 			return;
 		}
 
@@ -352,7 +352,7 @@ namespace bubi {
 		itr++;
 		const PairChainConfigure &config_b = itr->second;
 		std::shared_ptr<ChainObj> a = std::make_shared<ChainObj>(&channel_, config_a.comm_unique_, config.notary_address_, config.private_key_, config_a.comm_contract_);
-		std::shared_ptr<ChainObj> b = std::make_shared<ChainObj>(&channel_, config_b.comm_unique_, config.notary_address_, config.private_key_, config_a.comm_contract_);
+		std::shared_ptr<ChainObj> b = std::make_shared<ChainObj>(&channel_, config_b.comm_unique_, config.notary_address_, config.private_key_, config_b.comm_contract_);
 
 		chain_obj_map_[config_a.comm_unique_] = a;
 		chain_obj_map_[config_b.comm_unique_] = b;

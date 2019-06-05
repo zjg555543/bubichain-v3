@@ -220,6 +220,7 @@ namespace bubi {
 		ChannelParameter param;
 		param.inbound_ = false;
 		param.comm_unique_ = config.comm_unique_;
+		param.target_addr_ = config.target_addr_;
 
 		handler_ = new MessageHandler(&channel_, config.comm_contract_);
 		channel_.Initialize(param);

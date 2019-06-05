@@ -8,15 +8,16 @@
 		"expire_days": 10
 	},
 	"notary": {
-		"address":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-		"private_key":"pppppppppppppppppppppppppppppppp"
-		"listen_addr": "127.0.0.1:30000",
-		"enabled" : true
+		"notary_address":"a001c3bbfce78bba8bfcb37113a84e95a3fd441a5622e3",
+		"private_key":"c0018d7939ec4085db3db6a2c698a6b30345301d81b6b53a700f4865a8c51f479149ee",
+		"listen_addr": "127.0.0.1:30000"
 	},
 	"pair_chain_1": {
-		"chain_unique": "CHAIN_20190528_A"
+		"comm_unique": "CHAIN_20190528_A",
+		"comm_contract":"a00200c3a5b881e0c729ae167fa43cf7778eb18eda3754"
 	},
 	"pair_chain_2": {
-		"chain_unique": "CHAIN_20190528_B"
+		"comm_unique": "CHAIN_20190528_B",
+		"comm_contract":"a00136bc18029f74548c1a1b9ae8a2449a43d93ce19184"
 	}
 }

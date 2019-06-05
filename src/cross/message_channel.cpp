@@ -99,11 +99,11 @@ namespace bubi {
 	void MessageChannel::Run(utils::Thread *thread) {
 		if (param_.inbound_){
 			utils::InetAddress ip;
-			Start(ip);
+			Start(param_.listen_addr_);
 			return;
 		}
 		
-		Start(param_.listen_addr_);
+		Start(param_.target_addr_);
 	}
 
 	bool MessageChannel::OnHandleHello(const protocol::WsMessage &message, int64_t conn_id){
@@ -224,7 +224,7 @@ namespace bubi {
 			ip_port_list.push_back(iter->second->GetPeerAddress().ToIpPort().c_str());
 			iter++;
 		}
-		std::string target_address = param_.listen_addr_.ToIpPort().c_str();
+		std::string target_address = param_.target_addr_.ToIpPort().c_str();
 		auto itr = std::find(ip_port_list.begin(), ip_port_list.end(), target_address.c_str());
 		if (itr == ip_port_list.end()){
 			std::string uri = utils::String::Format("%s://%s", ssl_parameter_.enable_ ? "wss" : "ws", target_address.c_str());

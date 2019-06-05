@@ -25,6 +25,7 @@ namespace bubi {
 
 		std::string comm_unique_;
 		utils::InetAddress listen_addr_;
+		utils::InetAddress target_addr_;
 		bool inbound_;
 	};
 

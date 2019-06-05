@@ -201,8 +201,8 @@ namespace bubi {
 		Configure::GetValue(value, "enabled", enabled_);
 
 		std::string address;
-		Configure::GetValue(value, "notary_addr", address);
-		notary_addr_ = utils::InetAddress(address);
+		Configure::GetValue(value, "target_addr", address);
+		target_addr_ = utils::InetAddress(address);
 
 		return true;
 	}

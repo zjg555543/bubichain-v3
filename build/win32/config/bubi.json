@@ -5,15 +5,15 @@
 		"keyvalue_path": "data/keyvalue.db"
 	},
 	"monitor": {
-		"id": "123123123123123",
-		"center": "127.0.0.1:19336",
+		"id": "10000",
+		"center": "127.0.0.1:10000",
 		"disk_path": "/,/mnt/",
-		"enabled" : true
+		"enabled" : false
 	},
 	"p2p": {
-		"network_id": 12332,
-		"address": "a0021ead9c8f4e30200aed9d3bfe89f7cf8e2300133d09",
-		"node_private_key": "8983f237c4d9c34f29da45d56fa5dc7ffc2eab8d69897bd31d0a5eaa93a7b2f90a3d243e3ee7d743f48deb20e39134b74b761e37fa325522ae54a318cf5e2ba1194a2ed329aeb551084f86ca01536240",
+		"network_id": 10000,
+		"address": "a0010eb61f994a67a8b6b915828407073dd61cc60d43c7",  //c001d4b197bcee4a2c5cbafb47c7c1b8adbfba9c62d92ec07fff5371d6a36e962f909f
+		"node_private_key": "594cfbf95dc043de90a81e1f0f3985e8a338435908dce62f540827131239f4b28c90da044676f10f1aa2cab704442ba097a8b312e8e3ecd413dbc3f0098062ea2cc464437274da1de6d12f88e059c9c6",
 		"ssl": {
 			"chain_file": "config/node_bubi.crt",
 			"private_key_file": "config/node_bubi.pem",
@@ -23,20 +23,21 @@
 		},
 		"consensus_network": {
 			"heartbeat_interval": 60,
-			"listen_port": 6333,
+			"listen_port": 9333,
 			"target_peer_connection": 50,
-			"known_peers": ["127.0.0.1:6334"]
+			"known_peers": ["127.0.0.1:10001"]
 		}
 	},
 	"webserver": {
-		"listen_addresses": "0.0.0.0:29333",
-		"remote_authorized": false
+		"listen_addresses": "0.0.0.0:10002",
+		"remote_authorized": false,
+		"validator_conf_key": "bubi2021"
 	},
 	"wsserver": {
-		"listen_address": "0.0.0.0:7053"
+		"listen_address": "0.0.0.0:10004"
 	},
 	"ledger": {
-		"genesis_account": "a0025e6de5a793da4b5b00715b7774916c06e9a72b7c18",//privatekey:c00205ce8de2892b26c3b95caf3404831d6e913c655d85b517f076380ebfcbef47ff8f
+		"genesis_account": "a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec",    //c001ab8accaa32d24e36cbab6fbc2abce67f59c65f3dcff87c7ec58fb7b8bc710ad4b8
 		"hash_type": 0, //0: SHA2561: SM3"
 		"max_trans_per_ledger": 1000,
 		"max_ledger_per_message": 5,
@@ -47,26 +48,24 @@
 	"logger": {
 		"path": "log/bubi.log",
 		"dest": "FILE|STDOUT|STDERR",
-		"level": "TRACE|INFO|WARNING|ERROR|FATAL",
+		"level": "INFO|WARNING|ERROR|FATAL",
 		"time_capacity": 1,
 		"size_capacity": 10,
 		"expire_days": 10
 	},
 	"validation": {
 		"type": "pbft",
-		"address": "a0024740b934765287b16113adc6bb285d72c124d9e3c1",
-		"node_private_key": "44b9aad4310804fd528d1e73da1d093abc09b5cbbaa85ff6e60e51d408a856565efd9c1f9f899c125c11d8c021b3935c935c3078cf739a765e0b2c6c9b9156feaaa4984fd2811f4eb07610029f55c44d",
+		"address": "a00146b7a7ac536da8743772e83199566b13f7ad25f7a2",   //c0017e9fd7ae1fee1fc7b57cacf55880fa5f1e05b47ea121e9878b89aeea44b8bcf510
+		"node_private_key": "81c3ee1b4f6d9a9f9dfd4f7523c53563ffe0a698b09bafafb2969f46443290dd18e9a9ad78ba40851f595cae6f13c33ae35334f812594f5dc48d492379ccbd4d28c1818b331238ad91da1c12ac8b068e",
 		"close_interval": 3,
 		"validators": [
-			"a0024740b934765287b16113adc6bb285d72c124d9e3c1",
-			"a0019b7ef40a5f3b2aca4ed1919f45e96061c3f96c7f59"
-
+			"a00146b7a7ac536da8743772e83199566b13f7ad25f7a2"
 		]
 	},
 	"cross": {
 		"comm_unique": "CHAIN_20190528_A",
-		"comm_contract": "a0024740b934765287b16113adc6bb285d72c124d9e3c1",
-		"notary_addr": "127.0.0.1:30000",
+		"comm_contract": "a00200c3a5b881e0c729ae167fa43cf7778eb18eda3754",
+		"target_addr": "127.0.0.1:30000",
 		"enabled" : true
 	}
 }
