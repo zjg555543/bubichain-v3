@@ -25,12 +25,12 @@ namespace bubi {
 
 		typedef struct tagProposalRecord{
 			ProposalInfoMap proposal_info_map;
-			int64_t recv_max_seq;
+			int64_t max_seq;
 			int64_t affirm_max_seq;
 
 			void Reset(){
 				proposal_info_map.clear();
-				recv_max_seq = -1;
+				max_seq = -1;
 				affirm_max_seq = -1;
 			}
 		}ProposalRecord;

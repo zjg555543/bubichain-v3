@@ -120,10 +120,10 @@ namespace bubi {
 
 		//保存最大确认序号和最大序号
 		input_record_.affirm_max_seq = MAX(input_record_.affirm_max_seq, msg.input_finish_seq());
-		input_record_.recv_max_seq = MAX(input_record_.recv_max_seq, msg.input_max_seq());
+		input_record_.max_seq = MAX(input_record_.max_seq, msg.input_max_seq());
 
 		output_record_.affirm_max_seq = MAX(output_record_.affirm_max_seq, msg.output_finish_seq());
-		output_record_.recv_max_seq = MAX(output_record_.recv_max_seq, msg.output_max_seq());
+		output_record_.max_seq = MAX(output_record_.max_seq, msg.output_max_seq());
 	}
 
 	void ChainObj::OnHandleAccountNonceResponse(const protocol::WsMessage &message){
@@ -161,7 +161,7 @@ namespace bubi {
 		assert(proposal_info.proposal_id() >= 0);
 
 		proposal->proposal_info_map[proposal_info.proposal_id()] = proposal_info;
-		proposal->recv_max_seq = MAX(proposal_info.proposal_id(), proposal->recv_max_seq);
+		proposal->max_seq = MAX(proposal_info.proposal_id(), proposal->max_seq);
 		if ((proposal_info.status() == EXECUTE_STATE_SUCCESS) || (proposal_info.status() == EXECUTE_STATE_FAIL)){
 			proposal->affirm_max_seq = MAX(proposal_info.proposal_id(), proposal->affirm_max_seq);
 		}
@@ -194,7 +194,7 @@ namespace bubi {
 		}
 		
 		//请求从最后确认的一个提案后的缺失的提案开始，每次最大更新10个
-		int64_t max_nums = MIN(10, (record->recv_max_seq - record->affirm_max_seq));
+		int64_t max_nums = MIN(10, (record->max_seq - record->affirm_max_seq));
 		if (max_nums <= 0){
 			max_nums = 1;
 		}

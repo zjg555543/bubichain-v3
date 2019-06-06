@@ -164,7 +164,6 @@ namespace bubi {
 	}
 
 	void MessageChannel::SendRequest(const std::string &comm_unique, int64_t type, const std::string &data) {
-		assert(!comm_unique.empty());
 		utils::MutexGuard guard(conns_list_lock_);
 		for (auto iter = connections_.begin(); iter != connections_.end(); iter++) {
 			MessageChannelPeer *messageChannel = (MessageChannelPeer *)iter->second;
@@ -177,7 +176,6 @@ namespace bubi {
 	}
 
 	void MessageChannel::SendResponse(const std::string &comm_unique, const protocol::WsMessage &req_message, const std::string &data){
-		assert(!comm_unique.empty());
 		utils::MutexGuard guard(conns_list_lock_);
 		for (auto iter = connections_.begin(); iter != connections_.end(); iter++) {
 			MessageChannelPeer *messageChannel = (MessageChannelPeer *)iter->second;

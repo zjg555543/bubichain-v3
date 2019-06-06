@@ -33,7 +33,6 @@ namespace bubi {
 				if (!acc->GetMetaData("CPC", value_ptr)){
 					//尚未找到合约相关信息
 					LOG_ERROR("Get metadata fail, key CPC not exist");
-					assert(false);
 					return;
 				}
 
@@ -46,7 +45,7 @@ namespace bubi {
 			std::string key = utils::String::Format("deposit_" FMT_I64 "", id);
 			if (!acc->GetMetaData(key, value_ptr)){
 				//尚未找到合约相关信息
-				LOG_INFO("Get metadata fail, key(%s) not exist", key);
+				LOG_INFO("Get metadata fail, key(%s) not exist", key.c_str());
 				return;
 			}
 
@@ -69,10 +68,9 @@ namespace bubi {
 			int64_t id = cross_proposal.proposal_id();
 			if (id <= 0){
 				protocol::KeyPair value_ptr;
-				if (!acc->GetMetaData("cross_chain", value_ptr)){
+				if (!acc->GetMetaData("channel_info", value_ptr)){
 					//尚未找到合约相关信息
 					LOG_ERROR("Get metadata fail, key CPC not exist");
-					assert(false);
 					return;
 				}
 
@@ -82,10 +80,10 @@ namespace bubi {
 			}
 
 			protocol::KeyPair value_ptr;
-			std::string key = utils::String::Format("proposal_" FMT_I64 "", id);
+			std::string key = utils::String::Format("result_proposal_" FMT_I64 "", id);
 			if (!acc->GetMetaData(key, value_ptr)){
 				//尚未找到合约相关信息
-				LOG_INFO("Get metadata fail, key(%s) not exist", key);
+				LOG_INFO("Get metadata fail, key(%s) not exist", key.c_str());
 				return;
 			}
 
@@ -95,19 +93,18 @@ namespace bubi {
 			protocol::CrossProposalInfo info;
 			info.set_type(cross_proposal.type());
 			info.set_proposal_id(id);
-			info.set_proposal_body(value_ptr.value());
-			info.set_status(1); //DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG
-			const Json::Value &json_votes = data["votes"];
-			for (size_t i = 0; i < json_votes.size(); i++) {
-				std::string vote = json_votes[i].asString();
-				*info.add_confirmed_notarys() = vote;
+			info.set_proposal_body(data["proposal"].asString());
+			info.set_status(data["state"].asInt());
+			const Json::Value &json_votes_array = data["vote"];
+			for (size_t i = 0; i < json_votes_array.size(); i++) {
+				const Json::Value &vote_obj = json_votes_array[i];
+				*info.add_confirmed_notarys() = vote_obj[(Json::UInt)0].asString();
 			}
 
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
 		else{
 			LOG_ERROR("Parse proposal error!");
-			assert(false);
 			return;
 		}
 
@@ -124,6 +121,8 @@ namespace bubi {
 		protocol::CrossCommInfo comm_info;
 		comm_info.ParseFromString(message.data());
 		protocol::CrossCommInfoResponse response;
+
+		LOG_INFO("Recvd comm info for request.",);
 
 		AccountFrm::pointer acc = NULL;
 		if (!Environment::AccountFromDB(comm_contract_, acc)) {
@@ -142,18 +141,18 @@ namespace bubi {
 		}
 		
 		//查询合约信息的output信息
-		protocol::KeyPair comm_unique;
-		if (acc->GetMetaData("chain_id", comm_unique)){
-			response.set_comm_unique(comm_unique.value());
-		}
-
 		protocol::KeyPair cross_chain;
-		if (acc->GetMetaData("cross_chain", cross_chain)){
+		if (acc->GetMetaData("channel_info", cross_chain)){
 			Json::Value data;
 			data.fromString(cross_chain.value());
-			response.set_comm_unique(comm_unique.value());
-			response.set_output_finish_seq(data["current_seq"].asInt64());
+			response.set_comm_unique(data["chain_id"].asString());
+			response.set_output_finish_seq(data["complete_seq"].asInt64());
 			response.set_output_max_seq(data["init_seq"].asInt64());
+
+			const Json::Value &notary_list = data["notary_list"];
+			for (size_t i = 0; i < notary_list.size(); i++){
+				*response.add_notarys() = notary_list[i].asString();
+			}
 		}
 
 		channel_->SendResponse(static_notary_unique_, message, response.SerializeAsString());
@@ -242,7 +241,6 @@ namespace bubi {
 	}
 
 	void CrossChainMgr::HandleMessage(const std::string &comm_unique, const protocol::WsMessage &message){
-		assert(static_notary_unique_ == comm_unique);
 		if (!message.request()){
 			return;
 		}
