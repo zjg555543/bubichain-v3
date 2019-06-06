@@ -59,6 +59,7 @@ namespace bubi {
 		void HandleProposalNotice(const protocol::CrossProposalInfo &proposal_info);
 		
 		//内部函数处理
+		void RequestNotaryAccountNonce();
 		void RequestCommInfo();
 		void RequestAndUpdate(protocol::CROSS_PROPOSAL_TYPE type);
 		void CheckTxError();
@@ -75,7 +76,7 @@ namespace bubi {
 		std::string comm_contract_;
 		std::string notary_address_;
 		std::string private_key_;
-		int64_t nonce_;
+		int64_t notary_nonce_;
 		ProposalInfoVector proposal_info_vector_;
 
 		//Chain Info

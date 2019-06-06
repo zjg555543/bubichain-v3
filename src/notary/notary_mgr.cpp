@@ -33,6 +33,9 @@ namespace bubi {
 	}
 
 	void ChainObj::OnFastTimer(int64_t current_time){
+		//请求公证人账号的nonce
+		RequestNotaryAccountNonce();
+
 		//请求通信合约的信息
 		RequestCommInfo();
 
@@ -130,7 +133,7 @@ namespace bubi {
 		protocol::CrossAccountNonceResponse msg;
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv Account Nonce Response..");
-		nonce_ = msg.nonce();
+		notary_nonce_ = msg.nonce();
 	}
 
 	void ChainObj::OnHandleProposalDoTransResponse(const protocol::WsMessage &message){
@@ -165,6 +168,14 @@ namespace bubi {
 		if ((proposal_info.status() == EXECUTE_STATE_SUCCESS) || (proposal_info.status() == EXECUTE_STATE_FAIL)){
 			proposal->affirm_max_seq = MAX(proposal_info.proposal_id(), proposal->affirm_max_seq);
 		}
+
+		LOG_INFO("Recv proposal type:%d, id:" FMT_I64 ", status:%d ", proposal_info.type(), proposal_info.proposal_id(), proposal_info.status());
+	}
+
+	void ChainObj::RequestNotaryAccountNonce(){
+		protocol::CrossAccountNonce account_nonce;
+		account_nonce.set_account(notary_address_);
+		channel_->SendRequest(comm_unique_, protocol::CROSS_MSGTYPE_ACCOUNT_NONCE, account_nonce.SerializeAsString());
 	}
 
 	void ChainObj::RequestCommInfo(){
@@ -233,7 +244,7 @@ namespace bubi {
 		int64_t next_proposal_index = record->affirm_max_seq + 1;
 		if (!peer_chain_->GetProposalInfo(get_peer_type, next_proposal_index, vote_proposal)){
 			//不存在在直接返回
-			LOG_INFO("Chain %s,no proposl from peer type :%d", comm_unique_.c_str(), get_peer_type);
+			//LOG_INFO("Chain %s,no proposl from peer type :%d", comm_unique_.c_str(), get_peer_type);
 			return;
 		}
 
@@ -273,12 +284,16 @@ namespace bubi {
 	}
 
 	void ChainObj::SubmitTransaction(){
+		if (proposal_info_vector_.empty()){
+			return;
+		}
+
 		utils::MutexGuard guard(lock_);
 		protocol::CrossDoTransaction cross_do_trans;
 		protocol::TransactionEnv tran_env;
 		protocol::Transaction *tran = tran_env.mutable_transaction();
 		tran->set_source_address(notary_address_);
-		tran->set_nonce(nonce_);
+		tran->set_nonce(notary_nonce_);
 
 		//打包操作
 		for (unsigned i = 0; i < proposal_info_vector_.size(); i++){

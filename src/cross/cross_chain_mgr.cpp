@@ -52,16 +52,19 @@ namespace bubi {
 			//设置提案信息
 			Json::Value data;
 			data.fromString(value_ptr.value());
+			const Json::Value &proposal_json = data[Json::UInt(0)];
 			protocol::CrossProposalInfo info;
 			info.set_type(cross_proposal.type());
 			info.set_proposal_id(id);
-			info.set_proposal_body(value_ptr.value());
-			info.set_status(data["status"].asInt());
-			const Json::Value &json_votes = data["votes"];
+			info.set_proposal_body(proposal_json.toFastString());
+			info.set_status(proposal_json["status"].asInt());
+			const Json::Value &json_votes = proposal_json["votes"];
 			for (size_t i = 0; i < json_votes.size(); i++) {
 				*info.add_confirmed_notarys() = json_votes[i].asString();
 			}
 
+
+			LOG_INFO("Recvd proposal for request, status:%d, id:(" FMT_I64 " ).", proposal_json["status"].asInt(), id);
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
 		else if (cross_proposal.type() == protocol::CROSS_PROPOSAL_OUTPUT){
@@ -138,6 +141,11 @@ namespace bubi {
 			response.set_comm_unique(data["chain_id"].asString());
 			response.set_input_finish_seq(data["finish_seq"].asInt64());
 			response.set_input_max_seq(data["newest_seq"].asInt64());
+
+			const Json::Value &notary_list = data["notary_list"];
+			for (size_t i = 0; i < notary_list.size(); i++){
+				*response.add_notarys() = notary_list[i].asString();
+			}
 		}
 		
 		//查询合约信息的output信息
