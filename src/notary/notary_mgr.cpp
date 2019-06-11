@@ -108,12 +108,9 @@ namespace bubi {
 		msg.ParseFromString(message.data());
 		LOG_INFO("Recv cross comm info response..");
 
-		assert(comm_unique_ == msg.comm_unique());
-
 		//保存公证人列表
 		if (msg.notarys_size() >= 100){
 			LOG_ERROR("Notary nums is no more than 100");
-			assert(false);
 			return;
 		}
 		memset(&notary_list_, 0, sizeof(notary_list_));
@@ -161,7 +158,6 @@ namespace bubi {
 		//save proposal
 		utils::MutexGuard guard(lock_);
 		ProposalRecord *proposal = GetProposalRecord(proposal_info.type());
-		assert(proposal_info.proposal_id() >= 0);
 
 		proposal->proposal_info_map[proposal_info.proposal_id()] = proposal_info;
 		proposal->max_seq = MAX(proposal_info.proposal_id(), proposal->max_seq);
@@ -196,12 +192,18 @@ namespace bubi {
 		ProposalInfoMap &proposal_info = record->proposal_info_map;
 		for (auto itr_info = proposal_info.begin(); itr_info != proposal_info.end();){
 			const protocol::CrossProposalInfo &info = itr_info->second;
-			if ((info.status() == EXECUTE_STATE_SUCCESS) || (info.status() == EXECUTE_STATE_FAIL)){
-				proposal_info.erase(itr_info++);
-				continue;
+			//保留最后一个确认的提案，删除其之前的确认的提案
+			bool finished = (info.status() == EXECUTE_STATE_SUCCESS) || (info.status() == EXECUTE_STATE_FAIL);
+			if (!finished){
+				itr_info++;
+				break;
 			}
 
-			itr_info++;
+			if (record->affirm_max_seq == info.proposal_id()){
+				itr_info++;
+				break;
+			}
+			proposal_info.erase(itr_info++);
 		}
 		
 		//请求从最后确认的一个提案后的缺失的提案开始，每次最大更新10个
@@ -278,7 +280,6 @@ namespace bubi {
 
 		//改变提案状态类型，保存提案队列。
 		vote_proposal.set_type(type);
-		vote_proposal.clear_status();
 		vote_proposal.clear_confirmed_notarys();
 		proposal_info_vector_.push_back(vote_proposal);
 	}
@@ -287,7 +288,7 @@ namespace bubi {
 		if (proposal_info_vector_.empty()){
 			return;
 		}
-
+		notary_nonce_++;
 		utils::MutexGuard guard(lock_);
 		protocol::CrossDoTransaction cross_do_trans;
 		protocol::TransactionEnv tran_env;
@@ -305,16 +306,17 @@ namespace bubi {
 			if (info.type() == protocol::CROSS_PROPOSAL_INPUT){
 				Json::Value input_value;
 				Json::Value data;
-				data.fromString(info.proposal_body());
-				input_value["action"] = "put_msg";
-				input_value["data"] = data;
-				payment->set_input(input_value.toFastString());
+				std::string body = info.proposal_body();
+				data.fromString(body);
+				data["function"] = "onReceiveProposalEvent";
+				std::string debug = data.toFastString();
+				payment->set_input(data.toFastString());
 			}
 			else{
 				Json::Value input_value;
 				Json::Value data;
 				data.fromString(info.proposal_body());
-				input_value["function"] = "processState";
+				input_value["function"] = "onSendProposalEvent";
 				input_value["seq"] = info.proposal_id();
 				input_value["state"] = info.status();
 				payment->set_input(input_value.toFastString());
@@ -350,7 +352,6 @@ namespace bubi {
 		}
 		else{
 			LOG_ERROR("Canot find proposal, type:%d", type);
-			assert(false);
 		}
 		return record;
 	}

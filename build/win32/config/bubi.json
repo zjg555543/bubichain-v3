@@ -5,15 +5,15 @@
 		"keyvalue_path": "data/keyvalue.db"
 	},
 	"monitor": {
-		"id": "10000",
-		"center": "127.0.0.1:10000",
+		"id": "20000",
+		"center": "127.0.0.1:20000",
 		"disk_path": "/,/mnt/",
 		"enabled" : false
 	},
 	"p2p": {
-		"network_id": 10000,
-		"address": "a0010eb61f994a67a8b6b915828407073dd61cc60d43c7",  //c001d4b197bcee4a2c5cbafb47c7c1b8adbfba9c62d92ec07fff5371d6a36e962f909f
-		"node_private_key": "594cfbf95dc043de90a81e1f0f3985e8a338435908dce62f540827131239f4b28c90da044676f10f1aa2cab704442ba097a8b312e8e3ecd413dbc3f0098062ea2cc464437274da1de6d12f88e059c9c6",
+		"network_id": 2019002,
+		"address": "a00136bc18029f74548c1a1b9ae8a2449a43d93ce19184",  //c001d4b197bcee4a2c5cbafb47c7c1b8adbfba9c62d92ec07fff5371d6a36e962f909f
+		"node_private_key": "582adba5e3b348e8faadea53d2e623329651b2e328cf2b9cd759029e370b49f0e55a79ec7118c7c6354a8edf7ad3f4cfa0c00bc3bb3381c0d187c29f15ec9be58dda332994764c311019ef7666c0ce09",
 		"ssl": {
 			"chain_file": "config/node_bubi.crt",
 			"private_key_file": "config/node_bubi.pem",
@@ -23,18 +23,18 @@
 		},
 		"consensus_network": {
 			"heartbeat_interval": 60,
-			"listen_port": 9333,
+			"listen_port": 29333,
 			"target_peer_connection": 50,
-			"known_peers": ["127.0.0.1:10001"]
+			"known_peers": ["127.0.0.1:9333"]
 		}
 	},
 	"webserver": {
-		"listen_addresses": "0.0.0.0:10002",
+		"listen_addresses": "0.0.0.0:20002",
 		"remote_authorized": false,
 		"validator_conf_key": "bubi2021"
 	},
 	"wsserver": {
-		"listen_address": "0.0.0.0:10004"
+		"listen_address": "0.0.0.0:20004"
 	},
 	"ledger": {
 		"genesis_account": "a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec",    //c001ab8accaa32d24e36cbab6fbc2abce67f59c65f3dcff87c7ec58fb7b8bc710ad4b8
@@ -63,8 +63,8 @@
 		]
 	},
 	"cross": {
-		"comm_unique": "CHAIN_20190528_A",
-		"comm_contract": "a00200c3a5b881e0c729ae167fa43cf7778eb18eda3754",
+		"comm_unique": "CHAIN_20190528_B",
+		"comm_contract": "a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0",
 		"target_addr": "127.0.0.1:30000",
 		"enabled" : true
 	}

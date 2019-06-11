@@ -30,20 +30,20 @@ namespace bubi {
 			int64_t id = cross_proposal.proposal_id();
 			if (id <= 0){
 				protocol::KeyPair value_ptr;
-				if (!acc->GetMetaData("CPC", value_ptr)){
+				if (!acc->GetMetaData("receive_relay", value_ptr)){
 					//尚未找到合约相关信息
-					LOG_ERROR("Get metadata fail, key CPC not exist");
+					LOG_ERROR("Get metadata fail, key receive_relay not exist");
 					return;
 				}
 
 				Json::Value data;
 				data.fromString(value_ptr.value());
-				id = data["newest_seq"].asInt64();
+				id = data["init_seq"].asInt64();
 			}
 
-			protocol::KeyPair value_ptr;
-			std::string key = utils::String::Format("deposit_" FMT_I64 "", id);
-			if (!acc->GetMetaData(key, value_ptr)){
+			protocol::KeyPair recv_key_pair;
+			std::string key = utils::String::Format("receive_proposal_" FMT_I64 "", id);
+			if (!acc->GetMetaData(key, recv_key_pair)){
 				//尚未找到合约相关信息
 				LOG_INFO("Get metadata fail, key(%s) not exist", key.c_str());
 				return;
@@ -51,29 +51,27 @@ namespace bubi {
 
 			//设置提案信息
 			Json::Value data;
-			data.fromString(value_ptr.value());
-			const Json::Value &proposal_json = data[Json::UInt(0)];
+			data.fromString(recv_key_pair.value());
+			const Json::Value &proposals_obj = data["proposals"];
 			protocol::CrossProposalInfo info;
 			info.set_type(cross_proposal.type());
 			info.set_proposal_id(id);
-			info.set_proposal_body(proposal_json.toFastString());
-			info.set_status(proposal_json["status"].asInt());
-			const Json::Value &json_votes = proposal_json["votes"];
-			for (size_t i = 0; i < json_votes.size(); i++) {
-				*info.add_confirmed_notarys() = json_votes[i].asString();
+			info.set_proposal_body(proposals_obj.toFastString());
+			info.set_status(data["state"].asInt());
+			for (size_t i = 0; i < proposals_obj.size(); i++) {
+				*info.add_confirmed_notarys() = proposals_obj[i][Json::UInt(0)].asString();
 			}
 
-
-			LOG_INFO("Recvd proposal for request, status:%d, id:(" FMT_I64 " ).", proposal_json["status"].asInt(), id);
+			LOG_INFO("Recvd proposal for request, status:%d, id:(" FMT_I64 " ).", data["status"].asInt(), id);
 			*cross_proposal_response.mutable_proposal_info() = info;
 		}
 		else if (cross_proposal.type() == protocol::CROSS_PROPOSAL_OUTPUT){
 			int64_t id = cross_proposal.proposal_id();
 			if (id <= 0){
 				protocol::KeyPair value_ptr;
-				if (!acc->GetMetaData("channel_info", value_ptr)){
+				if (!acc->GetMetaData("send_relay", value_ptr)){
 					//尚未找到合约相关信息
-					LOG_ERROR("Get metadata fail, key CPC not exist");
+					LOG_ERROR("Get metadata fail, key send_relay not exist");
 					return;
 				}
 
@@ -83,7 +81,7 @@ namespace bubi {
 			}
 
 			protocol::KeyPair value_ptr;
-			std::string key = utils::String::Format("result_proposal_" FMT_I64 "", id);
+			std::string key = utils::String::Format("send_proposal_" FMT_I64 "", id);
 			if (!acc->GetMetaData(key, value_ptr)){
 				//尚未找到合约相关信息
 				LOG_INFO("Get metadata fail, key(%s) not exist", key.c_str());
@@ -96,7 +94,7 @@ namespace bubi {
 			protocol::CrossProposalInfo info;
 			info.set_type(cross_proposal.type());
 			info.set_proposal_id(id);
-			info.set_proposal_body(data["proposal"].asString());
+			info.set_proposal_body(data["proposal"].toFastString());
 			info.set_status(data["state"].asInt());
 			const Json::Value &json_votes_array = data["vote"];
 			for (size_t i = 0; i < json_votes_array.size(); i++) {
@@ -134,13 +132,13 @@ namespace bubi {
 		}
 
 		//查询合约信息的input信息
-		protocol::KeyPair cpc;
-		if (acc->GetMetaData("CPC", cpc)){
+		protocol::KeyPair input_obj;
+		if (acc->GetMetaData("receive_relay", input_obj)){
 			Json::Value data;
-			data.fromString(cpc.value());
+			data.fromString(input_obj.value());
 			response.set_comm_unique(data["chain_id"].asString());
-			response.set_input_finish_seq(data["finish_seq"].asInt64());
-			response.set_input_max_seq(data["newest_seq"].asInt64());
+			response.set_input_finish_seq(data["complete_seq"].asInt64());
+			response.set_input_max_seq(data["init_seq"].asInt64());
 
 			const Json::Value &notary_list = data["notary_list"];
 			for (size_t i = 0; i < notary_list.size(); i++){
@@ -150,10 +148,10 @@ namespace bubi {
 		
 		//查询合约信息的output信息
 		protocol::KeyPair cross_chain;
-		if (acc->GetMetaData("channel_info", cross_chain)){
+		if (acc->GetMetaData("send_relay", cross_chain)){
 			Json::Value data;
 			data.fromString(cross_chain.value());
-			response.set_comm_unique(data["chain_id"].asString());
+			response.set_comm_unique(data["f_chain_id"].asString());
 			response.set_output_finish_seq(data["complete_seq"].asInt64());
 			response.set_output_max_seq(data["init_seq"].asInt64());
 
