@@ -126,9 +126,6 @@
     <ClCompile Include="..\..\src\monitor\monitor_manager.cpp">
       <Filter>monitor</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\cross\cross_utils.cpp">
-      <Filter>cross</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\cross\message_channel.cpp">
       <Filter>cross</Filter>
     </ClCompile>
@@ -223,9 +220,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\monitor\monitor_manager.h">
       <Filter>monitor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\cross\cross_utils.h">
-      <Filter>cross</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\cross\message_channel.h">
       <Filter>cross</Filter>
