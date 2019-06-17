@@ -123,7 +123,7 @@ namespace bubi {
 		comm_info.ParseFromString(message.data());
 		protocol::CrossCommInfoResponse response;
 
-		LOG_INFO("Recvd comm info for request.",);
+		LOG_INFO("Recvd comm info for request.");
 
 		AccountFrm::pointer acc = NULL;
 		if (!Environment::AccountFromDB(comm_contract_, acc)) {

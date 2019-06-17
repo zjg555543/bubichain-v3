@@ -50,6 +50,7 @@ set(BUBI_DEPENDS_LIBS protobuf rocksdb pcreposix pcrecpp pcre json ssl crypto z 
 add_subdirectory(3rd/http)
 add_subdirectory(3rd/ed25519-donna)
 add_subdirectory(glue)
+add_subdirectory(cross)
 add_subdirectory(utils)
 add_subdirectory(proto)
 add_subdirectory(ledger)
