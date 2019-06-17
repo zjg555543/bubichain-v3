@@ -13,7 +13,7 @@ set(APP_BUBI_SRC
     ../api/websocket_server.cpp
 )
 
-set(INNER_LIBS bubi_glue bubi_ledger bubi_consensus bubi_overlay bubi_common bubi_utils bubi_proto bubi_http bubi_ed25519 bubi_monitor)
+set(INNER_LIBS bubi_glue bubi_cross bubi_ledger bubi_consensus bubi_overlay bubi_common bubi_utils bubi_proto bubi_http bubi_ed25519 bubi_monitor)
 set(V8_LIBS v8_base v8_libbase v8_external_snapshot v8_libplatform v8_libsampler icui18n icuuc inspector)
 
 #generate executable file
