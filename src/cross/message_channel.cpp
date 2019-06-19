@@ -103,7 +103,8 @@ namespace bubi {
 			return;
 		}
 		
-		Start(param_.target_addr_);
+		utils::InetAddress null_ip;
+		Start(null_ip);
 	}
 
 	bool MessageChannel::OnHandleHello(const protocol::WsMessage &message, int64_t conn_id){
