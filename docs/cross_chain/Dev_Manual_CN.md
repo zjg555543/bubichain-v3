@@ -44,7 +44,7 @@
 | | A链环境 | B链环境 
 |:--- | ---  | --- 
 | 区块信息 | http://52.80.81.176:10002/getLedger | http://52.80.81.176:20002/getLedger
-|通讯合约地址| [a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60](http://52.80.81.176:10002/getAccount?address=a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60 "a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60")  |[a0010cc417...](http://52.80.81.176:20002/getAccount?address=a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0 "a0010cc417...") 
+|通讯合约地址| [a00168ba...](http://52.80.81.176:10002/getAccount?address=a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60 "a00168ba...")  |[a0010cc417...](http://52.80.81.176:20002/getAccount?address=a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0 "a0010cc417...") 
 | 资产合约地址 | [a0023006...](http://52.80.81.176:10002/getAccount?address=a00230068c4eab8c26dd1cd140390fd09f9ffa9706845e "a0023006...")  | [a0021217...](http://52.80.81.176:20002/getAccount?address=a002121795274745cfa2d56577b15781c5fb5627458bc2 "a0021217...") 
 
 
