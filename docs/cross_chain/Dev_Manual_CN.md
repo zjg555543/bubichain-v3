@@ -40,25 +40,13 @@
 ## 测试网
 目前我们搭建了两条链，A链和B链，他们内部分别有对应的资产合约和通讯合约。通讯合约负责两条链的消息交互，保证交互的原子性，有效性；资产合约是实际发生资产转移的对应业务形态的实现，用户可以自定义任何方式的业务，如资产1:1转移，资产1:N兑换等。
 
-### A链环境
 
-#### 区块信息
-http://52.80.81.176:10002/getLedger
+| | A链环境 | B链环境 
+|:--- | ---  | --- 
+| 区块信息 | http://52.80.81.176:10002/getLedger | http://52.80.81.176:20002/getLedger
+|通讯合约地址| http://52.80.81.176:10002/getAccount?address=a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60  | http://52.80.81.176:20002/getAccount?address=a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0
+| 资产合约地址 | http://52.80.81.176:10002/getAccount?address=a00230068c4eab8c26dd1cd140390fd09f9ffa9706845e |  http://52.80.81.176:20002/getAccount?address=a002121795274745cfa2d56577b15781c5fb5627458bc2
 
-#### 通讯合约地址
-http://52.80.81.176:10002/getAccount?address=a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60 
-
-#### 资产合约地址
-http://52.80.81.176:10002/getAccount?address=a00230068c4eab8c26dd1cd140390fd09f9ffa9706845e
-
-### B链环境
-
-#### 区块信息
-http://52.80.81.176:20002/getLedger
-#### 通讯合约地址
-http://52.80.81.176:20002/getAccount?address=a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0
-#### 资产合约地址
-http://52.80.81.176:20002/getAccount?address=a002121795274745cfa2d56577b15781c5fb5627458bc2
 
 
 ## 体验跨链
