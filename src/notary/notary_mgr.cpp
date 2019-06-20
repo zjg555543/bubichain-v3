@@ -115,7 +115,7 @@ namespace bubi {
 		}
 		memset(&notary_list_, 0, sizeof(notary_list_));
 		for (int i = 0; i < msg.notarys_size(); i++) {
-			notary_list_[i] = msg.notarys(i);
+			//notary_list_[i] = msg.notarys(i).c_str();
 		}
 
 		//保存最大确认序号和最大序号

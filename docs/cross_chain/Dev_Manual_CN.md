@@ -2,6 +2,37 @@
 
 ## 目录
 
+<!-- TOC -->
+
+- [测试网](#测试网)
+    - [A链环境](#a链环境)
+        - [区块信息](#区块信息)
+        - [通讯合约地址](#通讯合约地址)
+        - [资产合约地址](#资产合约地址)
+    - [B链环境](#b链环境)
+        - [区块信息](#区块信息)
+        - [通讯合约地址](#通讯合约地址)
+        - [资产合约地址](#资产合约地址)
+- [体验跨链](#体验跨链)
+    - [A链发行资产](#a链发行资产)
+    - [A链转移资产至通讯合约](#a链转移资产至通讯合约)
+    - [A链触发通讯合约](#a链触发通讯合约)
+    - [查看B链通讯合约状态](#查看b链通讯合约状态)
+    - [查看B链资产合约状态](#查看b链资产合约状态)
+    - [查看A链最终状态](#查看a链最终状态)
+
+- [开发说明](#开发说明)
+    - [公证人程序](#公证人程序)
+    - [通讯合约](#通讯合约)
+    - [资产合约](#资产合约)
+    - [部署说明](#部署说明)
+        - [部署链](#部署链)
+        - [部署公证人](#部署公证人)
+        - [部署合约](#部署合约)
+        - [部署链](#部署链)
+
+<!-- /TOC -->
+
 单条区块链的基础设施正在蓬勃发展，但各条链之间却是价值孤岛，我们致力于创建一种轻量、安全的跨链资产转移协议，让资产自由流通起来。
 
 目前我们已经设计并实现了跨链资产转移协议，并在两条BUChain测试网上线，现邀请各位开发者体验和使用，并提出宝贵意见。
@@ -290,14 +321,58 @@ http://52.80.81.176:20002/getAccount?address=a002121795274745cfa2d56577b15781c5f
 公证人程序主要跟A链和B链的合约打交道，并根据协议规则，实现交互流程。使用C++实现，[代码目录](https://github.com/zjg555543/bubichain-v3/tree/feature/crosschain/src/notary "代码目录")
 
 ### 通讯合约
+https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_comm.js
 
 ### 资产合约
+https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_asset.js
 
 ## 部署说明
-
-### 部署A链
-
-### 部署B链
-
+A链和B链的部署参考 buchain的部署。[部署文档](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/manual.md "部署文档")，需要注意的是要配置与公证人程序的配置文件，[配置文件](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/build/win32/config/bubi.json "配置文件")
+### 部署链
+```
+"cross": {
+    "comm_unique": "CHAIN_20190528_A",  //链的ID，与对应通訊合约里的ID保持一致
+    "comm_contract": "a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0", //通讯合约地址
+    "target_addr": "127.0.0.1:30000", //公证人程序的监听端口
+    "enabled": true
+}
+```
 ### 部署公证人
+编译完成后，运行`notary`程序即可，需要注意的是其[配置文件](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/build/win32/config/notary.json "配置文件")
 
+```
+{
+    "logger": {
+        "path": "log/notary.log",
+        "dest": "FILE|STDOUT|STDERR",
+        "level": "TRACE|INFO|WARNING|ERROR|FATAL",
+        "time_capacity": 1,
+        "size_capacity": 10,
+        "expire_days": 10
+    },
+    "notary": {
+        "notary_address": "a001c3bbfce78bba8bfcb37113a84e95a3fd441a5622e3",
+        "private_key": "c0018d7939ec4085db3db6a2c698a6b30345301d81b6b53a700f4865a8c51f479149ee",
+        "listen_addr": "127.0.0.1:30000"//公证人监听端口
+    },
+    "pair_chain_1": {
+        "comm_unique": "CHAIN_20190528_A",//A链通讯合约ID
+        "comm_contract": "a00200c3a5b881e0c729ae167fa43cf7778eb18eda3754"//A链通讯合约地址
+    },
+    "pair_chain_2": {
+        "comm_unique": "CHAIN_20190528_B",//B链通讯合约ID
+        "comm_contract": "a00136bc18029f74548c1a1b9ae8a2449a43d93ce19184"//B链通讯合约地址
+    }
+}
+```
+
+### 部署合约
+- [创建A链通讯合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/0-CreateAChainCom.txt "创建A链通讯合约")
+- [创建A链资产合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/0-CreateAChainAsset.txt "创建A链资产合约")
+- [创建B链通讯合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/0-CreateBChainComm.txt "创建B链通讯合约")
+- [创建B链资产合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/0-CreateBChainAsset.txt "创建B链资产合约")
+- [初始化A链通讯合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/1-InitAChainComm.txt "初始化A链通讯合约")
+- [初始化B链通讯合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/1-InitBChainComm.txt "初始化B链通讯合约")
+- [在A链发行资产](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/2-CrossIssueAChainAsset.txt "在A链发行资产")
+- [转移A链资产给通讯合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/2-CrossTransAChainAsset.txt "转移A链资产给通讯合约")
+- [触发通讯合约](https://github.com/zjg555543/bubichain-v3/blob/feature/crosschain/docs/cross_chain/cross_step/2-CrossTransAChainComm.txt "触发通讯合约")
