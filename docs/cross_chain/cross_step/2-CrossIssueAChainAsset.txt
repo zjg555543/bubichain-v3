@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "transaction_json": {
+        "source_address": "a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec", 
+        "nonce": 1, 
+        "operations": [
+          {
+            "type": 3, 
+            "payment": {
+              "dest_address": "a00230068c4eab8c26dd1cd140390fd09f9ffa9706845e", 
+              "input": "{\"action\":\"issue\",\"from\":\"a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec\",\"to\":\"a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec\",\"amount\":10000000}"
+            }
+          }
+        ]
+      }, 
+      "private_keys": [
+        "c001ab8accaa32d24e36cbab6fbc2abce67f59c65f3dcff87c7ec58fb7b8bc710ad4b8"
+      ]
+    }
+  ]
+}	

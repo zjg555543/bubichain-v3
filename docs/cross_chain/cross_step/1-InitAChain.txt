@@ -1,0 +1,22 @@
+	{
+  "items": [
+    {
+      "transaction_json": {
+        "source_address": "a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec", 
+        "nonce": 2, 
+        "operations": [
+          {
+            "type": 3, 
+            "payment": {
+              "dest_address": "a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60", 
+              "input": "{\"function\":\"initRelayContract\",\"t_comm_addr\":\"a0010cc417e4dfa7a952347980842d2d37f99a3ae190b0\"}"
+            }
+          }
+        ]
+      }, 
+      "private_keys": [
+        "c001ab8accaa32d24e36cbab6fbc2abce67f59c65f3dcff87c7ec58fb7b8bc710ad4b8"
+      ]
+    }
+  ]
+}	

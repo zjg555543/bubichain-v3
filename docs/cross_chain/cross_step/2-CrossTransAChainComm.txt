@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "transaction_json": {
+        "source_address": "a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec", 
+        "nonce": 6, 
+        "operations": [
+          {
+            "type": 3, 
+            "payment": {
+              "dest_address": "a00168babf35f0feac4854bb1fcc79d0235edfa87d0b60", 
+              "input": "{\"function\":\"sendCrossChain\",\"f_assets_addr\":\"a00230068c4eab8c26dd1cd140390fd09f9ffa9706845e\",\"from\":\"a00138e97b736f16d1342d67fe5cbcceb1638ffc52d6ec\",\"to\":\"a002b8467e03f6771c7e9dda09f9a7027b33fdf9a62386\",\"amount\":50,\"t_assets_addr\":\"a002121795274745cfa2d56577b15781c5fb5627458bc2\",\"seq\":2}"
+            }
+          }
+        ]
+      }, 
+      "private_keys": [
+        "c001ab8accaa32d24e36cbab6fbc2abce67f59c65f3dcff87c7ec58fb7b8bc710ad4b8"
+      ]
+    }
+  ]
+}	
